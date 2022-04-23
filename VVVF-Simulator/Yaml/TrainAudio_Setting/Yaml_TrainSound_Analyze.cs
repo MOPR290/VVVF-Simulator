@@ -17,16 +17,14 @@ namespace VVVF_Simulator.Yaml.TrainAudio_Setting
             private int FinalSampleFreq { get; set; } = 192000;
             public List<Harmonic_Data> Gear_Harmonics { get; set; } = new List<Harmonic_Data>()
             {
-                new Harmonic_Data{harmonic = 16, amplitude = new Harmonic_Data.Harmonic_Data_Amplitude{start=0,start_val=0x10,end=60,end_val=0x30,min_val = 0,max_val=0x60},disappear = 10000},
-                new Harmonic_Data{harmonic = 101, amplitude = new Harmonic_Data.Harmonic_Data_Amplitude{start=0,start_val=0x10,end=60,end_val=0x30,min_val = 0,max_val=0x60},disappear = 10000},
+                new Harmonic_Data{harmonic = 14, amplitude = new Harmonic_Data.Harmonic_Data_Amplitude{start=0,start_val=0x10,end=60,end_val=0x30,min_val = 0,max_val=0x60},disappear = 10000},
+                new Harmonic_Data{harmonic = 99, amplitude = new Harmonic_Data.Harmonic_Data_Amplitude{start=0,start_val=0x10,end=60,end_val=0x30,min_val = 0,max_val=0x60},disappear = 10000},
             };
             public List<Harmonic_Data> Sine_Harmonics { get; set; } = new List<Harmonic_Data>()
             {
-
                 new Harmonic_Data{harmonic = 1, amplitude = new Harmonic_Data.Harmonic_Data_Amplitude{start=0,start_val=0x10,end=60,end_val=0x30,min_val = 0,max_val=0x60},disappear = 10000},
                 new Harmonic_Data{harmonic = 5, amplitude = new Harmonic_Data.Harmonic_Data_Amplitude{start=0,start_val=0x10,end=60,end_val=0x30,min_val = 0,max_val=0x60},disappear = 10000},
                 new Harmonic_Data{harmonic = 7, amplitude = new Harmonic_Data.Harmonic_Data_Amplitude{start=0,start_val=0x10,end=60,end_val=0x30,min_val = 0,max_val=0x60},disappear = 10000},
-
             };
             public List<SoundFilter> Filteres { get; set; } = new List<SoundFilter>()
             {
@@ -154,32 +152,27 @@ namespace VVVF_Simulator.Yaml.TrainAudio_Setting
             public void Set_Calculated_Gear_Harmonics(int Gear1, int Gear2)
             {
                 List<Harmonic_Data> Gear_Harmonics_List = new List<Harmonic_Data>();
-                Harmonic_Data.Harmonic_Data_Amplitude hda = new Harmonic_Data.Harmonic_Data_Amplitude { start = 0, start_val = 0x0, end = 20, end_val = 0x60, min_val = 0, max_val = 0x60 };
 
-                double gear_rate = Gear2 / Gear1;
-                double motor_shaft_r = 120 / 4.0 / 60.0; // 0.5
+                Harmonic_Data.Harmonic_Data_Amplitude amp_Strong = new Harmonic_Data.Harmonic_Data_Amplitude { start = 0, start_val = 0x0, end = 40, end_val = 0x60, min_val = 0, max_val = 0x60 };
+                Harmonic_Data.Harmonic_Data_Amplitude amp_Weak = new Harmonic_Data.Harmonic_Data_Amplitude { start = 0, start_val = 0x0, end = 40, end_val = 0x20, min_val = 0, max_val = 0x20 };
 
-                // basic harmonics
-                for (int i = 0; i < 2; i++)
-                {
-                    int odd = 2 * i + 1;
+                double gear_rate = Gear2 / (double)Gear1;
+                double motor_r = 120 / 4 / 60.0;
 
-                    double harmonic_1 = Gear1 * motor_shaft_r * odd;
-                    double harmonic_2 = Gear2 * motor_shaft_r * odd;
+                // Sound From Gear 1
+                // It has `Gear1` amount of teeth.
+                Gear_Harmonics_List.Add(new Harmonic_Data { harmonic = motor_r * Gear1 * 3, amplitude = amp_Strong, disappear = 10000 });
+                Gear_Harmonics_List.Add(new Harmonic_Data { harmonic = motor_r * Gear1 * 2.5, amplitude = amp_Strong, disappear = 10000 });
+                Gear_Harmonics_List.Add(new Harmonic_Data { harmonic = motor_r * Gear1 * 1, amplitude = amp_Strong, disappear = 10000 });
 
-                    Gear_Harmonics_List.Add(new Harmonic_Data { harmonic = harmonic_1, amplitude = hda, disappear = 10000 });
-                    Gear_Harmonics_List.Add(new Harmonic_Data { harmonic = harmonic_2, amplitude = hda, disappear = 10000 });
-
-                }
-
-
-                Gear_Harmonics_List.Add(new Harmonic_Data { harmonic = Gear1 * 120 / 4 / 60.0 / 3 * gear_rate / 5.0, amplitude = hda, disappear = 10000 });
-                Gear_Harmonics_List.Add(new Harmonic_Data { harmonic = Gear2 * 120 / 4 / 60.0 / 3 * gear_rate / 5.0, amplitude = hda, disappear = 10000 });
+                /*
+                Gear_Harmonics_List.Add(new Harmonic_Data { harmonic = motor_r * gear_rate, amplitude = hda, disappear = 10000 });
+                Gear_Harmonics_List.Add(new Harmonic_Data { harmonic = motor_r * Math.Pow(gear_rate,2), amplitude = hda, disappear = 10000 });
+                */
 
 
                 Gear_Harmonics = new List<Harmonic_Data>(Gear_Harmonics_List);
             }
-            
             public Yaml_TrainSound_Data Clone()
             {
                 var cloned = (Yaml_TrainSound_Data)MemberwiseClone();
