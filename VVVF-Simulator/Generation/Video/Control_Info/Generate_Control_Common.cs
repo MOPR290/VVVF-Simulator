@@ -39,6 +39,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
 
             double T = 1.0 / control.get_Sine_Freq();
 
+            control.set_Allowed_Random_Freq_Move(false);
             control.set_Sine_Time(-T / 2.0);
             control.set_Saw_Time(-T / 2.0);
 
