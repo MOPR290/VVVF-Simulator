@@ -33,14 +33,14 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
         /// <returns></returns>
         public static double Get_Voltage_Rate(Yaml_VVVF_Sound_Data sound_data, VVVF_Values control, bool precise)
         {
-            double hex_div_seed_amp = (control.get_Sine_Freq() > 0 && control.get_Sine_Freq() < 1) ? 1 / control.get_Sine_Freq() : 1;
-            double hex_div_seed = 20000 * (precise ? hex_div_seed_amp : 1);
-            int hex_div = (int)Math.Round(6 * hex_div_seed);
+            double _divSeed = (control.get_Sine_Freq() > 0 && control.get_Sine_Freq() < 1) ? 1 / control.get_Sine_Freq() : 1;
+            _divSeed = 20000 * (precise ? _divSeed : 1);
+            int divSeed = (int)Math.Round(6 * _divSeed);
 
-            double[] hexagon_coordinate = new double[] { 0, 0 };
+            double T = 1.0 / control.get_Sine_Freq();
 
-            control.set_Sine_Time(0);
-            control.set_Saw_Time(0);
+            control.set_Sine_Time(-T / 2.0);
+            control.set_Saw_Time(-T / 2.0);
 
             Control_Values cv = new Control_Values
             {
@@ -49,49 +49,26 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                 free_run = control.is_Free_Running(),
                 wave_stat = control.get_Control_Frequency()
             };
+            if (cv.wave_stat == 0 || control.get_Sine_Freq() == 0) return 0;
             PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, sound_data);
 
-            if (cv.wave_stat == 0) return 0;
-
-            double val = 0;
-
-            double max_x = 0;
-            try
+            double integral = 0;
+            double dt = 1.0 / (divSeed * control.get_Sine_Freq());
+            for (int i = 0; i < divSeed; i++)
             {
-                for (int i = 0; i < hex_div; i++)
-                {
-                    control.add_Sine_Time(1.0 / hex_div * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
-                    control.add_Saw_Time(1.0 / hex_div * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
+                control.add_Sine_Time(dt);
+                control.add_Saw_Time(dt);
 
-                    Wave_Values value = calculate_values(control, calculated_Values, 0);
+                Wave_Values value = calculate_values(control, calculated_Values, Math.PI / 6.0);
+                int pwm = value.U - value.V;
+                double sum = pwm * Get_Sine(control.get_Sine_Time() * control.get_Sine_Angle_Freq()) * dt;
+                integral += sum;
 
-                    double move_x = -0.5 * value.W - 0.5 * value.V + value.U;
-                    double move_y = -0.866025403784438646763 * value.W + 0.866025403784438646763 * value.V;
-                    double int_move_x = 200 * move_x / hex_div_seed;
-                    double int_move_y = 200 * move_y / hex_div_seed;
-
-                    hexagon_coordinate[0] = hexagon_coordinate[0] + int_move_x;
-                    hexagon_coordinate[1] = hexagon_coordinate[1] + int_move_y;
-
-                    if (i < hex_div / 2)
-                    {
-                        if (max_x < hexagon_coordinate[0]) max_x = hexagon_coordinate[0];
-                    }
-                    else
-                    {
-                        double len = Math.Sqrt(Math.Pow(hexagon_coordinate[0] - max_x / 2.0, 2) + Math.Pow(hexagon_coordinate[1], 2));
-                        val += len / hex_div;
-                    }
-
-
-                }
             }
-            catch
-            {
-                return -1;
-            }
-            double rate = val / 182.4 * 100.0;
-            return Math.Round(rate,2);
+
+            double _b1 = 2.0 * control.get_Sine_Freq() * integral;
+            double b1 = Math.Abs(_b1 / 1.10265);
+            return Math.Round(b1, 4);
         }
 
 
@@ -126,10 +103,6 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             g.DrawString(str, fnt, str_br, str_pos);
 
             return str_pos;
-
-
-
-
         }
 
         public static void line_corner_curved_rectangle(Graphics g, Pen pen, Point start, Point end, int round_radius)

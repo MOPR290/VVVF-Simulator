@@ -52,7 +52,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime
                 {
                     VVVF_Values control = realTime_Parameter.control_values.Clone();
                     control.set_Allowed_Random_Freq_Move(false);
-                    double voltage = Generation.Video.Control_Info.Generate_Control_Common.Get_Voltage_Rate(realTime_Parameter.sound_data, control, false);
+                    double voltage = Generation.Video.Control_Info.Generate_Control_Common.Get_Voltage_Rate(realTime_Parameter.sound_data, control, false) * 100;
                     double avg_voltage = Math.Round((pre_voltage + voltage) / 2.0, 2);
                     view_model.voltage = avg_voltage;
                     pre_voltage = voltage;

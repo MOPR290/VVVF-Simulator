@@ -40,11 +40,29 @@
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Content="+" HorizontalAlignment="Center" VerticalAlignment="Center" Width="27" Tag="Add" Click="Button_Click"/>
-                    <Button Content="-" HorizontalAlignment="Center" VerticalAlignment="Center" Width="27" Grid.Column="1" Tag="Remove" Click="Button_Click"/>
-                    <Button Content="Reset" HorizontalAlignment="Center" VerticalAlignment="Center" Width="55" Grid.Column="2" Tag="Reset" Click="Button_Click"/>
+                    <Button Content="+" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tag="Add" Click="Button_Click" Background="White" BorderBrush="Blue" Foreground="Blue" Margin="20,7.5,20,7.5" FontWeight="Bold" FontFamily="M PLUS 2">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="12.5"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button Content="-" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Tag="Remove" Click="Button_Click" Background="White" BorderBrush="Blue" Foreground="#FF0000F8" Margin="20,7.5,20,7.5" FontWeight="Bold" FontFamily="M PLUS 2">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="12.5"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button Content="Reset" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="2" Tag="Reset" Click="Button_Click" Background="White" BorderBrush="Blue" Foreground="Blue" Margin="20,7.5,20,7.5" FontFamily="M PLUS 2" FontWeight="Bold">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="12.5"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
                 </Grid>
-                <ListView x:Name="mascon_control_list" SelectionChanged="mascon_control_list_SelectionChanged">
+                <ListView x:Name="mascon_control_list" SelectionChanged="mascon_control_list_SelectionChanged" BorderBrush="White">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>

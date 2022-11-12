@@ -170,7 +170,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                 clone_control.set_Allowed_Random_Freq_Move(false);
                 clone_control.set_Sine_Time(0);
                 clone_control.set_Saw_Time(0);
-                double observe_voltage = Get_Voltage_Rate(ysd, clone_control, precise_voltage);
+                double observe_voltage = Get_Voltage_Rate(ysd, clone_control, precise_voltage) * 100;
                 if (pre_voltage_data.enable)
                     voltage = Math.Round((observe_voltage + pre_voltage_data.value) / 2.0, 1);
                 pre_voltage_data.enable = true;
