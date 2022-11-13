@@ -135,8 +135,6 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                 PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(solve_control, cv, ysd);
                 calculate_values(solve_control, calculated_Values, 0);
             });
-            if (!clone) re_calculate.Wait();
-
             Bitmap hexagon = new(400,400), wave_form = new(1520,400);
             Task hexagon_task = Task.Run(() =>
             {
@@ -169,8 +167,9 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                 clone_control.set_Allowed_Random_Freq_Move(false);
                 voltage = Get_Voltage_Rate(ysd, clone_control, precise_voltage) * 100;
             });
+            if (!clone) re_calculate.Wait();
 
-            
+
 
             hexagon_task.Wait();
             g.DrawImage(hexagon, 0, 100);
@@ -254,7 +253,6 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                 200);
 
             g.Dispose();
-
             return image;
         }
 

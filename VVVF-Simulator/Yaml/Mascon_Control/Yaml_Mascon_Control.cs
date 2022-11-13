@@ -24,7 +24,7 @@ namespace VVVF_Simulator.Yaml.Mascon_Control
             int Pos = (E_R - E_L) / 2 + E_L;
             while (true)
             {
-                bool time_f = SelectSource[Pos].StartTime <= time && time <= SelectSource[Pos].EndTime;
+                bool time_f = SelectSource[Pos].StartTime <= time && time < SelectSource[Pos].EndTime;
                 if (time_f) break;
 
                 if (SelectSource[Pos].StartTime < time)
@@ -66,6 +66,7 @@ namespace VVVF_Simulator.Yaml.Mascon_Control
             Yaml_Mascon_Data_Compiled_Point? NextTarget = DataAt + 1 < SelectSource.Count ? SelectSource[DataAt + 1] : null;
             Yaml_Mascon_Data_Compiled_Point? PreviousTarget = DataAt - 1 >= 0 ? SelectSource[DataAt - 1] : null;
 
+
             Braking = !Target.IsAccel();
             IsMasconOn = Target.IsMasconOn;
             ForceOnFrequency = -1;
@@ -106,13 +107,14 @@ namespace VVVF_Simulator.Yaml.Mascon_Control
             Control.set_Mascon_Off(!IsMasconOn);
             Control.set_Free_Running(Target != null && !Target.IsMasconOn);
 
-            if (!Control.is_Free_Running())
             {
                 double SineTimeAmplitude = NewSineFrequency == 0 ? 0 : Control.get_Sine_Freq() / NewSineFrequency;
                 Control.set_Sine_Angle_Freq(NewSineFrequency * Math.PI * 2);
                 if (Control.is_Allowed_Sine_Time_Change())
                     Control.multi_Sine_Time(SineTimeAmplitude);
-            }else if (ForceOnFrequency != -1)
+            }
+
+            if (ForceOnFrequency != -1)
             {
                 double SineTimeAmplitude = ForceOnFrequency == 0 ? 0 : Control.get_Sine_Freq() / ForceOnFrequency;
                 Control.set_Sine_Angle_Freq(ForceOnFrequency * Math.PI * 2);
