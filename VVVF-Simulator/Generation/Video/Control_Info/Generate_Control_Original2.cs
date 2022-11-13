@@ -110,7 +110,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             }
         }
 
-        public static Bitmap Get_Control_Original2_Image(VVVF_Values control_original, bool clone, Yaml_VVVF_Sound_Data ysd, Pre_Voltage_Data pre_voltage_data, bool precise_voltage)
+        public static Bitmap Get_Control_Original2_Image(VVVF_Values control_original, bool clone, Yaml_VVVF_Sound_Data ysd, bool precise_voltage)
         {
             int image_width = 1920;
             int image_height = 500;
@@ -140,7 +140,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             Bitmap hexagon = new(400,400), wave_form = new(1520,400);
             Task hexagon_task = Task.Run(() =>
             {
-                VVVF_Values hexagon_control = solve_control.Clone();
+                VVVF_Values hexagon_control = control_original.Clone();
                 hexagon_control.set_Allowed_Random_Freq_Move(false);
                 hexagon_control.set_Sine_Time(0);
                 hexagon_control.set_Saw_Time(0);
@@ -148,7 +148,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             });
 
             Task waveform_task = Task.Run(() => {
-                VVVF_Values vvvf_control = solve_control.Clone();
+                VVVF_Values vvvf_control = control_original.Clone();
                 vvvf_control.set_Allowed_Random_Freq_Move(false);
                 vvvf_control.set_Sine_Time(0);
                 vvvf_control.set_Saw_Time(0);
@@ -166,15 +166,9 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
 
             Task voltage_task = Task.Run(() =>
             {
-                VVVF_Values clone_control = solve_control.Clone();
+                VVVF_Values clone_control = control_original.Clone();
                 clone_control.set_Allowed_Random_Freq_Move(false);
-                clone_control.set_Sine_Time(0);
-                clone_control.set_Saw_Time(0);
-                double observe_voltage = Get_Voltage_Rate(ysd, clone_control, precise_voltage) * 100;
-                if (pre_voltage_data.enable)
-                    voltage = Math.Round((observe_voltage + pre_voltage_data.value) / 2.0, 1);
-                pre_voltage_data.enable = true;
-                pre_voltage_data.value = observe_voltage;
+                voltage = Get_Voltage_Rate(ysd, clone_control, precise_voltage) * 100;
             });
 
             
@@ -293,8 +287,6 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             // PROGRESS INITIALIZE
             progressData.Total = masconData.GetEstimatedSteps(1.0 / fps) + 120;
 
-            Pre_Voltage_Data pre_voltage_data = new(false, 0);
-
             bool START_FRAMES = true;
             if (START_FRAMES)
             {
@@ -308,7 +300,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                 };
                 PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
                 _ = calculate_values(control, calculated_Values, 0);
-                Bitmap final_image = Get_Control_Original2_Image(control, false, vvvfData, pre_voltage_data, true);
+                Bitmap final_image = Get_Control_Original2_Image(control, false, vvvfData, true);
 
                 Add_Image_Frames(final_image, 60, vr);
 
@@ -320,7 +312,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
 
             while (true)
             {
-                Bitmap final_image = Get_Control_Original2_Image(control, false, vvvfData, pre_voltage_data, true);
+                Bitmap final_image = Get_Control_Original2_Image(control, false, vvvfData, true);
 
                 MemoryStream ms = new();
                 final_image.Save(ms, ImageFormat.Png);
@@ -360,7 +352,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                 };
                 PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
                 _ = calculate_values(control, calculated_Values, 0);
-                Bitmap final_image = Get_Control_Original2_Image(control, false, vvvfData, pre_voltage_data, true);
+                Bitmap final_image = Get_Control_Original2_Image(control, false, vvvfData, true);
                 Add_Image_Frames(final_image, 60, vr);
 
                 final_image.Dispose();

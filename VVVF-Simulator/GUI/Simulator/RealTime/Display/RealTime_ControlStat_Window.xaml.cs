@@ -79,7 +79,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             });
         }
 
-        private Pre_Voltage_Data pre_Voltage_Data = new Pre_Voltage_Data(false, 0);
+
         private void update_control_stat()
         {
             Bitmap image;
@@ -99,7 +99,6 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
                     control,
                     true,
                     realTime_Parameter.sound_data,
-                    pre_Voltage_Data,
                     false
                 );
             }
