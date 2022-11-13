@@ -249,7 +249,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             Draw_Topic_Value(
                 g, new Point(1420, 10), new Size(480, 80),
                 new String_Content(topic_Font, "Freq", new Point(0, 5)),
-                new String_Content(value_Font, stopping ? "---.-" : String.Format("{0:F1}", Math.Round(solve_control.get_Video_Sine_Freq(),1)), new Point(0, 5)),
+                new String_Content(value_Font, stopping ? "---.-" : String.Format("{0:F1}", solve_control.get_Video_Sine_Freq()), new Point(0, 5)),
                 new String_Content(unit_font, "Hz", new Point(0, 9)),
                 200);
 
