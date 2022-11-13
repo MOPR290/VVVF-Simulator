@@ -161,7 +161,6 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                 };
                 PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(vvvf_control, cv, ysd);
                 wave_form = new Bitmap(Get_WaveForm_Image(vvvf_control, calculated_Values, 1520, 400, 80, 60, 2, 50));
-                
             });
 
             Task voltage_task = Task.Run(() =>

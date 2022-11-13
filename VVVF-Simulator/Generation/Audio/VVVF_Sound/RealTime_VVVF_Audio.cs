@@ -2,6 +2,7 @@
 using NAudio.Wave;
 using VVVF_Simulator.Yaml.VVVF_Sound;
 using static VVVF_Simulator.Generation.Audio.Generate_RealTime_Common;
+using static VVVF_Simulator.VVVF_Structs;
 
 namespace VVVF_Simulator.Generation.Audio.VVVF_Sound
 {
@@ -21,13 +22,22 @@ namespace VVVF_Simulator.Generation.Audio.VVVF_Sound
 
                 byte[] add = new byte[bufsize];
 
+                Control_Values cv = new()
+                {
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
+                    wave_stat = control.get_Control_Frequency()
+                };
+                PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, sound_data);
+
                 for (int i = 0; i < bufsize; i++)
                 {
                     control.add_Sine_Time(1.0 / 192000.0);
                     control.add_Saw_Time(1.0 / 192000.0);
                     control.Add_Generation_Current_Time(1.0 / 192000.0);
 
-                    byte sound_byte = Generate_VVVF_Audio.Get_VVVF_Sound(control, sound_data);
+                    byte sound_byte = Generate_VVVF_Audio.Get_VVVF_Sound(control, calculated_Values);
 
                     add[i] = sound_byte;
                 }

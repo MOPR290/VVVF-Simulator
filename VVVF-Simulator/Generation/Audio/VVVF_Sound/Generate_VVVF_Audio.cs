@@ -29,6 +29,11 @@ namespace VVVF_Simulator.Generation.Audio.VVVF_Sound
                 wave_stat = control.get_Control_Frequency()
             };
             PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, sound_data);
+             return Get_VVVF_Sound(control, calculated_Values);
+        }
+
+        public static byte Get_VVVF_Sound(VVVF_Values control, PWM_Calculate_Values calculated_Values)
+        {
             Wave_Values value = VVVF_Calculate.calculate_values(control, calculated_Values, 0);
 
             double pwm_value = value.U - value.V;
