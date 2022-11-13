@@ -66,7 +66,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
 
             }
 
-            double _b1 = 2.0 * control.get_Sine_Freq() * integral;
+            double _b1 = control.get_Sine_Freq() * integral;
             double b1 = Math.Abs(_b1 / 1.10265);
             return Math.Round(b1, 4);
         }
