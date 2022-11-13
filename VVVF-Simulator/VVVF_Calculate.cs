@@ -1,16 +1,12 @@
-﻿using static VVVF_Simulator.Generation.Generate_Common;
-using static VVVF_Simulator.VVVF_Values;
-using static VVVF_Simulator.My_Math;
+﻿using static VVVF_Simulator.My_Math;
 using System;
-using static VVVF_Simulator.VVVF_Calculate.Amplitude_Argument;
-using System.Threading.Tasks;
 using static VVVF_Simulator.VVVF_Structs;
 using static VVVF_Simulator.VVVF_Structs.Pulse_Mode;
 using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data;
 
 namespace VVVF_Simulator
 {
-	public class VVVF_Calculate
+    public class VVVF_Calculate
 	{
 		//
 		// Basic Calculation
@@ -31,7 +27,7 @@ namespace VVVF_Simulator
 
 		public static double Get_Sine(double x)
 		{
-			return My_Math.sin(x);
+			return sin(x);
 		}
 
 		public static double Get_Square(double x)
@@ -850,21 +846,21 @@ namespace VVVF_Simulator
 			public double Ub;
 			public double Uc;
 
-			public static Vabc operator +(Vabc a, double d) => new Vabc()
+			public static Vabc operator +(Vabc a, double d) => new()
 			{
 				Ua = a.Ua + d,
 				Ub = a.Ub + d,
 				Uc = a.Uc + d
 			};
 
-			public static Vabc operator *(Vabc a, double d) => new Vabc()
+			public static Vabc operator *(Vabc a, double d) => new()
             {
 				Ua = a.Ua * d,
 				Ub = a.Ub * d,
 				Uc = a.Uc * d
 			};
 
-			public static Vabc operator -(Vabc a) => new Vabc()
+			public static Vabc operator -(Vabc a) => new()
             {
 				Ua = -a.Ua,
 				Ub = -a.Ub,
@@ -889,19 +885,19 @@ namespace VVVF_Simulator
 			int A = U.Ubeta > 0.0 ? 0 : 1;
 			int B = U.Ubeta - SQRT3 * U.Ualpha > 0.0 ? 0 : 1;
 			int C = U.Ubeta + SQRT3 * U.Ualpha > 0.0 ? 0 : 1;
-			switch (4 * A + 2 * B + C)
-			{
-				case 0: return 2;
-				case 1: return 3;
-				case 2: return 1;
-				case 3: return 0;
-				case 4: return 0;
-				case 5: return 4;
-				case 6: return 6;
-				case 7: return 5;
-				default: return 2;
-			}
-		}
+            return (4 * A + 2 * B + C) switch
+            {
+                0 => 2,
+                1 => 3,
+                2 => 1,
+                3 => 0,
+                4 => 0,
+                5 => 4,
+                6 => 6,
+                7 => 5,
+                _ => 2,
+            };
+        }
 		Function_time getfunctiontime(Valbe Vin, int sector)
 		{
 			Function_time ft = new();

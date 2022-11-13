@@ -87,12 +87,20 @@ namespace VVVF_Simulator
         // Util for sine angle freq
         public double get_Sine_Freq() { return sin_angle_freq * M_1_2PI; }
 
+
+        /// <summary>
+        /// Never ever make value to negative! It would go dumb.
+        /// </summary>
+        /// <param name="t">Sine Time</param>
         public void set_Sine_Time(double t) { sin_time = t; }
         public double get_Sine_Time() { return sin_time; }
         public void add_Sine_Time(double t) { sin_time += t; }
         public void multi_Sine_Time(double x) { sin_time *= x; }
 
-        
+        /// <summary>
+        /// Never ever make value to negative! It would go dumb.
+        /// </summary>
+        /// <param name="t">Saw Time</param>
         public void set_Saw_Angle_Freq(double f) { saw_angle_freq = f; }
         public double get_Saw_Angle_Freq() { return saw_angle_freq; }
         public void add_Saw_Angle_Freq(double f) { saw_angle_freq += f; }

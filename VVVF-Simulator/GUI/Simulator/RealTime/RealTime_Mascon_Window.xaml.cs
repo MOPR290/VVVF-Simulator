@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using VVVF_Simulator.Generation.Video.Control_Info;
 using VVVF_Simulator.GUI.Simulator.RealTime.Setting_Window;
-using VVVF_Simulator.Yaml.VVVF_Sound;
 using static VVVF_Simulator.Generation.Audio.Generate_RealTime_Common;
 using static VVVF_Simulator.VVVF_Calculate;
 using static VVVF_Simulator.VVVF_Structs;
@@ -52,7 +46,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime
                 {
                     VVVF_Values solve_control = realTime_Parameter.control_values.Clone();
                     solve_control.set_Allowed_Random_Freq_Move(false);
-                    double voltage = Generation.Video.Control_Info.Generate_Control_Common.Get_Voltage_Rate(realTime_Parameter.sound_data, solve_control, false) * 100;
+                    double voltage = Generate_Control_Common.Get_Voltage_Rate(realTime_Parameter.sound_data, solve_control, false) * 100;
                     view_model.voltage = voltage;
                 }
             });
@@ -276,14 +270,15 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime
                 if (serialPort.IsOpen) serialPort.Close();
                 try
                 {
-                    serialPort = new SerialPort(current_port);
-
-                    serialPort.BaudRate = 9600;
-                    serialPort.Parity = Parity.None;
-                    serialPort.StopBits = StopBits.One;
-                    serialPort.DataBits = 8;
-                    serialPort.Handshake = Handshake.None;
-                    serialPort.DtrEnable = true;
+                    serialPort = new SerialPort(current_port)
+                    {
+                        BaudRate = 9600,
+                        Parity = Parity.None,
+                        StopBits = StopBits.One,
+                        DataBits = 8,
+                        Handshake = Handshake.None,
+                        DtrEnable = true
+                    };
 
                     serialPort.DataReceived += new SerialDataReceivedEventHandler(OnReceived);
 
@@ -347,7 +342,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
-            Object tag = menuItem.Tag;
+            object tag = menuItem.Tag;
 
             if (tag.Equals("DeviceSetting"))
             {
