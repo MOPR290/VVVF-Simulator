@@ -140,7 +140,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             Bitmap hexagon = new(400,400), wave_form = new(1520,400);
             Task hexagon_task = Task.Run(() =>
             {
-                VVVF_Values hexagon_control = control_original.Clone();
+                VVVF_Values hexagon_control = solve_control.Clone();
                 hexagon_control.set_Allowed_Random_Freq_Move(false);
                 hexagon_control.set_Sine_Time(0);
                 hexagon_control.set_Saw_Time(0);
@@ -148,7 +148,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             });
 
             Task waveform_task = Task.Run(() => {
-                VVVF_Values vvvf_control = control_original.Clone();
+                VVVF_Values vvvf_control = solve_control.Clone();
                 vvvf_control.set_Allowed_Random_Freq_Move(false);
                 vvvf_control.set_Sine_Time(0);
                 vvvf_control.set_Saw_Time(0);
@@ -166,7 +166,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
 
             Task voltage_task = Task.Run(() =>
             {
-                VVVF_Values clone_control = control_original.Clone();
+                VVVF_Values clone_control = solve_control.Clone();
                 clone_control.set_Allowed_Random_Freq_Move(false);
                 clone_control.set_Sine_Time(0);
                 clone_control.set_Saw_Time(0);

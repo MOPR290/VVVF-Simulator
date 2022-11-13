@@ -13,6 +13,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using VVVF_Simulator.GUI.Simulator.RealTime.Setting_Window;
+using VVVF_Simulator.Yaml.VVVF_Sound;
 using static VVVF_Simulator.Generation.Audio.Generate_RealTime_Common;
 using static VVVF_Simulator.VVVF_Calculate;
 using static VVVF_Simulator.VVVF_Structs;
@@ -50,9 +51,21 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime
                 double pre_voltage = 0.0;
                 while (!realTime_Parameter.quit)
                 {
-                    VVVF_Values control = realTime_Parameter.control_values.Clone();
-                    control.set_Allowed_Random_Freq_Move(false);
-                    double voltage = Generation.Video.Control_Info.Generate_Control_Common.Get_Voltage_Rate(realTime_Parameter.sound_data, control, false) * 100;
+                    VVVF_Values solve_control = realTime_Parameter.control_values.Clone();
+                    solve_control.set_Allowed_Random_Freq_Move(false);
+                    solve_control.set_Sine_Time(0);
+                    solve_control.set_Saw_Time(0);
+                    Control_Values cv = new()
+                    {
+                        brake = solve_control.is_Braking(),
+                        mascon_on = !solve_control.is_Mascon_Off(),
+                        free_run = solve_control.is_Free_Running(),
+                        wave_stat = solve_control.get_Control_Frequency()
+                    };
+                    PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(solve_control, cv, realTime_Parameter.sound_data); ;
+                    calculate_values(solve_control, calculated_Values, 0);
+
+                    double voltage = Generation.Video.Control_Info.Generate_Control_Common.Get_Voltage_Rate(realTime_Parameter.sound_data, solve_control, false) * 100;
                     double avg_voltage = Math.Round((pre_voltage + voltage) / 2.0, 2);
                     view_model.voltage = avg_voltage;
                     pre_voltage = voltage;
