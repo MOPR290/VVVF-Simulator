@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using static VVVF_Simulator.VVVF_Calculate;
-using static VVVF_Simulator.VVVF_Values;
 using static VVVF_Simulator.Generation.Generate_Common;
 using static VVVF_Simulator.My_Math;
 using VVVF_Simulator.Yaml.VVVF_Sound;
@@ -12,7 +11,6 @@ using System.Collections.Generic;
 using Point = System.Drawing.Point;
 using static VVVF_Simulator.VVVF_Structs;
 using static VVVF_Simulator.Yaml.Mascon_Control.Yaml_Mascon_Analyze;
-using static VVVF_Simulator.MainWindow;
 using static VVVF_Simulator.Generation.Generate_Common.GenerationBasicParameter;
 
 namespace VVVF_Simulator.Generation.Video.Hexagon
@@ -22,44 +20,48 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
 
 
         public static Bitmap Get_Hexagon_Original_Image(
-            VVVF_Values control,
-            Yaml_VVVF_Sound_Data sound_data,
-            int image_width,
-            int image_height, 
-            int hex_div_seed,
-            int line_width,
-            bool draw_zero_vector_circle,
-            bool precise
+            VVVF_Values Control,
+            Yaml_VVVF_Sound_Data Sound,
+            int Width,
+            int Height, 
+            int Delta,
+            int Thickness,
+            bool ZeroVectorCircle,
+            bool PreciseDelta
         )
         {
+            Wave_Values[] PWM_Array = Get_UWV_Cycle(Control, Sound, Delta, PreciseDelta);
 
-            if(control.get_Control_Frequency() == 0)
+            if (Control.get_Control_Frequency() == 0)
+                return Get_Hexagon_Original_Image(ref PWM_Array, 0, Width, Height, Thickness, ZeroVectorCircle);
+
+            Bitmap image = Get_Hexagon_Original_Image(ref PWM_Array, Control.get_Control_Frequency(), Width, Height, Thickness, ZeroVectorCircle);
+            return image;
+        }
+
+        public static Bitmap Get_Hexagon_Original_Image(
+            ref Wave_Values[] UVW,
+            double ControlFrequency,
+            int Width,
+            int Height,
+            int Thickness,
+            bool ZeroVectorCircle
+        )
+        {
+            if (ControlFrequency == 0)
             {
-                Bitmap empty_image = new(image_width, image_height);
+                Bitmap empty_image = new(Width, Height);
                 Graphics empty_g = Graphics.FromImage(empty_image);
-                empty_g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                empty_g.FillRectangle(new SolidBrush(Color.White), 0, 0, Width, Height);
                 empty_g.Dispose();
                 return empty_image;
             }
 
-            Control_Values cv = new()
-            {
-                brake = control.is_Braking(),
-                mascon_on = !control.is_Mascon_Off(),
-                free_run = control.is_Free_Running(),
-                wave_stat = control.get_Control_Frequency()
-            };
-            PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, sound_data);
-
-            double hex_div_amp = (control.get_Sine_Freq() > 0 && control.get_Sine_Freq() < 1) ? 1.0 / control.get_Sine_Freq() : 1;
-            int fix_hex_div_seed = precise ? (int)Math.Round(hex_div_seed * hex_div_amp) : hex_div_seed;
-            int hex_div = fix_hex_div_seed * 6;
-
-            Bitmap hexagon_image = new(image_width, image_height);
+            Bitmap hexagon_image = new(Width, Height);
             Graphics hexagon_g = Graphics.FromImage(hexagon_image);
 
             Boolean drawn_circle = false;
-            Bitmap zero_circle_image = new(image_width, image_height);
+            Bitmap zero_circle_image = new(Width, Height);
             Graphics zero_circle_g = Graphics.FromImage(zero_circle_image);
 
             double[] hexagon_coordinate = new double[] { 100, 500 };
@@ -69,33 +71,28 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
             List<int> points_y = new() { 500 };
             Wave_Values pre_wave_Values = new();
 
-            for (int i = 0; i < hex_div; i++)
+            for (int i = 0; i < UVW.Length; i++)
             {
-
-                control.add_Sine_Time(1.0 / hex_div * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
-                control.add_Saw_Time(1.0 / hex_div * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
-
-                Wave_Values value = calculate_values(control, calculated_Values, 0);
-
+                Wave_Values value = UVW[i];
                 double move_x = -0.5 * value.W - 0.5 * value.V + value.U;
                 double move_y = -0.866025403784438646763 * value.W + 0.866025403784438646763 * value.V;
 
-                double int_move_x = 200 * move_x / fix_hex_div_seed;
-                double int_move_y = 200 * move_y / fix_hex_div_seed;
+                double int_move_x = 1200 * move_x / (UVW.Length - 1);
+                double int_move_y = 1200 * move_y / (UVW.Length - 1);
 
-                if(!pre_wave_Values.Equals(value))
+                if (!pre_wave_Values.Equals(value))
                 {
                     points_x.Add((int)Math.Round(hexagon_coordinate[0] + int_move_x));
                     points_y.Add((int)Math.Round(hexagon_coordinate[1] + int_move_y));
                     pre_wave_Values = value.Clone();
                 }
 
-                if (move_x == 0 && move_y == 0 && draw_zero_vector_circle)
+                if (move_x == 0 && move_y == 0 && ZeroVectorCircle)
                 {
                     if (!drawn_circle)
                     {
                         drawn_circle = true;
-                        double radius = 5 * ((control.get_Control_Frequency() > 40) ? 1 : (control.get_Control_Frequency() / 40.0));
+                        double radius = 15 * ((ControlFrequency > 40) ? 1 : (ControlFrequency / 40.0));
                         zero_circle_g.FillEllipse(new SolidBrush(Color.White),
                             (int)Math.Round(hexagon_coordinate[0] - radius),
                             (int)Math.Round(hexagon_coordinate[1] - radius),
@@ -122,21 +119,21 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
 
             }
 
-            if(control.get_Control_Frequency() != 0)
+            if (ControlFrequency != 0)
             {
                 for (int i = 0; i < points_x.Count - 1; i++)
                 {
                     Point start = new(points_x[i], points_y[i]);
                     Point end = new(points_x[i + 1], points_y[i + 1]);
-                    hexagon_g.DrawLine(new Pen(Color.Black, line_width), start, end);
+                    hexagon_g.DrawLine(new Pen(Color.Black, Thickness), start, end);
                 }
             }
 
-            Bitmap final_image = new(image_width, image_height);
+            Bitmap final_image = new(Width, Height);
             Graphics final_g = Graphics.FromImage(final_image);
-            final_g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+            final_g.FillRectangle(new SolidBrush(Color.White), 0, 0, Width, Height);
 
-            double moved_x = (image_width - x_min_max[1] - x_min_max[0]) / 2.0;
+            double moved_x = (Width - x_min_max[1] - x_min_max[0]) / 2.0;
             final_g.DrawImage(hexagon_image, (int)Math.Round(moved_x), 0);
             final_g.DrawImage(zero_circle_image, (int)Math.Round(moved_x), 0);
 

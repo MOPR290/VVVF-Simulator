@@ -97,7 +97,6 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
                 VVVF_Values control = realTime_Parameter.control_values.Clone();
                 image = Generation.Video.Control_Info.Generate_Control_Original2.Get_Control_Original2_Image(
                     control,
-                    true,
                     realTime_Parameter.sound_data,
                     false
                 );

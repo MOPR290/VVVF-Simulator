@@ -110,7 +110,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             }
         }
 
-        public static Bitmap Get_Control_Original2_Image(VVVF_Values control_original, bool clone, Yaml_VVVF_Sound_Data ysd, bool precise_voltage)
+        public static Bitmap Get_Control_Original2_Image(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, bool precise_voltage)
         {
             int image_width = 1920;
             int image_height = 500;
@@ -119,34 +119,21 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             Graphics g = Graphics.FromImage(image);
             double voltage = 0;
 
-            VVVF_Values solve_control = clone ? control_original.Clone() : control_original;
-            Task re_calculate = Task.Run(() =>
-            {
-                solve_control.set_Allowed_Random_Freq_Move(false);
-                solve_control.set_Sine_Time(0);
-                solve_control.set_Saw_Time(0);
-                Control_Values cv = new()
-                {
-                    brake = solve_control.is_Braking(),
-                    mascon_on = !solve_control.is_Mascon_Off(),
-                    free_run = solve_control.is_Free_Running(),
-                    wave_stat = solve_control.get_Control_Frequency()
-                };
-                PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(solve_control, cv, ysd);
-                calculate_values(solve_control, calculated_Values, 0);
-            });
             Bitmap hexagon = new(400,400), wave_form = new(1520,400);
-            Task hexagon_task = Task.Run(() =>
-            {
-                VVVF_Values hexagon_control = control_original.Clone();
-                hexagon_control.set_Allowed_Random_Freq_Move(false);
-                hexagon_control.set_Sine_Time(0);
-                hexagon_control.set_Saw_Time(0);
-                hexagon = new(Get_Hexagon_Original_Image(hexagon_control, ysd, 1000, 1000, 10000, 2, true, precise_voltage), 400, 400);
-            });
+            VVVF_Values CycleControl = Control.Clone();
+            Wave_Values[] CycleUVW = Array.Empty<Wave_Values>();
 
-            Task waveform_task = Task.Run(() => {
-                VVVF_Values vvvf_control = control_original.Clone();
+            Task CycleCalcTask = Task.Run(() =>
+            {
+                // CALCULATE ONE CYCLE OF PWM
+                CycleControl.set_Allowed_Random_Freq_Move(false);
+                CycleControl.set_Sine_Time(0);
+                CycleControl.set_Saw_Time(0);
+                CycleUVW = Get_UWV_Cycle(Control, Sound, 20000, precise_voltage);
+            });
+            
+            Task WaveFormTask = Task.Run(() => {
+                VVVF_Values vvvf_control = Control.Clone();
                 vvvf_control.set_Allowed_Random_Freq_Move(false);
                 vvvf_control.set_Sine_Time(0);
                 vvvf_control.set_Saw_Time(0);
@@ -157,30 +144,27 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                     free_run = vvvf_control.is_Free_Running(),
                     wave_stat = vvvf_control.get_Control_Frequency()
                 };
-                PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(vvvf_control, cv, ysd);
+                PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(vvvf_control, cv, Sound);
                 wave_form = new Bitmap(Get_WaveForm_Image(vvvf_control, calculated_Values, 1520, 400, 80, 60, 2, 50));
             });
-
-            Task voltage_task = Task.Run(() =>
+            CycleCalcTask.Wait();
+            Task HexagonRenderTask = Task.Run(() =>
             {
-                VVVF_Values clone_control = control_original.Clone();
-                clone_control.set_Allowed_Random_Freq_Move(false);
-                voltage = Get_Voltage_Rate(ysd, clone_control, precise_voltage) * 100;
+                hexagon = new(Get_Hexagon_Original_Image(ref CycleUVW, CycleControl.get_Control_Frequency(), 1000, 1000, 2, true), 400, 400);
             });
-            if (!clone) re_calculate.Wait();
-
-
-
-            hexagon_task.Wait();
+            Task VoltageCalcTask = Task.Run(() =>
+            {
+                voltage = Get_Voltage_Rate(ref CycleUVW, CycleControl.get_Sine_Freq()) * 100;
+            });
+            HexagonRenderTask.Wait();
+            VoltageCalcTask.Wait();
+            WaveFormTask.Wait();
+            g.DrawImage(wave_form, 400, 100);
             g.DrawImage(hexagon, 0, 100);
-            waveform_task.Wait();
-            g.DrawImage(wave_form,400, 100);
-
-            if(clone) re_calculate.Wait();
 
             Color stat_color, back_color, stat_str_color;
             String stat_str;
-            bool stopping = solve_control.get_Sine_Angle_Freq() == 0;
+            bool stopping = CycleControl.get_Sine_Angle_Freq() == 0;
             if (stopping)
             {
                 stat_str_color = Color.White;
@@ -189,7 +173,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                 back_color = Color.FromArgb(0x81, 0x7F, 0x82);
                 stat_str = "Stop";
             }
-            else if (solve_control.is_Free_Running())
+            else if (CycleControl.is_Free_Running())
             {
                 stat_str_color = Color.White;
                 stat_color = Color.FromArgb(0x36, 0xd0, 0x36);
@@ -197,7 +181,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                 back_color = Color.FromArgb(0x81, 0x7F, 0x82);
                 stat_str = "Cruise";
             }
-            else if (!solve_control.is_Braking())
+            else if (!CycleControl.is_Braking())
             {
                 stat_str_color = Color.White;
                 stat_color = Color.FromArgb(0x43,0x92, 0xF1);
@@ -228,16 +212,14 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             // pulse state
 
 
-            bool is_async = solve_control.get_Video_Pulse_Mode().pulse_name.Equals(Pulse_Mode_Names.Async);
+            bool is_async = CycleControl.get_Video_Pulse_Mode().pulse_name.Equals(Pulse_Mode_Names.Async);
             Draw_Topic_Value(
                 g, new Point(420, 10), new Size(480, 80),
                 new String_Content(topic_Font, "Pulse", new Point(0, 5)),
-                new String_Content(value_Font, stopping ? "-----" : get_Pulse_Name(solve_control), new Point(0, 5)),
+                new String_Content(value_Font, stopping ? "-----" : get_Pulse_Name(CycleControl), new Point(0, 5)),
                 new String_Content(unit_font, is_async ? "Hz" : "", new Point(0, 9)),
                 200);
 
-
-            voltage_task.Wait();
             Draw_Topic_Value(
                 g, new Point(920, 10), new Size(480, 80),
                 new String_Content(topic_Font, "Voltage", new Point(0, 5)),
@@ -248,7 +230,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             Draw_Topic_Value(
                 g, new Point(1420, 10), new Size(480, 80),
                 new String_Content(topic_Font, "Freq", new Point(0, 5)),
-                new String_Content(value_Font, stopping ? "---.-" : String.Format("{0:F1}", solve_control.get_Video_Sine_Freq()), new Point(0, 5)),
+                new String_Content(value_Font, stopping ? "---.-" : String.Format("{0:F1}", CycleControl.get_Video_Sine_Freq()), new Point(0, 5)),
                 new String_Content(unit_font, "Hz", new Point(0, 9)),
                 200);
 
@@ -297,7 +279,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                 };
                 PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
                 _ = calculate_values(control, calculated_Values, 0);
-                Bitmap final_image = Get_Control_Original2_Image(control, false, vvvfData, true);
+                Bitmap final_image = Get_Control_Original2_Image(control, vvvfData, true);
 
                 Add_Image_Frames(final_image, 60, vr);
 
@@ -309,7 +291,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
 
             while (true)
             {
-                Bitmap final_image = Get_Control_Original2_Image(control, false, vvvfData, true);
+                Bitmap final_image = Get_Control_Original2_Image(control,  vvvfData, true);
 
                 MemoryStream ms = new();
                 final_image.Save(ms, ImageFormat.Png);
@@ -349,7 +331,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                 };
                 PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
                 _ = calculate_values(control, calculated_Values, 0);
-                Bitmap final_image = Get_Control_Original2_Image(control, false, vvvfData, true);
+                Bitmap final_image = Get_Control_Original2_Image(control, vvvfData, true);
                 Add_Image_Frames(final_image, 60, vr);
 
                 final_image.Dispose();

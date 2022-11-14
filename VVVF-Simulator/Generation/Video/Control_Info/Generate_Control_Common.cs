@@ -1,72 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VVVF_Simulator.Yaml.VVVF_Sound;
-using static VVVF_Simulator.VVVF_Structs;
 using static VVVF_Simulator.VVVF_Calculate;
-using System.Diagnostics;
+using static VVVF_Simulator.VVVF_Structs;
 
 namespace VVVF_Simulator.Generation.Video.Control_Info
 {
     public class Generate_Control_Common
     {
-
-        public class Pre_Voltage_Data
-        {
-            public bool enable;
-            public double value;
-            public Pre_Voltage_Data(bool b, double k)
-            {
-                enable = b;
-                value = k;
-            }
-        }
-    
+   
         /// <summary>
         /// Do clone about control!
         /// </summary>
-        /// <param name="sound_data"></param>
-        /// <param name="control"></param>
+        /// <param name="Sound"></param>
+        /// <param name="Control"></param>
         /// <returns></returns>
-        public static double Get_Voltage_Rate(Yaml_VVVF_Sound_Data sound_data, VVVF_Values control, bool precise)
+        public static double Get_Voltage_Rate(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, bool Precise)
         {
-            double _divSeed = (control.get_Sine_Freq() > 0 && control.get_Sine_Freq() < 1) ? 1 / control.get_Sine_Freq() : 1;
-            _divSeed = 20000 * (precise ? _divSeed : 1);
-            int divSeed = (int)Math.Round(6 * _divSeed);
 
-            double T = 1.0 / control.get_Sine_Freq();
+            Wave_Values[] PWM_Array = Generate_Common.Get_UWV_Cycle(Control, Sound, 20000, Precise);
+            double result = Get_Voltage_Rate(ref PWM_Array, Control.get_Sine_Freq());
 
-            control.set_Sine_Time(T / 2.0);
-            control.set_Saw_Time(T / 2.0);
+            return result;
+        }
 
-            Control_Values cv = new Control_Values
-            {
-                brake = control.is_Braking(),
-                mascon_on = !control.is_Mascon_Off(),
-                free_run = control.is_Free_Running(),
-                wave_stat = control.get_Control_Frequency()
-            };
-            if (cv.wave_stat == 0 || control.get_Sine_Freq() == 0) return 0;
-            PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, sound_data);
-
+        public static double Get_Voltage_Rate(ref Wave_Values[] UVW, double SineFrequency)
+        {
             double integral = 0;
-            double dt = 1.0 / (divSeed * control.get_Sine_Freq());
-            for (int i = 0; i < divSeed; i++)
+            double dt = 1 / (SineFrequency * (UVW.Length-1));
+
+            for (int i = 0; i < UVW.Length; i++)
             {
-                control.add_Sine_Time(dt);
-                control.add_Saw_Time(dt);
-
-                Wave_Values value = calculate_values(control, calculated_Values, Math.PI / 6.0);
-                int pwm = value.U - value.V;
-                double sum = pwm * Get_Sine(control.get_Sine_Time() * control.get_Sine_Angle_Freq()) * dt;
+                double sum = (UVW[i].U - UVW[i].V) * Get_Sine(My_Math.M_2PI * i / (UVW.Length-1) - Math.PI / 6.0) * dt;
                 integral += sum;
-
             }
 
-            double _b1 = control.get_Sine_Freq() * integral;
+            double _b1 = SineFrequency * integral;
             double b1 = Math.Abs(_b1 / 1.10265);
             return Math.Round(b1, 4);
         }

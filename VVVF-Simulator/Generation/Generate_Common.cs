@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using VVVF_Simulator.Yaml.Mascon_Control;
 using VVVF_Simulator.Yaml.VVVF_Sound;
+using static VVVF_Simulator.VVVF_Structs;
 using static VVVF_Simulator.Yaml.Mascon_Control.Yaml_Mascon_Analyze;
 using Yaml_Mascon_Data = VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Mascon_Data;
 
@@ -81,6 +82,45 @@ namespace VVVF_Simulator.Generation
 
         }
 
+        /// <summary>
+        ///  Gets 1 cycle of UVW wave form.
+        ///  Division will be auto calculated.
+        /// </summary>
+        /// <param name="Control"></param>
+        /// <param name="Sound"></param>
+        /// <param name="Delta"> Normally, 20000 </param>
+        /// <param name="Precise"> More precise when Freq < 1 </param>
+        /// <returns></returns>
+        public static Wave_Values[] Get_UWV_Cycle(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, int Delta, bool Precise)
+        {
+            double _divSeed = (Control.get_Sine_Freq() > 0 && Control.get_Sine_Freq() < 1) ? 1 / Control.get_Sine_Freq() : 1;
+            _divSeed = Delta * (Precise ? _divSeed : 1);
+            int divSeed = (int)Math.Round(6 * _divSeed);
+
+            Control.set_Sine_Time(0);
+            Control.set_Saw_Time(0);
+
+            Control_Values cv = new Control_Values
+            {
+                brake = Control.is_Braking(),
+                mascon_on = !Control.is_Mascon_Off(),
+                free_run = Control.is_Free_Running(),
+                wave_stat = Control.get_Control_Frequency()
+            };
+            PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(Control, cv, Sound);
+
+            Wave_Values[] PWM_Array = new Wave_Values[divSeed + 1];
+            double dt = 1.0 / (divSeed * Control.get_Sine_Freq());
+            for (int i = 0; i <= divSeed; i++)
+            {
+                Control.add_Sine_Time(dt);
+                Control.add_Saw_Time(dt);
+                Wave_Values value = VVVF_Calculate.calculate_values(Control, calculated_Values, 0);
+                PWM_Array[i] = value;
+            }
+
+            return PWM_Array;
+        }
 
 
     }

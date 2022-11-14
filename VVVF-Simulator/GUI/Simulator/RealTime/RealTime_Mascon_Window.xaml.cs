@@ -52,7 +52,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime
                 {
                     VVVF_Values solve_control = realTime_Parameter.control_values.Clone();
                     solve_control.set_Allowed_Random_Freq_Move(false);
-                    double voltage = Generation.Video.Control_Info.Generate_Control_Common.Get_Voltage_Rate(realTime_Parameter.sound_data, solve_control, false) * 100;
+                    double voltage = Generation.Video.Control_Info.Generate_Control_Common.Get_Voltage_Rate(solve_control, realTime_Parameter.sound_data, false) * 100;
                     view_model.voltage = voltage;
                 }
             });
