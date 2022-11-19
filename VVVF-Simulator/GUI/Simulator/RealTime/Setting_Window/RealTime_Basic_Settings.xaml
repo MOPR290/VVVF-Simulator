@@ -27,7 +27,7 @@
                 <Label Content="Audio Buff Size" HorizontalAlignment="Center" VerticalAlignment="Top" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="22" Foreground="White" Margin="0,32,0,0"/>
                 <Label Content="Recommend : 40000" HorizontalAlignment="Center" VerticalAlignment="Top" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="18" Foreground="#FFFFCA8A" Margin="0,68,0,0"/>
             </Grid>
-            <TextBox x:Name="audio_buff_box" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="40000" VerticalAlignment="Center" Width="389" Height="48" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="audio_buff_box_TextChanged"/>
+            <TextBox x:Name="TextBuffSize" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="40000" VerticalAlignment="Center" Width="389" Height="48" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="AudioBuffSizeChanged"/>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -42,15 +42,15 @@
                     <ColumnDefinition Width="245*"/>
                     <ColumnDefinition Width="326*"/>
                 </Grid.ColumnDefinitions>
-                <CheckBox x:Name="show_control_stat" Tag="Control" Content="Show Control" HorizontalAlignment="Center" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" Checked="box_Checked" Unchecked="box_Checked" Margin="0,0,0,0"/>
+                <CheckBox x:Name="BoxShowControl" Tag="Control" Content="Show Control" HorizontalAlignment="Center" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" Checked="BoxChecked" Unchecked="BoxChecked" Margin="0,0,0,0"/>
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
                     <Label Content="Design" HorizontalAlignment="Stretch" Margin="21,0,0,0" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="control_design_selector" VerticalAlignment="Center" SelectionChanged="selector_SelectionChanged" Tag="ControlDesign" Margin="119,0,10,0" HorizontalAlignment="Stretch"/>
-                    <CheckBox x:Name="control_precise" Content="Precise Calculation" Tag="ControlPrecise" Checked="box_Checked" Unchecked="box_Checked" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Height="30" Width="187" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                    <ComboBox x:Name="SelectorControlDesign" VerticalAlignment="Center" SelectionChanged="SelectorChanged" Tag="ControlDesign" Margin="119,0,10,0" HorizontalAlignment="Stretch"/>
+                    <CheckBox x:Name="BoxControlPrecise" Content="Precise Calculation" Tag="ControlPrecise" Checked="BoxChecked" Unchecked="BoxChecked" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Height="30" Width="187" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                 </Grid>
             </Grid>
 
@@ -69,15 +69,15 @@
                     <ColumnDefinition Width="245*"/>
                     <ColumnDefinition Width="326*"/>
                 </Grid.ColumnDefinitions>
-                <CheckBox x:Name="show_hexagon" Tag="Hexagon" Content="Show Hexagon" HorizontalAlignment="Center" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" Checked="box_Checked" Unchecked="box_Checked" Margin="0,0,0,0"/>
+                <CheckBox x:Name="BoxShowHexagon" Tag="Hexagon" Content="Show Hexagon" HorizontalAlignment="Center" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" Checked="BoxChecked" Unchecked="BoxChecked" Margin="0,0,0,0"/>
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
                     <Label Content="Design" HorizontalAlignment="Left" Margin="21,0,0,0" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="hexagon_design_selector" HorizontalAlignment="Stretch" VerticalAlignment="Center" SelectionChanged="selector_SelectionChanged" Tag="HexagonDesign" Margin="119,0,10,0"/>
-                    <CheckBox x:Name="show_hexagon_zero_vector_check" Content="Show zero vector" Tag="HexagonZero" Checked="box_Checked" Unchecked="box_Checked" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Height="30" Width="187" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                    <ComboBox x:Name="SelectorHexagonDesign" HorizontalAlignment="Stretch" VerticalAlignment="Center" SelectionChanged="SelectorChanged" Tag="HexagonDesign" Margin="119,0,10,0"/>
+                    <CheckBox x:Name="BoxShowZeroVectorCicle" Content="Show zero vector" Tag="HexagonZero" Checked="BoxChecked" Unchecked="BoxChecked" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Height="30" Width="187" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                 </Grid>
             </Grid>
 
@@ -100,9 +100,10 @@
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
-                <CheckBox x:Name="show_waveform_box" Tag="WaveForm" Content="Show WaveForm" HorizontalAlignment="Center" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" Checked="box_Checked" Unchecked="box_Checked" Grid.Column="0" Grid.RowSpan="1"/>
-                <CheckBox x:Name="realtime_edit_box" Tag="Edit" Content="RealTime Edit" HorizontalAlignment="Center" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" Checked="box_Checked" Unchecked="box_Checked" Grid.Column="1" Grid.RowSpan="1"/>
-                <CheckBox x:Name="show_fft_box" Tag="FFT" Content="Show FFT" HorizontalAlignment="Center" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" Checked="box_Checked" Unchecked="box_Checked" Grid.Row="1"/>
+                <CheckBox x:Name="BoxWaveForm" Tag="WaveForm" Content="Show WaveForm" HorizontalAlignment="Center" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" Checked="BoxChecked" Unchecked="BoxChecked" Grid.Column="0" Grid.RowSpan="1"/>
+                <CheckBox x:Name="BoxRealTimeEdit" Tag="Edit" Content="RealTime Edit" HorizontalAlignment="Center" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" Checked="BoxChecked" Unchecked="BoxChecked" Grid.Column="1" Grid.RowSpan="1"/>
+                <CheckBox x:Name="BoxFFT" Tag="FFT" Content="Show FFT" HorizontalAlignment="Center" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" Checked="BoxChecked" Unchecked="BoxChecked" Grid.Row="1"/>
+                <CheckBox x:Name="BoxFS" Tag="FS" Content="Show FS" HorizontalAlignment="Center" VerticalAlignment="Top" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" Checked="BoxChecked" Unchecked="BoxChecked" Grid.Column="1" Margin="0,2,0,0" Grid.Row="1"/>
             </Grid>
         </Grid>
 

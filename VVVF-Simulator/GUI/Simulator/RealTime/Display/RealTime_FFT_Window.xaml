@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         Title="FFT Window" Height="450" Width="800">
     <Grid x:Name="FFT_Image">
-        <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="{Binding hexagon}"/>
+        <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="{Binding Image}"/>
 
     </Grid>
 </Window>

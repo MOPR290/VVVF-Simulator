@@ -32,20 +32,20 @@ namespace VVVF_Simulator
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ViewData view_data = new();
+        private ViewData BindingData = new();
         public class ViewData : ViewModelBase
         {
-            private bool _blocking = false;
-            public bool blocking
+            private bool _Blocked = false;
+            public bool Blocked
             {
                 get
                 {
-                    return _blocking;
+                    return _Blocked;
                 }
                 set
                 {
-                    _blocking = value;
-                    RaisePropertyChanged(nameof(blocking));
+                    _Blocked = value;
+                    RaisePropertyChanged(nameof(Blocked));
                 }
             }
         };
@@ -54,13 +54,13 @@ namespace VVVF_Simulator
             public event PropertyChangedEventHandler? PropertyChanged;
             protected virtual void RaisePropertyChanged(string propertyName)
             {
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
         public MainWindow()
         {
-            DataContext = view_data;
+            DataContext = BindingData;
             InitializeComponent();
 
         }
@@ -319,12 +319,12 @@ namespace VVVF_Simulator
             String[] command = tag_str.Split("_");
 
 
-            view_data.blocking = true;
+            BindingData.Blocked = true;
 
             bool unblock = solve_Command(command);
 
             if (!unblock) return;
-            view_data.blocking = false;
+            BindingData.Blocked = false;
             SystemSounds.Beep.Play();
 
         }
@@ -419,51 +419,53 @@ namespace VVVF_Simulator
                     RealTime_Parameter parameter = new();
                     parameter.quit = false;
 
-                    view_data.blocking = true;
+                    BindingData.Blocked = true;
 
                     RealTime_Mascon_Window mascon = new(parameter);
                     mascon.Show();
                     mascon.Start_Task();
 
-                    RealTime_WaveForm_Window? wave_form = null;
-                    RealTime_ControlStat_Window? stat_window = null;
-                    RealTime_Hexagon_Window? hexagon_window = null;
-                    RealTime_FFT_Window? fft_window = null;
-
                     if (Properties.Settings.Default.RealTime_VVVF_WaveForm_Show)
                     {
-                        wave_form = new(parameter);
-                        wave_form.Show();
-                        wave_form.Start_Task();
+                        RealTime_WaveForm_Window window = new(parameter);
+                        window.Show();
+                        window.RunTask();
                     }
 
                     if (Properties.Settings.Default.RealTime_VVVF_Control_Show)
                     {
-                        stat_window = new(
+                        RealTime_ControlStat_Window window = new(
                             parameter,
                             (RealTime_ControlStat_Style)Properties.Settings.Default.RealTime_VVVF_Control_Style,
                             Properties.Settings.Default.RealTime_VVVF_Control_Precise
                         );
-                        stat_window.Show();
-                        stat_window.StartTask();
+                        window.Show();
+                        window.RunTask();
                     }
 
                     if (Properties.Settings.Default.RealTime_VVVF_Hexagon_Show)
                     {
-                        hexagon_window = new(
+                        RealTime_Hexagon_Window window = new(
                             parameter,
                             (RealTime_Hexagon_Style)Properties.Settings.Default.RealTime_VVVF_Hexagon_Style,
                             Properties.Settings.Default.RealTime_VVVF_Hexagon_ZeroVector
                         );
-                        hexagon_window.Show();
-                        hexagon_window.Start_Task();
+                        window.Show();
+                        window.RunTask();
                     }
 
                     if (Properties.Settings.Default.RealTime_VVVF_FFT_Show)
                     {
-                        fft_window = new RealTime_FFT_Window(parameter);
-                        fft_window.Show();
-                        fft_window.Start_Task();
+                        RealTime_FFT_Window window = new(parameter);
+                        window.Show();
+                        window.RunTask();
+                    }
+
+                    if (Properties.Settings.Default.RealTime_VVVF_FS_Show)
+                    {
+                        RealTime_FS_Window window = new(parameter);
+                        window.Show();
+                        window.RunTask();
                     }
 
                     Task task = Task.Run(() => {
@@ -482,7 +484,7 @@ namespace VVVF_Simulator
                             MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
 
-                        view_data.blocking = false;
+                        BindingData.Blocked = false;
                         SystemSounds.Beep.Play();
                     });
                     return Properties.Settings.Default.RealTime_VVVF_EditAllow;
@@ -530,49 +532,51 @@ namespace VVVF_Simulator
                     mascon.Show();
                     mascon.Start_Task();
 
-                    RealTime_WaveForm_Window? wave_form = null;
-                    RealTime_ControlStat_Window? stat_window = null;
-                    RealTime_Hexagon_Window? hexagon_window = null;
-                    RealTime_FFT_Window? fft_window = null;
-
                     if (Properties.Settings.Default.RealTime_Train_WaveForm_Show)
                     {
-                        wave_form = new(parameter);
-                        wave_form.Show();
-                        wave_form.Start_Task();
+                        RealTime_WaveForm_Window window = new(parameter);
+                        window.Show();
+                        window.RunTask();
                     }
 
                     if (Properties.Settings.Default.RealTime_Train_Control_Show)
                     {
-                        stat_window = new(
+                        RealTime_ControlStat_Window window = new(
                             parameter,
                             (RealTime_ControlStat_Style)Properties.Settings.Default.RealTime_Train_Control_Style,
                             Properties.Settings.Default.RealTime_Train_Control_Precise
                         );
-                        stat_window.Show();
-                        stat_window.StartTask();
+                        window.Show();
+                        window.RunTask();
                     }
 
                     if (Properties.Settings.Default.RealTime_Train_Hexagon_Show)
                     {
-                        hexagon_window = new(
+                        RealTime_Hexagon_Window window = new(
                             parameter,
                             (RealTime_Hexagon_Style)Properties.Settings.Default.RealTime_Train_Hexagon_Style,
                             Properties.Settings.Default.RealTime_Train_Hexagon_ZeroVector
                         );
-                        hexagon_window.Show();
-                        hexagon_window.Start_Task();
+                        window.Show();
+                        window.RunTask();
                     }
 
                     if (Properties.Settings.Default.RealTime_Train_FFT_Show)
                     {
-                        fft_window = new RealTime_FFT_Window(parameter);
-                        fft_window.Show();
-                        fft_window.Start_Task();
+                        RealTime_FFT_Window window = new(parameter);
+                        window.Show();
+                        window.RunTask();
                     }
-                    
 
-                    view_data.blocking = true;
+                    if (Properties.Settings.Default.RealTime_Train_FS_Show)
+                    {
+                        RealTime_FS_Window window = new(parameter);
+                        window.Show();
+                        window.RunTask();
+                    }
+
+
+                    BindingData.Blocked = true;
                     Task task = Task.Run(() => {
                         try
                         {
@@ -588,7 +592,7 @@ namespace VVVF_Simulator
                         {
                             MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
-                        view_data.blocking = false;
+                        BindingData.Blocked = false;
                         SystemSounds.Beep.Play();
                     });
                     return Properties.Settings.Default.RealTime_Train_EditAllow;
@@ -823,18 +827,18 @@ namespace VVVF_Simulator
 
             if (tag_str.Equals("AccelPattern"))
             {
-                view_data.blocking = true;
+                BindingData.Blocked = true;
                 Mascon_Control_Main gmcw = new();
                 gmcw.ShowDialog();
-                view_data.blocking = false;
+                BindingData.Blocked = false;
             }
             else if (tag_str.Equals("TrainSoundSetting"))
             {
-                view_data.blocking = true;
+                BindingData.Blocked = true;
                 Yaml_TrainSound_Data _TrainSound_Data = Yaml_TrainSound_Data_Manage.current_data;
                 TrainAudio_Setting_Main tahw = new(_TrainSound_Data);
                 tahw.ShowDialog();
-                view_data.blocking = false;
+                BindingData.Blocked = false;
             }
             
         }
@@ -849,7 +853,7 @@ namespace VVVF_Simulator
 
             if (tag_str.Equals("AutoVoltage"))
             {
-                view_data.blocking = true;
+                BindingData.Blocked = true;
                 Task.Run(() =>
                 {
                     MessageBox.Show("The settings which is not using `Linear` will be skipped.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -857,20 +861,20 @@ namespace VVVF_Simulator
                     if(!result)
                         MessageBox.Show("Please check next things.\r\nAll of the amplitude mode are linear.\r\nAccel and Braking has more than 2 settings.\r\nFrom is grater or equal to 0", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    view_data.blocking = false;
+                    BindingData.Blocked = false;
                     SystemSounds.Beep.Play();
                 });
                 
             }else if (tag_str.Equals("FreeRunAmpZero"))
             {
-                view_data.blocking = true;
+                BindingData.Blocked = true;
                 Task.Run(() =>
                 {
                     bool result = Yaml_VVVF_Util.Set_All_FreeRunAmp_Zero(Yaml_VVVF_Manage.current_data);
                     if (!result)
                         MessageBox.Show("Something went wrong.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    view_data.blocking = false;
+                    BindingData.Blocked = false;
                     SystemSounds.Beep.Play();
                 });
             }

@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:VVVF_Simulator"
         mc:Ignorable="d"
         Title="VVVF Simulator" Height="500" Width="960" Closing="Window_Closing" WindowStartupLocation="CenterScreen">
     <Window.Resources>
@@ -221,6 +220,6 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
-        <Grid x:Name="Hider" Background="#7F000000" Visibility="{Binding blocking, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.RowSpan="2" d:IsHidden="True"/>
+        <Grid x:Name="Hider" Background="#7F000000" Visibility="{Binding Blocked, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.RowSpan="2" d:IsHidden="True"/>
     </Grid>
 </Window>

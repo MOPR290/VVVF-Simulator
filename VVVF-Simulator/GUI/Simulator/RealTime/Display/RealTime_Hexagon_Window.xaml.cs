@@ -26,96 +26,92 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
     /// </summary>
     public partial class RealTime_Hexagon_Window : Window
     {
-        private ViewModel view_model = new ViewModel();
-        public class ViewModel : ViewModelBase
+        private ViewModel BindingData = new();
+        private class ViewModel : ViewModelBase
         {
-
-            private int _height = 100;
-            public int height { get { return _height; } set { _height = value; RaisePropertyChanged(nameof(height)); } }
-
-            private int _width = 100;
-            public int width { get { return _width; } set { _width = value; RaisePropertyChanged(nameof(width)); } }
-
-            private BitmapFrame? _hexagon;
-            public BitmapFrame? hexagon { get { return _hexagon; } set { _hexagon = value; RaisePropertyChanged(nameof(hexagon)); } }
+            private BitmapFrame? _Image;
+            public BitmapFrame? Image { get { return _Image; } set { _Image = value; RaisePropertyChanged(nameof(Image)); } }
         };
-        public class ViewModelBase : INotifyPropertyChanged
+        private class ViewModelBase : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler? PropertyChanged;
             protected virtual void RaisePropertyChanged(string propertyName)
             {
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
 
-        private RealTime_Hexagon_Style style;
-        private RealTime_Parameter realTime_Parameter;
-        private bool show_zero_vector;
-        public RealTime_Hexagon_Window(RealTime_Parameter r,RealTime_Hexagon_Style style, bool show_zero_vector)
+        private RealTime_Hexagon_Style _Style;
+        private RealTime_Parameter _Parameter;
+        private bool _ZeroVectorCircle;
+        private bool Resized = false;
+        public RealTime_Hexagon_Window(RealTime_Parameter Parameter,RealTime_Hexagon_Style Style, bool ZeroVectorCircle)
         {
-            realTime_Parameter = r;
-
             InitializeComponent();
-
-            this.style = style;
-            this.show_zero_vector = show_zero_vector;
-
-            view_model.height = 500;
-            view_model.width = 500;
-
-            DataContext = view_model;
+            _Parameter = Parameter;
+            _Style = Style;
+            _ZeroVectorCircle = ZeroVectorCircle;
+            DataContext = BindingData;
         }
 
-        public void Start_Task()
+        public void RunTask()
         {
             Task.Run(() => {
-                while (!realTime_Parameter.quit)
+                while (!_Parameter.quit)
                 {
-                    update_control_stat();
+                    UpdateControl();
                 }
-                Dispatcher.Invoke((Action)(() =>
+                Dispatcher.Invoke(() =>
                 {
                     Close();
-                }));
+                });
             });
         }
 
-        private void update_control_stat()
+        private void UpdateControl()
         {
-            Bitmap image = new Bitmap(100,100);
+            Bitmap image = new(100,100);
 
-            VVVF_Values control = realTime_Parameter.control_values.Clone();
-            Yaml_VVVF_Sound_Data ysd = realTime_Parameter.sound_data;
+            VVVF_Values control = _Parameter.control_values.Clone();
+            Yaml_VVVF_Sound_Data ysd = _Parameter.sound_data;
 
             control.set_Sine_Time(0);
             control.set_Saw_Time(0);
 
-            if(style == RealTime_Hexagon_Style.Original)
+            if(_Style == RealTime_Hexagon_Style.Original)
             {
                 int image_width = 1000;
                 int image_height = 1000;
-                int hex_div_seed = 10000;
+                int hex_div = 60000;
                 control.set_Allowed_Random_Freq_Move(false);
                 image = Generation.Video.Hexagon.Generate_Hexagon_Original.Get_Hexagon_Original_Image(
                     control,
                     ysd, 
                     image_width, 
                     image_height,
-                    hex_div_seed, 
+                    hex_div, 
                     2,
-                    show_zero_vector,
+                    _ZeroVectorCircle,
                     false
                 );
             }
 
-            using (Stream st = new MemoryStream())
+            if (!Resized)
             {
-                image.Save(st, ImageFormat.Bmp);
-                st.Seek(0, SeekOrigin.Begin);
-                var data = BitmapFrame.Create(st, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-                view_model.hexagon = data;
+                Dispatcher.Invoke(() =>
+                {
+                    Height = image.Height / 2;
+                    Width = image.Width / 2;
+                });
+                Resized = true;
             }
+
+            using Stream st = new MemoryStream();
+            image.Save(st, ImageFormat.Bmp);
+            st.Seek(0, SeekOrigin.Begin);
+            var data = BitmapFrame.Create(st, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+            BindingData.Image = data;
         }
     }
 

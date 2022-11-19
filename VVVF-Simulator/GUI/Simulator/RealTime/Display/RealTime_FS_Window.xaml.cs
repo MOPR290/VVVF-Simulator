@@ -23,7 +23,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
     /// <summary>
     /// RealTime_FFT_Window.xaml の相互作用ロジック
     /// </summary>
-    public partial class RealTime_FFT_Window : Window
+    public partial class RealTime_FS_Window : Window
     {
         private ViewModel BindingData = new ViewModel();
         public class ViewModel : ViewModelBase
@@ -37,12 +37,12 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             public event PropertyChangedEventHandler? PropertyChanged;
             protected virtual void RaisePropertyChanged(string propertyName)
             {
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
         RealTime_Parameter _Parameter;
-        public RealTime_FFT_Window(RealTime_Parameter Parameter)
+        public RealTime_FS_Window(RealTime_Parameter Parameter)
         {
             _Parameter = Parameter;
 
@@ -75,8 +75,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             control.set_Sine_Time(0);
             control.set_Saw_Time(0);
 
-            Bitmap image = Generation.Video.FFT.Generate_FFT.Get_FFT_Image(control,ysd);
-            //Bitmap image = Generation.Video.FS.Generate_FS.Get_FS_Image(control, ysd);
+            Bitmap image = Generation.Video.FS.Generate_FS.Get_FS_Image(control, ysd, 10000, 20);
 
             if (!Resized)
             {

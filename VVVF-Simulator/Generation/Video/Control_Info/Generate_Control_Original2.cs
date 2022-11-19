@@ -125,7 +125,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                 CycleControl.set_Allowed_Random_Freq_Move(false);
                 CycleControl.set_Sine_Time(0);
                 CycleControl.set_Saw_Time(0);
-                CycleUVW = Get_UWV_Cycle(CycleControl, Sound, 0, Precise ? 20000 : 1000, Precise);
+                CycleUVW = Get_UWV_Cycle(CycleControl, Sound, 0, Precise ? 120000 : 6000, Precise);
             });
             Task WaveFormTask = Task.Run(() => {
                 VVVF_Values WaveFormControl = Control.Clone();
@@ -148,7 +148,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             });
             Task VoltageCalcTask = Task.Run(() =>
             {
-                voltage = Get_Voltage_Rate(ref CycleUVW, CycleControl.get_Sine_Freq()) * 100;
+                voltage = FS.Generate_FS.Get_Fourier(ref CycleUVW, 1, My_Math.M_PI_6) * 100;
             });
             HexagonRenderTask.Wait();
             VoltageCalcTask.Wait();

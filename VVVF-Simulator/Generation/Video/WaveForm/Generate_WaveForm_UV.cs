@@ -52,6 +52,7 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
             points_y.Add(0);
 
             int pre_pwm = 0;
+
             for (int i = 0; i < (Width - Spacing * 2) * Delta; i++)
             {
                 Wave_Values value = calculate_values(Control, PWM_Data, Math.PI / 6.0);

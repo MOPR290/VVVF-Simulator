@@ -286,5 +286,29 @@ namespace VVVF_Simulator.Properties {
                 this["RealTime_VVVF_Control_Precise"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool RealTime_VVVF_FS_Show {
+            get {
+                return ((bool)(this["RealTime_VVVF_FS_Show"]));
+            }
+            set {
+                this["RealTime_VVVF_FS_Show"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool RealTime_Train_FS_Show {
+            get {
+                return ((bool)(this["RealTime_Train_FS_Show"]));
+            }
+            set {
+                this["RealTime_Train_FS_Show"] = value;
+            }
+        }
     }
 }

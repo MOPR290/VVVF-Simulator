@@ -27,12 +27,12 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
     public partial class RealTime_ControlStat_Window : Window
     {
         private ViewModel BindingData = new();
-        public class ViewModel : ViewModelBase
+        private class ViewModel : ViewModelBase
         {
-            private BitmapFrame? _control_stat;
-            public BitmapFrame? ControlImage { get { return _control_stat; } set { _control_stat = value; RaisePropertyChanged(nameof(ControlImage)); } }
+            private BitmapFrame? _ControlImage;
+            public BitmapFrame? ControlImage { get { return _ControlImage; } set { _ControlImage = value; RaisePropertyChanged(nameof(ControlImage)); } }
         };
-        public class ViewModelBase : INotifyPropertyChanged
+        private class ViewModelBase : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler? PropertyChanged;
             protected virtual void RaisePropertyChanged(string propertyName)
@@ -41,61 +41,60 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             }
         }
 
-        RealTime_ControlStat_Style ControlStyle;
-        RealTime_Parameter RealTimeParam;
-        bool ControlPrecise = false;
-        bool ControlSizeSet = false;
-        public RealTime_ControlStat_Window(RealTime_Parameter r,RealTime_ControlStat_Style style, bool ControlPrecise)
+        private RealTime_ControlStat_Style _Style;
+        private RealTime_Parameter _Paremter;
+        private bool _ControlPrecise = false;
+        private bool _ControlSizeSet = false;
+        public RealTime_ControlStat_Window(RealTime_Parameter Parameter,RealTime_ControlStat_Style Style, bool ControlPrecise)
         {
-            RealTimeParam = r;
-            this.ControlPrecise = ControlPrecise;
+            _Paremter = Parameter;
+            _ControlPrecise = ControlPrecise;
+            _Style = Style;
 
             DataContext = BindingData;
             InitializeComponent();
-            ControlStyle = style;
         }
 
-        public void StartTask()
+        public void RunTask()
         {
             Task.Run(() => {
-                while (!RealTimeParam.quit)
+                while (!_Paremter.quit)
                 {
-                    UpdateControlImage();
+                    UpdateControl();
 
                 }
-                Dispatcher.Invoke((Action)(() =>
+                Dispatcher.Invoke(() =>
                 {
                     Close();
-                }));
+                });
             });
         }
 
-
-        private void UpdateControlImage()
+        private void UpdateControl()
         {
             Bitmap image;
 
-            if(ControlStyle == RealTime_ControlStat_Style.Original)
+            if(_Style == RealTime_ControlStat_Style.Original)
             {
-                VVVF_Values control = RealTimeParam.control_values.Clone();
+                VVVF_Values control = _Paremter.control_values.Clone();
                 image = Generation.Video.Control_Info.Generate_Control_Original.Get_Control_Original_Image(
                     control,
-                    RealTimeParam.control_values.get_Sine_Freq() == 0
+                    _Paremter.control_values.get_Sine_Freq() == 0
                 );
             }
             else
             {
-                VVVF_Values control = RealTimeParam.control_values.Clone();
+                VVVF_Values control = _Paremter.control_values.Clone();
                 image = Generation.Video.Control_Info.Generate_Control_Original2.Get_Control_Original2_Image(
                     control,
-                    RealTimeParam.sound_data,
-                    ControlPrecise
+                    _Paremter.sound_data,
+                    _ControlPrecise
                 );
             }
 
-            if (!ControlSizeSet)
+            if (!_ControlSizeSet)
             {
-                ControlSizeSet = true;
+                _ControlSizeSet = true;
                 Dispatcher.Invoke(() =>
                 {
                     double DisplayRatio = SystemParameters.WorkArea.Width / SystemParameters.WorkArea.Height;

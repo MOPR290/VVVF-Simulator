@@ -167,7 +167,7 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
             int image_width = 1000;
             int image_height = 1000;
 
-            int hex_div_seed = 10000;
+            int hex_div = 60000;
 
             VideoWriter vr = new(fileName, OpenCvSharp.FourCC.H264, fps, new OpenCvSharp.Size(image_width, image_height));
 
@@ -210,7 +210,7 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
                 control.set_Sine_Time(0);
                 control.set_Saw_Time(0);
 
-                Bitmap final_image = Get_Hexagon_Original_Image(control, vvvfData, image_width, image_height, hex_div_seed, 2, draw_zero_vector_circle, true);
+                Bitmap final_image = Get_Hexagon_Original_Image(control, vvvfData, image_width, image_height, hex_div, 2, draw_zero_vector_circle, true);
 
 
                 MemoryStream ms = new();
@@ -280,8 +280,8 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
             int image_width = 1000;
             int image_height = 1000;
 
-            int hex_div_seed = 10000;
-            Bitmap final_image = Get_Hexagon_Original_Image(control, sound_data, image_width, image_height, hex_div_seed, 2, draw_zero_vector_circle, true);
+            int hex_div = 60000;
+            Bitmap final_image = Get_Hexagon_Original_Image(control, sound_data, image_width, image_height, hex_div, 2, draw_zero_vector_circle, true);
 
             MemoryStream ms = new();
             final_image.Save(ms, ImageFormat.Png);

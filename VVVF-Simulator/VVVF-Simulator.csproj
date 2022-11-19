@@ -133,4 +133,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Update="GUI\Simulator\RealTime\Display\RealTime_FS_Window.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+  </ItemGroup>
+
 </Project>

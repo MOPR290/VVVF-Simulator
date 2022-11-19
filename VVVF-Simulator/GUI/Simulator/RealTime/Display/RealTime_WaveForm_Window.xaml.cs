@@ -1,23 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using VVVF_Simulator.Yaml.VVVF_Sound;
 using static VVVF_Simulator.Generation.Audio.Generate_RealTime_Common;
-using static VVVF_Simulator.VVVF_Calculate;
 using static VVVF_Simulator.VVVF_Structs;
 
 namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
@@ -27,13 +17,13 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
     /// </summary>
     public partial class RealTime_WaveForm_Window : Window
     {
-        private ViewModel view_model = new ViewModel();
-        public class ViewModel : ViewModelBase
+        private ViewModel BindingData = new();
+        private class ViewModel : ViewModelBase
         {
-            private BitmapFrame? _waveform;
-            public BitmapFrame? waveform { get { return _waveform; } set { _waveform = value; RaisePropertyChanged(nameof(waveform)); } }
+            private BitmapFrame? _Image;
+            public BitmapFrame? Image { get { return _Image; } set { _Image = value; RaisePropertyChanged(nameof(Image)); } }
         };
-        public class ViewModelBase : INotifyPropertyChanged
+        private class ViewModelBase : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler? PropertyChanged;
             protected virtual void RaisePropertyChanged(string propertyName)
@@ -42,21 +32,20 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             }
         }
 
-        RealTime_Parameter realTime_Parameter;
-        public RealTime_WaveForm_Window(RealTime_Parameter r)
+        private RealTime_Parameter _Parameter;
+        public RealTime_WaveForm_Window(RealTime_Parameter Parameter)
         {
-            realTime_Parameter = r;
-
-            DataContext = view_model;
+            _Parameter = Parameter;
+            DataContext = BindingData;
             InitializeComponent();
         }
 
-        public void Start_Task()
+        public void RunTask()
         {
             Task.Run(() => {
-                while (!realTime_Parameter.quit)
+                while (!_Parameter.quit)
                 {
-                    set_WaveForm();
+                    UpdateControl();
                     System.Threading.Thread.Sleep(16);
                 }
                 Dispatcher.Invoke((Action)(() =>
@@ -66,38 +55,36 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             });
         }
 
-        private void set_WaveForm()
+        private void UpdateControl()
         {
-            Yaml_VVVF_Sound_Data sound_data = realTime_Parameter.sound_data;
-            VVVF_Values control = realTime_Parameter.control_values.Clone();
+            Yaml_VVVF_Sound_Data Sound = _Parameter.sound_data;
+            VVVF_Values Control = _Parameter.control_values.Clone();
 
-            control.set_Saw_Time(0);
-            control.set_Sine_Time(0);
+            Control.set_Saw_Time(0);
+            Control.set_Sine_Time(0);
 
-            control.set_Allowed_Random_Freq_Move(false);
+            Control.set_Allowed_Random_Freq_Move(false);
 
             int image_width = 1200;
             int image_height = 450;
             int calculate_div = 3;
             int wave_height = 100;
 
-            Control_Values cv = new Control_Values
+            Control_Values cv = new()
             {
-                brake = control.is_Braking(),
-                mascon_on = !control.is_Mascon_Off(),
-                free_run = control.is_Free_Running(),
-                wave_stat = control.get_Control_Frequency()
+                brake = Control.is_Braking(),
+                mascon_on = !Control.is_Mascon_Off(),
+                free_run = Control.is_Free_Running(),
+                wave_stat = Control.get_Control_Frequency()
             };
-            PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, sound_data);
-            Bitmap image = Generation.Video.WaveForm.Generate_WaveForm_UV.Get_WaveForm_Image(control, calculated_Values, image_width, image_height, wave_height, 2, calculate_div,0);
+            PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(Control, cv, Sound);
+            Bitmap image = Generation.Video.WaveForm.Generate_WaveForm_UV.Get_WaveForm_Image(Control, calculated_Values, image_width, image_height, wave_height, 2, calculate_div,0);
 
-            using (Stream st = new MemoryStream())
-            {
-                image.Save(st, ImageFormat.Bmp);
-                st.Seek(0, SeekOrigin.Begin);
-                var data = BitmapFrame.Create(st, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-                view_model.waveform = data;
-            }
+            using Stream st = new MemoryStream();
+            image.Save(st, ImageFormat.Bmp);
+            st.Seek(0, SeekOrigin.Begin);
+            var data = BitmapFrame.Create(st, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+            BindingData.Image = data;
         }
     }
 }

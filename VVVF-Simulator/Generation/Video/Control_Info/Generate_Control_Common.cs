@@ -17,30 +17,11 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
         /// <returns></returns>
         public static double Get_Voltage_Rate(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, bool Precise)
         {
-
-            Wave_Values[] PWM_Array = Generate_Common.Get_UWV_Cycle(Control, Sound, 0, 20000, Precise);
-            double result = Get_Voltage_Rate(ref PWM_Array, Control.get_Sine_Freq());
+            Wave_Values[] PWM_Array = Generate_Common.Get_UWV_Cycle(Control, Sound, 0, 120000, Precise);
+            double result = FS.Generate_FS.Get_Fourier(ref PWM_Array, 1, My_Math.M_PI_6);
 
             return result;
         }
-
-        public static double Get_Voltage_Rate(ref Wave_Values[] UVW, double SineFrequency)
-        {
-            double integral = 0;
-            double dt = 1 / (SineFrequency * (UVW.Length-1));
-
-            for (int i = 0; i < UVW.Length; i++)
-            {
-                double sum = (UVW[i].U - UVW[i].V) * Get_Sine(My_Math.M_2PI * i / (UVW.Length-1) - Math.PI / 6.0) * dt;
-                integral += sum;
-            }
-
-            double _b1 = SineFrequency * integral;
-            double b1 = Math.Abs(_b1 / 1.10265);
-            return Math.Round(b1, 4);
-        }
-
-
         public static void filled_corner_curved_rectangle(Graphics g, Brush br, Point start, Point end, int round_radius)
         {
             int width = end.X - start.X;
