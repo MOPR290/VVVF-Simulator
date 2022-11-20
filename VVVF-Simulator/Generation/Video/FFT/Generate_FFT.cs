@@ -20,73 +20,52 @@ namespace VVVF_Simulator.Generation.Video.FFT
 {
     public class Generate_FFT
     {
-        private static readonly int pow = 18;
-        private static float[] FFT_NAudio(float[] sdata)
+        private static readonly int pow = 15;
+        private static Complex[] FFTNAudio(ref Wave_Values[] WaveForm)
         {
-            var fftsample = new Complex[sdata.Length];
-            var res = new float[sdata.Length / 2];
-
-            for (int i = 0; i < sdata.Length; i++)
+            Complex[] fft = new Complex[WaveForm.Length];
+            for (int i = 0; i < WaveForm.Length; i++)
             {
-                fftsample[i].X = (float)(sdata[i] * FastFourierTransform.HammingWindow(i, sdata.Length));
-                fftsample[i].Y = 0;
+                fft[i].X = (float)((WaveForm[i].U - WaveForm[i].V) * FastFourierTransform.HammingWindow(i, WaveForm.Length));;
+                fft[i].Y = 0;
             }
-
-            FastFourierTransform.FFT(true, pow, fftsample);
-
-            for (int i = 0; i < sdata.Length / 2; i++)
-            {
-                res[i] = (float)Math.Sqrt(fftsample[i].X * fftsample[i].X + fftsample[i].Y * fftsample[i].Y);
-            }
-            return res;
+            FastFourierTransform.FFT(true, pow, fft);
+            Array.Resize(ref fft, fft.Length/2);
+            return fft;
         }
-
-        public static float[] FFT_WaveForm(VVVF_Values control, Yaml_VVVF_Sound_Data sound_Data)
+        private static (float R, float θ) ConvertComplex(Complex C)
         {
-            Control_Values cv = new()
-            {
-                brake = control.is_Braking(),
-                mascon_on = !control.is_Mascon_Off(),
-                free_run = control.is_Free_Running(),
-                wave_stat = control.get_Control_Frequency()
-            };
-            PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, sound_Data);
-
-            control.set_Saw_Time(0);
-            control.set_Sine_Time(0);
-
-            int sample_count = (int)Math.Pow(2, pow);
-            float[] samples = new float[sample_count];
-            
-            for(int i = 0; i < sample_count; i++)
-            {
-                Wave_Values value = VVVF_Calculate.calculate_values(control, calculated_Values, Math.PI / 6.0);
-                int pwm = value.U - value.V;
-                samples[i] = pwm;
-                control.add_Saw_Time(1.0 / sample_count);
-                control.add_Sine_Time(1.0 / sample_count);
-            }
-
-            return FFT_NAudio(samples);
+            float R = C.X * C.X + C.Y * C.Y;
+            float θ = (float)Math.Atan2(C.Y, C.X);
+            return (R, θ);
         }
-
-        public static Bitmap Get_FFT_Image(VVVF_Values control, Yaml_VVVF_Sound_Data sound_Data)
+        public static Bitmap Get_FFT_Image(VVVF_Values control, Yaml_VVVF_Sound_Data sound)
         {
-            float[] points = FFT_WaveForm(control, sound_Data);
+            control.set_Allowed_Random_Freq_Move(false);
+            Wave_Values[] PWM_Array = Generate_Basic.Get_UVW_Sec(control, sound, My_Math.M_PI_6, (int)Math.Pow(2,pow) - 1, false);
+            Complex[] FFT = FFTNAudio(ref PWM_Array);
 
             Bitmap image = new(1000, 1000);
             Graphics g = Graphics.FromImage(image);
 
             g.FillRectangle(new SolidBrush(Color.White),0,0, 1000, 1000);
 
-            for (int i = 0; i < 2000 - 1; i++)
+            string fx = "f(x) = ";
+
+            for (int i = 0; i < 1000 - 1; i++)
             {
-                PointF start = new((float)(i / 2.0), 1000 - points[i] * 6000);
-                PointF end = new((float)((i + 1) / 2.0), 1000 - points[i + 1] * 6000);
+                var (Ri, θi) = ConvertComplex(FFT[(int)(My_Math.M_PI * i)]);
+                var (Rii, θii) = ConvertComplex(FFT[(int)(My_Math.M_PI * (i+1))]);
+                PointF start = new(i, 1000 - Ri * 2000);
+                PointF end = new(i + 1, 1000 - Rii * 2000);
                 g.DrawLine(new Pen(Color.Black, 2), start, end);
+
+                fx += (i == 0 ? "" : "+") + Ri + "sin(" + (i+1) + "(x+" + θi + "))";
             }
 
             g.Dispose();
+
+            //Debug.WriteLine(fx);
 
             return image;
 

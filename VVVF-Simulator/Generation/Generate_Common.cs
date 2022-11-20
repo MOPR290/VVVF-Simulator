@@ -82,46 +82,5 @@ namespace VVVF_Simulator.Generation
 
         }
 
-        /// <summary>
-        ///  Gets 1 cycle of UVW wave form.
-        ///  Division will be auto calculated.
-        /// </summary>
-        /// <param name="Control"></param>
-        /// <param name="Sound"></param>
-        /// <param name="Delta"> Normally, 120000 </param>
-        /// <param name="Precise"> More precise when Freq < 1 </param>
-        /// <returns></returns>
-        public static Wave_Values[] Get_UWV_Cycle(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, double InitialPhase, int Delta, bool Precise)
-        {
-            double _divSeed = (Control.get_Sine_Freq() > 0.01 && Control.get_Sine_Freq() < 1) ? 1 / Control.get_Sine_Freq() : 1;
-            _divSeed = Delta * (Precise ? _divSeed : 1);
-            int divSeed = (int)Math.Round(_divSeed);
-
-            Control.set_Sine_Time(0);
-            Control.set_Saw_Time(0);
-
-            Control_Values cv = new Control_Values
-            {
-                brake = Control.is_Braking(),
-                mascon_on = !Control.is_Mascon_Off(),
-                free_run = Control.is_Free_Running(),
-                wave_stat = Control.get_Control_Frequency()
-            };
-            PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(Control, cv, Sound);
-
-            Wave_Values[] PWM_Array = new Wave_Values[divSeed + 1];
-            double dt = 1.0 / (divSeed * Control.get_Sine_Freq());
-            for (int i = 0; i <= divSeed; i++)
-            {
-                Control.set_Sine_Time(i * dt);
-                Control.set_Saw_Time(i * dt);
-                Wave_Values value = VVVF_Calculate.calculate_values(Control, calculated_Values, InitialPhase);
-                PWM_Array[i] = value;
-            }
-
-            return PWM_Array;
-        }
-
-
     }
 }

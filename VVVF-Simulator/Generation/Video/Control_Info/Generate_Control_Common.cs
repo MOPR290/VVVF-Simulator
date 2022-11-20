@@ -17,7 +17,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
         /// <returns></returns>
         public static double Get_Voltage_Rate(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, bool Precise)
         {
-            Wave_Values[] PWM_Array = Generate_Common.Get_UWV_Cycle(Control, Sound, 0, 120000, Precise);
+            Wave_Values[] PWM_Array = Generate_Basic.Get_UVW_Cycle(Control, Sound, 0, 120000, Precise);
             double result = FS.Generate_FS.Get_Fourier(ref PWM_Array, 1, My_Math.M_PI_6);
 
             return result;

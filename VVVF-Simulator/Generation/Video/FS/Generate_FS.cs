@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
 using VVVF_Simulator.Yaml.VVVF_Sound;
 using static VVVF_Simulator.VVVF_Structs;
@@ -59,10 +58,11 @@ namespace VVVF_Simulator.Generation.Video.FS
         }
     
 
-        public static Bitmap Get_FS_Image(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, int Delta, int Division)
+        public static (Bitmap image, string fx) Get_FS_Image(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, int Delta, int Division)
         {
-            Wave_Values[] PWM_Array = Generate_Common.Get_UWV_Cycle(Control, Sound, 0, Delta, false);
-            
+            Control.set_Allowed_Random_Freq_Move(false);
+
+            Wave_Values[] PWM_Array = Generate_Basic.Get_UVW_Cycle(Control, Sound, 0, Delta, false);
 
             Bitmap image = new(1000, 1000);
             Graphics g = Graphics.FromImage(image);
@@ -72,11 +72,12 @@ namespace VVVF_Simulator.Generation.Video.FS
             int division = Division;
             int space = 1000 / division;
 
-            //String fx = "f(x) = ";
+            string fx = "f(x) = ";
 
             for (int i = 0; i <= division; i++)
             {
-                double result = Get_Fourier(ref PWM_Array, i+1, My_Math.M_PI_6);
+                int n = i + 1;
+                double result = Get_Fourier(ref PWM_Array, n, My_Math.M_PI_6);
                 int height = (int)( Math.Log10(result * 1000) * 1000 / 3.0 / 2.0 );
                 //int height = (int)(result * 1000) / 2;
                 
@@ -86,14 +87,12 @@ namespace VVVF_Simulator.Generation.Video.FS
 
                 if(space > 10 && i != 0 && i != division) g.DrawLine(new Pen(Color.Gray), space * i, 0, space * i, 1000);
 
-                //fx += (i == 0 ? "" : "+") + result + "sin(" + i + "x)";
+                fx += (i == 0 ? "" : "+") + result + "sin(" + n + "x)";
             }
-
-            //Debug.WriteLine(fx);
 
             g.Dispose();
 
-            return image;
+            return (image , fx);
 
         }
 

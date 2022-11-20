@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -75,7 +76,8 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             control.set_Sine_Time(0);
             control.set_Saw_Time(0);
 
-            Bitmap image = Generation.Video.FS.Generate_FS.Get_FS_Image(control, ysd, 10000, 20);
+            var result = Generation.Video.FS.Generate_FS.Get_FS_Image(control, ysd, 10000, 500);
+            Bitmap image = result.image;
 
             if (!Resized)
             {
