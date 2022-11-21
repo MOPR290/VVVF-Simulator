@@ -92,7 +92,7 @@ namespace VVVF_Simulator.Generation.Video.FS
         {
             Control.set_Allowed_Random_Freq_Move(false);
 
-            Wave_Values[] PWM_Array = Generate_Basic.Get_UVW_Cycle(Control, Sound, 0, Delta, false);
+            Wave_Values[] PWM_Array = Generate_Basic.Get_UVW_Cycle(Control, Sound, My_Math.M_PI_6, Delta, false);
 
             Bitmap image = new(1000, 1000);
             Graphics g = Graphics.FromImage(image);
@@ -107,7 +107,7 @@ namespace VVVF_Simulator.Generation.Video.FS
             for (int i = 0; i <= division; i++)
             {
                 int n = i + 1;
-                double result = Get_Fourier_Fast(ref PWM_Array, n, My_Math.M_PI_6);
+                double result = Get_Fourier_Fast(ref PWM_Array, n, 0);
                 int height = (int)( Math.Log10(result * 1000) * 1000 / 3.0 / 2.0 );
                 SolidBrush solidBrush = new(MagnitudeColor.GetColor(Math.Abs(height*2.0/1000)));
                 if(height < 0) g.FillRectangle(solidBrush, space * i, 500, 1000 / division, -height);

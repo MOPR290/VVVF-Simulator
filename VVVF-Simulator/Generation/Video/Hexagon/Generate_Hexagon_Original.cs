@@ -39,6 +39,51 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
             return image;
         }
 
+        private class PointD
+        {
+            public double X { get; set; } = 0;
+            public double Y { get; set; } = 0;
+
+            public PointD(double X, double Y)
+            {
+                this.X = X;
+                this.Y = Y; 
+            }
+
+            public bool IsZero()
+            {
+                return X == 0 && Y == 0;
+            }
+
+            public Point ToPoint()
+            {
+                return new Point((int)X, (int)Y);
+            }
+
+            public static PointD operator +(PointD a, PointD b)
+            {
+                return new PointD(a.X + b.X, a.Y + b.Y);
+            }
+
+            public static PointD operator *(double k,PointD a)
+            {
+                return new PointD(k*a.X, k*a.Y);
+            }
+
+            public static PointD Max(PointD a, PointD b)
+            {
+                return new PointD(a.X > b.X ? a.X : b.X, a.Y > b.Y ? a.Y : b.Y);
+            }
+
+            public static PointD Min(PointD a, PointD b)
+            {
+                return new PointD(a.X < b.X ? a.X : b.X, a.Y < b.Y ? a.Y : b.Y);
+            }
+            
+            
+
+        }
+
         public static Bitmap Get_Hexagon_Original_Image(
             ref Wave_Values[] UVW,
             double ControlFrequency,
@@ -57,95 +102,80 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
                 return empty_image;
             }
 
-            Bitmap hexagon_image = new(Width, Height);
-            Graphics hexagon_g = Graphics.FromImage(hexagon_image);
+            bool drawn_circle = false;
+            PointD CurrentPoint = new(0,0);
+            PointD MaxValue = new(double.MinValue, double.MinValue);
+            PointD MinValue = new(double.MaxValue, double.MaxValue);
+            List<PointD> ZeroPoints = new();
+            List<PointD> LinePoints = new() { CurrentPoint };
 
-            Boolean drawn_circle = false;
-            Bitmap zero_circle_image = new(Width, Height);
-            Graphics zero_circle_g = Graphics.FromImage(zero_circle_image);
-
-            double[] hexagon_coordinate = new double[] { 100, 500 };
-            double[] x_min_max = new double[2] { 10000, 0 };
-
-            List<int> points_x = new() { 100 };
-            List<int> points_y = new() { 500 };
             Wave_Values pre_wave_Values = new();
 
             for (int i = 0; i < UVW.Length; i++)
             {
                 Wave_Values value = UVW[i];
-                double move_x = -0.5 * value.W - 0.5 * value.V + value.U;
-                double move_y = -0.866025403784438646763 * value.W + 0.866025403784438646763 * value.V;
-
-                double int_move_x = 1200 * move_x / (UVW.Length - 1);
-                double int_move_y = 1200 * move_y / (UVW.Length - 1);
+                PointD DeltaMove = new(
+                    -0.5 * value.W - 0.5 * value.V + value.U,
+                    -0.866025403784438646763 * value.W + 0.866025403784438646763 * value.V
+                );
 
                 if (!pre_wave_Values.Equals(value))
                 {
-                    points_x.Add((int)Math.Round(hexagon_coordinate[0] + int_move_x));
-                    points_y.Add((int)Math.Round(hexagon_coordinate[1] + int_move_y));
+                    LinePoints.Add(CurrentPoint);
                     pre_wave_Values = value.Clone();
                 }
 
-                if (move_x == 0 && move_y == 0 && ZeroVectorCircle)
+                if(DeltaMove.IsZero() && ZeroVectorCircle && !drawn_circle)
                 {
-                    if (!drawn_circle)
-                    {
-                        drawn_circle = true;
-                        double radius = 15 * ((ControlFrequency > 40) ? 1 : (ControlFrequency / 40.0));
-                        zero_circle_g.FillEllipse(new SolidBrush(Color.White),
-                            (int)Math.Round(hexagon_coordinate[0] - radius),
-                            (int)Math.Round(hexagon_coordinate[1] - radius),
-                            (int)Math.Round(radius * 2),
-                            (int)Math.Round(radius * 2)
-                        );
-                        zero_circle_g.DrawEllipse(new Pen(Color.Black),
-                            (int)Math.Round(hexagon_coordinate[0] - radius),
-                            (int)Math.Round(hexagon_coordinate[1] - radius),
-                            (int)Math.Round(radius * 2),
-                            (int)Math.Round(radius * 2)
-                        );
-                    }
-
-                }
-                else
+                    drawn_circle = true;
+                    ZeroPoints.Add(CurrentPoint);
+                }else if (!DeltaMove.IsZero())
+                {
                     drawn_circle = false;
-
-                hexagon_coordinate[0] = hexagon_coordinate[0] + int_move_x;
-                hexagon_coordinate[1] = hexagon_coordinate[1] + int_move_y;
-
-                if (x_min_max[0] > hexagon_coordinate[0]) x_min_max[0] = hexagon_coordinate[0];
-                if (x_min_max[1] < hexagon_coordinate[0]) x_min_max[1] = hexagon_coordinate[0];
-
-            }
-
-            if (ControlFrequency != 0)
-            {
-                for (int i = 0; i < points_x.Count - 1; i++)
-                {
-                    Point start = new(points_x[i], points_y[i]);
-                    Point end = new(points_x[i + 1], points_y[i + 1]);
-                    hexagon_g.DrawLine(new Pen(Color.Black, Thickness), start, end);
                 }
+                CurrentPoint += DeltaMove;
+
+                MaxValue = PointD.Max(CurrentPoint, MaxValue);
+                MinValue = PointD.Min(CurrentPoint, MinValue);
             }
 
-            Bitmap final_image = new(Width, Height);
-            Graphics final_g = Graphics.FromImage(final_image);
-            final_g.FillRectangle(new SolidBrush(Color.White), 0, 0, Width, Height);
+            Bitmap ImResult = new(Width, Height);
+            Graphics GResult = Graphics.FromImage(ImResult);
+            GResult.FillRectangle(new SolidBrush(Color.White), 0, 0, Width, Height);
+            double k = 1200.0 / (UVW.Length - 1);
 
-            double moved_x = (Width - x_min_max[1] - x_min_max[0]) / 2.0;
-            final_g.DrawImage(hexagon_image, (int)Math.Round(moved_x), 0);
-            final_g.DrawImage(zero_circle_image, (int)Math.Round(moved_x), 0);
+            PointD CorrectionAmount = new(
+                Width / 2.0 - k*(MinValue.X + (MaxValue.X - MinValue.X) / 2.0),
+                Height / 2.0 - k * (MinValue.Y + (MaxValue.Y - MinValue.Y) / 2.0)
+            );
 
-            final_g.Dispose();
-            hexagon_g.Dispose();
-            final_g.Dispose();
-            zero_circle_g.Dispose();
+            for (int i = 0; i < LinePoints.Count - 1; i++)
+            {
+                Point start = (k * LinePoints[i] + CorrectionAmount).ToPoint();
+                Point end = (k  * LinePoints[i+1] + CorrectionAmount).ToPoint();
+                GResult.DrawLine(new Pen(Color.Black, Thickness), start, end);
+            }
 
-            hexagon_image.Dispose();
-            zero_circle_image.Dispose();
+            for (int i = 0; i < ZeroPoints.Count; i++)
+            {
+                Point point = (k*ZeroPoints[i] + CorrectionAmount).ToPoint();
 
-            return final_image;
+                double radius = 15 * ((ControlFrequency > 40) ? 1 : (ControlFrequency / 40.0));
+                GResult.FillEllipse(new SolidBrush(Color.White),
+                    (int)Math.Round(point.X - radius),
+                    (int)Math.Round(point.Y - radius),
+                    (int)Math.Round(radius * 2),
+                    (int)Math.Round(radius * 2)
+                );
+                GResult.DrawEllipse(new Pen(Color.Black),
+                    (int)Math.Round(point.X - radius),
+                    (int)Math.Round(point.Y - radius),
+                    (int)Math.Round(radius * 2),
+                    (int)Math.Round(radius * 2)
+                );
+            }
+            GResult.Dispose();
+            return ImResult;
         }
 
         public static void Generate_Hexagon_Original_Video(GenerationBasicParameter generationBasicParameter, String fileName, bool circle)

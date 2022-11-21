@@ -78,7 +78,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
 
             var result = Generation.Video.FS.Generate_FS.Get_FS_Image(control, ysd, 10000, 500);
             Bitmap image = result.image;
-            Debug.WriteLine(result.fx);
+            
 
             if (!Resized)
             {

@@ -23,12 +23,12 @@ namespace VVVF_Simulator.Generation
             double _F = Control.get_Sine_Freq();
             double _K = (_F > 0.01 && _F < 1) ? 1 / _F : 1;
             int Count = Precise ? (int)Math.Round(Division * _K) : Division;
-            double DeltaT = 1.0 / (Count * _F);
+            double InvDeltaT = Count * _F;
 
             Control.set_Sine_Time(0);
             Control.set_Saw_Time(0);
 
-            return Get_UVW(Control, Sound, InitialPhase, DeltaT, Count);
+            return Get_UVW(Control, Sound, InitialPhase, InvDeltaT, Count);
         }
 
         /// <summary>
@@ -45,15 +45,15 @@ namespace VVVF_Simulator.Generation
             double _F = Control.get_Sine_Freq();
             double _K = (_F > 0.01 && _F < 1) ? 1 / _F : 1;
             int Count = Precise ? (int)Math.Round(Division * _K) : Division;
-            double DeltaT = 1.0 / Count;
+            double InvDeltaT = Count;
 
             Control.set_Sine_Time(0);
             Control.set_Saw_Time(0);
 
-            return Get_UVW(Control, Sound, InitialPhase, DeltaT, Count);
+            return Get_UVW(Control, Sound, InitialPhase, InvDeltaT, Count);
         }
 
-        private static Wave_Values[] Get_UVW(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, double InitialPhase, double DeltaT, int Count)
+        public static Wave_Values[] Get_UVW(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, double InitialPhase, double InvDeltaT, int Count)
         {
             Control_Values cv = new()
             {
@@ -66,8 +66,8 @@ namespace VVVF_Simulator.Generation
             Wave_Values[] PWM_Array = new Wave_Values[Count + 1];
             for (int i = 0; i <= Count; i++)
             {
-                Control.set_Sine_Time(i * DeltaT);
-                Control.set_Saw_Time(i * DeltaT);
+                Control.set_Sine_Time(i / InvDeltaT);
+                Control.set_Saw_Time(i / InvDeltaT);
                 Wave_Values value = VVVF_Calculate.calculate_values(Control, calculated_Values, InitialPhase);
                 PWM_Array[i] = value;
             }

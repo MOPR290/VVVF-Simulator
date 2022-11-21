@@ -17,9 +17,9 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
         /// <returns></returns>
         public static double Get_Voltage_Rate(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, bool Precise)
         {
-            Wave_Values[] PWM_Array = Generate_Basic.Get_UVW_Cycle(Control, Sound, 0, 120000, Precise);
-            double result = FS.Generate_FS.Get_Fourier_Fast(ref PWM_Array, 1, My_Math.M_PI_6);
-
+            Wave_Values[] PWM_Array = Generate_Basic.Get_UVW_Cycle(Control, Sound, My_Math.M_PI_6, 120000, Precise);
+            double result = FS.Generate_FS.Get_Fourier_Fast(ref PWM_Array, 1, 0);
+            result = Math.Abs(result);
             return result;
         }
         public static void filled_corner_curved_rectangle(Graphics g, Brush br, Point start, Point end, int round_radius)
