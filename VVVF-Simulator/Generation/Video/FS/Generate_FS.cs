@@ -8,17 +8,47 @@ namespace VVVF_Simulator.Generation.Video.FS
     public class Generate_FS
     {
 
-        public static double Get_Fourier(ref Wave_Values[] UVW, double N, double InitialPhase)
+        public static double Get_Fourier(ref Wave_Values[] UVW, int N, double InitialPhase)
         {
             double integral = 0;
             double dt = 1.0 / (UVW.Length - 1);
 
             for (int i = 0; i < UVW.Length; i++)
             {
-                double sum = (UVW[i].U - UVW[i].V) * My_Math.sin(N * (My_Math.M_2PI * i / (UVW.Length - 1) - InitialPhase)) * dt;
+                double iTime = My_Math.M_2PI * i / (UVW.Length - 1) - InitialPhase;
+                double sum = (UVW[i].U - UVW[i].V) * My_Math.sin(N * iTime) * dt;
                 integral += sum;
             }
             double bn = integral / 1.1026577908425;
+            return Math.Round(bn, 4);
+        }
+
+        public static double Get_Fourier_Fast(ref Wave_Values[] UVW, int N, double InitialPhase)
+        {
+            double integral = 0;
+
+            int Ft = 0;
+            double Time = -InitialPhase;
+
+            for (int i = 0; i < UVW.Length; i++)
+            {
+                int iFt = UVW[i].U - UVW[i].V;
+
+                if (i == 0)
+                {
+                    Ft = iFt;
+                    continue;
+                }
+
+                if (Ft == iFt) continue;
+                double iTime = My_Math.M_2PI * (i-1) / (UVW.Length - 1) - InitialPhase;
+                double sum = (-My_Math.cos(N * iTime) + My_Math.cos(N * Time)) * Ft / N;
+                integral += sum;
+
+                Time = iTime;
+                Ft = iFt;
+            }
+            double bn = integral / My_Math.M_2PI / 1.1026577908425;
             return Math.Round(bn, 4);
         }
 
@@ -77,10 +107,8 @@ namespace VVVF_Simulator.Generation.Video.FS
             for (int i = 0; i <= division; i++)
             {
                 int n = i + 1;
-                double result = Get_Fourier(ref PWM_Array, n, My_Math.M_PI_6);
+                double result = Get_Fourier_Fast(ref PWM_Array, n, My_Math.M_PI_6);
                 int height = (int)( Math.Log10(result * 1000) * 1000 / 3.0 / 2.0 );
-                //int height = (int)(result * 1000) / 2;
-                
                 SolidBrush solidBrush = new(MagnitudeColor.GetColor(Math.Abs(height*2.0/1000)));
                 if(height < 0) g.FillRectangle(solidBrush, space * i, 500, 1000 / division, -height);
                 else g.FillRectangle(solidBrush, space * i, 500 - height, 1000 / division, height);

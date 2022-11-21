@@ -94,6 +94,11 @@ namespace VVVF_Simulator
             return val;
         }
 
+        static public double cos(double radian)
+        {
+            return sin(radian + M_PI_2);
+        }
+
         static public int my_random()
         {
             return new Random().Next();

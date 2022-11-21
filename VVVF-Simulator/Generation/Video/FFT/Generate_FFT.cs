@@ -50,22 +50,16 @@ namespace VVVF_Simulator.Generation.Video.FFT
 
             g.FillRectangle(new SolidBrush(Color.White),0,0, 1000, 1000);
 
-            string fx = "f(x) = ";
-
             for (int i = 0; i < 1000 - 1; i++)
             {
                 var (Ri, θi) = ConvertComplex(FFT[(int)(My_Math.M_PI * i)]);
-                var (Rii, θii) = ConvertComplex(FFT[(int)(My_Math.M_PI * (i+1))]);
+                var (Rii, θii) = ConvertComplex(FFT[(int)(My_Math.M_PI * (i + 1))]);
                 PointF start = new(i, 1000 - Ri * 2000);
                 PointF end = new(i + 1, 1000 - Rii * 2000);
                 g.DrawLine(new Pen(Color.Black, 2), start, end);
-
-                fx += (i == 0 ? "" : "+") + Ri + "sin(" + (i+1) + "(x+" + θi + "))";
             }
 
             g.Dispose();
-
-            //Debug.WriteLine(fx);
 
             return image;
 
