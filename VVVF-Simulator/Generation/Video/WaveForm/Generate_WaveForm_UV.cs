@@ -41,6 +41,27 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
             int Spacing
         )
         {
+            int Count = (Width - Spacing * 2) * Delta;
+            Wave_Values[] values = new Wave_Values[Count];
+            for (int i = 0; i < Count; i++)
+            {
+                Wave_Values value = calculate_values(Control, PWM_Data, Math.PI / 6.0);
+                values[i] = value;
+                Control.add_Saw_Time(2 / (60.0 * Count));
+                Control.add_Sine_Time(2 / (60.0 * Count));
+            }
+            return Get_WaveForm_Image(ref values, Width, Height, WaveHeight, WaveWidth, Spacing);
+        }
+
+        public static Bitmap Get_WaveForm_Image(
+            ref Wave_Values[] UVW,
+            int Width,
+            int Height,
+            int WaveHeight,
+            int WaveWidth,
+            int Spacing
+        )
+        {
             Bitmap image = new(Width, Height);
             Graphics g = Graphics.FromImage(image);
             g.FillRectangle(new SolidBrush(Color.White), 0, 0, Width, Height);
@@ -48,31 +69,27 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
             List<int> points_x = new();
             List<int> points_y = new();
 
-            points_x.Add(0);
-            points_y.Add(0);
+            points_x.Add(Spacing);
+            points_y.Add((int)(Height / 2.0));
 
             int pre_pwm = 0;
 
-            for (int i = 0; i < (Width - Spacing * 2) * Delta; i++)
+            for (int i = 0; i < UVW.Length; i++)
             {
-                Wave_Values value = calculate_values(Control, PWM_Data, Math.PI / 6.0);
-                int pwm = value.U - value.V;
+                int pwm = UVW[i].U - UVW[i].V;
                 if (pre_pwm != pwm)
                 {
-                    points_x.Add(i);
-                    points_y.Add(pre_pwm);
+                    points_x.Add((int)(i / (double)UVW.Length * (Width - Spacing * 2)) + Spacing);
+                    points_y.Add((int)(-pre_pwm * WaveHeight + Height / 2.0));
 
-                    points_x.Add(i);
-                    points_y.Add(pwm);
+                    points_x.Add((int)(i / (double)UVW.Length * (Width - Spacing * 2)) + Spacing);
+                    points_y.Add((int)(-pwm * WaveHeight + Height / 2.0));
                     pre_pwm = pwm;
                 }
-
-                Control.add_Saw_Time(2 / (60.0 * Delta * (Width - Spacing * 2)));
-                Control.add_Sine_Time(2 / (60.0 * Delta * (Width - Spacing * 2)));
             }
 
-            points_x.Add((Width - Spacing * 2) * Delta);
-            points_y.Add(pre_pwm);
+            points_x.Add(Width - Spacing);
+            points_y.Add((int)(-pre_pwm * WaveHeight + Height / 2.0));
 
             for (int i = 0; i < points_x.Count - 1; i++)
             {
@@ -80,10 +97,7 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
                 int x_2 = points_x[i + 1];
                 int y_1 = points_y[i];
                 int y_2 = points_y[i + 1];
-
-                int curr_val = (int)(-y_1 * WaveHeight + Height / 2.0);
-                int next_val = (int)(-y_2 * WaveHeight + Height / 2.0);
-                g.DrawLine(new Pen(Color.Black, WaveWidth), (int)(x_1 / (double)Delta) + Spacing, curr_val, (int)(x_2 / (double)Delta) + Spacing, next_val);
+                g.DrawLine(new Pen(Color.Black, WaveWidth), x_1, y_1, x_2, y_2);
             }
 
             g.Dispose();
