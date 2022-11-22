@@ -99,7 +99,7 @@ namespace VVVF_Simulator.Generation.Video.FS
         }
     
 
-        public static (Bitmap image, string fx) Get_FS_Image(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, int Delta, int Division)
+        public static (Bitmap image, string fx, string c) Get_FS_Image(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, int Delta, int Division)
         {
             Control.set_Allowed_Random_Freq_Move(false);
 
@@ -114,6 +114,7 @@ namespace VVVF_Simulator.Generation.Video.FS
             int width = 1000 / division;
 
             string fx = "f(x) = ";
+            string list_c = "C = [";
 
             for (int i = 0; i <= division; i++)
             {
@@ -127,11 +128,14 @@ namespace VVVF_Simulator.Generation.Video.FS
                 if(width > 10 && i != 0 && i != division) g.DrawLine(new Pen(Color.Gray), width * i, 0, width * i, 1000);
 
                 fx += (result < 0 ? "-" : "+") + Math.Abs(result) + "sin(" + n + "x)";
+                list_c += (i == 0 ? "" : ",") + result;
             }
 
             g.Dispose();
 
-            return (image , fx);
+            list_c += "]";
+
+            return (image , fx, list_c);
 
         }
 
