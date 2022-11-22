@@ -52,6 +52,17 @@ namespace VVVF_Simulator.Generation.Video.FS
             return Math.Round(bn, 4);
         }
 
+        public static double[] Get_Fourier_Coefficients(ref Wave_Values[] UVW, int N, double InitialPhase)
+        {
+            double[] coefficients = new double[N];
+            for (int n = 1; n <= N; n++)
+            {
+                double result = Get_Fourier_Fast(ref UVW, n, InitialPhase);
+                coefficients[n] = result;
+            }
+            return coefficients;
+        }
+
         private static class MagnitudeColor
         {
 
@@ -100,7 +111,7 @@ namespace VVVF_Simulator.Generation.Video.FS
             g.FillRectangle(new SolidBrush(Color.White), 0, 0, 1000, 1000);
 
             int division = Division;
-            int space = 1000 / division;
+            int width = 1000 / division;
 
             string fx = "f(x) = ";
 
@@ -110,12 +121,12 @@ namespace VVVF_Simulator.Generation.Video.FS
                 double result = Get_Fourier_Fast(ref PWM_Array, n, 0);
                 int height = (int)( Math.Log10(result * 1000) * 1000 / 3.0 / 2.0 );
                 SolidBrush solidBrush = new(MagnitudeColor.GetColor(Math.Abs(height*2.0/1000)));
-                if(height < 0) g.FillRectangle(solidBrush, space * i, 500, 1000 / division, -height);
-                else g.FillRectangle(solidBrush, space * i, 500 - height, 1000 / division, height);
+                if(height < 0) g.FillRectangle(solidBrush, width * i, 500, width, -height);
+                else g.FillRectangle(solidBrush, width * i, 500 - height, width, height);
 
-                if(space > 10 && i != 0 && i != division) g.DrawLine(new Pen(Color.Gray), space * i, 0, space * i, 1000);
+                if(width > 10 && i != 0 && i != division) g.DrawLine(new Pen(Color.Gray), width * i, 0, width * i, 1000);
 
-                fx += (i == 0 ? "" : "+") + result + "sin(" + n + "x)";
+                fx += (result < 0 ? "-" : "+") + Math.Abs(result) + "sin(" + n + "x)";
             }
 
             g.Dispose();

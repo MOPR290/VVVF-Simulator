@@ -26,7 +26,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
     /// </summary>
     public partial class RealTime_FS_Window : Window
     {
-        private ViewModel BindingData = new ViewModel();
+        private ViewModel BindingData = new();
         public class ViewModel : ViewModelBase
         {
 
