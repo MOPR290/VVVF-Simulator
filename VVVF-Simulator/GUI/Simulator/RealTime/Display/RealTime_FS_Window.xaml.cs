@@ -5,10 +5,12 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using VVVF_Simulator.Yaml.VVVF_Sound;
 using static VVVF_Simulator.Generation.Audio.Generate_RealTime_Common;
 using static VVVF_Simulator.Generation.Video.FS.Generate_FS;
+using Brush = System.Windows.Media.Brush;
 
 namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
 {
@@ -56,7 +58,9 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             });
         }
 
-        bool Resized = false;
+        private bool Resized = false;
+        private int N = 100;
+        private string StrCoefficients = "C = [0]";
         private void UpdateControl()
         {
             
@@ -67,9 +71,10 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             control.set_Sine_Time(0);
             control.set_Saw_Time(0);
 
-            double[] Coefficients = Get_Fourier_Coefficients(control, ysd, 10000, 100);
-            string desmos = Get_Desmos_Fourier_Coefficients_Array(ref Coefficients);
-
+            double[] Coefficients = Get_Fourier_Coefficients(control, ysd, 10000, N);
+            StrCoefficients = Get_Desmos_Fourier_Coefficients_Array(ref Coefficients);
+            Bitmap image = Get_FS_Image(ref Coefficients);
+            /*
             List<double> CoefficientsList = new(Coefficients);
             int remove_pos = 1;
             while (true)
@@ -79,7 +84,8 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
                 if (remove_pos >= CoefficientsList.Count) break;
             }
             double[] ProcessedArray = CoefficientsList.ToArray();
-            Bitmap image = Get_FS_Image(ref ProcessedArray);           
+            */
+
 
             if (!Resized)
             {
@@ -102,6 +108,27 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             image.Dispose();
 
             
+        }
+
+        private void Button_CopyCoefficients_Click(object sender, RoutedEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                Clipboard.SetText(StrCoefficients);
+            });
+        }
+
+        private void TextBox_N_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            try
+            {
+                TextBox_N.Background = new BrushConverter().ConvertFrom("#FFFFFFFF") as Brush;
+                N = int.Parse(TextBox_N.Text);
+            }
+            catch
+            {
+                TextBox_N.Background = new BrushConverter().ConvertFrom("#FFfed0d0") as Brush;
+            }
         }
     }
 }
