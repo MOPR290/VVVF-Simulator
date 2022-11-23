@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using VVVF_Simulator.Yaml.VVVF_Sound;
 using static VVVF_Simulator.Generation.Audio.Generate_RealTime_Common;
+using static VVVF_Simulator.Generation.Video.FS.Generate_FS;
 
 namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
 {
@@ -76,9 +67,19 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             control.set_Sine_Time(0);
             control.set_Saw_Time(0);
 
-            var result = Generation.Video.FS.Generate_FS.Get_FS_Image(control, ysd, 10000, 500);
-            Bitmap image = result.image;
-            
+            double[] Coefficients = Get_Fourier_Coefficients(control, ysd, 10000, 100);
+            string desmos = Get_Desmos_Fourier_Coefficients_Array(ref Coefficients);
+
+            List<double> CoefficientsList = new(Coefficients);
+            int remove_pos = 1;
+            while (true)
+            {
+                CoefficientsList.RemoveAt(remove_pos);
+                remove_pos++;
+                if (remove_pos >= CoefficientsList.Count) break;
+            }
+            double[] ProcessedArray = CoefficientsList.ToArray();
+            Bitmap image = Get_FS_Image(ref ProcessedArray);           
 
             if (!Resized)
             {

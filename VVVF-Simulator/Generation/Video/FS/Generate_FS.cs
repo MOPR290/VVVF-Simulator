@@ -58,9 +58,27 @@ namespace VVVF_Simulator.Generation.Video.FS
             for (int n = 1; n <= N; n++)
             {
                 double result = Get_Fourier_Fast(ref UVW, n, InitialPhase);
-                coefficients[n] = result;
+                coefficients[n-1] = result;
             }
             return coefficients;
+        }
+
+        public static double[] Get_Fourier_Coefficients(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, int Delta, int N)
+        {
+            Control.set_Allowed_Random_Freq_Move(false);
+            Wave_Values[] PWM_Array = Generate_Basic.Get_UVW_Cycle(Control, Sound, My_Math.M_PI_6, Delta, false);
+            return Get_Fourier_Coefficients(ref PWM_Array, N, 0);
+        }
+
+        public static string Get_Desmos_Fourier_Coefficients_Array(ref double[] coefficients)
+        {
+            String array = "C = [";
+            for(int i = 0; i < coefficients.Length; i++)
+            {
+                array += (i == 0 ? "" : " ,") + coefficients[i];
+            }
+            array += "]";
+            return array;
         }
 
         private static class MagnitudeColor
@@ -97,45 +115,29 @@ namespace VVVF_Simulator.Generation.Video.FS
                 return color;
             }
         }
-    
 
-        public static (Bitmap image, string fx, string c) Get_FS_Image(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, int Delta, int Division)
+        public static Bitmap Get_FS_Image(ref double[] Coefficients)
         {
-            Control.set_Allowed_Random_Freq_Move(false);
-
-            Wave_Values[] PWM_Array = Generate_Basic.Get_UVW_Cycle(Control, Sound, My_Math.M_PI_6, Delta, false);
-
             Bitmap image = new(1000, 1000);
             Graphics g = Graphics.FromImage(image);
-
             g.FillRectangle(new SolidBrush(Color.White), 0, 0, 1000, 1000);
 
-            int division = Division;
-            int width = 1000 / division;
+            int count = Coefficients.Length;
+            int width = 1000 / count;
 
-            string fx = "f(x) = ";
-            string list_c = "C = [";
-
-            for (int i = 0; i <= division; i++)
+            for (int i = 0; i < count; i++)
             {
-                int n = i + 1;
-                double result = Get_Fourier_Fast(ref PWM_Array, n, 0);
+                double result = Coefficients[i];
                 int height = (int)( Math.Log10(result * 1000) * 1000 / 3.0 / 2.0 );
                 SolidBrush solidBrush = new(MagnitudeColor.GetColor(Math.Abs(height*2.0/1000)));
                 if(height < 0) g.FillRectangle(solidBrush, width * i, 500, width, -height);
                 else g.FillRectangle(solidBrush, width * i, 500 - height, width, height);
 
-                if(width > 10 && i != 0 && i != division) g.DrawLine(new Pen(Color.Gray), width * i, 0, width * i, 1000);
-
-                fx += (result < 0 ? "-" : "+") + Math.Abs(result) + "sin(" + n + "x)";
-                list_c += (i == 0 ? "" : ",") + result;
+                if(width > 10 && i != 0 && i != count - 1) g.DrawLine(new Pen(Color.Gray), width * i, 0, width * i, 1000);
             }
 
             g.Dispose();
-
-            list_c += "]";
-
-            return (image , fx, list_c);
+            return image;
 
         }
 
