@@ -12,7 +12,7 @@ using static VVVF_Simulator.Generation.Generate_Common;
 using static VVVF_Simulator.Generation.Generate_Common.GenerationBasicParameter;
 using static VVVF_Simulator.MainWindow;
 using static VVVF_Simulator.VVVF_Calculate;
-using static VVVF_Simulator.VVVF_Structs;
+using static VVVF_Simulator.VvvfStructs;
 using static VVVF_Simulator.Yaml.Mascon_Control.Yaml_Mascon_Analyze;
 
 namespace VVVF_Simulator.Generation.Video.WaveForm
@@ -31,8 +31,8 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
         /// <param name="Delta"></param>
         /// <returns></returns>
         public static Bitmap Get_WaveForm_Image(
-            VVVF_Values Control,
-            PWM_Calculate_Values PWM_Data,
+            VvvfValues Control,
+            PwmCalculateValues PWM_Data,
             int Width, 
             int Height, 
             int WaveHeight,
@@ -42,10 +42,10 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
         )
         {
             int Count = (Width - Spacing * 2) * Delta;
-            Wave_Values[] values = new Wave_Values[Count];
+            WaveValues[] values = new WaveValues[Count];
             for (int i = 0; i < Count; i++)
             {
-                Wave_Values value = calculate_values(Control, PWM_Data, Math.PI / 6.0);
+                WaveValues value = calculate_values(Control, PWM_Data, Math.PI / 6.0);
                 values[i] = value;
                 Control.add_Saw_Time(2 / (60.0 * Count));
                 Control.add_Sine_Time(2 / (60.0 * Count));
@@ -54,7 +54,7 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
         }
 
         public static Bitmap Get_WaveForm_Image(
-            ref Wave_Values[] UVW,
+            ref WaveValues[] UVW,
             int Width,
             int Height,
             int WaveHeight,
@@ -110,7 +110,7 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
             Yaml_Mascon_Data_Compiled masconData = generationBasicParameter.masconData;
             ProgressData progressData = generationBasicParameter.progressData;
 
-            VVVF_Values control = new();
+            VvvfValues control = new();
             control.reset_control_variables();
             control.reset_all_variables();
 
@@ -163,14 +163,14 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
                 control.set_Sine_Time(0);
                 control.set_Saw_Time(0);
 
-                Control_Values cv = new()
+                ControlStatus cv = new()
                 {
                     brake = control.is_Braking(),
                     mascon_on = !control.is_Mascon_Off(),
                     free_run = control.is_Free_Running(),
                     wave_stat = control.get_Control_Frequency()
                 };
-                PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
+                PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
 
                 Bitmap image = Get_WaveForm_Image(control, calculated_Values, image_width, image_height, wave_height, 2, calculate_div, 100);
 
@@ -233,7 +233,7 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
             Yaml_Mascon_Data_Compiled masconData = generationBasicParameter.masconData;
             ProgressData progressData = generationBasicParameter.progressData;
 
-            VVVF_Values control = new();
+            VvvfValues control = new();
             control.reset_control_variables();
             control.reset_all_variables();
             control.set_Allowed_Random_Freq_Move(false);
@@ -287,14 +287,14 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
                 control.set_Sine_Time(0);
                 control.set_Saw_Time(0);
 
-                Control_Values cv = new()
+                ControlStatus cv = new()
                 {
                     brake = control.is_Braking(),
                     mascon_on = !control.is_Mascon_Off(),
                     free_run = control.is_Free_Running(),
                     wave_stat = control.get_Control_Frequency()
                 };
-                PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
+                PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
 
                 Bitmap image = Get_WaveForm_Image(control, calculated_Values, image_width, image_height, wave_height, 1, calculate_div, 0);
 

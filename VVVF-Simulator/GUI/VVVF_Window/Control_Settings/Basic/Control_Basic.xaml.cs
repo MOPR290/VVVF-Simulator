@@ -5,8 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using VVVF_Simulator.GUI.Pages.Control_Settings.Basic;
-using static VVVF_Simulator.VVVF_Structs;
-using static VVVF_Simulator.VVVF_Structs.Pulse_Mode;
+using static VVVF_Simulator.VvvfStructs;
+using static VVVF_Simulator.VvvfStructs.PulseMode;
 using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data;
 
 namespace VVVF_Simulator.VVVF_Window.Control_Settings.Basic
@@ -104,7 +104,7 @@ namespace VVVF_Simulator.VVVF_Window.Control_Settings.Basic
 
         private void Set_Control()
         {
-            Pulse_Mode mode = target.pulse_Mode;
+            PulseMode mode = target.pulse_Mode;
 
             viewModel.Harmonic_Visible = Is_Harmonic_BaseWaveChange_Available(mode, level);
             viewModel.Shifted_Visible = Is_Shifted_Available(mode, level);

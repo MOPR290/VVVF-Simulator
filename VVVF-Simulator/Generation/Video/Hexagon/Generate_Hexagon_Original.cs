@@ -9,7 +9,7 @@ using static VVVF_Simulator.My_Math;
 using VVVF_Simulator.Yaml.VVVF_Sound;
 using System.Collections.Generic;
 using Point = System.Drawing.Point;
-using static VVVF_Simulator.VVVF_Structs;
+using static VVVF_Simulator.VvvfStructs;
 using static VVVF_Simulator.Yaml.Mascon_Control.Yaml_Mascon_Analyze;
 using static VVVF_Simulator.Generation.Generate_Common.GenerationBasicParameter;
 
@@ -20,7 +20,7 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
 
 
         public static Bitmap Get_Hexagon_Original_Image(
-            VVVF_Values Control,
+            VvvfValues Control,
             Yaml_VVVF_Sound_Data Sound,
             int Width,
             int Height, 
@@ -30,7 +30,7 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
             bool PreciseDelta
         )
         {
-            Wave_Values[] PWM_Array = Generate_Basic.Get_UVW_Cycle(Control, Sound, 0, Delta, PreciseDelta);
+            WaveValues[] PWM_Array = Generate_Basic.Get_UVW_Cycle(Control, Sound, 0, Delta, PreciseDelta);
 
             if (Control.get_Control_Frequency() == 0)
                 return Get_Hexagon_Original_Image(ref PWM_Array, 0, Width, Height, Thickness, ZeroVectorCircle);
@@ -85,7 +85,7 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
         }
 
         public static Bitmap Get_Hexagon_Original_Image(
-            ref Wave_Values[] UVW,
+            ref WaveValues[] UVW,
             double ControlFrequency,
             int Width,
             int Height,
@@ -109,11 +109,11 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
             List<PointD> ZeroPoints = new();
             List<PointD> LinePoints = new() { CurrentPoint };
 
-            Wave_Values pre_wave_Values = new();
+            WaveValues pre_wave_Values = new();
 
             for (int i = 0; i < UVW.Length; i++)
             {
-                Wave_Values value = UVW[i];
+                WaveValues value = UVW[i];
                 PointD DeltaMove = new(
                     -0.5 * value.W - 0.5 * value.V + value.U,
                     -0.866025403784438646763 * value.W + 0.866025403784438646763 * value.V
@@ -184,7 +184,7 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
             Yaml_Mascon_Data_Compiled masconData = generationBasicParameter.masconData;
             ProgressData progressData = generationBasicParameter.progressData;
 
-            VVVF_Values control = new();
+            VvvfValues control = new();
             control.reset_control_variables();
             control.reset_all_variables();
             control.set_Allowed_Random_Freq_Move(false);
@@ -296,7 +296,7 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
         /// <param name="d">Frequency you want to see</param>
         public static void Generate_Hexagon_Original_Image(String fileName, Yaml_VVVF_Sound_Data sound_data, Boolean circle, double d)
         {
-            VVVF_Values control = new();
+            VvvfValues control = new();
 
             control.reset_control_variables();
             control.reset_all_variables();

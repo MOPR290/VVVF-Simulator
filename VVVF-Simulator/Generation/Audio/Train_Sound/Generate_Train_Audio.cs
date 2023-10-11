@@ -14,7 +14,7 @@ using static VVVF_Simulator.Generation.Generate_Common.GenerationBasicParameter;
 using static VVVF_Simulator.Generation.Motor.Generate_Motor_Core;
 using static VVVF_Simulator.MainWindow;
 using static VVVF_Simulator.My_Math;
-using static VVVF_Simulator.VVVF_Structs;
+using static VVVF_Simulator.VvvfStructs;
 using static VVVF_Simulator.Yaml.Mascon_Control.Yaml_Mascon_Analyze;
 using static VVVF_Simulator.Yaml.TrainAudio_Setting.Yaml_TrainSound_Analyze;
 using static VVVF_Simulator.Yaml.TrainAudio_Setting.Yaml_TrainSound_Analyze.Yaml_TrainSound_Data;
@@ -25,22 +25,22 @@ namespace VVVF_Simulator.Generation.Audio.Train_Sound
     public class Generate_Train_Audio
     {
         // -------- TRAIN SOUND --------------
-        public static byte Get_Train_Sound(VVVF_Values control, Yaml_VVVF_Sound_Data sound_data, Motor_Data motor, Yaml_TrainSound_Data train_Harmonic_Data)
+        public static byte Get_Train_Sound(VvvfValues control, Yaml_VVVF_Sound_Data sound_data, Motor_Data motor, Yaml_TrainSound_Data train_Harmonic_Data)
         {
 
             double pwm_sound_val;
-            Control_Values cv = new()
+            ControlStatus cv = new()
             {
                 brake = control.is_Braking(),
                 mascon_on = !control.is_Mascon_Off(),
                 free_run = control.is_Free_Running(),
                 wave_stat = control.get_Control_Frequency()
             };
-            PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, sound_data);
-            Wave_Values value = VVVF_Calculate.calculate_values(control, calculated_Values, 0);
+            PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, sound_data);
+            WaveValues value = VVVF_Calculate.calculate_values(control, calculated_Values, 0);
 
             motor.motor_Param.sitamr = control.get_Video_Sine_Freq() * Math.PI * 2 * control.get_Sine_Time();
-            motor.AynMotorControler(new Wave_Values() { U = value.W, V = value.V, W = value.U });
+            motor.AynMotorControler(new WaveValues() { U = value.W, V = value.V, W = value.U });
             motor.Asyn_Moduleabc();
 
             pwm_sound_val = motor.motor_Param.Te - (motor.motor_Param.pre_Te + motor.motor_Param.Te) / 2.0;
@@ -138,7 +138,7 @@ namespace VVVF_Simulator.Generation.Audio.Train_Sound
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
             string temp = Path.GetDirectoryName(output_path) + "\\" + "temp-" + gen_time + ".wav";
 
-            VVVF_Values control = new();
+            VvvfValues control = new();
             control.reset_control_variables();
             control.reset_all_variables();
 

@@ -20,14 +20,14 @@ namespace VVVF_Simulator.Generation.Audio
             public Boolean reselect { get; set; } = false;
             public Boolean free_run { get; set; } = false;
 
-            public VVVF_Values control_values { get; set; } = new();
+            public VvvfValues control_values { get; set; } = new();
             public Yaml_VVVF_Sound_Data sound_data { get; set; } = new();
 
             public Motor_Data Motor = new();
             public Yaml_TrainSound_Data Train_Sound_Data = Yaml_TrainSound_Data_Manage.current_data.Clone();
         }
 
-        public static int RealTime_CheckForFreq(VVVF_Values control, RealTime_Parameter param, int step)
+        public static int RealTime_CheckForFreq(VvvfValues control, RealTime_Parameter param, int step)
         {
             control.set_Braking(param.braking);
             control.set_Mascon_Off(param.free_run);

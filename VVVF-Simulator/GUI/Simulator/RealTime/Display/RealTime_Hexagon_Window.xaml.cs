@@ -73,7 +73,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
         {
             Bitmap image = new(100,100);
 
-            VVVF_Values control = _Parameter.control_values.Clone();
+            VvvfValues control = _Parameter.control_values.Clone();
             Yaml_VVVF_Sound_Data ysd = _Parameter.sound_data;
 
             control.set_Sine_Time(0);

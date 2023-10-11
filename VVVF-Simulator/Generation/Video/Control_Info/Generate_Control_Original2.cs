@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Threading.Tasks;
 using VVVF_Simulator.Yaml.VVVF_Sound;
-using static VVVF_Simulator.VVVF_Structs;
+using static VVVF_Simulator.VvvfStructs;
 using static VVVF_Simulator.Generation.Video.Control_Info.Generate_Control_Common;
 using static VVVF_Simulator.Generation.Video.Hexagon.Generate_Hexagon_Original;
 using static VVVF_Simulator.Generation.Video.WaveForm.Generate_WaveForm_UV;
@@ -14,7 +14,7 @@ using static VVVF_Simulator.Generation.Generate_Common;
 using Point = System.Drawing.Point;
 using Size = System.Drawing.Size;
 using static VVVF_Simulator.Yaml.Mascon_Control.Yaml_Mascon_Analyze;
-using static VVVF_Simulator.VVVF_Structs.Pulse_Mode;
+using static VVVF_Simulator.VvvfStructs.PulseMode;
 using static VVVF_Simulator.Generation.Generate_Common.GenerationBasicParameter;
 
 namespace VVVF_Simulator.Generation.Video.Control_Info
@@ -59,14 +59,14 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             g.DrawString(unit.content, unit.font, new SolidBrush(Color.White), new PointF(unit_x, unit_y));
         }
 
-        private static String get_Pulse_Name(VVVF_Values control)
+        private static String get_Pulse_Name(VvvfValues control)
         {
-            Pulse_Mode mode_p = control.get_Video_Pulse_Mode();
+            PulseMode mode_p = control.get_Video_Pulse_Mode();
             Pulse_Mode_Names mode = mode_p.pulse_name;
             //Not in sync
             if (mode == Pulse_Mode_Names.Async)
             {
-                Carrier_Freq carrier_freq_data = control.get_Video_Carrier_Freq_Data();
+                CarrierFreq carrier_freq_data = control.get_Video_Carrier_Freq_Data();
                 String default_s = String.Format(carrier_freq_data.base_freq.ToString("F2"));
                 return default_s;
             }
@@ -106,7 +106,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             }
         }
 
-        public static Bitmap Get_Control_Original2_Image(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, bool Precise)
+        public static Bitmap Get_Control_Original2_Image(VvvfValues Control, Yaml_VVVF_Sound_Data Sound, bool Precise)
         {
             int image_width = 1920;
             int image_height = 500;
@@ -116,8 +116,8 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             Bitmap hexagon = new(400, 400), wave_form = new(1520, 400);
             Graphics g = Graphics.FromImage(image);          
 
-            VVVF_Values CycleControl = Control.Clone();
-            Wave_Values[] CycleUVW = Array.Empty<Wave_Values>();
+            VvvfValues CycleControl = Control.Clone();
+            WaveValues[] CycleUVW = Array.Empty<WaveValues>();
 
             // CALCULATE ONE CYCLE OF PWM
             Task CycleCalcTask = Task.Run(() =>
@@ -128,11 +128,11 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                 CycleUVW = Generate_Basic.Get_UVW_Cycle(CycleControl, Sound, My_Math.M_PI_6, (Precise ? 120000 : 6000), Precise);
             });
             Task WaveFormTask = Task.Run(() => {
-                VVVF_Values WaveFormControl = Control.Clone();
+                VvvfValues WaveFormControl = Control.Clone();
                 WaveFormControl.set_Allowed_Random_Freq_Move(false);
                 WaveFormControl.set_Sine_Time(0);
                 WaveFormControl.set_Saw_Time(0);
-                PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(WaveFormControl, new Control_Values()
+                PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(WaveFormControl, new ControlStatus()
                 {
                     brake = WaveFormControl.is_Braking(),
                     mascon_on = !WaveFormControl.is_Mascon_Off(),
@@ -241,7 +241,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             Yaml_Mascon_Data_Compiled masconData = generationBasicParameter.masconData;
             ProgressData progressData = generationBasicParameter.progressData;
 
-            VVVF_Values control = new();
+            VvvfValues control = new();
             control.reset_control_variables();
             control.reset_all_variables();
             control.set_Allowed_Random_Freq_Move(false);
@@ -264,14 +264,14 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             if (START_FRAMES)
             {
 
-                Control_Values cv = new()
+                ControlStatus cv = new()
                 {
                     brake = true,
                     mascon_on = true,
                     free_run = false,
                     wave_stat = 0
                 };
-                PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
+                PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
                 _ = calculate_values(control, calculated_Values, 0);
                 Bitmap final_image = Get_Control_Original2_Image(control, vvvfData, true);
 
@@ -316,14 +316,14 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             if (END_FRAMES)
             {
 
-                Control_Values cv = new()
+                ControlStatus cv = new()
                 {
                     brake = true,
                     mascon_on = true,
                     free_run = false,
                     wave_stat = 0
                 };
-                PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
+                PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
                 _ = calculate_values(control, calculated_Values, 0);
                 Bitmap final_image = Get_Control_Original2_Image(control, vvvfData, true);
                 Add_Image_Frames(final_image, 60, vr);

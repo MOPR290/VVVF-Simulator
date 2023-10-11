@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Drawing;
 using VVVF_Simulator.Yaml.VVVF_Sound;
-using static VVVF_Simulator.VVVF_Structs;
+using static VVVF_Simulator.VvvfStructs;
 
 namespace VVVF_Simulator.Generation.Video.FS
 {
     public class Generate_FS
     {
 
-        public static double Get_Fourier(ref Wave_Values[] UVW, int N, double InitialPhase)
+        public static double Get_Fourier(ref WaveValues[] UVW, int N, double InitialPhase)
         {
             double integral = 0;
             double dt = 1.0 / (UVW.Length - 1);
@@ -23,7 +23,7 @@ namespace VVVF_Simulator.Generation.Video.FS
             return Math.Round(bn, 4);
         }
 
-        public static double Get_Fourier_Fast(ref Wave_Values[] UVW, int N, double InitialPhase)
+        public static double Get_Fourier_Fast(ref WaveValues[] UVW, int N, double InitialPhase)
         {
             double integral = 0;
 
@@ -52,7 +52,7 @@ namespace VVVF_Simulator.Generation.Video.FS
             return Math.Round(bn, 4);
         }
 
-        public static double[] Get_Fourier_Coefficients(ref Wave_Values[] UVW, int N, double InitialPhase)
+        public static double[] Get_Fourier_Coefficients(ref WaveValues[] UVW, int N, double InitialPhase)
         {
             double[] coefficients = new double[N];
             for (int n = 1; n <= N; n++)
@@ -63,10 +63,10 @@ namespace VVVF_Simulator.Generation.Video.FS
             return coefficients;
         }
 
-        public static double[] Get_Fourier_Coefficients(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, int Delta, int N)
+        public static double[] Get_Fourier_Coefficients(VvvfValues Control, Yaml_VVVF_Sound_Data Sound, int Delta, int N)
         {
             Control.set_Allowed_Random_Freq_Move(false);
-            Wave_Values[] PWM_Array = Generate_Basic.Get_UVW_Cycle(Control, Sound, My_Math.M_PI_6, Delta, false);
+            WaveValues[] PWM_Array = Generate_Basic.Get_UVW_Cycle(Control, Sound, My_Math.M_PI_6, Delta, false);
             return Get_Fourier_Coefficients(ref PWM_Array, N, 0);
         }
 

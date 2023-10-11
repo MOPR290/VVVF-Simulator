@@ -1,5 +1,5 @@
 ﻿using static VVVF_Simulator.VVVF_Calculate;
-using static VVVF_Simulator.VVVF_Values;
+using static VVVF_Simulator.VvvfValues;
 using static VVVF_Simulator.My_Math;
 using static VVVF_Simulator.VVVF_Calculate.Amplitude_Argument;
 using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data;
@@ -11,8 +11,8 @@ using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Mascon_Dat
 using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Control_Data_Amplitude_Control;
 using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Parameter_Carrier_Freq_Table;
 using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Random;
-using static VVVF_Simulator.VVVF_Structs;
-using static VVVF_Simulator.VVVF_Structs.Pulse_Mode;
+using static VVVF_Simulator.VvvfStructs;
+using static VVVF_Simulator.VvvfStructs.PulseMode;
 using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Random.Yaml_Async_Parameter_Random_Value;
 
 namespace VVVF_Simulator.Yaml.VVVF_Sound
@@ -64,7 +64,7 @@ namespace VVVF_Simulator.Yaml.VVVF_Sound
 
 		}
 
-		public static bool is_Matching(VVVF_Values control, Control_Values cv,Yaml_Control_Data ysd, bool compare_with_sine)
+		public static bool is_Matching(VvvfValues control, ControlStatus cv,Yaml_Control_Data ysd, bool compare_with_sine)
         {
 			Yaml_Free_Run_Condition_Single free_run_data;
 			if (cv.mascon_on) free_run_data = ysd.when_freerun.on;
@@ -97,10 +97,10 @@ namespace VVVF_Simulator.Yaml.VVVF_Sound
 			return false;
 
 		}
-		public static PWM_Calculate_Values calculate_Yaml(VVVF_Values control , Control_Values cv, Yaml_VVVF_Sound_Data yvs)
+		public static PwmCalculateValues calculate_Yaml(VvvfValues control , ControlStatus cv, Yaml_VVVF_Sound_Data yvs)
 		{
-			Pulse_Mode pulse_mode;
-			Carrier_Freq carrier_freq = new(0, 0, 0.0005);
+			PulseMode pulse_mode;
+			CarrierFreq carrier_freq = new(0, 0, 0.0005);
 			double amplitude = 0;
 			double dipolar = -1;
 
@@ -150,17 +150,17 @@ namespace VVVF_Simulator.Yaml.VVVF_Sound
                     if (!cv.mascon_on)
                     {
 						control.set_Control_Frequency(0);
-						return new PWM_Calculate_Values() { none = true };
+						return new PwmCalculateValues() { none = true };
 					}
 					else
 					{
 						control.set_Control_Frequency(control.get_Sine_Freq());
 						cv.wave_stat = control.get_Sine_Freq();
-						return new PWM_Calculate_Values() { none = true };
+						return new PwmCalculateValues() { none = true };
 					}
 				}
 				else
-					return new PWM_Calculate_Values() { none = true };
+					return new PwmCalculateValues() { none = true };
 			}
 
 			//
@@ -249,7 +249,7 @@ namespace VVVF_Simulator.Yaml.VVVF_Sound
 				if (async_data.random_data.random_interval.value_mode == Yaml_Async_Parameter_Random_Value_Mode.Const) random_interval = async_data.random_data.random_interval.const_value;
 				else random_interval = Get_Moving_Value(async_data.random_data.random_interval.moving_value, original_wave_stat);
 
-				carrier_freq = new Carrier_Freq(carrier_freq_val, random_range, random_interval);
+				carrier_freq = new CarrierFreq(carrier_freq_val, random_range, random_interval);
 
 				//
 				// dipolar solve
@@ -310,10 +310,10 @@ namespace VVVF_Simulator.Yaml.VVVF_Sound
 				if (!cv.mascon_on && amplitude == 0) control.set_Control_Frequency(0);
 			}
 
-			if (cv.wave_stat == 0) return new PWM_Calculate_Values() { none = true };
-			if (amplitude == 0) return new PWM_Calculate_Values() { none = true };
+			if (cv.wave_stat == 0) return new PwmCalculateValues() { none = true };
+			if (amplitude == 0) return new PwmCalculateValues() { none = true };
 
-			PWM_Calculate_Values values = new()
+			PwmCalculateValues values = new()
 			{
 				none = false,
 				carrier_freq = carrier_freq,

@@ -30,7 +30,7 @@ namespace VVVF_Simulator.Yaml.VVVF_Sound
             parameter.max_amp = -1;
             parameter.cut_off_amp = -1;
 
-            VVVF_Values control = new();
+            VvvfValues control = new();
             control.reset_all_variables();
             control.reset_control_variables();
             control.set_Sine_Angle_Freq(target_freq * Math.PI * 2);

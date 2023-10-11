@@ -4,11 +4,11 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using static VVVF_Simulator.VVVF_Calculate;
-using static VVVF_Simulator.VVVF_Values;
+using static VVVF_Simulator.VvvfValues;
 using static VVVF_Simulator.Generation.Generate_Common;
 using VVVF_Simulator.Yaml.VVVF_Sound;
 using System.Collections.Generic;
-using static VVVF_Simulator.VVVF_Structs;
+using static VVVF_Simulator.VvvfStructs;
 using static VVVF_Simulator.Yaml.Mascon_Control.Yaml_Mascon_Analyze;
 using static VVVF_Simulator.MainWindow;
 using static VVVF_Simulator.Generation.Generate_Common.GenerationBasicParameter;
@@ -23,7 +23,7 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
             Yaml_Mascon_Data_Compiled masconData = generationBasicParameter.masconData;
             ProgressData progressData = generationBasicParameter.progressData;
 
-            VVVF_Values control = new();
+            VvvfValues control = new();
             control.reset_control_variables();
             control.reset_all_variables();
 
@@ -92,15 +92,15 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
 
                     for (int j = 0; j < 2; j++)
                     {
-                        Control_Values cv = new()
+                        ControlStatus cv = new()
                         {
                             brake = control.is_Braking(),
                             mascon_on = !control.is_Mascon_Off(),
                             free_run = control.is_Free_Running(),
                             wave_stat = control.get_Control_Frequency()
                         };
-                        PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
-                        Wave_Values value = calculate_values(control, calculated_Values, 0);
+                        PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
+                        WaveValues value = calculate_values(control, calculated_Values, 0);
 
                         points_U[j] = value.U;
                         points_V[j] = value.V;

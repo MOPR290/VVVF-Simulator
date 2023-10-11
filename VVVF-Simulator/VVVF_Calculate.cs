@@ -1,11 +1,11 @@
 ﻿using static VVVF_Simulator.Generation.Generate_Common;
-using static VVVF_Simulator.VVVF_Values;
+using static VVVF_Simulator.VvvfValues;
 using static VVVF_Simulator.My_Math;
 using System;
 using static VVVF_Simulator.VVVF_Calculate.Amplitude_Argument;
 using System.Threading.Tasks;
-using static VVVF_Simulator.VVVF_Structs;
-using static VVVF_Simulator.VVVF_Structs.Pulse_Mode;
+using static VVVF_Simulator.VvvfStructs;
+using static VVVF_Simulator.VvvfStructs.PulseMode;
 using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data;
 
 namespace VVVF_Simulator
@@ -57,7 +57,7 @@ namespace VVVF_Simulator
 			return sine;
         }
 
-		public static double Get_Sine_Value_With_Harmonic(Pulse_Mode mode,double x,double amplitude)
+		public static double Get_Sine_Value_With_Harmonic(PulseMode mode,double x,double amplitude)
         {
 			double sin_value = 0;
 
@@ -284,7 +284,7 @@ namespace VVVF_Simulator
 		//
 		// Carrier Freq Calculation
 		//
-		private static double get_Random_freq(Carrier_Freq data, VVVF_Values control)
+		private static double get_Random_freq(CarrierFreq data, VvvfValues control)
 		{
 			if (data.range == 0) return data.base_freq;
 
@@ -317,7 +317,7 @@ namespace VVVF_Simulator
 				return data.base_freq;
             }
 		}
-		public static double get_Vibrato_Freq(double lowest, double highest, double interval_time, bool continuous , VVVF_Values control)
+		public static double get_Vibrato_Freq(double lowest, double highest, double interval_time, bool continuous , VvvfValues control)
 		{
 
 			if (!control.is_Allowed_Random_Freq_Move())
@@ -350,7 +350,7 @@ namespace VVVF_Simulator
 		//
 		// VVVF Calculation
 		//
-		public static double check_for_mascon_off(Control_Values cv, VVVF_Values control, double max_voltage_freq)
+		public static double check_for_mascon_off(ControlStatus cv, VvvfValues control, double max_voltage_freq)
         {
 			if (cv.free_run && !cv.mascon_on && cv.wave_stat > max_voltage_freq)
 			{
@@ -367,13 +367,13 @@ namespace VVVF_Simulator
 			return -1;
 		}
 
-		public static Wave_Values calculate_values(VVVF_Values control,PWM_Calculate_Values value, double add_initial)
+		public static WaveValues calculate_values(VvvfValues control,PwmCalculateValues value, double add_initial)
         {
 
 			if (control.get_Sine_Freq() < value.min_sine_freq && control.get_Control_Frequency() > 0) control.set_Video_Sine_Freq(value.min_sine_freq);
 			else control.set_Video_Sine_Freq(control.get_Sine_Freq());
 
-			if (value.none) return new Wave_Values() { U = 0, V = 0, W = 0 };
+			if (value.none) return new WaveValues() { U = 0, V = 0, W = 0 };
 
 			control.set_Video_Pulse_Mode(value.pulse_mode);
 			control.set_Video_Sine_Amplitude(value.amplitude);
@@ -394,16 +394,16 @@ namespace VVVF_Simulator
 
 			}
 
-			return new Wave_Values() { U = U, V = V, W = W };
+			return new WaveValues() { U = U, V = V, W = W };
         }
 
-        public static int calculate_three_level(VVVF_Values control, PWM_Calculate_Values calculate_values, double initial_phase)
+        public static int calculate_three_level(VvvfValues control, PwmCalculateValues calculate_values, double initial_phase)
 		{
 			double sine_angle_freq = control.get_Sine_Angle_Freq();
 			double sine_time = control.get_Sine_Time();
 			double min_sine_angle_freq = calculate_values.min_sine_freq * M_2PI;
-			Pulse_Mode pulse_mode = calculate_values.pulse_mode;
-			Carrier_Freq freq_data = calculate_values.carrier_freq;
+			PulseMode pulse_mode = calculate_values.pulse_mode;
+			CarrierFreq freq_data = calculate_values.carrier_freq;
 			double dipolar = calculate_values.dipolar;
 
 			if (sine_angle_freq < min_sine_angle_freq && control.get_Control_Frequency() > 0)
@@ -476,7 +476,7 @@ namespace VVVF_Simulator
 			
 		}
 
-		public static int calculate_two_level (VVVF_Values control , PWM_Calculate_Values calculate_values, double initial_phase)
+		public static int calculate_two_level (VvvfValues control , PwmCalculateValues calculate_values, double initial_phase)
 		{
 			double sin_angle_freq = control.get_Sine_Angle_Freq();
 			double sin_time = control.get_Sine_Time();
@@ -493,9 +493,9 @@ namespace VVVF_Simulator
 			double saw_angle_freq = control.get_Saw_Angle_Freq();
 
 			double amplitude = calculate_values.amplitude;
-			Pulse_Mode pulse_mode = calculate_values.pulse_mode;
+			PulseMode pulse_mode = calculate_values.pulse_mode;
 			Pulse_Mode_Names pulse_name = pulse_mode.pulse_name;
-			Carrier_Freq carrier_freq_data = calculate_values.carrier_freq;
+			CarrierFreq carrier_freq_data = calculate_values.carrier_freq;
 
 			if (calculate_values.none) 
 				return 0;

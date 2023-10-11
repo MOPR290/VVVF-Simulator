@@ -6,7 +6,7 @@ using System.Text;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using static VVVF_Simulator.VVVF_Calculate;
-using static VVVF_Simulator.VVVF_Structs;
+using static VVVF_Simulator.VvvfStructs;
 
 namespace VVVF_Simulator.Yaml.VVVF_Sound
 {
@@ -125,8 +125,8 @@ namespace VVVF_Simulator.Yaml.VVVF_Sound
             public bool enable_normal { get; set; } = true;
 
             // Null check !
-            private Pulse_Mode _pulse_mode = new();
-            public Pulse_Mode pulse_Mode
+            private PulseMode _pulse_mode = new();
+            public PulseMode pulse_Mode
             {
                 get { return _pulse_mode; }
                 set { if (value != null) _pulse_mode = value; }
@@ -177,7 +177,7 @@ namespace VVVF_Simulator.Yaml.VVVF_Sound
 
                 public enum Moving_Value_Type
                 {
-                    Proportional, Pow2_Exponential , Inv_Proportional
+                    Proportional, Pow2_Exponential, Inv_Proportional
                 }
 
                 public override string ToString()
@@ -272,8 +272,8 @@ namespace VVVF_Simulator.Yaml.VVVF_Sound
 
                 public class Yaml_Async_Parameter_Random
                 {
-                    public Yaml_Async_Parameter_Random_Value random_range { get; set; } = new ();
-                    public Yaml_Async_Parameter_Random_Value random_interval { get; set; } = new ();
+                    public Yaml_Async_Parameter_Random_Value random_range { get; set; } = new();
+                    public Yaml_Async_Parameter_Random_Value random_interval { get; set; } = new();
 
                     public override string ToString()
                     {
@@ -364,7 +364,7 @@ namespace VVVF_Simulator.Yaml.VVVF_Sound
 
                         private Yaml_Async_Parameter_Vibrato_Value _interval = new();
                         public Yaml_Async_Parameter_Vibrato_Value interval { get { return _interval; } set { if (value != null) _interval = value; } }
-                       
+
                         public bool continuous { get; set; } = true;
 
                         public override string ToString()
@@ -456,7 +456,7 @@ namespace VVVF_Simulator.Yaml.VVVF_Sound
                         public Yaml_Async_Parameter_Carrier_Freq_Table Clone()
                         {
                             Yaml_Async_Parameter_Carrier_Freq_Table clone = new();
-                            for(int i = 0; i < carrier_freq_table.Count; i++)
+                            for (int i = 0; i < carrier_freq_table.Count; i++)
                             {
                                 clone.carrier_freq_table.Add(carrier_freq_table[i].Clone());
                             }

@@ -76,7 +76,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
 
             if(_Style == RealTime_ControlStat_Style.Original)
             {
-                VVVF_Values control = _Paremter.control_values.Clone();
+                VvvfValues control = _Paremter.control_values.Clone();
                 image = Generation.Video.Control_Info.Generate_Control_Original.Get_Control_Original_Image(
                     control,
                     _Paremter.control_values.get_Sine_Freq() == 0
@@ -84,7 +84,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             }
             else
             {
-                VVVF_Values control = _Paremter.control_values.Clone();
+                VvvfValues control = _Paremter.control_values.Clone();
                 image = Generation.Video.Control_Info.Generate_Control_Original2.Get_Control_Original2_Image(
                     control,
                     _Paremter.sound_data,

@@ -9,9 +9,9 @@ using static VVVF_Simulator.Generation.Generate_Common;
 using System.Drawing.Drawing2D;
 
 using VVVF_Simulator.Yaml.VVVF_Sound;
-using static VVVF_Simulator.VVVF_Structs;
+using static VVVF_Simulator.VvvfStructs;
 using static VVVF_Simulator.Yaml.Mascon_Control.Yaml_Mascon_Analyze;
-using static VVVF_Simulator.VVVF_Structs.Pulse_Mode;
+using static VVVF_Simulator.VvvfStructs.PulseMode;
 using static VVVF_Simulator.MainWindow;
 using static VVVF_Simulator.Generation.Generate_Common.GenerationBasicParameter;
 
@@ -19,7 +19,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
 {
     public class Generate_Control_Original
     {
-        private static String[] get_Pulse_Name(VVVF_Values control)
+        private static String[] get_Pulse_Name(VvvfValues control)
         {
             Pulse_Mode_Names mode = control.get_Video_Pulse_Mode().pulse_name;
             //Not in sync
@@ -28,7 +28,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                 string[] names = new string[3];
                 int count = 0;
 
-                Carrier_Freq carrier_freq_data = control.get_Video_Carrier_Freq_Data();
+                CarrierFreq carrier_freq_data = control.get_Video_Carrier_Freq_Data();
 
                 names[count] = String.Format("Async - " + carrier_freq_data.base_freq.ToString("F2")).PadLeft(6);
                 count++;
@@ -161,7 +161,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
 
         }
 
-        public static Bitmap Get_Control_Original_Image(VVVF_Values control , bool final_show)
+        public static Bitmap Get_Control_Original_Image(VvvfValues control , bool final_show)
         {
             int image_width = 500;
             int image_height = 1080;
@@ -278,7 +278,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             Yaml_Mascon_Data_Compiled masconData = generationBasicParameter.masconData;
             ProgressData progressData = generationBasicParameter.progressData;
 
-            VVVF_Values control = new();
+            VvvfValues control = new();
             control.reset_control_variables();
             control.reset_all_variables();
 
@@ -303,14 +303,14 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
 
             while (loop)
             {
-                Control_Values cv = new()
+                ControlStatus cv = new()
                 {
                     brake = control.is_Braking(),
                     mascon_on = !control.is_Mascon_Off(),
                     free_run = control.is_Free_Running(),
                     wave_stat = control.get_Control_Frequency()
                 };
-                PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
+                PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
                 _ = calculate_values(control, calculated_Values, 0);
 
                 control.set_Sine_Time(0);

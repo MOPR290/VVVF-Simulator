@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using VVVF_Simulator.Yaml.VVVF_Sound;
 using static VVVF_Simulator.Generation.Audio.Generate_RealTime_Common;
-using static VVVF_Simulator.VVVF_Structs;
+using static VVVF_Simulator.VvvfStructs;
 
 namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
 {
@@ -58,7 +58,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
         private void UpdateControl()
         {
             Yaml_VVVF_Sound_Data Sound = _Parameter.sound_data;
-            VVVF_Values Control = _Parameter.control_values.Clone();
+            VvvfValues Control = _Parameter.control_values.Clone();
 
             Control.set_Saw_Time(0);
             Control.set_Sine_Time(0);
@@ -70,14 +70,14 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             int calculate_div = 3;
             int wave_height = 100;
 
-            Control_Values cv = new()
+            ControlStatus cv = new()
             {
                 brake = Control.is_Braking(),
                 mascon_on = !Control.is_Mascon_Off(),
                 free_run = Control.is_Free_Running(),
                 wave_stat = Control.get_Control_Frequency()
             };
-            PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(Control, cv, Sound);
+            PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(Control, cv, Sound);
             Bitmap image = Generation.Video.WaveForm.Generate_WaveForm_UV.Get_WaveForm_Image(Control, calculated_Values, image_width, image_height, wave_height, 2, calculate_div,0);
 
             using Stream st = new MemoryStream();

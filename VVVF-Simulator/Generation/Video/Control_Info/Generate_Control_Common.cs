@@ -2,7 +2,7 @@
 using System.Drawing;
 using VVVF_Simulator.Yaml.VVVF_Sound;
 using static VVVF_Simulator.VVVF_Calculate;
-using static VVVF_Simulator.VVVF_Structs;
+using static VVVF_Simulator.VvvfStructs;
 
 namespace VVVF_Simulator.Generation.Video.Control_Info
 {
@@ -15,9 +15,9 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
         /// <param name="Sound"></param>
         /// <param name="Control"></param>
         /// <returns></returns>
-        public static double Get_Voltage_Rate(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, bool Precise)
+        public static double Get_Voltage_Rate(VvvfValues Control, Yaml_VVVF_Sound_Data Sound, bool Precise)
         {
-            Wave_Values[] PWM_Array = Generate_Basic.Get_UVW_Cycle(Control, Sound, My_Math.M_PI_6, 120000, Precise);
+            WaveValues[] PWM_Array = Generate_Basic.Get_UVW_Cycle(Control, Sound, My_Math.M_PI_6, 120000, Precise);
             double result = FS.Generate_FS.Get_Fourier_Fast(ref PWM_Array, 1, 0);
             result = Math.Abs(result);
             return result;

@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using static VVVF_Simulator.My_Math;
-using static VVVF_Simulator.VVVF_Calculate;
-using static VVVF_Simulator.VVVF_Structs;
-using static VVVF_Simulator.VVVF_Structs.Pulse_Mode;
+using static VVVF_Simulator.VvvfStructs;
+using static VVVF_Simulator.VvvfStructs.PulseMode;
 
 namespace VVVF_Simulator
 {
-    public class VVVF_Values
+    public class VvvfValues
     {
-        public VVVF_Values Clone()
+        public VvvfValues Clone()
         {
-            VVVF_Values clone = (VVVF_Values)MemberwiseClone();
+            VvvfValues clone = (VvvfValues)MemberwiseClone();
 
             //Deep copy
             clone.set_Video_Carrier_Freq_Data(clone.get_Video_Carrier_Freq_Data().Clone());
@@ -132,22 +130,22 @@ namespace VVVF_Simulator
 
 
         // Values for Video Generation.
-        private Pulse_Mode v_pulse_mode { get; set; } = new();
+        private PulseMode v_pulse_mode { get; set; } = new();
         private double v_sine_amplitude { get; set; }
-        private Carrier_Freq v_carrier_freq_data { get; set; } = new Carrier_Freq(0, 0, 0.0005);
+        private CarrierFreq v_carrier_freq_data { get; set; } = new CarrierFreq(0, 0, 0.0005);
         private double v_dipolar { get; set; }
 
         private double v_sine_freq { get; set; }
 
 
-        public void set_Video_Pulse_Mode(Pulse_Mode p) { v_pulse_mode = p; }
-        public Pulse_Mode get_Video_Pulse_Mode() { return v_pulse_mode; }
+        public void set_Video_Pulse_Mode(PulseMode p) { v_pulse_mode = p; }
+        public PulseMode get_Video_Pulse_Mode() { return v_pulse_mode; }
 
         public void set_Video_Sine_Amplitude(double d) { v_sine_amplitude = d; }
         public double get_Video_Sine_Amplitude() { return v_sine_amplitude; }
 
-        public void set_Video_Carrier_Freq_Data(Carrier_Freq c) { v_carrier_freq_data = c; }
-        public Carrier_Freq get_Video_Carrier_Freq_Data() { return v_carrier_freq_data; }
+        public void set_Video_Carrier_Freq_Data(CarrierFreq c) { v_carrier_freq_data = c; }
+        public CarrierFreq get_Video_Carrier_Freq_Data() { return v_carrier_freq_data; }
 
         public void set_Video_Dipolar(double d) { v_dipolar = d; }
         public double get_Video_Dipolar() { return v_dipolar; }
@@ -162,29 +160,21 @@ namespace VVVF_Simulator
 
     }
 
-    public static class VVVF_Structs
+    public static class VvvfStructs
     {
-        public class Wave_Values
+        public class WaveValues
         {
             public int U = 0;
             public int V = 0;
             public int W = 0;
 
-            public Wave_Values Clone()
+            public WaveValues Clone()
             {
-                return (Wave_Values)MemberwiseClone();
+                return (WaveValues)MemberwiseClone();
             }
         };
 
-        public static Wave_Values get_Wave_Values_None()
-        {
-            Wave_Values wv = new Wave_Values();
-            wv.U = 0;
-            wv.V = 0;
-            wv.W = 0;
-            return wv;
-        }
-        public class Control_Values
+        public class ControlStatus
         {
             public bool brake;
             public bool mascon_on;
@@ -192,13 +182,13 @@ namespace VVVF_Simulator
             public double wave_stat;
         }
 
-        public class Carrier_Freq
+        public class CarrierFreq
         {
-            public Carrier_Freq Clone()
+            public CarrierFreq Clone()
             {
-                return (Carrier_Freq)MemberwiseClone();
+                return (CarrierFreq)MemberwiseClone();
             }
-            public Carrier_Freq(double base_freq_a, double range_b, double interval_c)
+            public CarrierFreq(double base_freq_a, double range_b, double interval_c)
             {
                 base_freq = base_freq_a;
                 range = range_b;
@@ -210,10 +200,10 @@ namespace VVVF_Simulator
             public double interval;
         }
 
-        public class PWM_Calculate_Values
+        public class PwmCalculateValues
         {
-            public Pulse_Mode pulse_mode = new();
-            public Carrier_Freq carrier_freq = new Carrier_Freq(100, 0, 0.0005);
+            public PulseMode pulse_mode = new();
+            public CarrierFreq carrier_freq = new CarrierFreq(100, 0, 0.0005);
 
             public double dipolar;
             public int level;
@@ -222,9 +212,9 @@ namespace VVVF_Simulator
             public double amplitude;
             public double min_sine_freq;
 
-            public PWM_Calculate_Values Clone()
+            public PwmCalculateValues Clone()
             {
-                var clone = (PWM_Calculate_Values)MemberwiseClone();
+                var clone = (PwmCalculateValues)MemberwiseClone();
                 clone.carrier_freq = carrier_freq.Clone();
                 clone.pulse_mode = pulse_mode.Clone();
 
@@ -235,11 +225,11 @@ namespace VVVF_Simulator
         //
         // Pulse Mode Struct
         //
-        public class Pulse_Mode
+        public class PulseMode
         {
-            public Pulse_Mode Clone()
+            public PulseMode Clone()
             {
-                var x = (Pulse_Mode)MemberwiseClone();
+                var x = (PulseMode)MemberwiseClone();
                 List<Pulse_Harmonic> clone_pulse_harmonics = new();
                 for (int i = 0; i < pulse_harmonics.Count; i++)
                 {
@@ -357,7 +347,7 @@ namespace VVVF_Simulator
             return pulse_list[(int)mode];
         }
 
-        public static bool Is_Harmonic_BaseWaveChange_Available(Pulse_Mode mode, int level)
+        public static bool Is_Harmonic_BaseWaveChange_Available(PulseMode mode, int level)
         {
             if (level == 3) return true;
 
@@ -386,7 +376,7 @@ namespace VVVF_Simulator
             return pulse_list[(int)mode.pulse_name];
         }
 
-        public static bool Is_Shifted_Available(Pulse_Mode mode, int level)
+        public static bool Is_Shifted_Available(PulseMode mode, int level)
         {
             if (level == 3) return true;
 
@@ -396,7 +386,7 @@ namespace VVVF_Simulator
             return stat_1;
         }
 
-        public static bool Is_Square_Available(Pulse_Mode mode, int level)
+        public static bool Is_Square_Available(PulseMode mode, int level)
         {
             if (level == 3) return false;
 
@@ -406,7 +396,7 @@ namespace VVVF_Simulator
             return stat_1;
         }
 
-        public static int Get_Pulse_Num(Pulse_Mode mode, int level)
+        public static int Get_Pulse_Num(PulseMode mode, int level)
         {
             int pulses = Get_Name_Num(mode.pulse_name);
             if (level == 3) return pulses;
@@ -419,7 +409,7 @@ namespace VVVF_Simulator
 
             return pulses;
         }
-        public static double Get_Pulse_Initial(Pulse_Mode mode, int level)
+        public static double Get_Pulse_Initial(PulseMode mode, int level)
         {
             if (level == 3) return 0;
 
@@ -432,7 +422,7 @@ namespace VVVF_Simulator
             return 0;
         }
 
-        public static List<Pulse_Alternative_Mode> Get_Avail_Alt_Modes(Pulse_Mode pulse_Mode, int level)
+        public static List<Pulse_Alternative_Mode> Get_Avail_Alt_Modes(PulseMode pulse_Mode, int level)
         {
             if(level == 3) // level 3
             {

@@ -13,7 +13,7 @@ using VVVF_Simulator.Yaml.VVVF_Sound;
 using static VVVF_Simulator.Generation.Generate_Common;
 using static VVVF_Simulator.Generation.Generate_Common.GenerationBasicParameter;
 using static VVVF_Simulator.MainWindow;
-using static VVVF_Simulator.VVVF_Structs;
+using static VVVF_Simulator.VvvfStructs;
 using static VVVF_Simulator.Yaml.Mascon_Control.Yaml_Mascon_Analyze;
 
 namespace VVVF_Simulator.Generation.Video.FFT
@@ -21,7 +21,7 @@ namespace VVVF_Simulator.Generation.Video.FFT
     public class Generate_FFT
     {
         private static readonly int pow = 15;
-        private static Complex[] FFTNAudio(ref Wave_Values[] WaveForm)
+        private static Complex[] FFTNAudio(ref WaveValues[] WaveForm)
         {
             Complex[] fft = new Complex[WaveForm.Length];
             for (int i = 0; i < WaveForm.Length; i++)
@@ -39,10 +39,10 @@ namespace VVVF_Simulator.Generation.Video.FFT
             float θ = (float)Math.Atan2(C.Y, C.X);
             return (R, θ);
         }
-        public static Bitmap Get_FFT_Image(VVVF_Values control, Yaml_VVVF_Sound_Data sound)
+        public static Bitmap Get_FFT_Image(VvvfValues control, Yaml_VVVF_Sound_Data sound)
         {
             control.set_Allowed_Random_Freq_Move(false);
-            Wave_Values[] PWM_Array = Generate_Basic.Get_UVW_Sec(control, sound, My_Math.M_PI_6, (int)Math.Pow(2,pow) - 1, false);
+            WaveValues[] PWM_Array = Generate_Basic.Get_UVW_Sec(control, sound, My_Math.M_PI_6, (int)Math.Pow(2,pow) - 1, false);
             Complex[] FFT = FFTNAudio(ref PWM_Array);
 
             Bitmap image = new(1000, 1000);
@@ -71,7 +71,7 @@ namespace VVVF_Simulator.Generation.Video.FFT
             Yaml_Mascon_Data_Compiled masconData = generationBasicParameter.masconData;
             ProgressData progressData = generationBasicParameter.progressData;
 
-            VVVF_Values control = new();
+            VvvfValues control = new();
             control.reset_control_variables();
             control.reset_all_variables();
 
@@ -150,7 +150,7 @@ namespace VVVF_Simulator.Generation.Video.FFT
 
         public static void Generate_FFT_Image(String fileName, Yaml_VVVF_Sound_Data sound_data, double d)
         {
-            VVVF_Values control = new();
+            VvvfValues control = new();
 
             control.reset_control_variables();
             control.reset_all_variables();

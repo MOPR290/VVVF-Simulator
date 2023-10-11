@@ -16,8 +16,8 @@ using VVVF_Simulator.GUI.Simulator.RealTime.Setting_Window;
 using VVVF_Simulator.Yaml.VVVF_Sound;
 using static VVVF_Simulator.Generation.Audio.Generate_RealTime_Common;
 using static VVVF_Simulator.VVVF_Calculate;
-using static VVVF_Simulator.VVVF_Structs;
-using static VVVF_Simulator.VVVF_Structs.Pulse_Mode;
+using static VVVF_Simulator.VvvfStructs;
+using static VVVF_Simulator.VvvfStructs.PulseMode;
 
 namespace VVVF_Simulator.GUI.Simulator.RealTime
 {
@@ -50,7 +50,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime
             Task.Run(() => {
                 while (!realTime_Parameter.quit)
                 {
-                    VVVF_Values solve_control = realTime_Parameter.control_values.Clone();
+                    VvvfValues solve_control = realTime_Parameter.control_values.Clone();
                     solve_control.set_Allowed_Random_Freq_Move(false);
                     double voltage = Generation.Video.Control_Info.Generate_Control_Common.Get_Voltage_Rate(solve_control, realTime_Parameter.sound_data, false) * 100;
                     view_model.voltage = voltage;
@@ -123,28 +123,28 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime
         private String get_Pulse_Name()
         {
             // Recalculate
-            VVVF_Values solve_control = realTime_Parameter.control_values.Clone();
+            VvvfValues solve_control = realTime_Parameter.control_values.Clone();
             Task re_calculate = Task.Run(() =>
             {
                 solve_control.set_Allowed_Random_Freq_Move(false);
-                Control_Values cv = new Control_Values
+                ControlStatus cv = new ControlStatus
                 {
                     brake = solve_control.is_Braking(),
                     mascon_on = !solve_control.is_Mascon_Off(),
                     free_run = solve_control.is_Free_Running(),
                     wave_stat = solve_control.get_Control_Frequency()
                 };
-                PWM_Calculate_Values calculated_Values = Yaml.VVVF_Sound.Yaml_VVVF_Wave.calculate_Yaml(solve_control, cv, realTime_Parameter.sound_data);
+                PwmCalculateValues calculated_Values = Yaml.VVVF_Sound.Yaml_VVVF_Wave.calculate_Yaml(solve_control, cv, realTime_Parameter.sound_data);
                 calculate_values(solve_control, calculated_Values, 0);
             });
             re_calculate.Wait();
 
-            Pulse_Mode mode_p = solve_control.get_Video_Pulse_Mode();
+            PulseMode mode_p = solve_control.get_Video_Pulse_Mode();
             Pulse_Mode_Names mode = mode_p.pulse_name;
             //Not in sync
             if (mode == Pulse_Mode_Names.Async)
             {
-                Carrier_Freq carrier_freq_data = solve_control.get_Video_Carrier_Freq_Data();
+                CarrierFreq carrier_freq_data = solve_control.get_Video_Carrier_Freq_Data();
                 String default_s = String.Format(carrier_freq_data.base_freq.ToString("F2"));
                 return default_s;
             }

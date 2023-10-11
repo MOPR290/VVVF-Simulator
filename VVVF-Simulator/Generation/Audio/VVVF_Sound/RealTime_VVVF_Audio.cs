@@ -2,7 +2,7 @@
 using NAudio.Wave;
 using VVVF_Simulator.Yaml.VVVF_Sound;
 using static VVVF_Simulator.Generation.Audio.Generate_RealTime_Common;
-using static VVVF_Simulator.VVVF_Structs;
+using static VVVF_Simulator.VvvfStructs;
 
 namespace VVVF_Simulator.Generation.Audio.VVVF_Sound
 {
@@ -11,7 +11,7 @@ namespace VVVF_Simulator.Generation.Audio.VVVF_Sound
 
 
         // --------- VVVF SOUND ------------
-        private static int RealTime_VVVF_Generation_Calculate(BufferedWaveProvider provider, Yaml_VVVF_Sound_Data sound_data, VVVF_Values control, RealTime_Parameter realTime_Parameter)
+        private static int RealTime_VVVF_Generation_Calculate(BufferedWaveProvider provider, Yaml_VVVF_Sound_Data sound_data, VvvfValues control, RealTime_Parameter realTime_Parameter)
         {
             while (true)
             {
@@ -22,14 +22,14 @@ namespace VVVF_Simulator.Generation.Audio.VVVF_Sound
 
                 byte[] add = new byte[bufsize];
 
-                Control_Values cv = new()
+                ControlStatus cv = new()
                 {
                     brake = control.is_Braking(),
                     mascon_on = !control.is_Mascon_Off(),
                     free_run = control.is_Free_Running(),
                     wave_stat = control.get_Control_Frequency()
                 };
-                PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, sound_data);
+                PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, sound_data);
 
                 for (int i = 0; i < bufsize; i++)
                 {
@@ -51,7 +51,7 @@ namespace VVVF_Simulator.Generation.Audio.VVVF_Sound
             realTime_Parameter.quit = false;
             realTime_Parameter.sound_data = ysd;
 
-            VVVF_Values control = new();
+            VvvfValues control = new();
             control.reset_all_variables();
             control.reset_control_variables();
             realTime_Parameter.control_values = control;

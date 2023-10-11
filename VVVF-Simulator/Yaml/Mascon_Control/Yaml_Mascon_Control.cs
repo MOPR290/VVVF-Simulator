@@ -54,7 +54,7 @@ namespace VVVF_Simulator.Yaml.Mascon_Control
 
         }
 
-        public static bool Check_For_Freq_Change(VVVF_Values Control, Yaml_Mascon_Data_Compiled MasconDataCompiled, Yaml_Mascon_Data MasconChangeData, double TimeDelta)
+        public static bool Check_For_Freq_Change(VvvfValues Control, Yaml_Mascon_Data_Compiled MasconDataCompiled, Yaml_Mascon_Data MasconChangeData, double TimeDelta)
         {
             double ForceOnFrequency;
             bool Braking, IsMasconOn;

@@ -16,8 +16,8 @@ using System.Windows.Shapes;
 using VVVF_Simulator;
 using VVVF_Simulator.VVVF_Window.Control_Settings.Basic;
 using VVVF_Simulator.VVVF_Window.Control_Settings.Dipolar;
-using static VVVF_Simulator.VVVF_Structs;
-using static VVVF_Simulator.VVVF_Structs.Pulse_Mode;
+using static VVVF_Simulator.VvvfStructs;
+using static VVVF_Simulator.VvvfStructs.PulseMode;
 using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data;
 
 namespace VVVF_Simulator.VVVF_Window.Control_Settings

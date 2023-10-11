@@ -4,13 +4,13 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using static VVVF_Simulator.VVVF_Calculate;
-using static VVVF_Simulator.VVVF_Values;
+using static VVVF_Simulator.VvvfValues;
 using static VVVF_Simulator.Generation.Generate_Common;
 using static VVVF_Simulator.My_Math;
 using VVVF_Simulator.Yaml.VVVF_Sound;
 using System.Collections.Generic;
 using Point = System.Drawing.Point;
-using static VVVF_Simulator.VVVF_Structs;
+using static VVVF_Simulator.VvvfStructs;
 using static VVVF_Simulator.MainWindow;
 using static VVVF_Simulator.Generation.Generate_Common.GenerationBasicParameter;
 
@@ -23,7 +23,7 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
             Yaml_VVVF_Sound_Data vvvfData = generationBasicParameter.vvvfData;
             ProgressData progressData = generationBasicParameter.progressData;
 
-            VVVF_Values control = new();
+            VvvfValues control = new();
             control.reset_control_variables();
             control.reset_all_variables();
 
@@ -99,21 +99,21 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
             double[] x_min_max = new double[] { 50000, 0 };
             double[] hexagon_coordinate = new double[] { 100, 500 };
 
-            Control_Values cv = new()
+            ControlStatus cv = new()
             {
                 brake = control.is_Braking(),
                 mascon_on = !control.is_Mascon_Off(),
                 free_run = control.is_Free_Running(),
                 wave_stat = control.get_Control_Frequency()
             };
-            PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
+            PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
 
             for (int i = 0; i < hex_div; i++)
             {
                 control.add_Sine_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
                 control.add_Saw_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
 
-                Wave_Values value = calculate_values(control, calculated_Values, 0);
+                WaveValues value = calculate_values(control, calculated_Values, 0);
 
                 points_U[i] = value.U;
                 points_V[i] = value.V;

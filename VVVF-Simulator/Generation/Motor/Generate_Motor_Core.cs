@@ -1,5 +1,5 @@
 ﻿using System;
-using static VVVF_Simulator.VVVF_Structs;
+using static VVVF_Simulator.VvvfStructs;
 
 
 
@@ -63,12 +63,12 @@ namespace VVVF_Simulator.Generation.Motor
             }
 
 
-            public Wave_Values Get_LineVoltage(Wave_Values v) {
+            public WaveValues Get_LineVoltage(WaveValues v) {
                 int UV = v.U - v.V;
                 int VW = v.V - v.W;
                 int WU = v.W - v.U;
 
-                return new Wave_Values()
+                return new WaveValues()
                 {
                     U = UV,
                     V = VW,
@@ -76,7 +76,7 @@ namespace VVVF_Simulator.Generation.Motor
                 };
             }
 
-            public void AynMotorControler(Wave_Values v)
+            public void AynMotorControler(WaveValues v)
             {
                 motor_Param.Uabc[0] = 220 * v.U / 2.0;//Phase to ground 220 Phase to phase 380 
                 motor_Param.Uabc[1] = 220 * v.V / 2.0;//Phase to ground 220 Phase to phase 380 

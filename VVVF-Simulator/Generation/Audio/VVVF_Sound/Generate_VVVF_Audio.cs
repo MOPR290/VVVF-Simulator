@@ -11,7 +11,7 @@ using VVVF_Simulator.Yaml.VVVF_Sound;
 using static VVVF_Simulator.Generation.Generate_Common;
 using static VVVF_Simulator.Generation.Generate_Common.GenerationBasicParameter;
 using static VVVF_Simulator.MainWindow;
-using static VVVF_Simulator.VVVF_Structs;
+using static VVVF_Simulator.VvvfStructs;
 using static VVVF_Simulator.Yaml.Mascon_Control.Yaml_Mascon_Analyze;
 
 namespace VVVF_Simulator.Generation.Audio.VVVF_Sound
@@ -19,22 +19,22 @@ namespace VVVF_Simulator.Generation.Audio.VVVF_Sound
     public class Generate_VVVF_Audio
     {
         // -------- VVVF SOUND -------------
-        public static byte Get_VVVF_Sound(VVVF_Values control, Yaml_VVVF_Sound_Data sound_data)
+        public static byte Get_VVVF_Sound(VvvfValues control, Yaml_VVVF_Sound_Data sound_data)
         {
-            Control_Values cv = new()
+            ControlStatus cv = new()
             {
                 brake = control.is_Braking(),
                 mascon_on = !control.is_Mascon_Off(),
                 free_run = control.is_Free_Running(),
                 wave_stat = control.get_Control_Frequency()
             };
-            PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, sound_data);
+            PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, sound_data);
              return Get_VVVF_Sound(control, calculated_Values);
         }
 
-        public static byte Get_VVVF_Sound(VVVF_Values control, PWM_Calculate_Values calculated_Values)
+        public static byte Get_VVVF_Sound(VvvfValues control, PwmCalculateValues calculated_Values)
         {
-            Wave_Values value = VVVF_Calculate.calculate_values(control, calculated_Values, 0);
+            WaveValues value = VVVF_Calculate.calculate_values(control, calculated_Values, 0);
 
             double pwm_value = value.U - value.V;
             byte sound_byte = 0x80;
@@ -58,7 +58,7 @@ namespace VVVF_Simulator.Generation.Audio.VVVF_Sound
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
             string temp = Path.GetDirectoryName(output_path) + "\\" + "temp-" + gen_time + ".wav";
 
-            VVVF_Values control = new();
+            VvvfValues control = new();
             control.reset_control_variables();
             control.reset_all_variables();
 

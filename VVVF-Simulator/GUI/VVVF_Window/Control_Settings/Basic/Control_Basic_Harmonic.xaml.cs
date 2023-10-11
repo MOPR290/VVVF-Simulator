@@ -12,8 +12,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using static VVVF_Simulator.VVVF_Structs;
-using static VVVF_Simulator.VVVF_Structs.Pulse_Mode;
+using static VVVF_Simulator.VvvfStructs;
+using static VVVF_Simulator.VvvfStructs.PulseMode;
 
 namespace VVVF_Simulator.GUI.Pages.Control_Settings.Basic
 {
@@ -94,9 +94,9 @@ namespace VVVF_Simulator.GUI.Pages.Control_Settings.Basic
         //
 
 
-        Pulse_Mode target;
+        PulseMode target;
         private bool no_update = true;
-        public Control_Basic_Harmonic(Pulse_Mode data)
+        public Control_Basic_Harmonic(PulseMode data)
         {
 
             vd.harmonic_data = data.pulse_harmonics;

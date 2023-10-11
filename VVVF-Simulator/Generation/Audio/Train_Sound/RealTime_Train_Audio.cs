@@ -18,7 +18,7 @@ namespace VVVF_Simulator.Generation.Audio.Train_Sound
     {
         //---------- TRAIN SOUND --------------
 
-        private static int RealTime_Train_Generation_Calculate(BufferedWaveProvider provider, Yaml_VVVF_Sound_Data sound_data, VVVF_Values control, RealTime_Parameter realTime_Parameter)
+        private static int RealTime_Train_Generation_Calculate(BufferedWaveProvider provider, Yaml_VVVF_Sound_Data sound_data, VvvfValues control, RealTime_Parameter realTime_Parameter)
         {
             while (true)
             {
@@ -56,7 +56,7 @@ namespace VVVF_Simulator.Generation.Audio.Train_Sound
 
             Yaml_TrainSound_Data thd = realTime_Parameter.Train_Sound_Data;
 
-            VVVF_Values control = new();
+            VvvfValues control = new();
             control.reset_all_variables();
             control.reset_control_variables();
             realTime_Parameter.control_values = control;
