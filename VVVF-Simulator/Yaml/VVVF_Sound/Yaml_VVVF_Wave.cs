@@ -1,7 +1,5 @@
 ﻿using static VVVF_Simulator.VVVF_Calculate;
-using static VVVF_Simulator.VvvfValues;
 using static VVVF_Simulator.My_Math;
-using static VVVF_Simulator.VVVF_Calculate.Amplitude_Argument;
 using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data;
 using System;
 using System.Collections.Generic;
@@ -10,7 +8,6 @@ using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Da
 using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Mascon_Data;
 using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Control_Data_Amplitude_Control;
 using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Parameter_Carrier_Freq_Table;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Random;
 using static VVVF_Simulator.VvvfStructs;
 using static VVVF_Simulator.VvvfStructs.PulseMode;
 using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Random.Yaml_Async_Parameter_Random_Value;
@@ -236,7 +233,7 @@ namespace VVVF_Simulator.Yaml.VVVF_Sound
 					else
 						interval = Get_Moving_Value(vibrato_data.interval.moving_value, original_wave_stat);
 
-					carrier_freq_val = get_Vibrato_Freq(lowest, highest, interval, vibrato_data.continuous, control);
+					carrier_freq_val = GetVibratoFrequency(lowest, highest, interval, vibrato_data.continuous, control);
 				}
 
 				//

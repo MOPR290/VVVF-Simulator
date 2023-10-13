@@ -311,7 +311,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                     wave_stat = control.get_Control_Frequency()
                 };
                 PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
-                _ = calculate_values(control, calculated_Values, 0);
+                _ = CalculatePhases(control, calculated_Values, 0);
 
                 control.set_Sine_Time(0);
                 control.set_Saw_Time(0);

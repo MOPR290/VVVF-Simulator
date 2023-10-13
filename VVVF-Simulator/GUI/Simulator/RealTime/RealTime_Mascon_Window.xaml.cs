@@ -135,7 +135,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime
                     wave_stat = solve_control.get_Control_Frequency()
                 };
                 PwmCalculateValues calculated_Values = Yaml.VVVF_Sound.Yaml_VVVF_Wave.calculate_Yaml(solve_control, cv, realTime_Parameter.sound_data);
-                calculate_values(solve_control, calculated_Values, 0);
+                CalculatePhases(solve_control, calculated_Values, 0);
             });
             re_calculate.Wait();
 

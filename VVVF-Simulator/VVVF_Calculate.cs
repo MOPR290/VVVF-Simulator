@@ -15,7 +15,7 @@ namespace VVVF_Simulator
 		//
 		// Basic Calculation
 		//
-		public static double Get_Saw(double x)
+		public static double GetSaw(double x)
 		{
 			double val;
 			double fixed_x = x - (double)((int)(x * M_1_2PI) * M_2PI);
@@ -29,49 +29,49 @@ namespace VVVF_Simulator
 			return -val;
 		}
 
-		public static double Get_Sine(double x)
+		public static double GetSine(double x)
 		{
 			return My_Math.sin(x);
 		}
 
-		public static double Get_Square(double x)
+		public static double GetSquare(double x)
         {
 			double fixed_x = x - (double)((int)(x * M_1_2PI) * M_2PI);
 			if (fixed_x / M_PI > 1) return -1;
 			return 1;
 		}
 
-		public static double Get_Modified_Sine(double x, int level)
+		public static double GetModifiedSine(double x, int level)
         {
-			double sine = Get_Sine(x) * level;
+			double sine = GetSine(x) * level;
 			double value = Math.Round(sine) / level;
 			return value;
 		}
 
-		public static double Get_Modified_Saw(double x)
+		public static double GetModifiedSaw(double x)
         {
-			double sine = -Get_Saw(x) * M_PI_2;
+			double sine = -GetSaw(x) * M_PI_2;
 			int D = sine > 0 ? 1 : -1;
 			if (Math.Abs(sine) > 0.5) sine = D;
 
 			return sine;
         }
 
-		public static double Get_Sine_Value_With_Harmonic(PulseMode mode,double x,double amplitude)
+		public static double GetSineValueWithHarmonic(PulseMode mode,double x,double amplitude)
         {
 			double sin_value = 0;
 
 			if (mode.Base_Wave.Equals(Base_Wave_Type.Saw))
-				sin_value = -Get_Saw(x);
+				sin_value = -GetSaw(x);
 			else if (mode.Base_Wave.Equals(Base_Wave_Type.Sine))
-				sin_value = Get_Sine(x);
+				sin_value = GetSine(x);
 			else if (mode.Base_Wave.Equals(Base_Wave_Type.Modified_Sine_1))
-				sin_value = Get_Modified_Sine(x, 1);
+				sin_value = GetModifiedSine(x, 1);
 			else if (mode.Base_Wave.Equals(Base_Wave_Type.Modified_Sine_2))
-				sin_value = Get_Modified_Sine(x, 2);
+				sin_value = GetModifiedSine(x, 2);
 
 			else if (mode.Base_Wave.Equals(Base_Wave_Type.Modified_Saw_1))
-				sin_value = Get_Modified_Saw(x);
+				sin_value = GetModifiedSaw(x);
 
 
 			for (int i = 0; i < mode.pulse_harmonics.Count; i++)
@@ -79,11 +79,11 @@ namespace VVVF_Simulator
 				Pulse_Harmonic harmonic = mode.pulse_harmonics[i];
 				double harmonic_value = 0, harmonic_x = harmonic.harmonic * (x + harmonic.initial_phase);
 				if (harmonic.type == Pulse_Harmonic.Pulse_Harmonic_Type.Sine)
-					harmonic_value = Get_Sine(harmonic_x);
+					harmonic_value = GetSine(harmonic_x);
 				else if(harmonic.type == Pulse_Harmonic.Pulse_Harmonic_Type.Saw)
-					harmonic_value = -Get_Saw(harmonic_x);
+					harmonic_value = -GetSaw(harmonic_x);
 				else if (harmonic.type == Pulse_Harmonic.Pulse_Harmonic_Type.Square)
-					harmonic_value = Get_Square(harmonic_x);
+					harmonic_value = GetSquare(harmonic_x);
 
 				sin_value += harmonic_value * harmonic.amplitude;
 			}
@@ -94,31 +94,28 @@ namespace VVVF_Simulator
 			return sin_value;
 		}
 
-		public static int get_pwm_value(double sin_value, double saw_value)
+		public static int ModulateSin(double sin_value, double saw_value)
 		{
-			if (sin_value - saw_value > 0)
-				return 1;
-			else
-				return 0;
+			return sin_value > saw_value ? 1 : 0;
 		}
 
 		//
 		// Pulse Calculation
 		//
-		public static int Get_P_Wide_3(double time, double angle_frequency, double initial_phase, double voltage, bool saw_oppose)
+		public static int GetWideP3(double time, double angle_frequency, double initial_phase, double voltage, bool saw_oppose)
 		{
-			double sin = Get_Sine(time * angle_frequency + initial_phase);
-			double saw = Get_Saw(time * angle_frequency + initial_phase);
+			double sin = GetSine(time * angle_frequency + initial_phase);
+			double saw = GetSaw(time * angle_frequency + initial_phase);
 			if (saw_oppose)
 				saw = -saw;
 			double pwm = ((sin - saw > 0) ? 1 : -1) * voltage;
 			double nega_saw = (saw > 0) ? saw - 1 : saw + 1;
-			int gate = get_pwm_value(pwm, nega_saw) * 2;
+			int gate = ModulateSin(pwm, nega_saw) * 2;
 			return gate;
 		}
-		public static int Get_P_1_3Level(double x, double voltage)
+		public static int Get3LevelP1(double x, double voltage)
         {
-			double sine = Get_Sine(x);
+			double sine = GetSine(x);
 			int D = sine > 0 ? 1 : -1;
 			double voltage_fix = D * (1 - voltage);
 
@@ -126,17 +123,17 @@ namespace VVVF_Simulator
 			gate += 1;
 			return gate;
         }
-		public static int Get_P_with_Saw(double x, double carrier_initial_phase, double voltage, double carrier_mul, bool saw_oppose)
+		public static int GetPulseWithSaw(double x, double carrier_initial_phase, double voltage, double carrier_mul, bool saw_oppose)
 		{
-			double carrier_saw = -Get_Saw(carrier_mul * x + carrier_initial_phase);
-			double saw = -Get_Saw(x);
+			double carrier_saw = -GetSaw(carrier_mul * x + carrier_initial_phase);
+			double saw = -GetSaw(x);
 			if (saw_oppose)
 				saw = -saw;
 			double pwm = (saw > 0) ? voltage : -voltage;
-			int gate = get_pwm_value(pwm, carrier_saw) * 2;
+			int gate = ModulateSin(pwm, carrier_saw) * 2;
 			return gate;
 		}
-		public static int Get_P_with_SwitchingAngle(
+		public static int GetPulseWithSwitchAngle(
 			double alpha1,
 			double alpha2,
 			double alpha3,
@@ -284,7 +281,7 @@ namespace VVVF_Simulator
 		//
 		// Carrier Freq Calculation
 		//
-		private static double get_Random_freq(CarrierFreq data, VvvfValues control)
+		private static double GetRandomFrequency(CarrierFreq data, VvvfValues control)
 		{
 			if (data.range == 0) return data.base_freq;
 
@@ -317,7 +314,7 @@ namespace VVVF_Simulator
 				return data.base_freq;
             }
 		}
-		public static double get_Vibrato_Freq(double lowest, double highest, double interval_time, bool continuous , VvvfValues control)
+		public static double GetVibratoFrequency(double lowest, double highest, double interval_time, bool continuous , VvvfValues control)
 		{
 
 			if (!control.is_Allowed_Random_Freq_Move())
@@ -367,7 +364,7 @@ namespace VVVF_Simulator
 			return -1;
 		}
 
-		public static WaveValues calculate_values(VvvfValues control,PwmCalculateValues value, double add_initial)
+		public static WaveValues CalculatePhases(VvvfValues control,PwmCalculateValues value, double add_initial)
         {
 
 			if (control.get_Sine_Freq() < value.min_sine_freq && control.get_Control_Frequency() > 0) control.set_Video_Sine_Freq(value.min_sine_freq);
@@ -386,8 +383,8 @@ namespace VVVF_Simulator
 				
 				int val;
 				double initial = M_2PI / 3.0 * i + add_initial;
-				if (value.level == 2) val = calculate_two_level(control, value, initial);
-				else val = calculate_three_level(control, value, initial);
+				if (value.level == 2) val = CalculateTwoLevel(control, value, initial);
+				else val = CalculateThreeLevel(control, value, initial);
 				if (i == 0) U = val;
 				else if (i == 1) V = val;
 				else W = val;
@@ -397,7 +394,7 @@ namespace VVVF_Simulator
 			return new WaveValues() { U = U, V = V, W = W };
         }
 
-        public static int calculate_three_level(VvvfValues control, PwmCalculateValues calculate_values, double initial_phase)
+        public static int CalculateThreeLevel(VvvfValues control, PwmCalculateValues calculate_values, double initial_phase)
 		{
 			double sine_angle_freq = control.get_Sine_Angle_Freq();
 			double sine_time = control.get_Sine_Time();
@@ -417,7 +414,7 @@ namespace VVVF_Simulator
 			if (pulse_mode.pulse_name == Pulse_Mode_Names.Async)
             {
 
-				double desire_saw_angle_freq = (freq_data.range == 0) ? freq_data.base_freq * M_2PI : get_Random_freq(freq_data, control) * M_2PI;
+				double desire_saw_angle_freq = (freq_data.range == 0) ? freq_data.base_freq * M_2PI : GetRandomFrequency(freq_data, control) * M_2PI;
 
 				double saw_time = control.get_Saw_Time();
 				double saw_angle_freq = control.get_Saw_Angle_Freq();
@@ -432,14 +429,14 @@ namespace VVVF_Simulator
 				control.set_Saw_Time(saw_time);
 
 				double sine_x = sine_time * sine_angle_freq + initial_phase;
-				double sin_value = Get_Sine_Value_With_Harmonic(pulse_mode.Clone(), sine_x, calculate_values.amplitude);
+				double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sine_x, calculate_values.amplitude);
 
-				double saw_value = Get_Saw(control.get_Saw_Time() * control.get_Saw_Angle_Freq());
+				double saw_value = GetSaw(control.get_Saw_Time() * control.get_Saw_Angle_Freq());
 				if (pulse_mode.Shift)
 					saw_value = -saw_value;
 
 				double changed_saw = ((dipolar != -1) ? dipolar : 0.5) * saw_value;
-				int pwm_value = get_pwm_value(sin_value, changed_saw + 0.5) + get_pwm_value(sin_value, changed_saw - 0.5);
+				int pwm_value = ModulateSin(sin_value, changed_saw + 0.5) + ModulateSin(sin_value, changed_saw - 0.5);
 
 				return pwm_value;
 
@@ -453,19 +450,19 @@ namespace VVVF_Simulator
 				if (pulse_mode.pulse_name == Pulse_Mode_Names.P_1)
                 {
 					if(pulse_mode.Alt_Mode == Pulse_Alternative_Mode.Alt1)
-						return Get_P_1_3Level(sine_x, calculate_values.amplitude);
+						return Get3LevelP1(sine_x, calculate_values.amplitude);
 				}
 					
 
 				int pulses = Get_Pulse_Num(pulse_mode,3);
-				double saw_value = Get_Saw(pulses * (sine_angle_freq * sine_time + initial_phase));
+				double saw_value = GetSaw(pulses * (sine_angle_freq * sine_time + initial_phase));
 				if (pulse_mode.Shift)
 					saw_value = -saw_value;
 				
-				double sin_value = Get_Sine_Value_With_Harmonic(pulse_mode.Clone(), sine_x, calculate_values.amplitude);
+				double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sine_x, calculate_values.amplitude);
 
 				double changed_saw = ((dipolar != -1) ? dipolar : 0.5) * saw_value;
-				int pwm_value = get_pwm_value(sin_value, changed_saw + 0.5) + get_pwm_value(sin_value, changed_saw - 0.5);
+				int pwm_value = ModulateSin(sin_value, changed_saw + 0.5) + ModulateSin(sin_value, changed_saw - 0.5);
 
 				control.set_Saw_Angle_Freq(sine_angle_freq * pulses);
 				control.set_Saw_Time(sine_time);
@@ -476,7 +473,7 @@ namespace VVVF_Simulator
 			
 		}
 
-		public static int calculate_two_level (VvvfValues control , PwmCalculateValues calculate_values, double initial_phase)
+		public static int CalculateTwoLevel (VvvfValues control , PwmCalculateValues calculate_values, double initial_phase)
 		{
 			double sin_angle_freq = control.get_Sine_Angle_Freq();
 			double sin_time = control.get_Sine_Time();
@@ -504,11 +501,11 @@ namespace VVVF_Simulator
             switch (pulse_name)
             {
 
-				case Pulse_Mode_Names.P_Wide_3 : return Get_P_Wide_3(sin_time, sin_angle_freq, initial_phase, amplitude, false);
+				case Pulse_Mode_Names.P_Wide_3 : return GetWideP3(sin_time, sin_angle_freq, initial_phase, amplitude, false);
 
 				case Pulse_Mode_Names.Async: 
 					{
-						double desire_saw_angle_freq = (carrier_freq_data.range == 0) ? carrier_freq_data.base_freq * M_2PI : get_Random_freq(carrier_freq_data, control) * M_2PI;
+						double desire_saw_angle_freq = (carrier_freq_data.range == 0) ? carrier_freq_data.base_freq * M_2PI : GetRandomFrequency(carrier_freq_data, control) * M_2PI;
 
 						if (desire_saw_angle_freq == 0)
 							saw_time = 0;
@@ -517,11 +514,11 @@ namespace VVVF_Simulator
 						saw_angle_freq = desire_saw_angle_freq;
 
 						double sine_x = sin_time * sin_angle_freq + initial_phase;
-						double sin_value = Get_Sine_Value_With_Harmonic(pulse_mode.Clone(), sine_x, amplitude);
+						double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sine_x, amplitude);
 
 
-						double saw_value = Get_Saw(saw_time * saw_angle_freq);
-						int pwm_value = get_pwm_value(sin_value, saw_value) * 2;
+						double saw_value = GetSaw(saw_time * saw_angle_freq);
+						int pwm_value = ModulateSin(sin_value, saw_value) * 2;
 
 						control.set_Saw_Angle_Freq(saw_angle_freq);
 						control.set_Saw_Time(saw_time);
@@ -533,7 +530,7 @@ namespace VVVF_Simulator
                     {
 						if (pulse_mode.Alt_Mode == Pulse_Alternative_Mode.Default)
 						{
-							return Get_P_with_SwitchingAngle(
+							return GetPulseWithSwitchAngle(
 								My_Switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
 								My_Switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
 								My_Switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
@@ -546,7 +543,7 @@ namespace VVVF_Simulator
 						}
 						else if (pulse_mode.Alt_Mode == Pulse_Alternative_Mode.Alt1)
 						{
-							return Get_P_with_SwitchingAngle(
+							return GetPulseWithSwitchAngle(
 								My_Switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
 								My_Switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
 								My_Switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
@@ -562,7 +559,7 @@ namespace VVVF_Simulator
 
 				case Pulse_Mode_Names.CHMP_Wide_15:
                     {
-						return Get_P_with_SwitchingAngle(
+						return GetPulseWithSwitchAngle(
 						   My_Switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 0] * M_PI_180,
 						   My_Switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 1] * M_PI_180,
 						   My_Switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 2] * M_PI_180,
@@ -577,7 +574,7 @@ namespace VVVF_Simulator
                     {
 						if (pulse_mode.Alt_Mode == Pulse_Alternative_Mode.Default)
 						{
-							return Get_P_with_SwitchingAngle(
+							return GetPulseWithSwitchAngle(
 								My_Switchingangles._6Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
 								My_Switchingangles._6Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
 								My_Switchingangles._6Alpha[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
@@ -590,7 +587,7 @@ namespace VVVF_Simulator
 						}
 						else if (pulse_mode.Alt_Mode == Pulse_Alternative_Mode.Alt1)
 						{
-							return Get_P_with_SwitchingAngle(
+							return GetPulseWithSwitchAngle(
 								My_Switchingangles._6Alpha_Old[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
 								My_Switchingangles._6Alpha_Old[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
 								My_Switchingangles._6Alpha_Old[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
@@ -606,7 +603,7 @@ namespace VVVF_Simulator
 
 				case Pulse_Mode_Names.CHMP_Wide_13:
                     {
-						return Get_P_with_SwitchingAngle(
+						return GetPulseWithSwitchAngle(
 						   My_Switchingangles._6WideAlpha[(int)(1000 * amplitude) - 999, 0] * M_PI_180,
 						   My_Switchingangles._6WideAlpha[(int)(1000 * amplitude) - 999, 1] * M_PI_180,
 						   My_Switchingangles._6WideAlpha[(int)(1000 * amplitude) - 999, 2] * M_PI_180,
@@ -620,7 +617,7 @@ namespace VVVF_Simulator
                     {
 						if (pulse_mode.Alt_Mode == Pulse_Alternative_Mode.Default)
 						{
-							return Get_P_with_SwitchingAngle(
+							return GetPulseWithSwitchAngle(
 								My_Switchingangles._5Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
 								My_Switchingangles._5Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
 								My_Switchingangles._5Alpha[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
@@ -633,7 +630,7 @@ namespace VVVF_Simulator
 						}
 						else if (pulse_mode.Alt_Mode == Pulse_Alternative_Mode.Alt1)
 						{
-							return Get_P_with_SwitchingAngle(
+							return GetPulseWithSwitchAngle(
 								My_Switchingangles._5Alpha_Old[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
 								My_Switchingangles._5Alpha_Old[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
 								My_Switchingangles._5Alpha_Old[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
@@ -649,7 +646,7 @@ namespace VVVF_Simulator
 
 				case Pulse_Mode_Names.CHMP_Wide_11:
                     {
-						return Get_P_with_SwitchingAngle(
+						return GetPulseWithSwitchAngle(
 							My_Switchingangles._5WideAlpha[(int)(1000 * amplitude) - 999, 0] * M_PI_180,
 							My_Switchingangles._5WideAlpha[(int)(1000 * amplitude) - 999, 1] * M_PI_180,
 							My_Switchingangles._5WideAlpha[(int)(1000 * amplitude) - 999, 2] * M_PI_180,
@@ -661,7 +658,7 @@ namespace VVVF_Simulator
 					}
 				case Pulse_Mode_Names.CHMP_9:
                     {
-						return Get_P_with_SwitchingAngle(
+						return GetPulseWithSwitchAngle(
 						   My_Switchingangles._4Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
 						   My_Switchingangles._4Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
 						   My_Switchingangles._4Alpha[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
@@ -673,7 +670,7 @@ namespace VVVF_Simulator
 					}
 				case Pulse_Mode_Names.CHMP_Wide_9:
                     {
-						return Get_P_with_SwitchingAngle(
+						return GetPulseWithSwitchAngle(
 						   My_Switchingangles._4WideAlpha[(int)(1000 * amplitude) - 799, 0] * M_PI_180,
 						   My_Switchingangles._4WideAlpha[(int)(1000 * amplitude) - 799, 1] * M_PI_180,
 						   My_Switchingangles._4WideAlpha[(int)(1000 * amplitude) - 799, 2] * M_PI_180,
@@ -685,7 +682,7 @@ namespace VVVF_Simulator
 					}
 				case Pulse_Mode_Names.CHMP_7:
                     {
-						return Get_P_with_SwitchingAngle(
+						return GetPulseWithSwitchAngle(
 						   My_Switchingangles._3Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
 						   My_Switchingangles._3Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
 						   My_Switchingangles._3Alpha[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
@@ -697,7 +694,7 @@ namespace VVVF_Simulator
 					}
 				case Pulse_Mode_Names.CHMP_Wide_7:
                     {
-						return Get_P_with_SwitchingAngle(
+						return GetPulseWithSwitchAngle(
 						   My_Switchingangles._3WideAlpha[(int)(1000 * amplitude) - 799, 0] * M_PI_180,
 						   My_Switchingangles._3WideAlpha[(int)(1000 * amplitude) - 799, 1] * M_PI_180,
 						   My_Switchingangles._3WideAlpha[(int)(1000 * amplitude) - 799, 2] * M_PI_180,
@@ -709,7 +706,7 @@ namespace VVVF_Simulator
 					}
 				case Pulse_Mode_Names.CHMP_5:
                     {
-						return Get_P_with_SwitchingAngle(
+						return GetPulseWithSwitchAngle(
 						   My_Switchingangles._2Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
 						   My_Switchingangles._2Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
 						   M_PI_2,
@@ -721,7 +718,7 @@ namespace VVVF_Simulator
 					}
 				case Pulse_Mode_Names.CHMP_Wide_5:
                     {
-						return Get_P_with_SwitchingAngle(
+						return GetPulseWithSwitchAngle(
 						   My_Switchingangles._2WideAlpha[(int)(1000 * amplitude) - 799, 0] * M_PI_180,
 						   My_Switchingangles._2WideAlpha[(int)(1000 * amplitude) - 799, 1] * M_PI_180,
 						   M_PI_2,
@@ -733,7 +730,7 @@ namespace VVVF_Simulator
 					}
 				case Pulse_Mode_Names.CHMP_Wide_3:
                     {
-						return Get_P_with_SwitchingAngle(
+						return GetPulseWithSwitchAngle(
 						   My_Switchingangles._WideAlpha[(int)(500 * amplitude) + 1] * M_PI_180,
 						   M_PI_2,
 						   M_PI_2,
@@ -745,7 +742,7 @@ namespace VVVF_Simulator
 					}
 				case Pulse_Mode_Names.SHEP_3:
                     {
-						return Get_P_with_SwitchingAngle(
+						return GetPulseWithSwitchAngle(
 						   My_Switchingangles._1Alpha_SHE[(int)(1000 * amplitude) + 1] * M_PI_180,
 						   M_PI_2,
 						   M_PI_2,
@@ -757,7 +754,7 @@ namespace VVVF_Simulator
 					}
 				case Pulse_Mode_Names.SHEP_5:
                     {
-						return Get_P_with_SwitchingAngle(
+						return GetPulseWithSwitchAngle(
 						   My_Switchingangles._2Alpha_SHE[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
 						   My_Switchingangles._2Alpha_SHE[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
 						   M_PI_2,
@@ -769,7 +766,7 @@ namespace VVVF_Simulator
 					}
 				case Pulse_Mode_Names.SHEP_7:
                     {
-						return Get_P_with_SwitchingAngle(
+						return GetPulseWithSwitchAngle(
 							  My_Switchingangles._3Alpha_SHE[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
 							  My_Switchingangles._3Alpha_SHE[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
 							  My_Switchingangles._3Alpha_SHE[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
@@ -782,7 +779,7 @@ namespace VVVF_Simulator
 					}
 				case Pulse_Mode_Names.SHEP_11:
                     {
-						return Get_P_with_SwitchingAngle(
+						return GetPulseWithSwitchAngle(
 							  My_Switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
 							  My_Switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
 							  My_Switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
@@ -804,7 +801,7 @@ namespace VVVF_Simulator
 				bool is_shift = pulse_mode.Shift;
 				int pulse_num = Get_Pulse_Num(pulse_mode,2);
 				double pulse_initial_phase = Get_Pulse_Initial(pulse_mode,2);
-				return Get_P_with_Saw(sin_angle_freq * sin_time + initial_phase, pulse_initial_phase, amplitude, pulse_num, is_shift);
+				return GetPulseWithSaw(sin_angle_freq * sin_time + initial_phase, pulse_initial_phase, amplitude, pulse_num, is_shift);
 			}
 
 
@@ -812,13 +809,13 @@ namespace VVVF_Simulator
 			{
 				int pulse_num = Get_Pulse_Num(pulse_mode,2);
 				double x = sin_angle_freq * sin_time + initial_phase;
-				double saw_value = Get_Saw(pulse_num * x);
-				double sin_value = Get_Sine_Value_With_Harmonic(pulse_mode.Clone(), x, amplitude);
+				double saw_value = GetSaw(pulse_num * x);
+				double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), x, amplitude);
 
 				if (pulse_mode.Shift)
 					saw_value = -saw_value;
 
-				int pwm_value = get_pwm_value(sin_value, saw_value) * 2;
+				int pwm_value = ModulateSin(sin_value, saw_value) * 2;
 
 				control.set_Saw_Angle_Freq(sin_angle_freq * pulse_num);
 				control.set_Saw_Time(sin_time);

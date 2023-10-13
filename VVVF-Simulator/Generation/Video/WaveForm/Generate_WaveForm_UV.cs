@@ -45,7 +45,7 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
             WaveValues[] values = new WaveValues[Count];
             for (int i = 0; i < Count; i++)
             {
-                WaveValues value = calculate_values(Control, PWM_Data, Math.PI / 6.0);
+                WaveValues value = CalculatePhases(Control, PWM_Data, Math.PI / 6.0);
                 values[i] = value;
                 Control.add_Saw_Time(2 / (60.0 * Count));
                 Control.add_Sine_Time(2 / (60.0 * Count));

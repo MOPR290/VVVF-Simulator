@@ -113,7 +113,7 @@ namespace VVVF_Simulator.Generation.Video.Hexagon
                 control.add_Sine_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
                 control.add_Saw_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
 
-                WaveValues value = calculate_values(control, calculated_Values, 0);
+                WaveValues value = CalculatePhases(control, calculated_Values, 0);
 
                 points_U[i] = value.U;
                 points_V[i] = value.V;

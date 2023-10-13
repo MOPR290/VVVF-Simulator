@@ -68,7 +68,7 @@ namespace VVVF_Simulator.Generation
             {
                 Control.set_Sine_Time(i / InvDeltaT);
                 Control.set_Saw_Time(i / InvDeltaT);
-                WaveValues value = VVVF_Calculate.calculate_values(Control, calculated_Values, InitialPhase);
+                WaveValues value = VVVF_Calculate.CalculatePhases(Control, calculated_Values, InitialPhase);
                 PWM_Array[i] = value;
             }
             return PWM_Array;

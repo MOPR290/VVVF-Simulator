@@ -37,7 +37,7 @@ namespace VVVF_Simulator.Generation.Audio.Train_Sound
                 wave_stat = control.get_Control_Frequency()
             };
             PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, sound_data);
-            WaveValues value = VVVF_Calculate.calculate_values(control, calculated_Values, 0);
+            WaveValues value = VVVF_Calculate.CalculatePhases(control, calculated_Values, 0);
 
             motor.motor_Param.sitamr = control.get_Video_Sine_Freq() * Math.PI * 2 * control.get_Sine_Time();
             motor.AynMotorControler(new WaveValues() { U = value.W, V = value.V, W = value.U });

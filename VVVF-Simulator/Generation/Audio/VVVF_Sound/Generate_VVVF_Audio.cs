@@ -34,7 +34,7 @@ namespace VVVF_Simulator.Generation.Audio.VVVF_Sound
 
         public static byte Get_VVVF_Sound(VvvfValues control, PwmCalculateValues calculated_Values)
         {
-            WaveValues value = VVVF_Calculate.calculate_values(control, calculated_Values, 0);
+            WaveValues value = VVVF_Calculate.CalculatePhases(control, calculated_Values, 0);
 
             double pwm_value = value.U - value.V;
             byte sound_byte = 0x80;

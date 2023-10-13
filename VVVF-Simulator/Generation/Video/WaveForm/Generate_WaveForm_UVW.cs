@@ -100,7 +100,7 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
                             wave_stat = control.get_Control_Frequency()
                         };
                         PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
-                        WaveValues value = calculate_values(control, calculated_Values, 0);
+                        WaveValues value = CalculatePhases(control, calculated_Values, 0);
 
                         points_U[j] = value.U;
                         points_V[j] = value.V;

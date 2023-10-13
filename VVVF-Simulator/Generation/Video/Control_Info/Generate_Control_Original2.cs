@@ -272,7 +272,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                     wave_stat = 0
                 };
                 PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
-                _ = calculate_values(control, calculated_Values, 0);
+                _ = CalculatePhases(control, calculated_Values, 0);
                 Bitmap final_image = Get_Control_Original2_Image(control, vvvfData, true);
 
                 Add_Image_Frames(final_image, 60, vr);
@@ -324,7 +324,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
                     wave_stat = 0
                 };
                 PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
-                _ = calculate_values(control, calculated_Values, 0);
+                _ = CalculatePhases(control, calculated_Values, 0);
                 Bitmap final_image = Get_Control_Original2_Image(control, vvvfData, true);
                 Add_Image_Frames(final_image, 60, vr);
 
