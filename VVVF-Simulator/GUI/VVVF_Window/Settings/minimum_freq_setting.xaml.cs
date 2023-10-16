@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VVVF_Simulator.Yaml.VVVF_Sound;
+using VvvfSimulator.Yaml.VVVFSound;
 
-namespace VVVF_Simulator.VVVF_Window.Settings
+namespace VvvfSimulator.VVVF_Window.Settings
 {
     /// <summary>
     /// minimum_freq_setting.xaml の相互作用ロジック

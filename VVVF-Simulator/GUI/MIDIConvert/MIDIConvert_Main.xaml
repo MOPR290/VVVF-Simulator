@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:MyUserControl="clr-namespace:VVVF_Simulator.GUI.MyUserControl"
-        x:Class="VVVF_Simulator.GUI.MIDIConvert.MIDIConvert_Main"
+        xmlns:MyUserControl="clr-namespace:VvvfSimulator.GUI.MyUserControl"
+        x:Class="VvvfSimulator.GUI.MIDIConvert.MIDIConvert_Main"
         mc:Ignorable="d"
         Title="MIDI Conversion" Height="600" Width="200" ResizeMode="CanMinimize">
 

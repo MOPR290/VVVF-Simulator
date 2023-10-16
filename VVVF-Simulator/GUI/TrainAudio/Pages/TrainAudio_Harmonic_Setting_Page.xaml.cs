@@ -12,19 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static VVVF_Simulator.Yaml.TrainAudio_Setting.Yaml_TrainSound_Analyze;
+using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
 
-namespace VVVF_Simulator.GUI.TrainAudio.Pages
+namespace VvvfSimulator.GUI.TrainAudio.Pages
 {
     /// <summary>
     /// TrainAudio_Harmonic_Setting_Page.xaml の相互作用ロジック
     /// </summary>
     public partial class TrainAudio_Harmonic_Setting_Page : Page
     {
-        Yaml_TrainSound_Data.Harmonic_Data Harmonic_Data;
+        YamlTrainSoundData.HarmonicData Harmonic_Data;
         ListView ListView;
         bool no_update = true;
-        public TrainAudio_Harmonic_Setting_Page(Yaml_TrainSound_Data.Harmonic_Data harmonic_Data, ListView listView)
+        public TrainAudio_Harmonic_Setting_Page(YamlTrainSoundData.HarmonicData harmonic_Data, ListView listView)
         {
             Harmonic_Data = harmonic_Data;
             ListView = listView;

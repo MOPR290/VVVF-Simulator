@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using VVVF_Simulator.Yaml.VVVF_Sound;
-using static VVVF_Simulator.Generation.Generate_Common;
+using VvvfSimulator.Yaml.VVVFSound;
+using static VvvfSimulator.Generation.GenerateCommon;
 using Button = System.Windows.Controls.Button;
 using MessageBox = System.Windows.Forms.MessageBox;
 
-namespace VVVF_Simulator.GUI.MIDIConvert
+namespace VvvfSimulator.GUI.MIDIConvert
 {
     /// <summary>
     /// MIDIConvert_Main.xaml の相互作用ロジック
@@ -48,14 +48,14 @@ namespace VVVF_Simulator.GUI.MIDIConvert
                 int priority = 1;
                 while (true)
                 {
-                    Mascon.Mascon_Control_Midi.LoadData loadData = new()
+                    Mascon.MasconControlMidi.LoadData loadData = new()
                     {
                         track = i,
                         division = 1,
                         path = midi_path,
                         priority = priority,
                     };
-                    Yaml.Mascon_Control.Yaml_Mascon_Analyze.Yaml_Mascon_Data? ymd = Yaml.Mascon_Control.Yaml_Mascon_Midi.Convert(loadData);
+                    Yaml.MasconControl.YamlMasconAnalyze.YamlMasconData? ymd = Yaml.MasconControl.YamlMasconMidi.Convert(loadData);
                     if (ymd == null) return false;
                     if (ymd.points.Count == 0) break;
 
@@ -72,7 +72,7 @@ namespace VVVF_Simulator.GUI.MIDIConvert
                     {
                         try
                         {
-                            Generation.Audio.VVVF_Sound.Generate_VVVF_Audio.Export_VVVF_Sound(generationBasicParameter, export_path, false, midi_Convert_Config.SampleFrequency);
+                            Generation.Audio.VVVF_Sound.GenerateVVVFAudio.Export_VVVF_Sound(generationBasicParameter, export_path, false, midi_Convert_Config.SampleFrequency);
                             System.Media.SystemSounds.Beep.Play();
                         }
                         catch(Exception ex)

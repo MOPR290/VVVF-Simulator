@@ -13,21 +13,21 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using VVVF_Simulator.Yaml.Mascon_Control;
-using static VVVF_Simulator.Yaml.Mascon_Control.Yaml_Mascon_Analyze;
-using static VVVF_Simulator.Yaml.Mascon_Control.Yaml_Mascon_Analyze.Yaml_Mascon_Data;
+using VvvfSimulator.Yaml.MasconControl;
+using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
+using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze.YamlMasconData;
 
-namespace VVVF_Simulator.GUI.Mascon
+namespace VvvfSimulator.GUI.Mascon
 {
     public class SmallTitleConverter : IValueConverter
     {
         // 2.Convertメソッドを実装
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not Yaml_Mascon_Data_Point)
+            if (value is not YamlMasconDataPoint)
                 return DependencyProperty.UnsetValue;
 
-            Yaml_Mascon_Data_Point val = (Yaml_Mascon_Data_Point)value;
+            YamlMasconDataPoint val = (YamlMasconDataPoint)value;
 
             return "Rate : " + String.Format("{0:F2}", val.rate) + " , Duration : " + String.Format("{0:F2}", val.duration) + " , Mascon : " + val.mascon_on.ToString() + " , Brake : " + val.brake;
         }
@@ -43,10 +43,10 @@ namespace VVVF_Simulator.GUI.Mascon
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not Yaml_Mascon_Data_Point)
+            if (value is not YamlMasconDataPoint)
                 return DependencyProperty.UnsetValue;
 
-            Yaml_Mascon_Data_Point val = (Yaml_Mascon_Data_Point)value;
+            YamlMasconDataPoint val = (YamlMasconDataPoint)value;
 
             return val.order;
         }
@@ -86,7 +86,7 @@ namespace VVVF_Simulator.GUI.Mascon
                 };
                 if (dialog.ShowDialog() == false) return;
 
-                if (Yaml_Mascon_Manage.load_Yaml(dialog.FileName))
+                if (Yaml_Mascon_Manage.LoadYaml(dialog.FileName))
                     MessageBox.Show("Load OK.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
                 else
                     MessageBox.Show("Invalid yaml or path.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -107,20 +107,20 @@ namespace VVVF_Simulator.GUI.Mascon
                 // ダイアログを表示する
                 if (dialog.ShowDialog() == false) return;
 
-                if (Yaml_Mascon_Manage.save_Yaml(dialog.FileName))
+                if (Yaml_Mascon_Manage.SaveYaml(dialog.FileName))
                     MessageBox.Show("Save OK.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
                 else
                     MessageBox.Show("Error occurred on saving.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else if (tag.Equals("Midi"))
             {
-                Mascon_Control_Midi gmcm = new(Path.GetDirectoryName(load_midi_path));
+                MasconControlMidi gmcm = new(Path.GetDirectoryName(load_midi_path));
                 gmcm.ShowDialog();
                 var load_data = gmcm.loadData;
                 try
                 {
                     load_midi_path = load_data.path;
-                    Yaml_Mascon_Data? data = Yaml_Mascon_Midi.Convert(load_data);
+                    YamlMasconData? data = YamlMasconMidi.Convert(load_data);
                     if (data == null) return;
                     Yaml_Mascon_Manage.CurrentData = data;
                     Refresh_ItemList();
@@ -155,7 +155,7 @@ namespace VVVF_Simulator.GUI.Mascon
                 var selected_item = mascon_control_list.SelectedItem;
                 if (selected_item == null) return;
 
-                Yaml_Mascon_Data_Point data = (Yaml_Mascon_Data_Point)selected_item;
+                YamlMasconDataPoint data = (YamlMasconDataPoint)selected_item;
                 Yaml_Mascon_Manage.CurrentData.points.Add(data.Clone());
 
                 Refresh_ItemList();
@@ -167,7 +167,7 @@ namespace VVVF_Simulator.GUI.Mascon
             var selected_item = mascon_control_list.SelectedItem;
             if (selected_item == null) return;
 
-            edit_view_frame.Navigate(new Mascon_Control_Edit(this, (Yaml_Mascon_Data_Point)selected_item));
+            edit_view_frame.Navigate(new Mascon_Control_Edit(this, (YamlMasconDataPoint)selected_item));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

@@ -11,10 +11,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using VVVF_Simulator.GUI.MyUserControl;
-using static VVVF_Simulator.GUI.MIDIConvert.MIDIConvert_Main;
+using VvvfSimulator.GUI.MyUserControl;
+using static VvvfSimulator.GUI.MIDIConvert.MIDIConvert_Main;
 
-namespace VVVF_Simulator.GUI.MIDIConvert
+namespace VvvfSimulator.GUI.MIDIConvert
 {
     /// <summary>
     /// MIDIConvert_Config.xaml の相互作用ロジック

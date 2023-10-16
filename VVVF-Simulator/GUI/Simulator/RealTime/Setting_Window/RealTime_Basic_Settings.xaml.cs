@@ -4,11 +4,11 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using VVVF_Simulator.GUI.Simulator.RealTime.Display;
+using VvvfSimulator.GUI.Simulator.RealTime.Display;
 using Brush = System.Windows.Media.Brush;
 using FontFamily = System.Drawing.FontFamily;
 
-namespace VVVF_Simulator.GUI.Simulator.RealTime.Setting_Window
+namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
 {
     /// <summary>
     /// RealTime_Settings.xaml の相互作用ロジック

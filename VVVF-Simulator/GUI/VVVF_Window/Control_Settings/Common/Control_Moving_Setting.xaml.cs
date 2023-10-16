@@ -13,10 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData;
 
-namespace VVVF_Simulator.GUI.VVVF_Window.Control_Settings.Common
+namespace VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common
 {
     /// <summary>
     /// Control_Moving_Setting.xaml の相互作用ロジック
@@ -34,7 +34,7 @@ namespace VVVF_Simulator.GUI.VVVF_Window.Control_Settings.Common
             private Visibility _CurveRate_Visibility = Visibility.Collapsed;
             public Visibility CurveRate_Visibility { get { return _CurveRate_Visibility; } set { _CurveRate_Visibility = value; RaisePropertyChanged(nameof(CurveRate_Visibility)); } }
 
-            public Yaml_Moving_Value Moving_Value { get; set; } = new Yaml_Moving_Value();
+            public YamlMovingValue Moving_Value { get; set; } = new YamlMovingValue();
 
         };
         public class ViewModelBase : INotifyPropertyChanged
@@ -46,7 +46,7 @@ namespace VVVF_Simulator.GUI.VVVF_Window.Control_Settings.Common
             }
         }
 
-        public Control_Moving_Setting(Yaml_Moving_Value target)
+        public Control_Moving_Setting(YamlMovingValue target)
         {
 
             view_model.Moving_Value = target;
@@ -54,7 +54,7 @@ namespace VVVF_Simulator.GUI.VVVF_Window.Control_Settings.Common
 
             InitializeComponent();
 
-            Move_Mode_Selector.ItemsSource = (Yaml_Moving_Value.Moving_Value_Type[])Enum.GetValues(typeof(Yaml_Moving_Value.Moving_Value_Type));
+            Move_Mode_Selector.ItemsSource = (YamlMovingValue.MovingValueType[])Enum.GetValues(typeof(YamlMovingValue.MovingValueType));
             set_Visibility();
 
             no_update = false;
@@ -100,7 +100,7 @@ namespace VVVF_Simulator.GUI.VVVF_Window.Control_Settings.Common
         {
             if (no_update) return;
 
-            Yaml_Moving_Value.Moving_Value_Type selected = (Yaml_Moving_Value.Moving_Value_Type)Move_Mode_Selector.SelectedItem;
+            YamlMovingValue.MovingValueType selected = (YamlMovingValue.MovingValueType)Move_Mode_Selector.SelectedItem;
             view_model.Moving_Value.type = selected;
             set_Visibility();
 
@@ -115,15 +115,15 @@ namespace VVVF_Simulator.GUI.VVVF_Window.Control_Settings.Common
 
         private void set_Visibility()
         {
-            Yaml_Moving_Value.Moving_Value_Type selected = (Yaml_Moving_Value.Moving_Value_Type)Move_Mode_Selector.SelectedItem;
+            YamlMovingValue.MovingValueType selected = (YamlMovingValue.MovingValueType)Move_Mode_Selector.SelectedItem;
 
             Visibility[] visible_list = new Visibility[2] { Visibility.Collapsed, Visibility.Collapsed };
 
-            if (selected == Yaml_Moving_Value.Moving_Value_Type.Proportional)
+            if (selected == YamlMovingValue.MovingValueType.Proportional)
                 visible_list = new Visibility[2] { Visibility.Collapsed, Visibility.Collapsed };
-            else if (selected == Yaml_Moving_Value.Moving_Value_Type.Pow2_Exponential)
+            else if (selected == YamlMovingValue.MovingValueType.Pow2_Exponential)
                 visible_list = new Visibility[2] { Visibility.Visible, Visibility.Collapsed };
-            else if(selected == Yaml_Moving_Value.Moving_Value_Type.Inv_Proportional)
+            else if(selected == YamlMovingValue.MovingValueType.Inv_Proportional)
                 visible_list = new Visibility[2] { Visibility.Collapsed, Visibility.Visible };
 
             for (int i = 0;i  < visible_list.Length; i++)

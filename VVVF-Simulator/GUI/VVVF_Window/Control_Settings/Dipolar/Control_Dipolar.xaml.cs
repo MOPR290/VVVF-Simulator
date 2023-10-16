@@ -12,24 +12,24 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VVVF_Simulator;
-using VVVF_Simulator.GUI.VVVF_Window.Control_Settings.Common;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Dipolar;
+using VvvfSimulator;
+using VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlAsyncParameter.Yaml_Async_Parameter_Dipolar;
 
-namespace VVVF_Simulator.VVVF_Window.Control_Settings.Dipolar
+namespace VvvfSimulator.VVVF_Window.Control_Settings.Dipolar
 {
     /// <summary>
     /// Control_Dipolar.xaml の相互作用ロジック
     /// </summary>
     public partial class Control_Dipolar : UserControl
     {
-        Yaml_Control_Data target;
+        YamlControlData target;
         MainWindow main;
 
         bool no_update = true;
 
-        public Control_Dipolar(Yaml_Control_Data ycd, MainWindow mainWindow)
+        public Control_Dipolar(YamlControlData ycd, MainWindow mainWindow)
         {
             target = ycd;
             main = mainWindow;

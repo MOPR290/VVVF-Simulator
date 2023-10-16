@@ -15,11 +15,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using VVVF_Simulator.Yaml.VVVF_Sound;
-using static VVVF_Simulator.Generation.Audio.Generate_RealTime_Common;
-using static VVVF_Simulator.VVVF_Calculate;
+using VvvfSimulator.Yaml.VVVFSound;
+using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
+using static VvvfSimulator.VvvfCalculate;
 
-namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
+namespace VvvfSimulator.GUI.Simulator.RealTime.Display
 {
     /// <summary>
     /// RealTime_Hexagon_Window.xaml の相互作用ロジック
@@ -43,10 +43,10 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
 
 
         private RealTime_Hexagon_Style _Style;
-        private RealTime_Parameter _Parameter;
+        private RealTimeParameter _Parameter;
         private bool _ZeroVectorCircle;
         private bool Resized = false;
-        public RealTime_Hexagon_Window(RealTime_Parameter Parameter,RealTime_Hexagon_Style Style, bool ZeroVectorCircle)
+        public RealTime_Hexagon_Window(RealTimeParameter Parameter,RealTime_Hexagon_Style Style, bool ZeroVectorCircle)
         {
             InitializeComponent();
             _Parameter = Parameter;
@@ -74,7 +74,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             Bitmap image = new(100,100);
 
             VvvfValues control = _Parameter.control_values.Clone();
-            Yaml_VVVF_Sound_Data ysd = _Parameter.sound_data;
+            YamlVvvfSoundData ysd = _Parameter.sound_data;
 
             control.set_Sine_Time(0);
             control.set_Saw_Time(0);
@@ -85,7 +85,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
                 int image_height = 1000;
                 int hex_div = 60000;
                 control.set_Allowed_Random_Freq_Move(false);
-                image = Generation.Video.Hexagon.Generate_Hexagon_Original.Get_Hexagon_Original_Image(
+                image = Generation.Video.Hexagon.GenerateHexagonOriginal.Get_Hexagon_Original_Image(
                     control,
                     ysd, 
                     image_width, 

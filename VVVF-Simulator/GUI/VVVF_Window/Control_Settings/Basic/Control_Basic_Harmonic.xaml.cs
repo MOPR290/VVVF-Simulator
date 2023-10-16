@@ -12,10 +12,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using static VVVF_Simulator.VvvfStructs;
-using static VVVF_Simulator.VvvfStructs.PulseMode;
+using static VvvfSimulator.VvvfStructs;
+using static VvvfSimulator.VvvfStructs.PulseMode;
 
-namespace VVVF_Simulator.GUI.Pages.Control_Settings.Basic
+namespace VvvfSimulator.GUI.Pages.Control_Settings.Basic
 {
     /// <summary>
     /// Control_Basic_Harmonic.xaml の相互作用ロジック
@@ -25,8 +25,8 @@ namespace VVVF_Simulator.GUI.Pages.Control_Settings.Basic
         View_Data vd = new View_Data();
         public class View_Data : ViewModelBase
         {
-            public List<Pulse_Harmonic> _harmonic_data = new List<Pulse_Harmonic>();
-            public List<Pulse_Harmonic> harmonic_data { get { return _harmonic_data; } set { _harmonic_data = value; RaisePropertyChanged(nameof(harmonic_data)); } }
+            public List<PulseHarmonic> _harmonic_data = new List<PulseHarmonic>();
+            public List<PulseHarmonic> harmonic_data { get { return _harmonic_data; } set { _harmonic_data = value; RaisePropertyChanged(nameof(harmonic_data)); } }
         }
         public class ViewModelBase : INotifyPropertyChanged
         {
@@ -44,43 +44,43 @@ namespace VVVF_Simulator.GUI.Pages.Control_Settings.Basic
             THI, SVM, DPM1, DPM2, DPM3, DPM4, Square_Fourier
         }
 
-        public List<Pulse_Harmonic> Get_Preset_Harmonics(Preset_Harmonics harmonic)
+        public List<PulseHarmonic> Get_Preset_Harmonics(Preset_Harmonics harmonic)
         {
             switch (harmonic)
             {
                 case Preset_Harmonics.THI:
-                    return new List<Pulse_Harmonic>() { 
-                        new Pulse_Harmonic() { amplitude = 0.2, harmonic = 3 } 
+                    return new List<PulseHarmonic>() { 
+                        new PulseHarmonic() { amplitude = 0.2, harmonic = 3 } 
                     };
                 case Preset_Harmonics.SVM:
-                    return new List<Pulse_Harmonic>() { 
-                        new Pulse_Harmonic() { amplitude = 0.25, harmonic = 3 , type = Pulse_Harmonic.Pulse_Harmonic_Type.Saw} 
+                    return new List<PulseHarmonic>() { 
+                        new PulseHarmonic() { amplitude = 0.25, harmonic = 3 , type = PulseHarmonic.PulseHarmonicType.Saw} 
                     };
                 case Preset_Harmonics.DPM1:
-                    return new List<Pulse_Harmonic>() {
-                        new Pulse_Harmonic() { amplitude = -0.05, harmonic = 3 },
-                        new Pulse_Harmonic() { amplitude = 0.2, harmonic = 3, type = Pulse_Harmonic.Pulse_Harmonic_Type.Square }
+                    return new List<PulseHarmonic>() {
+                        new PulseHarmonic() { amplitude = -0.05, harmonic = 3 },
+                        new PulseHarmonic() { amplitude = 0.2, harmonic = 3, type = PulseHarmonic.PulseHarmonicType.Square }
                     };
                 case Preset_Harmonics.DPM2:
-                    return new List<Pulse_Harmonic>() {
-                        new Pulse_Harmonic() { amplitude = -0.05, harmonic = 3, initial_phase = 1.57079633, type = Pulse_Harmonic.Pulse_Harmonic_Type.Saw},
-                        new Pulse_Harmonic() { amplitude = 0.2, harmonic = 3, type = Pulse_Harmonic.Pulse_Harmonic_Type.Square }
+                    return new List<PulseHarmonic>() {
+                        new PulseHarmonic() { amplitude = -0.05, harmonic = 3, initial_phase = 1.57079633, type = PulseHarmonic.PulseHarmonicType.Saw},
+                        new PulseHarmonic() { amplitude = 0.2, harmonic = 3, type = PulseHarmonic.PulseHarmonicType.Square }
                     };
                 case Preset_Harmonics.DPM3:
-                    return new List<Pulse_Harmonic>() {
-                        new Pulse_Harmonic() { amplitude = -0.05, harmonic = 3, initial_phase = -1.57079633, type = Pulse_Harmonic.Pulse_Harmonic_Type.Saw},
-                        new Pulse_Harmonic() { amplitude = 0.2, harmonic = 3, type = Pulse_Harmonic.Pulse_Harmonic_Type.Square }
+                    return new List<PulseHarmonic>() {
+                        new PulseHarmonic() { amplitude = -0.05, harmonic = 3, initial_phase = -1.57079633, type = PulseHarmonic.PulseHarmonicType.Saw},
+                        new PulseHarmonic() { amplitude = 0.2, harmonic = 3, type = PulseHarmonic.PulseHarmonicType.Square }
                     };
                 case Preset_Harmonics.DPM4: //case Preset_Harmonics.DPM4:
-                    return new List<Pulse_Harmonic>() {
-                        new Pulse_Harmonic() { amplitude = 0.05, harmonic = 3, type = Pulse_Harmonic.Pulse_Harmonic_Type.Saw},
-                        new Pulse_Harmonic() { amplitude = 0.2, harmonic = 3, type = Pulse_Harmonic.Pulse_Harmonic_Type.Square }
+                    return new List<PulseHarmonic>() {
+                        new PulseHarmonic() { amplitude = 0.05, harmonic = 3, type = PulseHarmonic.PulseHarmonicType.Saw},
+                        new PulseHarmonic() { amplitude = 0.2, harmonic = 3, type = PulseHarmonic.PulseHarmonicType.Square }
                     };
                 default:
-                    List<Pulse_Harmonic> harmonics = new();
+                    List<PulseHarmonic> harmonics = new();
                     for (int i = 0; i < 10; i++)
                     {
-                        harmonics.Add(new Pulse_Harmonic() { amplitude = 1.0 / (2 * i + 3), harmonic = 2 * i + 3 });
+                        harmonics.Add(new PulseHarmonic() { amplitude = 1.0 / (2 * i + 3), harmonic = 2 * i + 3 });
                     }
                     return harmonics;
 
@@ -133,7 +133,7 @@ namespace VVVF_Simulator.GUI.Pages.Control_Settings.Basic
             Object tag = btn.Tag;
 
             Preset_Harmonics selected = (Preset_Harmonics)Preset_Selector.SelectedItem;
-            List<Pulse_Harmonic> harmonics = Get_Preset_Harmonics(selected);
+            List<PulseHarmonic> harmonics = Get_Preset_Harmonics(selected);
 
             if (tag.Equals("Add"))
                 vd.harmonic_data.AddRange(harmonics);

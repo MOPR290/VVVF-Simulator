@@ -12,21 +12,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VVVF_Simulator;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Random;
+using VvvfSimulator;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlAsyncParameter.YamlAsyncParameterRandom;
 
-namespace VVVF_Simulator.VVVF_Window.Control_Settings.Async.Random_Range
+namespace VvvfSimulator.VVVF_Window.Control_Settings.Async.Random_Range
 {
     /// <summary>
     /// Control_Async_Random_Const.xaml の相互作用ロジック
     /// </summary>
     public partial class Control_Async_Random_Const : UserControl
     {
-        Yaml_Async_Parameter_Random_Value target;
+        YamlAsyncParameterRandomValue target;
         bool no_update = true;
 
-        public Control_Async_Random_Const(Yaml_Async_Parameter_Random_Value data)
+        public Control_Async_Random_Const(YamlAsyncParameterRandomValue data)
         {
             target = data;
 

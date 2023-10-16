@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace VVVF_Simulator.GUI.Util
+namespace VvvfSimulator.GUI.Util
 {
     /// <summary>
     /// Linear_Calculator.xaml の相互作用ロジック

@@ -15,10 +15,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using VVVF_Simulator.Yaml.VVVF_Sound;
-using static VVVF_Simulator.Generation.Audio.Generate_RealTime_Common;
+using VvvfSimulator.Yaml.VVVFSound;
+using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
 
-namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
+namespace VvvfSimulator.GUI.Simulator.RealTime.Display
 {
     /// <summary>
     /// RealTime_FFT_Window.xaml の相互作用ロジック
@@ -41,8 +41,8 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             }
         }
 
-        RealTime_Parameter _Parameter;
-        public RealTime_FFT_Window(RealTime_Parameter Parameter)
+        RealTimeParameter _Parameter;
+        public RealTime_FFT_Window(RealTimeParameter Parameter)
         {
             _Parameter = Parameter;
 
@@ -70,12 +70,12 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             
 
             VvvfValues control = _Parameter.control_values.Clone();
-            Yaml_VVVF_Sound_Data ysd = _Parameter.sound_data;
+            YamlVvvfSoundData ysd = _Parameter.sound_data;
 
             control.set_Sine_Time(0);
             control.set_Saw_Time(0);
 
-            Bitmap image = Generation.Video.FFT.Generate_FFT.Get_FFT_Image(control,ysd);
+            Bitmap image = Generation.Video.FFT.GenerateFFT.Get_FFT_Image(control,ysd);
             //Bitmap image = Generation.Video.FS.Generate_FS.Get_FS_Image(control, ysd);
 
             if (!Resized)

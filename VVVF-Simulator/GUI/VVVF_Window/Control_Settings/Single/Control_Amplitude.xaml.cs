@@ -3,18 +3,18 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using VVVF_Simulator;
-using static VVVF_Simulator.VVVF_Calculate;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Control_Data_Amplitude_Control;
+using VvvfSimulator;
+using static VvvfSimulator.VvvfCalculate;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlControlDataAmplitudeControl;
 
-namespace VVVF_Simulator.VVVF_Window.Control_Settings
+namespace VvvfSimulator.VVVF_Window.Control_Settings
 {
     /// <summary>
     /// Control_Amplitude.xaml の相互作用ロジック
     /// </summary>
     public partial class Control_Amplitude : UserControl
     {
-        private Yaml_Control_Data_Amplitude target;
+        private YamlControlDataAmplitude target;
         private MainWindow mainWindow;
         private Control_Amplitude_Content content;
 
@@ -59,7 +59,7 @@ namespace VVVF_Simulator.VVVF_Window.Control_Settings
             }
         }
 
-        public Control_Amplitude(Yaml_Control_Data_Amplitude ycd, Control_Amplitude_Content cac, MainWindow mainWindow)
+        public Control_Amplitude(YamlControlDataAmplitude ycd, Control_Amplitude_Content cac, MainWindow mainWindow)
         {
             target = ycd;
             this.mainWindow = mainWindow;

@@ -2,10 +2,10 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using VVVF_Simulator.Yaml.VVVF_Sound;
+using VvvfSimulator.Yaml.VVVFSound;
 
 
-namespace VVVF_Simulator.VVVF_Window.Settings
+namespace VvvfSimulator.VVVF_Window.Settings
 {
     /// <summary>
     /// level_setting.xaml の相互作用ロジック

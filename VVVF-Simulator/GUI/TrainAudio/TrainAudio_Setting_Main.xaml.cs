@@ -6,21 +6,21 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using VVVF_Simulator.GUI.TrainAudio.Pages.AudioFilter;
-using VVVF_Simulator.GUI.TrainAudio.Pages.Gear;
-using VVVF_Simulator.GUI.TrainAudio.Pages.Motor;
+using VvvfSimulator.GUI.TrainAudio.Pages.AudioFilter;
+using VvvfSimulator.GUI.TrainAudio.Pages.Gear;
+using VvvfSimulator.GUI.TrainAudio.Pages.Motor;
 using YamlDotNet.Core;
-using static VVVF_Simulator.Yaml.TrainAudio_Setting.Yaml_TrainSound_Analyze;
+using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
 
-namespace VVVF_Simulator.GUI.TrainAudio
+namespace VvvfSimulator.GUI.TrainAudio
 {
     /// <summary>
     /// TrainAudio_Harmonic_Window.xaml の相互作用ロジック
     /// </summary>
     public partial class TrainAudio_Setting_Main : Window
     {
-        private Yaml_TrainSound_Data train_Harmonic_Data;
-        public TrainAudio_Setting_Main(Yaml_TrainSound_Data thd)
+        private YamlTrainSoundData train_Harmonic_Data;
+        public TrainAudio_Setting_Main(YamlTrainSoundData thd)
         {
             train_Harmonic_Data = thd;
             InitializeComponent();
@@ -108,9 +108,9 @@ namespace VVVF_Simulator.GUI.TrainAudio
                 {
                     Setting_Page_Frame.Navigate(null);
 
-                    var train_Harmonic_Data = Yaml_TrainSound_Data_Manage.load_Yaml(dialog.FileName);
-                    Yaml_TrainSound_Data_Manage.current_data = train_Harmonic_Data;
-                    this.train_Harmonic_Data = Yaml_TrainSound_Data_Manage.current_data;
+                    var train_Harmonic_Data = YamlTrainSoundDataManage.LoadYaml(dialog.FileName);
+                    YamlTrainSoundDataManage.current_data = train_Harmonic_Data;
+                    this.train_Harmonic_Data = YamlTrainSoundDataManage.current_data;
 
                     MessageBox.Show("Load OK.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
@@ -134,7 +134,7 @@ namespace VVVF_Simulator.GUI.TrainAudio
                 };
                 if (dialog.ShowDialog() == false) return;
 
-                if (Yaml_TrainSound_Data_Manage.save_Yaml(dialog.FileName))
+                if (YamlTrainSoundDataManage.SaveYaml(dialog.FileName))
                     MessageBox.Show("Save OK.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
                 else
                     MessageBox.Show("Error occurred on saving.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);

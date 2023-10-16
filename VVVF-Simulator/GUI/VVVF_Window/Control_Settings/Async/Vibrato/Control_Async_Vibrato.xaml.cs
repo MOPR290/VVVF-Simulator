@@ -12,23 +12,23 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VVVF_Simulator;
-using VVVF_Simulator.GUI.VVVF_Window.Control_Settings.Common;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Parameter_Carrier_Freq_Vibrato.Yaml_Async_Parameter_Vibrato_Value;
+using VvvfSimulator;
+using VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq.Yaml_Async_Parameter_Carrier_Freq_Vibrato.Yaml_Async_Parameter_Vibrato_Value;
 
-namespace VVVF_Simulator.VVVF_Window.Control_Settings.Async.Vibrato
+namespace VvvfSimulator.VVVF_Window.Control_Settings.Async.Vibrato
 {
     /// <summary>
     /// Control_Async_Vibrato.xaml の相互作用ロジック
     /// </summary>
     public partial class Control_Async_Vibrato : UserControl
     {
-        Yaml_Control_Data target;
+        YamlControlData target;
         MainWindow main;
 
         bool no_update = true;
-        public Control_Async_Vibrato(Yaml_Control_Data data, MainWindow mainWindow)
+        public Control_Async_Vibrato(YamlControlData data, MainWindow mainWindow)
         {
             target = data;
             main = mainWindow;

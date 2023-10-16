@@ -6,10 +6,10 @@ using System.Linq;
 using System.Media;
 using System.Threading.Tasks;
 using System.Windows;
-using VVVF_Simulator.Yaml.VVVF_Sound;
-using static VVVF_Simulator.Yaml.TrainAudio_Setting.Yaml_TrainSound_Analyze;
+using VvvfSimulator.Yaml.VVVFSound;
+using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
 
-namespace VVVF_Simulator
+namespace VvvfSimulator
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -12,10 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VVVF_Simulator;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Parameter_Carrier_Freq_Vibrato;
+using VvvfSimulator;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq.Yaml_Async_Parameter_Carrier_Freq_Vibrato;
 
-namespace VVVF_Simulator.VVVF_Window.Control_Settings.Async.Vibrato
+namespace VvvfSimulator.VVVF_Window.Control_Settings.Async.Vibrato
 {
     /// <summary>
     /// Control_Async_Vibrato_Const.xaml の相互作用ロジック

@@ -12,21 +12,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VVVF_Simulator;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data;
+using VvvfSimulator;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
 
-namespace VVVF_Simulator.VVVF_Window.Control_Settings.Dipolar
+namespace VvvfSimulator.VVVF_Window.Control_Settings.Dipolar
 {
     /// <summary>
     /// Control_Dipolar_Const.xaml の相互作用ロジック
     /// </summary>
     public partial class Control_Dipolar_Const : UserControl
     {
-        Yaml_Control_Data target;
+        YamlControlData target;
         MainWindow main;
 
         bool no_update = true;
-        public Control_Dipolar_Const(Yaml_Control_Data target, MainWindow main)
+        public Control_Dipolar_Const(YamlControlData target, MainWindow main)
         {
             this.target = target;
             this.main = main;

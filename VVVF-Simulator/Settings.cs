@@ -1,4 +1,4 @@
-﻿namespace VVVF_Simulator.Properties {
+﻿namespace VvvfSimulator.Properties {
     
     
     // このクラスでは設定クラスでの特定のイベントを処理することができます:

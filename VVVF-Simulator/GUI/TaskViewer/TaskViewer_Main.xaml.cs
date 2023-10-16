@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace VVVF_Simulator.GUI.TaskViewer
+namespace VvvfSimulator.GUI.TaskViewer
 {
     /// <summary>
     /// TaskViewer_Main.xaml の相互作用ロジック

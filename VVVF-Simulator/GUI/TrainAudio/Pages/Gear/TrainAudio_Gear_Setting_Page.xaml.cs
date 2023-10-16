@@ -12,17 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static VVVF_Simulator.Yaml.TrainAudio_Setting.Yaml_TrainSound_Analyze;
+using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
 
-namespace VVVF_Simulator.GUI.TrainAudio.Pages.Gear
+namespace VvvfSimulator.GUI.TrainAudio.Pages.Gear
 {
     /// <summary>
     /// TrainAudio_Gear_Setting_Page.xaml の相互作用ロジック
     /// </summary>
     public partial class TrainAudio_Gear_Setting_Page : Page
     {
-        Yaml_TrainSound_Data train_Harmonic_Data;
-        public TrainAudio_Gear_Setting_Page(Yaml_TrainSound_Data train_Harmonic_Data)
+        YamlTrainSoundData train_Harmonic_Data;
+        public TrainAudio_Gear_Setting_Page(YamlTrainSoundData train_Harmonic_Data)
         {
             this.train_Harmonic_Data = train_Harmonic_Data;
             InitializeComponent();
@@ -36,7 +36,7 @@ namespace VVVF_Simulator.GUI.TrainAudio.Pages.Gear
             Gear_Sound_List.ItemsSource = train_Harmonic_Data.Gear_Harmonics;
             Gear_Sound_List.Items.Refresh();
 
-            var item = (Yaml_TrainSound_Data.Harmonic_Data)Gear_Sound_List.SelectedItem;
+            var item = (YamlTrainSoundData.HarmonicData)Gear_Sound_List.SelectedItem;
             if (item == null) return;
             Gear_Edit_Frame.Navigate(new TrainAudio_Harmonic_Setting_Page(item, Gear_Sound_List));
         }
@@ -48,7 +48,7 @@ namespace VVVF_Simulator.GUI.TrainAudio.Pages.Gear
 
             if (tag.Equals("Add"))
             {
-                train_Harmonic_Data.Gear_Harmonics.Add(new Yaml_TrainSound_Data.Harmonic_Data());
+                train_Harmonic_Data.Gear_Harmonics.Add(new YamlTrainSoundData.HarmonicData());
                 Update_ListView();
             }
             else if (tag.Equals("Remove"))
@@ -61,7 +61,7 @@ namespace VVVF_Simulator.GUI.TrainAudio.Pages.Gear
             else if (tag.Equals("Copy"))
             {
                 if (Gear_Sound_List.SelectedIndex < 0) return;
-                Yaml_TrainSound_Data.Harmonic_Data harmonic_Data = (Yaml_TrainSound_Data.Harmonic_Data)Gear_Sound_List.SelectedItem;
+                YamlTrainSoundData.HarmonicData harmonic_Data = (YamlTrainSoundData.HarmonicData)Gear_Sound_List.SelectedItem;
                 train_Harmonic_Data.Gear_Harmonics.Add(harmonic_Data.Clone());
                 Update_ListView();
             }
@@ -76,7 +76,7 @@ namespace VVVF_Simulator.GUI.TrainAudio.Pages.Gear
 
         private void Gear_Sound_List_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var item = (Yaml_TrainSound_Data.Harmonic_Data)Gear_Sound_List.SelectedItem;
+            var item = (YamlTrainSoundData.HarmonicData)Gear_Sound_List.SelectedItem;
             if (item == null) return;
             Gear_Edit_Frame.Navigate(new TrainAudio_Harmonic_Setting_Page(item, Gear_Sound_List));
         }

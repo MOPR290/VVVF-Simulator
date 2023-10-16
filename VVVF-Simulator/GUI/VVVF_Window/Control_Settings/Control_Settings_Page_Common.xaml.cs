@@ -13,14 +13,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VVVF_Simulator;
-using VVVF_Simulator.VVVF_Window.Control_Settings.Basic;
-using VVVF_Simulator.VVVF_Window.Control_Settings.Dipolar;
-using static VVVF_Simulator.VvvfStructs;
-using static VVVF_Simulator.VvvfStructs.PulseMode;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data;
+using VvvfSimulator;
+using VvvfSimulator.VVVF_Window.Control_Settings.Basic;
+using VvvfSimulator.VVVF_Window.Control_Settings.Dipolar;
+using static VvvfSimulator.VvvfStructs;
+using static VvvfSimulator.VvvfStructs.PulseMode;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
 
-namespace VVVF_Simulator.VVVF_Window.Control_Settings
+namespace VvvfSimulator.VVVF_Window.Control_Settings
 {
     /// <summary>
     /// Level_3_Page_Control_Common_Async.xaml の相互作用ロジック
@@ -60,9 +60,9 @@ namespace VVVF_Simulator.VVVF_Window.Control_Settings
             }
         }
 
-        private void Set_Visibility(Yaml_Control_Data ycd , int level)
+        private void Set_Visibility(YamlControlData ycd , int level)
         {
-            Pulse_Mode_Names mode = ycd.pulse_Mode.pulse_name;
+            PulseModeNames mode = ycd.pulse_Mode.pulse_name;
 
             viewModel.basic = Visibility.Visible;
             viewModel.freerun = Visibility.Visible;
@@ -70,18 +70,18 @@ namespace VVVF_Simulator.VVVF_Window.Control_Settings
             viewModel.amp_free_on = ycd.enable_on_free_run ? Visibility.Visible : Visibility.Collapsed;
             viewModel.amp_free_off = ycd.enable_off_free_run ? Visibility.Visible : Visibility.Collapsed;
 
-            if (level == 3 && mode == Pulse_Mode_Names.Async)
+            if (level == 3 && mode == PulseModeNames.Async)
                 viewModel.dipolar = Visibility.Visible;
             else
                 viewModel.dipolar = Visibility.Collapsed;
 
-            if (mode == Pulse_Mode_Names.Async)
+            if (mode == PulseModeNames.Async)
                 viewModel.async = Visibility.Visible;
             else
                 viewModel.async = Visibility.Collapsed;
         }
 
-        public Control_Setting_Page_Common(Yaml_Control_Data ycd, MainWindow mainWindow, int level)
+        public Control_Setting_Page_Common(YamlControlData ycd, MainWindow mainWindow, int level)
         {
             InitializeComponent();
             DataContext = viewModel;

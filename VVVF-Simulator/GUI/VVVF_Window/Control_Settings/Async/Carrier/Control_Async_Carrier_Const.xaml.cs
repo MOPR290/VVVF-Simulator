@@ -12,21 +12,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VVVF_Simulator;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data;
+using VvvfSimulator;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
 
-namespace VVVF_Simulator.VVVF_Window.Control_Settings.Async
+namespace VvvfSimulator.VVVF_Window.Control_Settings.Async
 {
     /// <summary>
     /// Control_Async_Const.xaml の相互作用ロジック
     /// </summary>
     public partial class Control_Async_Carrier_Const : UserControl
     {
-        Yaml_Control_Data target;
+        YamlControlData target;
         MainWindow MainWindow;
 
         bool no_update = true;
-        public Control_Async_Carrier_Const(Yaml_Control_Data data, MainWindow mainWindow)
+        public Control_Async_Carrier_Const(YamlControlData data, MainWindow mainWindow)
         {
             MainWindow = mainWindow;
             target = data;

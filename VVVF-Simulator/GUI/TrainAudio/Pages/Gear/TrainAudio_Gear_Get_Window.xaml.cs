@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace VVVF_Simulator.GUI.TrainAudio.Pages.Gear
+namespace VvvfSimulator.GUI.TrainAudio.Pages.Gear
 {
     /// <summary>
     /// TrainAudio_Gear_Get_Window.xaml の相互作用ロジック

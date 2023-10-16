@@ -12,18 +12,18 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static VVVF_Simulator.Yaml.TrainAudio_Setting.Yaml_TrainSound_Analyze;
+using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
 
-namespace VVVF_Simulator.GUI.TrainAudio.Pages.Motor
+namespace VvvfSimulator.GUI.TrainAudio.Pages.Motor
 {
     /// <summary>
     /// TrainAudio_MotorSound_Setting_Page.xaml の相互作用ロジック
     /// </summary>
     public partial class TrainAudio_MotorSound_Setting_Page : Page
     {
-        Yaml_TrainSound_Data train_Harmonic_Data;
+        YamlTrainSoundData train_Harmonic_Data;
         bool no_update = true;
-        public TrainAudio_MotorSound_Setting_Page(Yaml_TrainSound_Data train_Harmonic_Data)
+        public TrainAudio_MotorSound_Setting_Page(YamlTrainSoundData train_Harmonic_Data)
         {
             InitializeComponent();
             this.train_Harmonic_Data = train_Harmonic_Data;
@@ -43,7 +43,7 @@ namespace VVVF_Simulator.GUI.TrainAudio.Pages.Motor
             if (train_Harmonic_Data.Sine_Harmonics.Count > 0)
             {
                 Motor_Harmonics_List.SelectedIndex = 0;
-                Motor_Harmonic_Edit_Frame.Navigate(new TrainAudio_Harmonic_Setting_Page((Yaml_TrainSound_Data.Harmonic_Data)Motor_Harmonics_List.SelectedItem,Motor_Harmonics_List));
+                Motor_Harmonic_Edit_Frame.Navigate(new TrainAudio_Harmonic_Setting_Page((YamlTrainSoundData.HarmonicData)Motor_Harmonics_List.SelectedItem,Motor_Harmonics_List));
             }
                 
 
@@ -83,7 +83,7 @@ namespace VVVF_Simulator.GUI.TrainAudio.Pages.Motor
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var item = (Yaml_TrainSound_Data.Harmonic_Data)Motor_Harmonics_List.SelectedItem;
+            var item = (YamlTrainSoundData.HarmonicData)Motor_Harmonics_List.SelectedItem;
             if (item == null) return;
             Motor_Harmonic_Edit_Frame.Navigate(new TrainAudio_Harmonic_Setting_Page(item, Motor_Harmonics_List));
         }
@@ -101,7 +101,7 @@ namespace VVVF_Simulator.GUI.TrainAudio.Pages.Motor
 
             if (tag.Equals("Add"))
             {
-                train_Harmonic_Data.Sine_Harmonics.Add(new Yaml_TrainSound_Data.Harmonic_Data());
+                train_Harmonic_Data.Sine_Harmonics.Add(new YamlTrainSoundData.HarmonicData());
                 Update_ListView();
             }
             else if (tag.Equals("Remove"))
@@ -114,7 +114,7 @@ namespace VVVF_Simulator.GUI.TrainAudio.Pages.Motor
             else if (tag.Equals("Clone"))
             {
                 if (Motor_Harmonics_List.SelectedIndex < 0) return;
-                Yaml_TrainSound_Data.Harmonic_Data harmonic_Data = (Yaml_TrainSound_Data.Harmonic_Data)Motor_Harmonics_List.SelectedItem;
+                YamlTrainSoundData.HarmonicData harmonic_Data = (YamlTrainSoundData.HarmonicData)Motor_Harmonics_List.SelectedItem;
                 train_Harmonic_Data.Sine_Harmonics.Add(harmonic_Data.Clone());
                 Update_ListView();
             }

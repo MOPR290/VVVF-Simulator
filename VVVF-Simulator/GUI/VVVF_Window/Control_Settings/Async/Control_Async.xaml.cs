@@ -12,28 +12,28 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VVVF_Simulator;
-using VVVF_Simulator.GUI.VVVF_Window.Control_Settings.Common;
-using VVVF_Simulator.VVVF_Window.Control_Settings.Async;
-using VVVF_Simulator.VVVF_Window.Control_Settings.Async.Random_Range;
-using VVVF_Simulator.VVVF_Window.Control_Settings.Async.Vibrato;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Random;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Random.Yaml_Async_Parameter_Random_Value;
+using VvvfSimulator;
+using VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common;
+using VvvfSimulator.VVVF_Window.Control_Settings.Async;
+using VvvfSimulator.VVVF_Window.Control_Settings.Async.Random_Range;
+using VvvfSimulator.VVVF_Window.Control_Settings.Async.Vibrato;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlAsyncParameter.YamlAsyncParameterRandom;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlAsyncParameter.YamlAsyncParameterRandom.YamlAsyncParameterRandomValue;
 
-namespace VVVF_Simulator.VVVF_Window.Control_Settings
+namespace VvvfSimulator.VVVF_Window.Control_Settings
 {
     /// <summary>
     /// Control_Async.xaml の相互作用ロジック
     /// </summary>
     public partial class Control_Async : UserControl
     {
-        Yaml_Control_Data data;
+        YamlControlData data;
         MainWindow MainWindow;
 
         bool no_update = true;
-        public Control_Async(Yaml_Control_Data ycd, MainWindow mainWindow)
+        public Control_Async(YamlControlData ycd, MainWindow mainWindow)
         {
             MainWindow = mainWindow;
             data = ycd;
@@ -102,7 +102,7 @@ namespace VVVF_Simulator.VVVF_Window.Control_Settings
                 carrier_setting.Navigate(new Control_Async_Carrier_Table(data));
         }
 
-        private void Show_Random_Setting(Frame ShowFrame, Yaml_Async_Parameter_Random_Value SettingValue)
+        private void Show_Random_Setting(Frame ShowFrame, YamlAsyncParameterRandomValue SettingValue)
         {
             if (SettingValue.value_mode == Yaml_Async_Parameter_Random_Value_Mode.Const)
                 ShowFrame.Navigate(new Control_Async_Random_Const(SettingValue));

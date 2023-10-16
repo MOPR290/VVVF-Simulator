@@ -1,9 +1,9 @@
-﻿<Window x:Class="VVVF_Simulator.GUI.TrainAudio.TrainAudio_Setting_Main"
+﻿<Window x:Class="VvvfSimulator.GUI.TrainAudio.TrainAudio_Setting_Main"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:VVVF_Simulator.GUI.TrainAudio"
+        xmlns:local="clr-namespace:VvvfSimulator.GUI.TrainAudio"
         mc:Ignorable="d"
         Closing="Window_Closing"
         Title="Train Sound Environment Settings" Height="500" Width="800">

@@ -1,7 +1,7 @@
-﻿<Application x:Class="VVVF_Simulator.App"
+﻿<Application x:Class="VvvfSimulator.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:VVVF_Simulator"
+             xmlns:local="clr-namespace:VvvfSimulator"
              StartupUri="GUI/MainWindow.xaml" Startup="Application_Startup">
     <Application.Resources>
          

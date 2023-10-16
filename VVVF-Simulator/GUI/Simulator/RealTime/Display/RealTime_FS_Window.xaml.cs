@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using VVVF_Simulator.Yaml.VVVF_Sound;
-using static VVVF_Simulator.Generation.Audio.Generate_RealTime_Common;
-using static VVVF_Simulator.Generation.Video.FS.Generate_FS;
+using VvvfSimulator.Yaml.VVVFSound;
+using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
+using static VvvfSimulator.Generation.Video.FS.GenerateFourierSeries;
 using Brush = System.Windows.Media.Brush;
 
-namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
+namespace VvvfSimulator.GUI.Simulator.RealTime.Display
 {
     /// <summary>
     /// RealTime_FFT_Window.xaml の相互作用ロジック
@@ -35,8 +35,8 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             }
         }
 
-        RealTime_Parameter _Parameter;
-        public RealTime_FS_Window(RealTime_Parameter Parameter)
+        RealTimeParameter _Parameter;
+        public RealTime_FS_Window(RealTimeParameter Parameter)
         {
             _Parameter = Parameter;
 
@@ -64,7 +64,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
         private void UpdateControl()
         {
             VvvfValues control = _Parameter.control_values.Clone();
-            Yaml_VVVF_Sound_Data ysd = _Parameter.sound_data;
+            YamlVvvfSoundData ysd = _Parameter.sound_data;
 
             control.set_Sine_Time(0);
             control.set_Saw_Time(0);

@@ -4,19 +4,19 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using VVVF_Simulator.GUI.Pages.Control_Settings.Basic;
-using static VVVF_Simulator.VvvfStructs;
-using static VVVF_Simulator.VvvfStructs.PulseMode;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data;
+using VvvfSimulator.GUI.Pages.Control_Settings.Basic;
+using static VvvfSimulator.VvvfStructs;
+using static VvvfSimulator.VvvfStructs.PulseMode;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
 
-namespace VVVF_Simulator.VVVF_Window.Control_Settings.Basic
+namespace VvvfSimulator.VVVF_Window.Control_Settings.Basic
 {
     /// <summary>
     /// Control_Basic.xaml の相互作用ロジック
     /// </summary>
     public partial class Control_Basic : UserControl
     {
-        private Yaml_Control_Data target;
+        private YamlControlData target;
         private MainWindow MainWindow;
         private int level;
 
@@ -49,7 +49,7 @@ namespace VVVF_Simulator.VVVF_Window.Control_Settings.Basic
         }
 
         private bool no_update = true;
-        public Control_Basic(Yaml_Control_Data ycd, MainWindow mainWindow, int level)
+        public Control_Basic(YamlControlData ycd, MainWindow mainWindow, int level)
         {
             InitializeComponent();
 
@@ -83,13 +83,13 @@ namespace VVVF_Simulator.VVVF_Window.Control_Settings.Basic
             sine_from_text_box.Text = target.rotate_sine_from.ToString();
             sine_below_text_box.Text = target.rotate_sine_below.ToString();
 
-            Pulse_Name_Selector.ItemsSource = (Pulse_Mode_Names[])Enum.GetValues(typeof(Pulse_Mode_Names));
+            Pulse_Name_Selector.ItemsSource = (PulseModeNames[])Enum.GetValues(typeof(PulseModeNames));
             Pulse_Name_Selector.SelectedItem = target.pulse_Mode.pulse_name;
 
             Shifted_Box.IsChecked = target.pulse_Mode.Shift;
             Square_Box.IsChecked = target.pulse_Mode.Square;
 
-            Base_Wave_Selector.ItemsSource = (Base_Wave_Type[])Enum.GetValues(typeof(Base_Wave_Type));
+            Base_Wave_Selector.ItemsSource = (BaseWaveType[])Enum.GetValues(typeof(BaseWaveType));
             Base_Wave_Selector.SelectedItem = target.pulse_Mode.Base_Wave;
 
             Alt_Mode_Selector.ItemsSource = Get_Avail_Alt_Modes(target.pulse_Mode, level);
@@ -111,16 +111,16 @@ namespace VVVF_Simulator.VVVF_Window.Control_Settings.Basic
             viewModel.Base_Wave_Selector_Visible = Is_Harmonic_BaseWaveChange_Available(mode, level);
             viewModel.Square_Visible = Is_Square_Available(mode, level);
 
-            List<Pulse_Alternative_Mode> modes = Get_Avail_Alt_Modes(target.pulse_Mode, level);
+            List<PulseAlternativeMode> modes = Get_Avail_Alt_Modes(target.pulse_Mode, level);
             Alt_Mode_Selector.ItemsSource = modes;
             if (!Alt_Mode_Selector.Items.Contains(Alt_Mode_Selector.SelectedItem))
             {
                 Alt_Mode_Selector.SelectedIndex = 0;
-                Pulse_Alternative_Mode selected = (Pulse_Alternative_Mode)Alt_Mode_Selector.SelectedItem;
+                PulseAlternativeMode selected = (PulseAlternativeMode)Alt_Mode_Selector.SelectedItem;
                 target.pulse_Mode.Alt_Mode = selected;
             }
 
-            if (modes.Count == 1 && modes[0] == Pulse_Alternative_Mode.Default)
+            if (modes.Count == 1 && modes[0] == PulseAlternativeMode.Default)
                 viewModel.Alt_Mode_Selector_Visible = false;
             else
                 viewModel.Alt_Mode_Selector_Visible = true;
@@ -198,7 +198,7 @@ namespace VVVF_Simulator.VVVF_Window.Control_Settings.Basic
 
             if (tag.Equals("PulseName"))
             {
-                Pulse_Mode_Names selected = (Pulse_Mode_Names)cb.SelectedItem;
+                PulseModeNames selected = (PulseModeNames)cb.SelectedItem;
                 target.pulse_Mode.pulse_name = selected;
                 MainWindow.update_Control_List_View();
                 MainWindow.update_Control_Showing();
@@ -206,12 +206,12 @@ namespace VVVF_Simulator.VVVF_Window.Control_Settings.Basic
             }
             else if(tag.Equals("BaseWave"))
             {
-                Base_Wave_Type selected = (Base_Wave_Type)cb.SelectedItem;
+                BaseWaveType selected = (BaseWaveType)cb.SelectedItem;
                 target.pulse_Mode.Base_Wave = selected;
             }
             else if (tag.Equals("AltMode"))
             {
-                Pulse_Alternative_Mode selected = (Pulse_Alternative_Mode)cb.SelectedItem;
+                PulseAlternativeMode selected = (PulseAlternativeMode)cb.SelectedItem;
                 target.pulse_Mode.Alt_Mode = selected;
             }
 

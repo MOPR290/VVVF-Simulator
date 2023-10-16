@@ -6,11 +6,11 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using VVVF_Simulator.Yaml.VVVF_Sound;
-using static VVVF_Simulator.Generation.Audio.Generate_RealTime_Common;
-using static VVVF_Simulator.VvvfStructs;
+using VvvfSimulator.Yaml.VVVFSound;
+using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
+using static VvvfSimulator.VvvfStructs;
 
-namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
+namespace VvvfSimulator.GUI.Simulator.RealTime.Display
 {
     /// <summary>
     /// RealTime_WaveForm_Window.xaml の相互作用ロジック
@@ -32,8 +32,8 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             }
         }
 
-        private RealTime_Parameter _Parameter;
-        public RealTime_WaveForm_Window(RealTime_Parameter Parameter)
+        private RealTimeParameter _Parameter;
+        public RealTime_WaveForm_Window(RealTimeParameter Parameter)
         {
             _Parameter = Parameter;
             DataContext = BindingData;
@@ -57,7 +57,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
 
         private void UpdateControl()
         {
-            Yaml_VVVF_Sound_Data Sound = _Parameter.sound_data;
+            YamlVvvfSoundData Sound = _Parameter.sound_data;
             VvvfValues Control = _Parameter.control_values.Clone();
 
             Control.set_Saw_Time(0);
@@ -77,8 +77,8 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
                 free_run = Control.is_Free_Running(),
                 wave_stat = Control.get_Control_Frequency()
             };
-            PwmCalculateValues calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(Control, cv, Sound);
-            Bitmap image = Generation.Video.WaveForm.Generate_WaveForm_UV.Get_WaveForm_Image(Control, calculated_Values, image_width, image_height, wave_height, 2, calculate_div,0);
+            PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(Control, cv, Sound);
+            Bitmap image = Generation.Video.WaveForm.GenerateWaveFormUV.Get_WaveForm_Image(Control, calculated_Values, image_width, image_height, wave_height, 2, calculate_div,0);
 
             using Stream st = new MemoryStream();
             image.Save(st, ImageFormat.Bmp);

@@ -12,11 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VVVF_Simulator;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Parameter_Carrier_Freq_Table;
+using VvvfSimulator;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncParameterCarrierFreqTable;
 
-namespace VVVF_Simulator.VVVF_Window.Control_Settings.Async
+namespace VvvfSimulator.VVVF_Window.Control_Settings.Async
 {
     /// <summary>
     /// Control_Async_Table.xaml の相互作用ロジック
@@ -28,8 +28,8 @@ namespace VVVF_Simulator.VVVF_Window.Control_Settings.Async
             public List<Yaml_Async_Parameter_Carrier_Freq_Table_Single> Async_Table_Data { get; set; } = new List<Yaml_Async_Parameter_Carrier_Freq_Table_Single>();
         }
 
-        Yaml_Control_Data target;
-        public Control_Async_Carrier_Table(Yaml_Control_Data data)
+        YamlControlData target;
+        public Control_Async_Carrier_Table(YamlControlData data)
         {
             InitializeComponent();
 

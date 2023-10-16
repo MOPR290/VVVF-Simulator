@@ -12,19 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static VVVF_Simulator.Yaml.Mascon_Control.Yaml_Mascon_Analyze.Yaml_Mascon_Data;
+using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze.YamlMasconData;
 
-namespace VVVF_Simulator.GUI.Mascon
+namespace VvvfSimulator.GUI.Mascon
 {
     /// <summary>
     /// Generation_Mascon_Control_Edit_Page.xaml の相互作用ロジック
     /// </summary>
     public partial class Mascon_Control_Edit : Page
     {
-        private Yaml_Mascon_Data_Point data;
+        private YamlMasconDataPoint data;
         private bool no_update = true;
         private Mascon_Control_Main main_viewer;
-        public Mascon_Control_Edit(Mascon_Control_Main main,Yaml_Mascon_Data_Point ympd)
+        public Mascon_Control_Edit(Mascon_Control_Main main,YamlMasconDataPoint ympd)
         {
             InitializeComponent();
 

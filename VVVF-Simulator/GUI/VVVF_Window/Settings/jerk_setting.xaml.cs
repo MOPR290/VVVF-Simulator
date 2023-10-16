@@ -13,12 +13,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VVVF_Simulator.Yaml.VVVF_Sound;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Mascon_Data;
-using static VVVF_Simulator.Yaml.VVVF_Sound.Yaml_VVVF_Sound_Data.Yaml_Mascon_Data.Yaml_Mascon_Data_On_Off;
+using VvvfSimulator.Yaml.VVVFSound;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlMasconData;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlMasconData.Yaml_Mascon_Data_On_Off;
 
-namespace VVVF_Simulator.VVVF_Window.Settings
+namespace VvvfSimulator.VVVF_Window.Settings
 {
     /// <summary>
     /// mascon_off_setting.xaml の相互作用ロジック
@@ -28,7 +28,7 @@ namespace VVVF_Simulator.VVVF_Window.Settings
         public jerk_setting()
         {
             InitializeComponent();
-            Yaml_VVVF_Sound_Data ysd = Yaml_VVVF_Manage.current_data;
+            YamlVvvfSoundData ysd = Yaml_VVVF_Manage.current_data;
 
             Accel_Mascon_On_Freq_Goto.Text = ysd.mascon_data.accelerating.on.control_freq_go_to.ToString();
             Accel_Mascon_On_Rate.Text = ysd.mascon_data.accelerating.on.freq_per_sec.ToString();
@@ -52,7 +52,7 @@ namespace VVVF_Simulator.VVVF_Window.Settings
             String[] name_data = tag_name.Split("-");
 
             //Accel_On_Freq
-            Yaml_Mascon_Data ymd = Yaml_VVVF_Manage.current_data.mascon_data;
+            YamlMasconData ymd = Yaml_VVVF_Manage.current_data.mascon_data;
             Yaml_Mascon_Data_On_Off ymdoo;
             Yaml_Mascon_Data_Single ymds;
 

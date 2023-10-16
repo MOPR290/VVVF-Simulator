@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace VVVF_Simulator.GUI.Simulator.RealTime.Setting_Window
+namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
 {
     /// <summary>
     /// RealTime_Device_Setting.xaml の相互作用ロジック

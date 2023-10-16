@@ -12,22 +12,22 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using VVVF_Simulator.GUI.Simulator.RealTime.Setting_Window;
-using VVVF_Simulator.Yaml.VVVF_Sound;
-using static VVVF_Simulator.Generation.Audio.Generate_RealTime_Common;
-using static VVVF_Simulator.VVVF_Calculate;
-using static VVVF_Simulator.VvvfStructs;
-using static VVVF_Simulator.VvvfStructs.PulseMode;
+using VvvfSimulator.GUI.Simulator.RealTime.Setting_Window;
+using VvvfSimulator.Yaml.VVVFSound;
+using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
+using static VvvfSimulator.VvvfCalculate;
+using static VvvfSimulator.VvvfStructs;
+using static VvvfSimulator.VvvfStructs.PulseMode;
 
-namespace VVVF_Simulator.GUI.Simulator.RealTime
+namespace VvvfSimulator.GUI.Simulator.RealTime
 {
     /// <summary>
     /// Mascon.xaml の相互作用ロジック
     /// </summary>
     public partial class RealTime_Mascon_Window : Window
     {
-        RealTime_Parameter realTime_Parameter;
-        public RealTime_Mascon_Window(RealTime_Parameter parameter)
+        RealTimeParameter realTime_Parameter;
+        public RealTime_Mascon_Window(RealTimeParameter parameter)
         {
             realTime_Parameter = parameter;
 
@@ -52,7 +52,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime
                 {
                     VvvfValues solve_control = realTime_Parameter.control_values.Clone();
                     solve_control.set_Allowed_Random_Freq_Move(false);
-                    double voltage = Generation.Video.Control_Info.Generate_Control_Common.Get_Voltage_Rate(solve_control, realTime_Parameter.sound_data, false) * 100;
+                    double voltage = Generation.Video.ControlInfo.GenerateControlCommon.Get_Voltage_Rate(solve_control, realTime_Parameter.sound_data, false) * 100;
                     view_model.voltage = voltage;
                 }
             });
@@ -108,7 +108,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime
             private double _voltage = 0;
             public double voltage { get { return _voltage; } set { _voltage = value; RaisePropertyChanged(nameof(voltage)); } }
 
-            private String _pulse_state = Pulse_Mode_Names.Async.ToString();
+            private String _pulse_state = PulseModeNames.Async.ToString();
             public String pulse_state { get { return _pulse_state; } set { _pulse_state = value; RaisePropertyChanged(nameof(pulse_state)); } }
         };
         public class ViewModelBase : INotifyPropertyChanged
@@ -134,15 +134,15 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime
                     free_run = solve_control.is_Free_Running(),
                     wave_stat = solve_control.get_Control_Frequency()
                 };
-                PwmCalculateValues calculated_Values = Yaml.VVVF_Sound.Yaml_VVVF_Wave.calculate_Yaml(solve_control, cv, realTime_Parameter.sound_data);
+                PwmCalculateValues calculated_Values = Yaml.VVVFSound.YamlVVVFWave.CalculateYaml(solve_control, cv, realTime_Parameter.sound_data);
                 CalculatePhases(solve_control, calculated_Values, 0);
             });
             re_calculate.Wait();
 
             PulseMode mode_p = solve_control.get_Video_Pulse_Mode();
-            Pulse_Mode_Names mode = mode_p.pulse_name;
+            PulseModeNames mode = mode_p.pulse_name;
             //Not in sync
-            if (mode == Pulse_Mode_Names.Async)
+            if (mode == PulseModeNames.Async)
             {
                 CarrierFreq carrier_freq_data = solve_control.get_Video_Carrier_Freq_Data();
                 String default_s = String.Format(carrier_freq_data.base_freq.ToString("F2"));
@@ -150,7 +150,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime
             }
 
             //Abs
-            if (mode == Pulse_Mode_Names.P_Wide_3)
+            if (mode == PulseModeNames.P_Wide_3)
                 return "W 3";
 
             if (mode.ToString().StartsWith("CHM"))

@@ -15,11 +15,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using VVVF_Simulator.Yaml.VVVF_Sound;
-using static VVVF_Simulator.Generation.Audio.Generate_RealTime_Common;
-using static VVVF_Simulator.Generation.Video.Control_Info.Generate_Control_Common;
+using VvvfSimulator.Yaml.VVVFSound;
+using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
+using static VvvfSimulator.Generation.Video.ControlInfo.GenerateControlCommon;
 
-namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
+namespace VvvfSimulator.GUI.Simulator.RealTime.Display
 {
     /// <summary>
     /// RealTime_ControlStat_Window.xaml の相互作用ロジック
@@ -42,10 +42,10 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
         }
 
         private RealTime_ControlStat_Style _Style;
-        private RealTime_Parameter _Paremter;
+        private RealTimeParameter _Paremter;
         private bool _ControlPrecise = false;
         private bool _ControlSizeSet = false;
-        public RealTime_ControlStat_Window(RealTime_Parameter Parameter,RealTime_ControlStat_Style Style, bool ControlPrecise)
+        public RealTime_ControlStat_Window(RealTimeParameter Parameter,RealTime_ControlStat_Style Style, bool ControlPrecise)
         {
             _Paremter = Parameter;
             _ControlPrecise = ControlPrecise;
@@ -77,7 +77,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             if(_Style == RealTime_ControlStat_Style.Original)
             {
                 VvvfValues control = _Paremter.control_values.Clone();
-                image = Generation.Video.Control_Info.Generate_Control_Original.Get_Control_Original_Image(
+                image = Generation.Video.ControlInfo.GenerateControlOriginal.Get_Control_Original_Image(
                     control,
                     _Paremter.control_values.get_Sine_Freq() == 0
                 );
@@ -85,7 +85,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             else
             {
                 VvvfValues control = _Paremter.control_values.Clone();
-                image = Generation.Video.Control_Info.Generate_Control_Original2.Get_Control_Original2_Image(
+                image = Generation.Video.ControlInfo.GenerateControlOriginal2.Get_Control_Original2_Image(
                     control,
                     _Paremter.sound_data,
                     _ControlPrecise

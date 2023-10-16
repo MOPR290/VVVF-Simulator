@@ -13,17 +13,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace VVVF_Simulator.GUI.Mascon
+namespace VvvfSimulator.GUI.Mascon
 {
     /// <summary>
     /// Generation_Mascon_Control_Midi.xaml の相互作用ロジック
     /// </summary>
-    public partial class Mascon_Control_Midi : Window
+    public partial class MasconControlMidi : Window
     {
 
         bool no_update = true;
         string initial_path;
-        public Mascon_Control_Midi(string? initial_path)
+        public MasconControlMidi(string? initial_path)
         {
             InitializeComponent();
             no_update = false;
