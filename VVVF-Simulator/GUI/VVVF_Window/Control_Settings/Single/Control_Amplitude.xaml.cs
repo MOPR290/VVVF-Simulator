@@ -85,7 +85,7 @@ namespace VvvfSimulator.VVVF_Window.Control_Settings
 
         private void apply_view()
         {
-            Amplitude_Mode[] modes = (Amplitude_Mode[])Enum.GetValues(typeof(Amplitude_Mode));
+            AmplitudeMode[] modes = (AmplitudeMode[])Enum.GetValues(typeof(AmplitudeMode));
             amplitude_mode_selector.ItemsSource = modes;
             amplitude_mode_selector.SelectedItem = target.mode;
 
@@ -171,7 +171,7 @@ namespace VvvfSimulator.VVVF_Window.Control_Settings
         {
             if (no_update) return;
 
-            Amplitude_Mode selected = (Amplitude_Mode)amplitude_mode_selector.SelectedItem;
+            AmplitudeMode selected = (AmplitudeMode)amplitude_mode_selector.SelectedItem;
             target.mode = selected;
             grid_hider(target.mode, content);
 
@@ -209,19 +209,19 @@ namespace VvvfSimulator.VVVF_Window.Control_Settings
             else visible_Class.disable_range_visible = b;
         }
 
-        private void grid_hider(Amplitude_Mode mode , Control_Amplitude_Content cac)
+        private void grid_hider(AmplitudeMode mode , Control_Amplitude_Content cac)
         {
             Boolean[] condition_1, condition_2;
 
-            if (mode == Amplitude_Mode.Linear)
+            if (mode == AmplitudeMode.Linear)
                 condition_1 = new Boolean[9] { true, true, true, true, true, true, false, false, true };
-            else if(mode == Amplitude_Mode.Wide_3_Pulse)
+            else if(mode == AmplitudeMode.Wide_3_Pulse)
                 condition_1 = new Boolean[9] { true, true, true, true, true, true, false, false, true };
-            else if(mode == Amplitude_Mode.Inv_Proportional)
+            else if(mode == AmplitudeMode.Inv_Proportional)
                 condition_1 = new Boolean[9] { true, true, true, true, true, true, false, true, true };
-            else if(mode == Amplitude_Mode.Exponential)
+            else if(mode == AmplitudeMode.Exponential)
                 condition_1 = new Boolean[9] { false, false, true, true, true, true, false, false, true };
-            else if(mode == Amplitude_Mode.Linear_Polynomial)
+            else if(mode == AmplitudeMode.Linear_Polynomial)
                 condition_1 = new Boolean[9] { false, false, true, true, true, true, true, false, true };
             else
                 condition_1 = new Boolean[9] { false, false, true, true, true, true, false, false, true };

@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 using VvvfSimulator;
 using VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common;
 using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlAsyncParameter.Yaml_Async_Parameter_Dipolar;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlAsyncParameter.YamlAsyncParameterDipolar;
 
 namespace VvvfSimulator.VVVF_Window.Control_Settings.Dipolar
 {
@@ -43,7 +43,7 @@ namespace VvvfSimulator.VVVF_Window.Control_Settings.Dipolar
 
         private void apply_data()
         {
-            Yaml_Async_Parameter_Dipolar_Mode[] modes = (Yaml_Async_Parameter_Dipolar_Mode[])Enum.GetValues(typeof(Yaml_Async_Parameter_Dipolar_Mode));
+            YamlAsyncParameterDipolarMode[] modes = (YamlAsyncParameterDipolarMode[])Enum.GetValues(typeof(YamlAsyncParameterDipolarMode));
             dipolar_mode.ItemsSource = modes;
             dipolar_mode.SelectedItem = target.async_data.dipoar_data.value_mode;
 
@@ -54,16 +54,16 @@ namespace VvvfSimulator.VVVF_Window.Control_Settings.Dipolar
         {
             if (no_update) return;
 
-            Yaml_Async_Parameter_Dipolar_Mode selected = (Yaml_Async_Parameter_Dipolar_Mode)dipolar_mode.SelectedItem;
+            YamlAsyncParameterDipolarMode selected = (YamlAsyncParameterDipolarMode)dipolar_mode.SelectedItem;
 
             target.async_data.dipoar_data.value_mode = selected;
 
             set_Selected(selected);
         }
 
-        private void set_Selected(Yaml_Async_Parameter_Dipolar_Mode selected)
+        private void set_Selected(YamlAsyncParameterDipolarMode selected)
         {
-            if (selected == Yaml_Async_Parameter_Dipolar_Mode.Const)
+            if (selected == YamlAsyncParameterDipolarMode.Const)
                 dipolar_param.Navigate(new Control_Dipolar_Const(target, main));
             else
                 dipolar_param.Navigate(new Control_Moving_Setting(target.async_data.dipoar_data.moving_value));

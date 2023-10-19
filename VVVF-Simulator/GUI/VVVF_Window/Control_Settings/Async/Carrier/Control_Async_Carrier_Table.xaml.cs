@@ -25,7 +25,7 @@ namespace VvvfSimulator.VVVF_Window.Control_Settings.Async
     {
         View_Data vd = new View_Data();
         public class View_Data {
-            public List<Yaml_Async_Parameter_Carrier_Freq_Table_Single> Async_Table_Data { get; set; } = new List<Yaml_Async_Parameter_Carrier_Freq_Table_Single>();
+            public List<YamlAsyncParameterCarrierFreqTableValue> Async_Table_Data { get; set; } = new List<YamlAsyncParameterCarrierFreqTableValue>();
         }
 
         YamlControlData target;

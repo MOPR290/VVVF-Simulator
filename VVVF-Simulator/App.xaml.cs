@@ -42,7 +42,7 @@ namespace VvvfSimulator
                 return;
 
             if (yaml_path != null)
-                Yaml_VVVF_Manage.load_Yaml(yaml_path);
+                YamlVvvfManage.load_Yaml(yaml_path);
 
         }
     }

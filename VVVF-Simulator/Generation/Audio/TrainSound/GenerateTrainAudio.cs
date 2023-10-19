@@ -106,7 +106,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
                 total_sound_count++;
             }
             // Gear sound amplitude change
-            Yaml_Mascon_Data_On_Off ymdoo;
+            YamlMasconDataOnOff ymdoo;
             if (cv.brake) ymdoo = sound_data.mascon_data.braking;
             else ymdoo = sound_data.mascon_data.accelerating;
             double freq_to_go, gear_amp_rate;

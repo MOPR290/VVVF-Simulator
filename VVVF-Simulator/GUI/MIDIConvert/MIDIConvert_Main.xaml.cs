@@ -61,7 +61,7 @@ namespace VvvfSimulator.GUI.MIDIConvert
 
                     GenerationBasicParameter generationBasicParameter = new(
                         ymd.GetCompiled(),
-                        Yaml_VVVF_Manage.DeepClone(Yaml_VVVF_Manage.current_data),
+                        YamlVvvfManage.DeepClone(YamlVvvfManage.current_data),
                         new GenerationBasicParameter.ProgressData()
                     );
 

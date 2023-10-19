@@ -2,7 +2,7 @@
 using static VvvfSimulator.VvvfValues;
 using static VvvfSimulator.MyMath;
 using System;
-using static VvvfSimulator.VvvfCalculate.Amplitude_Argument;
+using static VvvfSimulator.VvvfCalculate.AmplitudeArgument;
 using System.Threading.Tasks;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.VvvfStructs.PulseMode;
@@ -156,12 +156,12 @@ namespace VvvfSimulator
 		//
 		// Amplitude Calculation
 		//
-		public enum Amplitude_Mode
+		public enum AmplitudeMode
         {
 			Linear, Wide_3_Pulse, Inv_Proportional , Exponential,
 			Linear_Polynomial,Sine
 		}
-		public class Amplitude_Argument
+		public class AmplitudeArgument
         {
 			public double min_freq = 0;
 			public double min_amp = 0;
@@ -174,8 +174,8 @@ namespace VvvfSimulator
 
 			public double current = 0;
 
-			public Amplitude_Argument() { }
-			public Amplitude_Argument(YamlControlDataAmplitudeControl.YamlControlDataAmplitude.Yaml_Control_Data_Amplitude_Single_Parameter config, double current)
+			public AmplitudeArgument() { }
+			public AmplitudeArgument(YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter config, double current)
             {
 				change_const = config.curve_change_rate;
 				this.current = current;
@@ -189,10 +189,10 @@ namespace VvvfSimulator
 			}
 		}
 
-		public static double get_Amplitude(Amplitude_Mode mode , Amplitude_Argument arg)
+		public static double get_Amplitude(AmplitudeMode mode , AmplitudeArgument arg)
         {
 			double val = 0;
-			if (mode == Amplitude_Mode.Linear)
+			if (mode == AmplitudeMode.Linear)
             {
 				if (!arg.disable_range_limit)
 				{
@@ -202,7 +202,7 @@ namespace VvvfSimulator
 				val = (arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq) * (arg.current - arg.min_freq) + arg.min_amp;
 			}
 				
-			else if(mode == Amplitude_Mode.Wide_3_Pulse)
+			else if(mode == AmplitudeMode.Wide_3_Pulse)
             {
 				if (!arg.disable_range_limit)
 				{
@@ -213,7 +213,7 @@ namespace VvvfSimulator
 			}
 				
 
-			else if(mode == Amplitude_Mode.Inv_Proportional)
+			else if(mode == AmplitudeMode.Inv_Proportional)
             {
 				if (!arg.disable_range_limit)
 				{
@@ -221,7 +221,7 @@ namespace VvvfSimulator
 					if (arg.current > arg.max_freq) arg.current = arg.max_freq;
 				}
 
-				double x = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument()
+				double x = get_Amplitude(AmplitudeMode.Linear, new AmplitudeArgument()
                 {
 					min_freq = arg.min_freq, 
 					min_amp = 1 / arg.min_amp, 
@@ -240,7 +240,7 @@ namespace VvvfSimulator
 				//val = 1 / (6.25*x - 2.5) + 0.4;
 				val = 1 / (a * x + b) + c;
 			}
-			else if(mode == Amplitude_Mode.Exponential)
+			else if(mode == AmplitudeMode.Exponential)
             {
 
 				if (!arg.disable_range_limit)
@@ -252,7 +252,7 @@ namespace VvvfSimulator
 
 				val = Math.Pow(Math.E, t * arg.current) - 1;
 			}
-			else if(mode == Amplitude_Mode.Linear_Polynomial)
+			else if(mode == AmplitudeMode.Linear_Polynomial)
             {
 				if (!arg.disable_range_limit)
 				{
@@ -262,7 +262,7 @@ namespace VvvfSimulator
 				val = Math.Pow(arg.current, arg.polynomial) / Math.Pow(arg.max_freq, arg.polynomial) * arg.max_amp;
 
 			}
-			else if (mode == Amplitude_Mode.Sine)
+			else if (mode == AmplitudeMode.Sine)
 			{
 				if (!arg.disable_range_limit)
 				{

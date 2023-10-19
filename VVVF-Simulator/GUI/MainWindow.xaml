@@ -160,6 +160,7 @@
                 <MenuItem Header="File">
                     <MenuItem Header="Save" Tag="Save" Click="File_Menu_Click"/>
                     <MenuItem Header="Save As" Tag="Save_As" Click="File_Menu_Click"/>
+                    <MenuItem Header="Export as C" Tag="Export_As_C" Click="File_Menu_Click"/>
                     <MenuItem Header="Load" Tag="Load" Click="File_Menu_Click"/>
                 </MenuItem>
 

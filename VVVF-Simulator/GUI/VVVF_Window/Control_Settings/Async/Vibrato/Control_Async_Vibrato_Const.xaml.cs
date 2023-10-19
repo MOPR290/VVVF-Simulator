@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using VvvfSimulator;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq.Yaml_Async_Parameter_Carrier_Freq_Vibrato;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncParameterCarrierFreqVibrato;
 
 namespace VvvfSimulator.VVVF_Window.Control_Settings.Async.Vibrato
 {
@@ -24,12 +24,12 @@ namespace VvvfSimulator.VVVF_Window.Control_Settings.Async.Vibrato
     
     public partial class Control_Async_Vibrato_Const : UserControl
     {
-        Yaml_Async_Parameter_Vibrato_Value target;
+        YamlAsyncParameterVibratoValue target;
         MainWindow main;
 
         bool no_update = true;
 
-        public Control_Async_Vibrato_Const(Yaml_Async_Parameter_Vibrato_Value data, MainWindow mainWindow)
+        public Control_Async_Vibrato_Const(YamlAsyncParameterVibratoValue data, MainWindow mainWindow)
         {
             target = data;
             main = mainWindow;

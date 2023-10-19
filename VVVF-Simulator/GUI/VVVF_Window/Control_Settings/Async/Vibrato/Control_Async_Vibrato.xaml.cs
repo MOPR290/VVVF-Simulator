@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 using VvvfSimulator;
 using VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common;
 using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq.Yaml_Async_Parameter_Carrier_Freq_Vibrato.Yaml_Async_Parameter_Vibrato_Value;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncParameterCarrierFreqVibrato.YamlAsyncParameterVibratoValue;
 
 namespace VvvfSimulator.VVVF_Window.Control_Settings.Async.Vibrato
 {
@@ -42,7 +42,7 @@ namespace VvvfSimulator.VVVF_Window.Control_Settings.Async.Vibrato
 
         private void apply_data()
         {
-            Yaml_Async_Parameter_Vibrato_Mode[] modes = (Yaml_Async_Parameter_Vibrato_Mode[])Enum.GetValues(typeof(Yaml_Async_Parameter_Vibrato_Mode));
+            YamlAsyncParameterVibratoMode[] modes = (YamlAsyncParameterVibratoMode[])Enum.GetValues(typeof(YamlAsyncParameterVibratoMode));
             highest_mode.ItemsSource = modes;
             lowest_mode.ItemsSource = modes;
             interval_mode.ItemsSource = modes;
@@ -68,7 +68,7 @@ namespace VvvfSimulator.VVVF_Window.Control_Settings.Async.Vibrato
             ComboBox cb = (ComboBox)sender;
             Object? tag = cb.Tag;
 
-            Yaml_Async_Parameter_Vibrato_Mode mode = (Yaml_Async_Parameter_Vibrato_Mode)cb.SelectedItem;
+            YamlAsyncParameterVibratoMode mode = (YamlAsyncParameterVibratoMode)cb.SelectedItem;
             if (tag.Equals("Highest"))
             {
                 target.async_data.carrier_wave_data.vibrato_value.highest.mode = mode;
@@ -94,25 +94,25 @@ namespace VvvfSimulator.VVVF_Window.Control_Settings.Async.Vibrato
         /// </summary>
         /// <param name="cate"></param>
         /// <param name="mode"></param>
-        private void set_Selected(int cate, Yaml_Async_Parameter_Vibrato_Mode mode)
+        private void set_Selected(int cate, YamlAsyncParameterVibratoMode mode)
         {
             if (cate == 0)
             {
-                if(mode == Yaml_Async_Parameter_Vibrato_Mode.Const)
+                if(mode == YamlAsyncParameterVibratoMode.Const)
                     highest_param_frame.Navigate(new Control_Async_Vibrato_Const(target.async_data.carrier_wave_data.vibrato_value.highest, main));
                 else
                     highest_param_frame.Navigate(new Control_Moving_Setting(target.async_data.carrier_wave_data.vibrato_value.highest.moving_value));
             }
             else if(cate == 1)
             {
-                if (mode == Yaml_Async_Parameter_Vibrato_Mode.Const)
+                if (mode == YamlAsyncParameterVibratoMode.Const)
                     lowest_param_frame.Navigate(new Control_Async_Vibrato_Const(target.async_data.carrier_wave_data.vibrato_value.lowest, main));
                 else
                     lowest_param_frame.Navigate(new Control_Moving_Setting(target.async_data.carrier_wave_data.vibrato_value.lowest.moving_value));
             }
             else if (cate == 2)
             {
-                if (mode == Yaml_Async_Parameter_Vibrato_Mode.Const)
+                if (mode == YamlAsyncParameterVibratoMode.Const)
                     interval_mode_frame.Navigate(new Control_Async_Vibrato_Const(target.async_data.carrier_wave_data.vibrato_value.interval, main));
                 else
                     interval_mode_frame.Navigate(new Control_Moving_Setting(target.async_data.carrier_wave_data.vibrato_value.interval.moving_value));

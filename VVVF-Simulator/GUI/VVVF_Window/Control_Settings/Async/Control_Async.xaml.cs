@@ -47,7 +47,7 @@ namespace VvvfSimulator.VVVF_Window.Control_Settings
 
         private void apply_data()
         {
-            Yaml_Async_Carrier_Mode[] modes = (Yaml_Async_Carrier_Mode[])Enum.GetValues(typeof(Yaml_Async_Carrier_Mode));
+            YamlAsyncCarrierMode[] modes = (YamlAsyncCarrierMode[])Enum.GetValues(typeof(YamlAsyncCarrierMode));
             carrier_freq_mode.ItemsSource = modes;
             carrier_freq_mode.SelectedItem = data.async_data.carrier_wave_data.carrier_mode;
 
@@ -84,21 +84,21 @@ namespace VvvfSimulator.VVVF_Window.Control_Settings
             }
             else if (tag.Equals("Param"))
             {
-                Yaml_Async_Carrier_Mode selected = (Yaml_Async_Carrier_Mode)carrier_freq_mode.SelectedItem;
+                YamlAsyncCarrierMode selected = (YamlAsyncCarrierMode)carrier_freq_mode.SelectedItem;
                 data.async_data.carrier_wave_data.carrier_mode = selected;
                 show_selected_carrier_mode(selected);
             }
         }
 
-        private void show_selected_carrier_mode(Yaml_Async_Carrier_Mode selected)
+        private void show_selected_carrier_mode(YamlAsyncCarrierMode selected)
         {
-            if (selected == Yaml_Async_Carrier_Mode.Const)
+            if (selected == YamlAsyncCarrierMode.Const)
                 carrier_setting.Navigate(new Control_Async_Carrier_Const(data, MainWindow));
-            else if (selected == Yaml_Async_Carrier_Mode.Moving)
+            else if (selected == YamlAsyncCarrierMode.Moving)
                 carrier_setting.Navigate(new Control_Moving_Setting(data.async_data.carrier_wave_data.moving_value));
-            else if (selected == Yaml_Async_Carrier_Mode.Vibrato)
+            else if (selected == YamlAsyncCarrierMode.Vibrato)
                 carrier_setting.Navigate(new Control_Async_Vibrato(data, MainWindow));
-            else if(selected == Yaml_Async_Carrier_Mode.Table)
+            else if(selected == YamlAsyncCarrierMode.Table)
                 carrier_setting.Navigate(new Control_Async_Carrier_Table(data));
         }
 

@@ -15,7 +15,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
             List<YamlVvvfSoundData.YamlControlData> ysd = brake ? ysd_x.braking_pattern : ysd_x.accelerate_pattern;
             var parameter = ysd[i].amplitude_control.default_data.parameter;
 
-            if (ysd[i].amplitude_control.default_data.mode != VvvfCalculate.Amplitude_Mode.Linear) return;
+            if (ysd[i].amplitude_control.default_data.mode != VvvfCalculate.AmplitudeMode.Linear) return;
 
             parameter.disable_range_limit = false;
 

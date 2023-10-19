@@ -24,7 +24,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
         }
         public int level { get; set; } = 2;
         public YamlMasconData mascon_data { get; set; } = new YamlMasconData();
-        public Yaml_Min_Sine_Freq min_freq { get; set; } = new Yaml_Min_Sine_Freq();
+        public YamlMinSineFrequency min_freq { get; set; } = new YamlMinSineFrequency();
         public List<YamlControlData> accelerate_pattern { get; set; } = new List<YamlControlData>();
         public List<YamlControlData> braking_pattern { get; set; } = new List<YamlControlData>();
 
@@ -54,8 +54,8 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
         public class YamlMasconData
         {
-            public Yaml_Mascon_Data_On_Off braking { get; set; } = new Yaml_Mascon_Data_On_Off();
-            public Yaml_Mascon_Data_On_Off accelerating { get; set; } = new Yaml_Mascon_Data_On_Off();
+            public YamlMasconDataOnOff braking { get; set; } = new YamlMasconDataOnOff();
+            public YamlMasconDataOnOff accelerating { get; set; } = new YamlMasconDataOnOff();
 
             public override string ToString()
             {
@@ -68,10 +68,10 @@ namespace VvvfSimulator.Yaml.VVVFSound
                 return final;
             }
 
-            public class Yaml_Mascon_Data_On_Off
+            public class YamlMasconDataOnOff
             {
-                public Yaml_Mascon_Data_Single on { get; set; } = new Yaml_Mascon_Data_Single();
-                public Yaml_Mascon_Data_Single off { get; set; } = new Yaml_Mascon_Data_Single();
+                public YamlMasconDataSingle on { get; set; } = new YamlMasconDataSingle();
+                public YamlMasconDataSingle off { get; set; } = new YamlMasconDataSingle();
 
                 public override string ToString()
                 {
@@ -84,7 +84,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
                     return final;
                 }
 
-                public class Yaml_Mascon_Data_Single
+                public class YamlMasconDataSingle
                 {
                     public double freq_per_sec { get; set; } = 60;
                     public double control_freq_go_to { get; set; } = 60;
@@ -100,7 +100,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
         }
 
-        public class Yaml_Min_Sine_Freq
+        public class YamlMinSineFrequency
         {
             public double accelerate { get; set; } = -1.0;
             public double braking { get; set; } = -1.0;
@@ -249,7 +249,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
                 public YamlAsyncParameterRandom random_data { get { return _random_data; } set { if (value != null) _random_data = value; } }
 
                 public YamlAsyncParameterCarrierFreq carrier_wave_data { get; set; } = new();
-                public Yaml_Async_Parameter_Dipolar dipoar_data { get; set; } = new();
+                public YamlAsyncParameterDipolar dipoar_data { get; set; } = new();
 
                 public override string ToString()
                 {
@@ -324,10 +324,10 @@ namespace VvvfSimulator.Yaml.VVVFSound
                 }
                 public class YamlAsyncParameterCarrierFreq
                 {
-                    public Yaml_Async_Carrier_Mode carrier_mode { get; set; }
+                    public YamlAsyncCarrierMode carrier_mode { get; set; }
                     public double const_value { get; set; } = -1.0;
                     public YamlMovingValue moving_value { get; set; } = new YamlMovingValue();
-                    public Yaml_Async_Parameter_Carrier_Freq_Vibrato vibrato_value { get; set; } = new Yaml_Async_Parameter_Carrier_Freq_Vibrato();
+                    public YamlAsyncParameterCarrierFreqVibrato vibrato_value { get; set; } = new YamlAsyncParameterCarrierFreqVibrato();
                     public YamlAsyncParameterCarrierFreqTable carrier_table_value { get; set; } = new YamlAsyncParameterCarrierFreqTable();
 
                     public override string ToString()
@@ -351,19 +351,19 @@ namespace VvvfSimulator.Yaml.VVVFSound
                         return clone;
                     }
 
-                    public enum Yaml_Async_Carrier_Mode
+                    public enum YamlAsyncCarrierMode
                     {
                         Const, Moving, Vibrato, Table
                     }
 
-                    public class Yaml_Async_Parameter_Carrier_Freq_Vibrato
+                    public class YamlAsyncParameterCarrierFreqVibrato
                     {
-                        public Yaml_Async_Parameter_Vibrato_Value highest { get; set; } = new();
-                        public Yaml_Async_Parameter_Vibrato_Value lowest { get; set; } = new();
+                        public YamlAsyncParameterVibratoValue highest { get; set; } = new();
+                        public YamlAsyncParameterVibratoValue lowest { get; set; } = new();
 
 
-                        private Yaml_Async_Parameter_Vibrato_Value _interval = new();
-                        public Yaml_Async_Parameter_Vibrato_Value interval { get { return _interval; } set { if (value != null) _interval = value; } }
+                        private YamlAsyncParameterVibratoValue _interval = new();
+                        public YamlAsyncParameterVibratoValue interval { get { return _interval; } set { if (value != null) _interval = value; } }
 
                         public bool continuous { get; set; } = true;
 
@@ -377,18 +377,18 @@ namespace VvvfSimulator.Yaml.VVVFSound
                             return final;
                         }
 
-                        public Yaml_Async_Parameter_Carrier_Freq_Vibrato Clone()
+                        public YamlAsyncParameterCarrierFreqVibrato Clone()
                         {
-                            Yaml_Async_Parameter_Carrier_Freq_Vibrato clone = (Yaml_Async_Parameter_Carrier_Freq_Vibrato)MemberwiseClone();
+                            YamlAsyncParameterCarrierFreqVibrato clone = (YamlAsyncParameterCarrierFreqVibrato)MemberwiseClone();
                             clone.highest = highest.Clone();
                             clone.lowest = lowest.Clone();
                             clone.interval = interval.Clone();
                             return clone;
                         }
 
-                        public class Yaml_Async_Parameter_Vibrato_Value
+                        public class YamlAsyncParameterVibratoValue
                         {
-                            public Yaml_Async_Parameter_Vibrato_Mode mode { get; set; } = Yaml_Async_Parameter_Vibrato_Mode.Const;
+                            public YamlAsyncParameterVibratoMode mode { get; set; } = YamlAsyncParameterVibratoMode.Const;
                             public double const_value { get; set; } = -1;
                             public YamlMovingValue moving_value { get; set; } = new YamlMovingValue();
                             public override string ToString()
@@ -401,14 +401,14 @@ namespace VvvfSimulator.Yaml.VVVFSound
                                 return final;
                             }
 
-                            public Yaml_Async_Parameter_Vibrato_Value Clone()
+                            public YamlAsyncParameterVibratoValue Clone()
                             {
-                                Yaml_Async_Parameter_Vibrato_Value clone = (Yaml_Async_Parameter_Vibrato_Value)MemberwiseClone();
+                                YamlAsyncParameterVibratoValue clone = (YamlAsyncParameterVibratoValue)MemberwiseClone();
                                 clone.moving_value = this.moving_value.Clone();
                                 return clone;
                             }
 
-                            public enum Yaml_Async_Parameter_Vibrato_Mode
+                            public enum YamlAsyncParameterVibratoMode
                             {
                                 Const, Moving
                             }
@@ -418,8 +418,8 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
                     public class YamlAsyncParameterCarrierFreqTable
                     {
-                        public List<Yaml_Async_Parameter_Carrier_Freq_Table_Single> carrier_freq_table { get; set; } = new List<Yaml_Async_Parameter_Carrier_Freq_Table_Single>();
-                        public class Yaml_Async_Parameter_Carrier_Freq_Table_Single
+                        public List<YamlAsyncParameterCarrierFreqTableValue> carrier_freq_table { get; set; } = new List<YamlAsyncParameterCarrierFreqTableValue>();
+                        public class YamlAsyncParameterCarrierFreqTableValue
                         {
                             public double from { get; set; } = -1;
                             public double carrier_freq { get; set; } = 1000;
@@ -435,9 +435,9 @@ namespace VvvfSimulator.Yaml.VVVFSound
                                 return final;
                             }
 
-                            public Yaml_Async_Parameter_Carrier_Freq_Table_Single Clone()
+                            public YamlAsyncParameterCarrierFreqTableValue Clone()
                             {
-                                Yaml_Async_Parameter_Carrier_Freq_Table_Single clone = (Yaml_Async_Parameter_Carrier_Freq_Table_Single)MemberwiseClone();
+                                YamlAsyncParameterCarrierFreqTableValue clone = (YamlAsyncParameterCarrierFreqTableValue)MemberwiseClone();
                                 return clone;
                             }
                         }
@@ -464,9 +464,9 @@ namespace VvvfSimulator.Yaml.VVVFSound
                         }
                     }
                 }
-                public class Yaml_Async_Parameter_Dipolar
+                public class YamlAsyncParameterDipolar
                 {
-                    public Yaml_Async_Parameter_Dipolar_Mode value_mode { get; set; } = Yaml_Async_Parameter_Dipolar_Mode.Const;
+                    public YamlAsyncParameterDipolarMode value_mode { get; set; } = YamlAsyncParameterDipolarMode.Const;
                     public double const_value { get; set; } = -1;
                     public YamlMovingValue moving_value { get; set; } = new YamlMovingValue();
                     public override string ToString()
@@ -479,14 +479,14 @@ namespace VvvfSimulator.Yaml.VVVFSound
                         return final;
                     }
 
-                    public Yaml_Async_Parameter_Dipolar Clone()
+                    public YamlAsyncParameterDipolar Clone()
                     {
-                        Yaml_Async_Parameter_Dipolar clone = (Yaml_Async_Parameter_Dipolar)MemberwiseClone();
+                        YamlAsyncParameterDipolar clone = (YamlAsyncParameterDipolar)MemberwiseClone();
                         clone.moving_value = this.moving_value.Clone();
                         return clone;
                     }
 
-                    public enum Yaml_Async_Parameter_Dipolar_Mode
+                    public enum YamlAsyncParameterDipolarMode
                     {
                         Const, Moving
                     }
@@ -499,7 +499,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
             public class YamlControlDataAmplitudeControl
             {
                 public YamlControlDataAmplitude default_data { get; set; } = new YamlControlDataAmplitude();
-                public Yaml_Control_Data_Amplitude_Free_Run free_run_data { get; set; } = new Yaml_Control_Data_Amplitude_Free_Run();
+                public YamlControlDataAmplitudeFreeRun free_run_data { get; set; } = new YamlControlDataAmplitudeFreeRun();
 
                 public override string ToString()
                 {
@@ -521,7 +521,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
                     return clone;
                 }
 
-                public class Yaml_Control_Data_Amplitude_Free_Run
+                public class YamlControlDataAmplitudeFreeRun
                 {
                     public YamlControlDataAmplitude mascon_on { get; set; } = new YamlControlDataAmplitude();
                     public YamlControlDataAmplitude mascon_off { get; set; } = new YamlControlDataAmplitude();
@@ -535,9 +535,9 @@ namespace VvvfSimulator.Yaml.VVVFSound
                         return re;
                     }
 
-                    public Yaml_Control_Data_Amplitude_Free_Run Clone()
+                    public YamlControlDataAmplitudeFreeRun Clone()
                     {
-                        Yaml_Control_Data_Amplitude_Free_Run clone = (Yaml_Control_Data_Amplitude_Free_Run)MemberwiseClone();
+                        YamlControlDataAmplitudeFreeRun clone = (YamlControlDataAmplitudeFreeRun)MemberwiseClone();
 
                         //Deep copy
                         clone.mascon_on = mascon_on.Clone();
@@ -549,8 +549,8 @@ namespace VvvfSimulator.Yaml.VVVFSound
                 }
                 public class YamlControlDataAmplitude
                 {
-                    public Amplitude_Mode mode { get; set; } = Amplitude_Mode.Linear;
-                    public Yaml_Control_Data_Amplitude_Single_Parameter parameter { get; set; } = new Yaml_Control_Data_Amplitude_Single_Parameter();
+                    public AmplitudeMode mode { get; set; } = AmplitudeMode.Linear;
+                    public YamlControlDataAmplitudeParameter parameter { get; set; } = new YamlControlDataAmplitudeParameter();
 
                     public override string ToString()
                     {
@@ -569,7 +569,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
                     }
 
 
-                    public class Yaml_Control_Data_Amplitude_Single_Parameter
+                    public class YamlControlDataAmplitudeParameter
                     {
                         public double start_freq { get; set; } = -1;
                         public double start_amp { get; set; } = -1;
@@ -599,9 +599,9 @@ namespace VvvfSimulator.Yaml.VVVFSound
                             return re;
                         }
 
-                        public Yaml_Control_Data_Amplitude_Single_Parameter Clone()
+                        public YamlControlDataAmplitudeParameter Clone()
                         {
-                            Yaml_Control_Data_Amplitude_Single_Parameter clone = (Yaml_Control_Data_Amplitude_Single_Parameter)MemberwiseClone();
+                            YamlControlDataAmplitudeParameter clone = (YamlControlDataAmplitudeParameter)MemberwiseClone();
                             return clone;
                         }
                     }
@@ -609,7 +609,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
             }
         }
     }
-    public static class Yaml_VVVF_Manage
+    public static class YamlVvvfManage
     {
         public static YamlVvvfSoundData current_data = new();
 
@@ -636,7 +636,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
                 var input = new StreamReader(path, Encoding.UTF8);
                 var deserializer = new Deserializer();
                 YamlVvvfSoundData deserializeObject = deserializer.Deserialize<YamlVvvfSoundData>(input);
-                Yaml_VVVF_Manage.current_data = deserializeObject;
+                YamlVvvfManage.current_data = deserializeObject;
                 input.Close();
                 return true;
             }

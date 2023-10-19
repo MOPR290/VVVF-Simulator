@@ -19,7 +19,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 		private static double YamlAmplitudeCalculate(YamlControlDataAmplitude amp_data, double x)
 		{
 			var amp_param = amp_data.parameter;
-			Amplitude_Argument aa = new(amp_param,x);
+			AmplitudeArgument aa = new(amp_param,x);
 			double amp = get_Amplitude(amp_data.mode, aa);
 			if (amp_param.cut_off_amp > amp) amp = 0;
 			if (amp_param.max_amp != -1 && amp_param.max_amp < amp) amp = amp_param.max_amp;
@@ -105,7 +105,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 			// mascon off solve
 			//
 			double mascon_off_check;
-			Yaml_Mascon_Data_On_Off mascon_on_off_check_data;
+			YamlMasconDataOnOff mascon_on_off_check_data;
 			if (cv.brake) mascon_on_off_check_data = yvs.mascon_data.braking;
 			else mascon_on_off_check_data = yvs.mascon_data.accelerating;
 			if (cv.mascon_on)
@@ -181,16 +181,16 @@ namespace VvvfSimulator.Yaml.VVVFSound
 				var carrier_data = async_data.carrier_wave_data;
 				var carrier_freq_mode = carrier_data.carrier_mode;
 				double carrier_freq_val = 100;
-				if (carrier_freq_mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.Yaml_Async_Carrier_Mode.Const)
+				if (carrier_freq_mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncCarrierMode.Const)
 					carrier_freq_val = carrier_data.const_value;
-				else if (carrier_freq_mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.Yaml_Async_Carrier_Mode.Moving)
+				else if (carrier_freq_mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncCarrierMode.Moving)
 					carrier_freq_val = GetMovingValue(carrier_data.moving_value, original_wave_stat);
-				else if (carrier_freq_mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.Yaml_Async_Carrier_Mode.Table)
+				else if (carrier_freq_mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncCarrierMode.Table)
 				{
 					var table_data = carrier_data.carrier_table_value;
 
 					//Solve from high.
-					List<Yaml_Async_Parameter_Carrier_Freq_Table_Single> async_carrier_freq_table = new(table_data.carrier_freq_table);
+					List<YamlAsyncParameterCarrierFreqTableValue> async_carrier_freq_table = new(table_data.carrier_freq_table);
 					async_carrier_freq_table.Sort((a, b) => Math.Sign(b.from - a.from));
 	
 					for(int i = 0; i < async_carrier_freq_table.Count; i++)
@@ -206,12 +206,12 @@ namespace VvvfSimulator.Yaml.VVVFSound
 					}
 					
 				}
-				else if(carrier_freq_mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.Yaml_Async_Carrier_Mode.Vibrato)
+				else if(carrier_freq_mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncCarrierMode.Vibrato)
 				{
 					var vibrato_data = carrier_data.vibrato_value;
 
 					double highest, lowest;
-					if (vibrato_data.highest.mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.Yaml_Async_Parameter_Carrier_Freq_Vibrato.Yaml_Async_Parameter_Vibrato_Value.Yaml_Async_Parameter_Vibrato_Mode.Const)
+					if (vibrato_data.highest.mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncParameterCarrierFreqVibrato.YamlAsyncParameterVibratoValue.YamlAsyncParameterVibratoMode.Const)
 						highest = vibrato_data.highest.const_value;
 					else
 					{
@@ -219,7 +219,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 						highest = GetMovingValue(moving_val, original_wave_stat);
 					}
 
-					if (vibrato_data.lowest.mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.Yaml_Async_Parameter_Carrier_Freq_Vibrato.Yaml_Async_Parameter_Vibrato_Value.Yaml_Async_Parameter_Vibrato_Mode.Const)
+					if (vibrato_data.lowest.mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncParameterCarrierFreqVibrato.YamlAsyncParameterVibratoValue.YamlAsyncParameterVibratoMode.Const)
 						lowest = vibrato_data.lowest.const_value;
 					else
 					{
@@ -228,7 +228,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 					}
 
 					double interval;
-					if (vibrato_data.interval.mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.Yaml_Async_Parameter_Carrier_Freq_Vibrato.Yaml_Async_Parameter_Vibrato_Value.Yaml_Async_Parameter_Vibrato_Mode.Const)
+					if (vibrato_data.interval.mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncParameterCarrierFreqVibrato.YamlAsyncParameterVibratoValue.YamlAsyncParameterVibratoMode.Const)
 						interval = vibrato_data.interval.const_value;
 					else
 						interval = GetMovingValue(vibrato_data.interval.moving_value, original_wave_stat);
@@ -252,7 +252,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 				// dipolar solve
 				//
 				var dipolar_data = async_data.dipoar_data;
-				if (dipolar_data.value_mode == YamlAsyncParameter.Yaml_Async_Parameter_Dipolar.Yaml_Async_Parameter_Dipolar_Mode.Const)
+				if (dipolar_data.value_mode == YamlAsyncParameter.YamlAsyncParameterDipolar.YamlAsyncParameterDipolarMode.Const)
 					dipolar = dipolar_data.const_value;
 				else
 				{
@@ -287,7 +287,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 					start_amp = YamlAmplitudeCalculate(solve_data.amplitude_control.default_data, control.get_Sine_Freq());
 
 
-				Amplitude_Argument aa = new()
+				AmplitudeArgument aa = new()
 				{
 					min_freq = free_run_amp_param.start_freq,
 					min_amp = start_amp,
