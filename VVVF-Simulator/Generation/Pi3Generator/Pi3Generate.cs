@@ -77,7 +77,7 @@ namespace VvvfSimulator.Generation.Pi3Generator
         )
         {
             List<YamlControlData> control_list = new(list);
-            control_list.Sort((a, b) => (int)(b.from - a.from));
+            control_list.Sort((a, b) => b.from.CompareTo(a.from));
 
             for (int i = 0; control_list.Count > i;i++)
             {
@@ -300,8 +300,8 @@ namespace VvvfSimulator.Generation.Pi3Generator
                         }else if (async.carrier_mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncCarrierMode.Table)
                         {
                             List<YamlAsyncParameterCarrierFreqTableValue> _list = new(async.carrier_table_value.carrier_freq_table);
-                            _list.Sort((a, b) => (int)(b.from - a.from));
-                            for (int x =  0; x < _list.Count;)
+                            _list.Sort((a, b) => b.from.CompareTo(a.from));
+                            for (int x = 0; x < _list.Count; x++)
                             {
                                 YamlAsyncParameterCarrierFreqTableValue val = _list[x];
                                 string _con = (x == 0 ? "if" : "else if") + "(";
@@ -309,7 +309,7 @@ namespace VvvfSimulator.Generation.Pi3Generator
                                 if(val.free_run_stuck_here) _con += " || " + "(status->free_run && status->sin_angle_freq > " + val.from + " * M_2PI)";
                                 _con += ")";
                                 compiler.WriteLineCode(_con);
-                                compiler.AddIndent(); compiler.WriteLineCode("pwm->carrier_freq.base_freq = " + val.carrier_freq);
+                                compiler.AddIndent(); compiler.WriteLineCode("pwm->carrier_freq.base_freq = " + val.carrier_freq + ";");
                                 compiler.DecrementIndent();
 
                             }

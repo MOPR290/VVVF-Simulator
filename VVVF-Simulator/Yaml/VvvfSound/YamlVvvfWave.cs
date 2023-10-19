@@ -124,7 +124,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 			// control stat solve
 			//
 			List<YamlControlData> control_list = new(cv.brake ? yvs.braking_pattern : yvs.accelerate_pattern);
-			control_list.Sort((a, b) => (int)(b.from - a.from));
+			control_list.Sort((a, b) => b.from.CompareTo(a.from));
 
 			//determine what control data to solve
 			int solve = -1;
