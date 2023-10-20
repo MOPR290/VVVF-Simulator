@@ -93,14 +93,14 @@ namespace VvvfSimulator.Generation.Pi3Generator
                     _if.Add("!(status->free_run && !status->mascon_off)");
 
                 {
-                    string _condition = data.from + " <= _wave_stat";
+                    string _condition = "(" + data.from + " <= _wave_stat)";
 
                     if (data.when_freerun.on.stuck_at_here && data.when_freerun.off.stuck_at_here)
                         _condition += " || " + "(status->free_run && status->sin_angle_freq > " + data.from + " * M_2PI)";
                     else
                     {
-                        if (data.when_freerun.on.stuck_at_here) _condition += "(!status->mascon_off && status->free_run && status->sin_angle_freq > " + data.from + " * M_2PI)";
-                        if (data.when_freerun.off.stuck_at_here) _condition += "(status->mascon_off && status->free_run && status->sin_angle_freq > " + data.from + " * M_2PI)";
+                        if (data.when_freerun.on.stuck_at_here) _condition += " || (!status->mascon_off && status->free_run && status->sin_angle_freq > " + data.from + " * M_2PI)";
+                        if (data.when_freerun.off.stuck_at_here) _condition += " || (status->mascon_off && status->free_run && status->sin_angle_freq > " + data.from + " * M_2PI)";
                     }
 
                     _if.Add(_condition);
@@ -147,25 +147,23 @@ namespace VvvfSimulator.Generation.Pi3Generator
                             compiler.WriteLineCode("{"); compiler.AddIndent();
 
                             YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter _t = _target.parameter;
-                            if (!_t.disable_range_limit)
-                            {
-                                compiler.WriteLineCode("if (_c < " + _t.start_freq + ") _c = " + _t.start_freq + ";");
-                                compiler.WriteLineCode("if (_c > " + _t.end_freq + ") _c = " + _t.end_freq + ";");
-                            }
 
                             if (_target.mode == AmplitudeMode.Linear)
                             {
+                                _WriteRangeLimitCheck(compiler, _t, true, true); ;
                                 double _a = (_t.end_amp - _t.start_amp) / (_t.end_freq - _t.start_freq);
                                 compiler.WriteLineCode("_amp = " + _a + " * _c + " + (-_a * _t.start_freq + _t.start_amp) + ";");
                             }
                             else if (_target.mode == AmplitudeMode.Wide_3_Pulse)
                             {
+                                _WriteRangeLimitCheck(compiler, _t, true, true);
                                 double _a = (_t.end_amp - _t.start_amp) / (_t.end_freq - _t.start_freq);
                                 double _b = -_a * _t.start_freq + _t.start_amp;
                                 compiler.WriteLineCode("_amp = " + (0.2 * _a) + " * _c + " + (0.2 * _b + 0.8) + ";");
                             }
                             else if (_target.mode == AmplitudeMode.Inv_Proportional)
                             {
+                                _WriteRangeLimitCheck(compiler, _t, true, true);
                                 double _a = (1.0 / _t.end_amp - 1.0 / _t.start_amp) / (_t.end_freq - _t.start_freq);
                                 double _b = -_a * _t.start_freq + (1.0 / _t.start_amp);
                                 compiler.WriteLineCode("double _x = " + _a + " * _c + " + _b + ";");
@@ -176,6 +174,12 @@ namespace VvvfSimulator.Generation.Pi3Generator
                                 double a = 1 / ((1 / l) - (1 / k)) * (1 / (l - c) - 1 / (k - c));
                                 double b = 1 / (1 - 1 / l * k) * (1 / (l - c) - 1 / l * k / (k - c));
                                 compiler.WriteLineCode("_amp = 1 / (" + a + " * _x + " + b + ") +" + c + " ;");
+                            }
+                            else if (_target.mode == AmplitudeMode.Sine)
+                            {
+                                _WriteRangeLimitCheck(compiler, _t, false, true);
+                                compiler.WriteLineCode("double _x = _c * " + (Math.PI / (2.0 * _t.end_freq)));
+                                compiler.WriteLineCode("_amp = _x * " + _t.end_amp);
                             }
                             else
                             {
@@ -236,10 +240,6 @@ namespace VvvfSimulator.Generation.Pi3Generator
                             }
                             else if (_target.mode == AmplitudeMode.Inv_Proportional)
                             {
-                                //double _a = (1.0 / (_t.end_amp == -1 ? _d.end_amp : _t.end_amp) - 1.0 / (_t.start_amp == -1 ? _d.start_amp : _t.start_amp)) / ((_t.end_freq == -1 ? _d.end_freq : _t.end_freq) - (_t.start_freq == -1 ? _d.start_freq : _t.start_freq));
-                                //double _b = -_a * (_t.start_freq == -1 ? _d.start_freq : _t.start_freq) + (1.0 / (_t.start_amp == -1 ? _d.start_amp : _t.start_amp));
-                                //compiler.WriteLineCode("double _x = " + _a + " * _c + " + _b + ";");
-
                                 string _a = "double _a = (1.0 / " + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + " - 1.0 / " + (_t.start_amp == -1 ? "1" : _t.start_amp.ToString()) + ") / (" + (_t.end_freq == -1 ? "_f_end" : _t.end_freq.ToString()) + " - " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + ");";                                
                                 string _b = "double _b = -_a * " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + " + 1.0 / " + (_t.start_amp == -1 ? "1" : _t.start_amp.ToString()) + ";";
                                 compiler.WriteLineCode(_a);
@@ -253,6 +253,12 @@ namespace VvvfSimulator.Generation.Pi3Generator
                                 compiler.WriteLineCode("double b = 1 / (1 - (1 / l) * k) * (1 / (l - c) - (1 / l) * k / (k - c));");
                                 compiler.WriteLineCode("_amp = 1.0 / (a * _x + b) + c;");
                             }
+                            else if (_target.mode == AmplitudeMode.Sine)
+                            {
+                                _WriteRangeLimitCheck(compiler, _t, false, true);
+                                compiler.WriteLineCode("double _x = M_PI_2 * _c /" +  (_t.end_freq == -1 ? "_f_end" : _t.end_freq.ToString()) + ";");
+                                compiler.WriteLineCode("_amp = sin(_x) * " + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + ";");
+                            }
                             else
                             {
                                 compiler.WriteLineCode(" // @ 20231018213430");
@@ -265,6 +271,17 @@ namespace VvvfSimulator.Generation.Pi3Generator
 
                             compiler.DecrementIndent(); compiler.WriteLineCode("}");
 
+                        }
+
+                        static void _WriteRangeLimitCheck(
+                            Pi3Compiler compiler, 
+                            YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter _t,
+                            bool min, bool max
+                        )
+                        {
+                            if (_t.disable_range_limit) return;
+                            if(min) compiler.WriteLineCode("if (_c < " + _t.start_freq + ") _c = " + _t.start_freq + ";");
+                            if(max) compiler.WriteLineCode("if (_c > " + _t.end_freq + ") _c = " + _t.end_freq + ";");
                         }
                     }
 
