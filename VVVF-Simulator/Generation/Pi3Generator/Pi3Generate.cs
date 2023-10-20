@@ -73,7 +73,8 @@ namespace VvvfSimulator.Generation.Pi3Generator
 
         private static void _WriteWavePatterns(
             Pi3Compiler compiler,
-            List<YamlVvvfSoundData.YamlControlData> list
+            List<YamlVvvfSoundData.YamlControlData> list,
+            YamlMasconData.YamlMasconDataOnOff freqInfo
         )
         {
             List<YamlControlData> control_list = new(list);
@@ -133,7 +134,8 @@ namespace VvvfSimulator.Generation.Pi3Generator
                         Pi3Compiler compiler,
                         YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude? _default,
                         YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude _target,
-                        bool refer_freq_sin
+                        bool refer_freq_sin,
+                        double max_freq
                     )
                     {
                         
@@ -190,7 +192,7 @@ namespace VvvfSimulator.Generation.Pi3Generator
                         else
                         {
 
-                            _WriteAmplitudeControl(compiler, null, _default, true);
+                            _WriteAmplitudeControl(compiler, null, _default, true, 0);
 
                             YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter _t = _target.parameter;
                             YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter _d = _default.parameter;
@@ -199,6 +201,17 @@ namespace VvvfSimulator.Generation.Pi3Generator
                             compiler.WriteLineCode("{"); compiler.AddIndent();
 
                             compiler.WriteLineCode("_c = _wave_stat;");
+
+                            if(_t.end_freq == -1)
+                            {
+                                if (_d.disable_range_limit) compiler.WriteLineCode("double _f_end = status->sin_angle_freq * M_1_2PI;");
+                                else
+                                {
+                                    compiler.WriteLineCode("double _f_end = status->sin_angle_freq * M_1_2PI > " + max_freq + " ? " + max_freq + " : status->sin_angle_freq * M_1_2PI;");
+                                    compiler.WriteLineCode("_f_end = _f_end > " + _d.end_freq + " ? " + _d.end_freq + " : _f_end;");
+                                }
+                            }
+
                             if (!_t.disable_range_limit)
                             {
                                 compiler.WriteLineCode("if (_c < " + (_t.start_freq == -1 ? _d.start_freq : _t.start_freq) + ") _c = " + (_t.start_freq == -1 ? _d.start_freq : _t.start_freq) + ";");
@@ -207,7 +220,7 @@ namespace VvvfSimulator.Generation.Pi3Generator
 
                             if (_target.mode == AmplitudeMode.Linear)
                             {
-                                string _a = "double _a = (" + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + " - " + (_t.start_amp == -1 ? "0" : _t.start_amp.ToString()) + ") / (" + (_t.end_freq == -1 ? "status->sin_angle_freq * M_1_2PI" : _t.end_freq.ToString()) + " - " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + ");";
+                                string _a = "double _a = (" + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + " - " + (_t.start_amp == -1 ? "0" : _t.start_amp.ToString()) + ") / (" + (_t.end_freq == -1 ? "_f_end" : _t.end_freq.ToString()) + " - " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + ");";
                                 string _b = "double _b = -_a * " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + " + " + (_t.start_amp == -1 ? "0" : _t.start_amp.ToString()) + ";";
                                 compiler.WriteLineCode(_a);
                                 compiler.WriteLineCode(_b);
@@ -215,7 +228,7 @@ namespace VvvfSimulator.Generation.Pi3Generator
                             }
                             else if (_target.mode == AmplitudeMode.Wide_3_Pulse)
                             {
-                                string _a = "double _a = (" + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + " - " + (_t.start_amp == -1 ? "0" : _t.start_amp.ToString()) + ") / (" + (_t.end_freq == -1 ? "status->sin_angle_freq * M_1_2PI" : _t.end_freq.ToString()) + " - " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + ");";
+                                string _a = "double _a = (" + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + " - " + (_t.start_amp == -1 ? "0" : _t.start_amp.ToString()) + ") / (" + (_t.end_freq == -1 ? "_f_end" : _t.end_freq.ToString()) + " - " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + ");";
                                 string _b = "double _b = -_a * " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + " + " + (_t.start_amp == -1 ? "0" : _t.start_amp.ToString()) + ";";
                                 compiler.WriteLineCode(_a);
                                 compiler.WriteLineCode(_b);
@@ -227,7 +240,7 @@ namespace VvvfSimulator.Generation.Pi3Generator
                                 //double _b = -_a * (_t.start_freq == -1 ? _d.start_freq : _t.start_freq) + (1.0 / (_t.start_amp == -1 ? _d.start_amp : _t.start_amp));
                                 //compiler.WriteLineCode("double _x = " + _a + " * _c + " + _b + ";");
 
-                                string _a = "double _a = (1.0 / " + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + " - 1.0 / " + (_t.start_amp == -1 ? "1" : _t.start_amp.ToString()) + ") / (" + (_t.end_freq == -1 ? "status->sin_angle_freq * M_1_2PI" : _t.end_freq.ToString()) + " - " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + ");";                                
+                                string _a = "double _a = (1.0 / " + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + " - 1.0 / " + (_t.start_amp == -1 ? "1" : _t.start_amp.ToString()) + ") / (" + (_t.end_freq == -1 ? "_f_end" : _t.end_freq.ToString()) + " - " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + ");";                                
                                 string _b = "double _b = -_a * " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + " + 1.0 / " + (_t.start_amp == -1 ? "1" : _t.start_amp.ToString()) + ";";
                                 compiler.WriteLineCode(_a);
                                 compiler.WriteLineCode(_b);
@@ -256,17 +269,17 @@ namespace VvvfSimulator.Generation.Pi3Generator
                     }
 
                     compiler.WriteLineCode("if (!status->free_run) {"); compiler.AddIndent();
-                    _WriteAmplitudeControl(compiler, null, amplitude.default_data, false);
+                    _WriteAmplitudeControl(compiler, null, amplitude.default_data, false, 0);
                     compiler.WriteLineCode("pwm->amplitude = _amp;");
                     compiler.DecrementIndent(); compiler.WriteLineCode("}");
 
                     compiler.WriteLineCode("if (status->free_run && !status->mascon_off) {"); compiler.AddIndent();
-                    _WriteAmplitudeControl(compiler, amplitude.default_data, amplitude.free_run_data.mascon_on, false);
+                    _WriteAmplitudeControl(compiler, amplitude.default_data, amplitude.free_run_data.mascon_on, false, freqInfo.on.control_freq_go_to);
                     compiler.WriteLineCode("pwm->amplitude = _amp;");
                     compiler.DecrementIndent(); compiler.WriteLineCode("}");
 
                     compiler.WriteLineCode("if (status->free_run && status->mascon_off) {"); compiler.AddIndent();
-                    _WriteAmplitudeControl(compiler, amplitude.default_data, amplitude.free_run_data.mascon_off, false);
+                    _WriteAmplitudeControl(compiler, amplitude.default_data, amplitude.free_run_data.mascon_off, false, freqInfo.off.control_freq_go_to);
                     compiler.WriteLineCode("pwm->amplitude = _amp;");
                     compiler.DecrementIndent(); compiler.WriteLineCode("}");
 
@@ -451,7 +464,7 @@ namespace VvvfSimulator.Generation.Pi3Generator
             compiler.AddIndent();
 
             _WriteWaveStatChange(compiler, vfsoundData.mascon_data.braking, vfsoundData.min_freq.braking);
-            _WriteWavePatterns(compiler, vfsoundData.braking_pattern);
+            _WriteWavePatterns(compiler, vfsoundData.braking_pattern, vfsoundData.mascon_data.braking);
 
             compiler.DecrementIndent();
             compiler.WriteLineCode("}");
@@ -460,7 +473,7 @@ namespace VvvfSimulator.Generation.Pi3Generator
             compiler.AddIndent();
 
             _WriteWaveStatChange(compiler, vfsoundData.mascon_data.accelerating, vfsoundData.min_freq.accelerate);
-            _WriteWavePatterns(compiler, vfsoundData.accelerate_pattern);
+            _WriteWavePatterns(compiler, vfsoundData.accelerate_pattern, vfsoundData.mascon_data.accelerating);
 
             compiler.DecrementIndent();
             compiler.WriteLineCode("}");

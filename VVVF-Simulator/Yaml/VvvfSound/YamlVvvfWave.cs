@@ -276,7 +276,16 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
 				double target_freq = free_run_amp_param.end_freq;
 				if (free_run_amp_param.end_freq == -1)
-					target_freq = (control.get_Sine_Freq() > max_control_freq) ? max_control_freq : control.get_Sine_Freq();
+				{
+					if (solve_data.amplitude_control.default_data.parameter.disable_range_limit) target_freq = control.get_Sine_Freq();
+					else
+					{
+                        target_freq = (control.get_Sine_Freq() > max_control_freq) ? max_control_freq : control.get_Sine_Freq();
+						target_freq = (target_freq > solve_data.amplitude_control.default_data.parameter.end_freq) ? solve_data.amplitude_control.default_data.parameter.end_freq : target_freq;
+                    }
+                    
+                }
+					
 
 				double target_amp = free_run_amp_param.end_amp;
 				if (free_run_amp_param.end_amp == -1)
