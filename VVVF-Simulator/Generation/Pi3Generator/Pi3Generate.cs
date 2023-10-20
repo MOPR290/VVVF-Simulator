@@ -126,7 +126,8 @@ namespace VvvfSimulator.Generation.Pi3Generator
                 compiler.WriteLineCode("{");
                 compiler.AddIndent();
 
-                compiler.WriteLineCode("pwm->pulse_mode = " + data.pulse_Mode.pulse_name.ToString() + ";");
+                compiler.WriteLineCode("pwm->pulse_mode.pulse_name = " + data.pulse_Mode.pulse_name.ToString() + ";");
+                compiler.WriteLineCode("pwm->pulse_mode.alt_mode = " + data.pulse_Mode.Alt_Mode.ToString() + ";");
 
                 {
                     YamlControlData.YamlControlDataAmplitudeControl amplitude = data.amplitude_control;
@@ -469,12 +470,13 @@ namespace VvvfSimulator.Generation.Pi3Generator
             List<String> lines = new List<String>()
             {
                 "CarrierFreq carrier_freq = {0, 0, 0};",
+                "PulseMode pulse_mode = {P_1, Default};",
                 "pwm->level = " + vfsoundData.level.ToString() + ";",
                 "pwm->dipolar = -1;",
                 "pwm->min_freq = 0;",
                 "pwm->amplitude = 0;",
                 "pwm->none = false;",
-                "pwm->pulse_mode = P_1;",
+                "pwm->pulse_mode = pulse_mode;",
                 "pwm->carrier_freq = carrier_freq;"
             };
             for(int i = 0; i < lines.Count; i++)
