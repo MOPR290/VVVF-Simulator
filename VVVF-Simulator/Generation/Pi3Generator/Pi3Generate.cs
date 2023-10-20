@@ -150,20 +150,20 @@ namespace VvvfSimulator.Generation.Pi3Generator
 
                             if (_target.mode == AmplitudeMode.Linear)
                             {
-                                _WriteRangeLimitCheck(compiler, _t, true, true); ;
+                                _WriteRangeLimitCheck(compiler, null, _t, true, true); ;
                                 double _a = (_t.end_amp - _t.start_amp) / (_t.end_freq - _t.start_freq);
                                 compiler.WriteLineCode("_amp = " + _a + " * _c + " + (-_a * _t.start_freq + _t.start_amp) + ";");
                             }
                             else if (_target.mode == AmplitudeMode.Wide_3_Pulse)
                             {
-                                _WriteRangeLimitCheck(compiler, _t, true, true);
+                                _WriteRangeLimitCheck(compiler, null, _t, true, true);
                                 double _a = (_t.end_amp - _t.start_amp) / (_t.end_freq - _t.start_freq);
                                 double _b = -_a * _t.start_freq + _t.start_amp;
                                 compiler.WriteLineCode("_amp = " + (0.2 * _a) + " * _c + " + (0.2 * _b + 0.8) + ";");
                             }
                             else if (_target.mode == AmplitudeMode.Inv_Proportional)
                             {
-                                _WriteRangeLimitCheck(compiler, _t, true, true);
+                                _WriteRangeLimitCheck(compiler, null, _t, true, true);
                                 double _a = (1.0 / _t.end_amp - 1.0 / _t.start_amp) / (_t.end_freq - _t.start_freq);
                                 double _b = -_a * _t.start_freq + (1.0 / _t.start_amp);
                                 compiler.WriteLineCode("double _x = " + _a + " * _c + " + _b + ";");
@@ -177,7 +177,7 @@ namespace VvvfSimulator.Generation.Pi3Generator
                             }
                             else if (_target.mode == AmplitudeMode.Sine)
                             {
-                                _WriteRangeLimitCheck(compiler, _t, false, true);
+                                _WriteRangeLimitCheck(compiler, null, _t, false, true);
                                 compiler.WriteLineCode("double _x = _c * " + (Math.PI / (2.0 * _t.end_freq)));
                                 compiler.WriteLineCode("_amp = _x * " + _t.end_amp);
                             }
@@ -216,14 +216,9 @@ namespace VvvfSimulator.Generation.Pi3Generator
                                 }
                             }
 
-                            if (!_t.disable_range_limit)
-                            {
-                                compiler.WriteLineCode("if (_c < " + (_t.start_freq == -1 ? _d.start_freq : _t.start_freq) + ") _c = " + (_t.start_freq == -1 ? _d.start_freq : _t.start_freq) + ";");
-                                compiler.WriteLineCode("if (_c > " + (_t.end_freq == -1 ? _d.end_freq : _t.end_freq) + ") _c = " + (_t.end_freq == -1 ? _d.end_freq : _t.end_freq) + ";");
-                            }
-
                             if (_target.mode == AmplitudeMode.Linear)
                             {
+                                _WriteRangeLimitCheck(compiler, _d, _t, true, true);
                                 string _a = "double _a = (" + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + " - " + (_t.start_amp == -1 ? "0" : _t.start_amp.ToString()) + ") / (" + (_t.end_freq == -1 ? "_f_end" : _t.end_freq.ToString()) + " - " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + ");";
                                 string _b = "double _b = -_a * " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + " + " + (_t.start_amp == -1 ? "0" : _t.start_amp.ToString()) + ";";
                                 compiler.WriteLineCode(_a);
@@ -232,6 +227,7 @@ namespace VvvfSimulator.Generation.Pi3Generator
                             }
                             else if (_target.mode == AmplitudeMode.Wide_3_Pulse)
                             {
+                                _WriteRangeLimitCheck(compiler, _d, _t, true, true);
                                 string _a = "double _a = (" + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + " - " + (_t.start_amp == -1 ? "0" : _t.start_amp.ToString()) + ") / (" + (_t.end_freq == -1 ? "_f_end" : _t.end_freq.ToString()) + " - " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + ");";
                                 string _b = "double _b = -_a * " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + " + " + (_t.start_amp == -1 ? "0" : _t.start_amp.ToString()) + ";";
                                 compiler.WriteLineCode(_a);
@@ -240,6 +236,7 @@ namespace VvvfSimulator.Generation.Pi3Generator
                             }
                             else if (_target.mode == AmplitudeMode.Inv_Proportional)
                             {
+                                _WriteRangeLimitCheck(compiler, _d, _t, true, true);
                                 string _a = "double _a = (1.0 / " + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + " - 1.0 / " + (_t.start_amp == -1 ? "1" : _t.start_amp.ToString()) + ") / (" + (_t.end_freq == -1 ? "_f_end" : _t.end_freq.ToString()) + " - " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + ");";                                
                                 string _b = "double _b = -_a * " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + " + 1.0 / " + (_t.start_amp == -1 ? "1" : _t.start_amp.ToString()) + ";";
                                 compiler.WriteLineCode(_a);
@@ -255,7 +252,7 @@ namespace VvvfSimulator.Generation.Pi3Generator
                             }
                             else if (_target.mode == AmplitudeMode.Sine)
                             {
-                                _WriteRangeLimitCheck(compiler, _t, false, true);
+                                _WriteRangeLimitCheck(compiler, _d, _t, false, true);
                                 compiler.WriteLineCode("double _x = M_PI_2 * _c /" +  (_t.end_freq == -1 ? "_f_end" : _t.end_freq.ToString()) + ";");
                                 compiler.WriteLineCode("_amp = sin(_x) * " + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + ";");
                             }
@@ -274,14 +271,23 @@ namespace VvvfSimulator.Generation.Pi3Generator
                         }
 
                         static void _WriteRangeLimitCheck(
-                            Pi3Compiler compiler, 
+                            Pi3Compiler compiler,
+                            YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter? _d,
                             YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter _t,
                             bool min, bool max
                         )
                         {
                             if (_t.disable_range_limit) return;
-                            if(min) compiler.WriteLineCode("if (_c < " + _t.start_freq + ") _c = " + _t.start_freq + ";");
-                            if(max) compiler.WriteLineCode("if (_c > " + _t.end_freq + ") _c = " + _t.end_freq + ";");
+                            if(_d == null)
+                            {
+                                if (min) compiler.WriteLineCode("if (_c < " + _t.start_freq + ") _c = " + _t.start_freq + ";");
+                                if (max) compiler.WriteLineCode("if (_c > " + _t.end_freq + ") _c = " + _t.end_freq + ";");
+                            }
+                            else
+                            {
+                                if (min) compiler.WriteLineCode("if (_c < " + (_t.start_freq == -1 ? _d.start_freq : _t.start_freq) + ") _c = " + (_t.start_freq == -1 ? _d.start_freq : _t.start_freq) + ";");
+                                if (max) compiler.WriteLineCode("if (_c > " + (_t.end_freq == -1 ? _d.end_freq : _t.end_freq) + ") _c = " + (_t.end_freq == -1 ? _d.end_freq : _t.end_freq) + ";");
+                            }
                         }
                     }
 
