@@ -199,7 +199,8 @@ namespace VvvfSimulator.Generation.Pi3Generator
                             YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter _t = _target.parameter;
                             YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter _d = _default.parameter;
 
-                            if(_t.end_amp == -1 || _t.start_amp == -1) _WriteAmplitudeControl(compiler, null, _default, true, 0);
+                            if (_t.end_amp == -1 || _t.start_amp == -1) _WriteAmplitudeControl(compiler, null, _default, true, 0);
+                            else compiler.WriteLineCode("double _c, _amp;");
 
                             compiler.WriteLineCode("{"); compiler.AddIndent();
 
