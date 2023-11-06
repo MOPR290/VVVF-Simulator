@@ -125,6 +125,8 @@ namespace VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common
                 visible_list = new Visibility[2] { Visibility.Visible, Visibility.Collapsed };
             else if(selected == YamlMovingValue.MovingValueType.Inv_Proportional)
                 visible_list = new Visibility[2] { Visibility.Collapsed, Visibility.Visible };
+            else if (selected == YamlMovingValue.MovingValueType.Sine)
+                visible_list = new Visibility[2] { Visibility.Collapsed, Visibility.Collapsed };
 
             for (int i = 0;i  < visible_list.Length; i++)
             {

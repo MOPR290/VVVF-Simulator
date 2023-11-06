@@ -57,7 +57,13 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
 				val = 1 / (a * x + b) + c;
 			}
-			return val;
+            else if (moving_val.type == YamlMovingValue.MovingValueType.Sine)
+			{
+				double x = (M_PI_2 - Math.Asin(moving_val.start_value / moving_val.end_value)) / (moving_val.end - moving_val.start) * (current - moving_val.start) + Math.Asin(moving_val.start_value / moving_val.end_value);
+				val = Math.Sin(x) * moving_val.end_value;
+            }
+
+            return val;
 
 		}
 

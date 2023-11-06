@@ -177,7 +177,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
                 public enum MovingValueType
                 {
-                    Proportional, Pow2_Exponential, Inv_Proportional
+                    Proportional, Pow2_Exponential, Inv_Proportional, Sine
                 }
 
                 public override string ToString()
