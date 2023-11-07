@@ -189,11 +189,14 @@ namespace VvvfSimulator
 			}
 		}
 
-		public static double get_Amplitude(AmplitudeMode mode , AmplitudeArgument arg)
+		public static double GetAmplitude(AmplitudeMode mode , AmplitudeArgument arg)
         {
 			double val = 0;
-			if (mode == AmplitudeMode.Linear)
-            {
+
+
+			if (arg.max_amp == arg.min_amp) val = arg.min_amp;
+			else if (mode == AmplitudeMode.Linear)
+			{
 				if (!arg.disable_range_limit)
 				{
 					if (arg.current < arg.min_freq) arg.current = arg.min_freq;
@@ -201,9 +204,9 @@ namespace VvvfSimulator
 				}
 				val = (arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq) * (arg.current - arg.min_freq) + arg.min_amp;
 			}
-				
-			else if(mode == AmplitudeMode.Wide_3_Pulse)
-            {
+
+			else if (mode == AmplitudeMode.Wide_3_Pulse)
+			{
 				if (!arg.disable_range_limit)
 				{
 					if (arg.current < arg.min_freq) arg.current = arg.min_freq;
@@ -211,22 +214,22 @@ namespace VvvfSimulator
 				}
 				val = (0.2 * ((arg.current - arg.min_freq) * ((arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq)) + arg.min_amp)) + 0.8;
 			}
-				
 
-			else if(mode == AmplitudeMode.Inv_Proportional)
-            {
+
+			else if (mode == AmplitudeMode.Inv_Proportional)
+			{
 				if (!arg.disable_range_limit)
 				{
 					if (arg.current < arg.min_freq) arg.current = arg.min_freq;
 					if (arg.current > arg.max_freq) arg.current = arg.max_freq;
 				}
 
-				double x = get_Amplitude(AmplitudeMode.Linear, new AmplitudeArgument()
-                {
-					min_freq = arg.min_freq, 
-					min_amp = 1 / arg.min_amp, 
-					max_freq = arg.max_freq, 
-					max_amp = 1 / arg.max_amp, 
+				double x = GetAmplitude(AmplitudeMode.Linear, new AmplitudeArgument()
+				{
+					min_freq = arg.min_freq,
+					min_amp = 1 / arg.min_amp,
+					max_freq = arg.max_freq,
+					max_amp = 1 / arg.max_amp,
 					current = arg.current,
 					disable_range_limit = arg.disable_range_limit
 				});
@@ -240,20 +243,20 @@ namespace VvvfSimulator
 				//val = 1 / (6.25*x - 2.5) + 0.4;
 				val = 1 / (a * x + b) + c;
 			}
-			else if(mode == AmplitudeMode.Exponential)
-            {
+			else if (mode == AmplitudeMode.Exponential)
+			{
 
 				if (!arg.disable_range_limit)
 				{
 					if (arg.current > arg.max_freq) arg.current = arg.max_freq;
 				}
 
-				double t = 1 / arg.max_freq *  Math.Log(arg.max_amp + 1);
+				double t = 1 / arg.max_freq * Math.Log(arg.max_amp + 1);
 
 				val = Math.Pow(Math.E, t * arg.current) - 1;
 			}
-			else if(mode == AmplitudeMode.Linear_Polynomial)
-            {
+			else if (mode == AmplitudeMode.Linear_Polynomial)
+			{
 				if (!arg.disable_range_limit)
 				{
 					if (arg.current > arg.max_freq) arg.current = arg.max_freq;

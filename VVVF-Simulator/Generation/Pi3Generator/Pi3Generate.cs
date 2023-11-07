@@ -149,7 +149,8 @@ namespace VvvfSimulator.Generation.Pi3Generator
 
                             YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter _t = _target.parameter;
 
-                            if (_target.mode == AmplitudeMode.Linear)
+                            if(_t.end_amp == _t.start_amp) compiler.WriteLineCode("_amp = " + _t.start_amp + ";");
+                            else if (_target.mode == AmplitudeMode.Linear)
                             {
                                 _WriteRangeLimitCheck(compiler, null, _t, true, true); ;
                                 double _a = (_t.end_amp - _t.start_amp) / (_t.end_freq - _t.start_freq);
@@ -243,12 +244,17 @@ namespace VvvfSimulator.Generation.Pi3Generator
                                 compiler.WriteLineCode(_b);
                                 compiler.WriteLineCode("double _x = _a * _c + _b;");
 
-                                compiler.WriteLineCode("double c = -" + (_t.curve_change_rate == -1 ? _d.curve_change_rate : _t.curve_change_rate) + ";");
+                                compiler.WriteLineCode("double c = " + -(_t.curve_change_rate == -1 ? _d.curve_change_rate : _t.curve_change_rate) + ";");
                                 compiler.WriteLineCode("double k = " + (_t.end_amp == -1 ? "_amp" : _t.end_amp) + ";");
                                 compiler.WriteLineCode("double l = " + (_t.start_amp == -1 ? "1" : _t.start_amp) + ";");
+                                compiler.WriteLineCode("if(l == k)"); compiler.WriteLineCode("{"); compiler.AddIndent();
+                                compiler.WriteLineCode("_amp = l;");
+                                compiler.DecrementIndent(); compiler.WriteLineCode("}"); 
+                                compiler.WriteLineCode("else"); compiler.WriteLineCode("{"); compiler.AddIndent();
                                 compiler.WriteLineCode("double a = 1 / ((1 / l) - (1 / k)) * (1 / (l - c) - 1 / (k - c));");
                                 compiler.WriteLineCode("double b = 1 / (1 - (1 / l) * k) * (1 / (l - c) - (1 / l) * k / (k - c));");
                                 compiler.WriteLineCode("_amp = 1.0 / (a * _x + b) + c;");
+                                compiler.DecrementIndent(); compiler.WriteLineCode("}"); 
                             }
                             else if (_target.mode == AmplitudeMode.Sine)
                             {
@@ -326,6 +332,15 @@ namespace VvvfSimulator.Generation.Pi3Generator
                                 double _a = (moving.end_value - moving.start_value) / (moving.end - moving.start);
                                 double _b = -_a * moving.start + moving.start_value;
                                 compiler.WriteLineCode("pwm->carrier_freq.base_freq = " + _a + " * _wave_stat + " + _b + ";");
+                                compiler.DecrementIndent(); compiler.WriteLineCode("}");
+                            }
+                            else if (moving.type == YamlControlData.YamlMovingValue.MovingValueType.Sine)
+                            {
+                                compiler.WriteLineCode("{"); compiler.AddIndent();
+                                double _start = Math.Asin(moving.start_value / moving.end_value);
+                                double _a = (Math.PI / 2.0 - _start) / (moving.end - moving.start);
+                                double _b = -_a * moving.start + _start;
+                                compiler.WriteLineCode("pwm->carrier_freq.base_freq = sin(" + _a + " * _wave_stat + " + _b + ") * " + moving.end_value + ";");
                                 compiler.DecrementIndent(); compiler.WriteLineCode("}");
                             }
                             else

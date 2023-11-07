@@ -20,7 +20,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 		{
 			var amp_param = amp_data.parameter;
 			AmplitudeArgument aa = new(amp_param,x);
-			double amp = get_Amplitude(amp_data.mode, aa);
+			double amp = GetAmplitude(amp_data.mode, aa);
 			if (amp_param.cut_off_amp > amp) amp = 0;
 			if (amp_param.max_amp != -1 && amp_param.max_amp < amp) amp = amp_param.max_amp;
 			return amp;
@@ -315,7 +315,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 					change_const = free_run_amp_param.curve_change_rate
 				};
 				
-				amplitude = get_Amplitude(free_run_amp_data.mode, aa);
+				amplitude = GetAmplitude(free_run_amp_data.mode, aa);
 
 				if (free_run_amp_param.cut_off_amp > amplitude) amplitude = 0;
 				if (free_run_amp_param.max_amp != -1 && amplitude > free_run_amp_param.max_amp) amplitude = free_run_amp_param.max_amp;
