@@ -114,9 +114,9 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
 
             Bitmap image = new(image_width, image_height);
             Bitmap hexagon = new(400, 400), wave_form = new(1520, 400);
-            Graphics g = Graphics.FromImage(image);          
+            Graphics g = Graphics.FromImage(image);
 
-            VvvfValues CycleControl = Control.Clone();
+            VvvfValues CycleControl = Control;
             WaveValues[] CycleUVW = Array.Empty<WaveValues>();
 
             // CALCULATE ONE CYCLE OF PWM
