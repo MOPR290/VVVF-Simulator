@@ -322,7 +322,7 @@ namespace VvvfSimulator
 
         
 
-        private static int Get_Name_Num(PulseModeNames mode)
+        private static int GetPulseNameNum(PulseModeNames mode)
         {
             int[] pulse_list = new int[]
             {
@@ -347,11 +347,11 @@ namespace VvvfSimulator
             return pulse_list[(int)mode];
         }
 
-        public static bool Is_Harmonic_BaseWaveChange_Available(PulseMode mode, int level)
+        public static bool IsPulseHarmonicBaseWaveChangeAvailable(PulseMode mode, int level)
         {
             if (level == 3) return true;
 
-            if (Is_Square_Available(mode, level) && mode.Square) return false;
+            if (IsPulseSquareAvail(mode, level) && mode.Square) return false;
 
             bool[] pulse_list = new bool[]
             {
@@ -376,7 +376,7 @@ namespace VvvfSimulator
             return pulse_list[(int)mode.pulse_name];
         }
 
-        public static bool Is_Shifted_Available(PulseMode mode, int level)
+        public static bool IsPulseShiftedAvailable(PulseMode mode, int level)
         {
             if (level == 3) return true;
 
@@ -386,7 +386,7 @@ namespace VvvfSimulator
             return stat_1;
         }
 
-        public static bool Is_Square_Available(PulseMode mode, int level)
+        public static bool IsPulseSquareAvail(PulseMode mode, int level)
         {
             if (level == 3) return false;
 
@@ -396,9 +396,9 @@ namespace VvvfSimulator
             return stat_1;
         }
 
-        public static int Get_Pulse_Num(PulseMode mode, int level)
+        public static int GetPulseNum(PulseMode mode, int level)
         {
-            int pulses = Get_Name_Num(mode.pulse_name);
+            int pulses = GetPulseNameNum(mode.pulse_name);
             if (level == 3) return pulses;
 
             if (mode.Square)
@@ -409,20 +409,20 @@ namespace VvvfSimulator
 
             return pulses;
         }
-        public static double Get_Pulse_Initial(PulseMode mode, int level)
+        public static double GetPulseInitial(PulseMode mode, int level)
         {
             if (level == 3) return 0;
 
             if (mode.Square)
             {
-                if (Get_Name_Num(mode.pulse_name) % 2 == 0) return M_PI_2;
+                if (GetPulseNameNum(mode.pulse_name) % 2 == 0) return M_PI_2;
                 else return 0;
             }
 
             return 0;
         }
 
-        public static List<PulseAlternativeMode> Get_Avail_Alt_Modes(PulseMode pulse_Mode, int level)
+        public static List<PulseAlternativeMode> GetPulseAltModes(PulseMode pulse_Mode, int level)
         {
             if(level == 3) // level 3
             {
@@ -436,6 +436,14 @@ namespace VvvfSimulator
                 if (pulse_Mode.pulse_name == PulseModeNames.CHMP_13)
                     return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
                 if (pulse_Mode.pulse_name == PulseModeNames.CHMP_15)
+                    return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                if (pulse_Mode.pulse_name == PulseModeNames.P_17)
+                    return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                if (pulse_Mode.pulse_name == PulseModeNames.P_13)
+                    return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                if (pulse_Mode.pulse_name == PulseModeNames.P_9)
+                    return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                if (pulse_Mode.pulse_name == PulseModeNames.P_5)
                     return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
             }
 

@@ -457,7 +457,7 @@ namespace VvvfSimulator
 				}
 					
 
-				int pulses = Get_Pulse_Num(pulse_mode,3);
+				int pulses = GetPulseNum(pulse_mode,3);
 				double saw_value = GetSaw(pulses * (sine_angle_freq * sine_time + initial_phase));
 				if (pulse_mode.Shift)
 					saw_value = -saw_value;
@@ -798,19 +798,45 @@ namespace VvvfSimulator
 
 			if (
 				pulse_name == PulseModeNames.CHMP_3 ||
-				pulse_mode.Square && Is_Square_Available(pulse_mode, 2)
+				pulse_mode.Square && IsPulseSquareAvail(pulse_mode, 2)
 			)
 			{
 				bool is_shift = pulse_mode.Shift;
-				int pulse_num = Get_Pulse_Num(pulse_mode,2);
-				double pulse_initial_phase = Get_Pulse_Initial(pulse_mode,2);
+				int pulse_num = GetPulseNum(pulse_mode,2);
+				double pulse_initial_phase = GetPulseInitial(pulse_mode,2);
 				return GetPulseWithSaw(sin_angle_freq * sin_time + initial_phase, pulse_initial_phase, amplitude, pulse_num, is_shift);
 			}
 
-
-			//sync mode but no the above.
+			if( pulse_name == PulseModeNames.P_17 || pulse_name == PulseModeNames.P_13 || pulse_name == PulseModeNames.P_9 || pulse_name == PulseModeNames.P_5)
 			{
-				int pulse_num = Get_Pulse_Num(pulse_mode,2);
+				if(pulse_mode.Alt_Mode == PulseAlternativeMode.Alt1)
+				{
+					int pulse_num = 27;
+                    double x = sin_angle_freq * sin_time + initial_phase;
+                    double saw_value = GetSaw(pulse_num * x);
+                    double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), x, amplitude);
+					int pwm_value;
+					double fixed_x = (int)(x / M_PI_2) % 2 == 1 ? M_PI_2 - x % M_PI_2 : x % M_PI_2;
+                    if (fixed_x < M_PI * GetPulseNum(pulse_mode, 2) / 54)
+					{
+                        pwm_value = ModulateSin(sin_value, saw_value) * 2;
+                        control.set_Saw_Angle_Freq(sin_angle_freq * pulse_num);
+                        control.set_Saw_Time(sin_time);
+
+					}
+					else
+					{
+						pwm_value = (int)(x / M_PI_2) % 4 > 1 ? 0 : 2;
+                    }
+                    return pwm_value;
+
+                }
+			}
+
+
+            //sync mode but no the above.
+            {
+				int pulse_num = GetPulseNum(pulse_mode,2);
 				double x = sin_angle_freq * sin_time + initial_phase;
 				double saw_value = GetSaw(pulse_num * x);
 				double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), x, amplitude);
