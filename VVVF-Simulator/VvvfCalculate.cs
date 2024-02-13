@@ -350,23 +350,6 @@ namespace VvvfSimulator
 		//
 		// VVVF Calculation
 		//
-		public static double check_for_mascon_off(ControlStatus cv, VvvfValues control, double max_voltage_freq)
-        {
-			if (cv.free_run && !cv.mascon_on && cv.wave_stat > max_voltage_freq)
-			{
-				control.set_Control_Frequency(max_voltage_freq);
-				return max_voltage_freq;
-				
-			}
-			else if (cv.free_run && cv.mascon_on && cv.wave_stat > max_voltage_freq)
-			{
-				double rolling_freq = control.get_Sine_Freq();
-				control.set_Control_Frequency(rolling_freq);
-				return rolling_freq;
-			}
-			return -1;
-		}
-
 		public static WaveValues CalculatePhases(VvvfValues control,PwmCalculateValues value, double add_initial)
         {
 
@@ -817,12 +800,11 @@ namespace VvvfSimulator
                     double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), x, amplitude);
 					int pwm_value;
 					double fixed_x = (int)(x / M_PI_2) % 2 == 1 ? M_PI_2 - x % M_PI_2 : x % M_PI_2;
+                    control.set_Saw_Angle_Freq(sin_angle_freq * pulse_num);
+                    control.set_Saw_Time(sin_time);
                     if (fixed_x < M_PI * GetPulseNum(pulse_mode, 2) / 54)
 					{
-                        pwm_value = ModulateSin(sin_value, saw_value) * 2;
-                        control.set_Saw_Angle_Freq(sin_angle_freq * pulse_num);
-                        control.set_Saw_Time(sin_time);
-
+						pwm_value = ModulateSin(sin_value, saw_value) * 2;
 					}
 					else
 					{

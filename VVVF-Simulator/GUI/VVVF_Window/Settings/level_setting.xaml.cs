@@ -16,7 +16,7 @@ namespace VvvfSimulator.VVVF_Window.Settings
         {
             InitializeComponent();
 
-            if (YamlVvvfManage.current_data.level == 2)
+            if (YamlVvvfManage.CurrentData.level == 2)
                 level_image.Source = new BitmapImage(new Uri("../../Images/VVVF_Settings/2-level.png", UriKind.Relative));
             else
                 level_image.Source = new BitmapImage(new Uri("../../Images/VVVF_Settings/3-level.png", UriKind.Relative));
@@ -34,7 +34,7 @@ namespace VvvfSimulator.VVVF_Window.Settings
             else
                 level_image.Source = new BitmapImage(new Uri("../../Images/VVVF_Settings/3-level.png", UriKind.Relative));
 
-            YamlVvvfManage.current_data.level = Int32.Parse(tag);
+            YamlVvvfManage.CurrentData.level = Int32.Parse(tag);
         }
     }
 }

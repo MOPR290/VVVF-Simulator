@@ -110,26 +110,54 @@ namespace VvvfSimulator.Yaml.VVVFSound
 			//
 			// mascon off solve
 			//
-			double mascon_off_check;
-			YamlMasconDataOnOff mascon_on_off_check_data;
+			double max_voltage_freq;
+            YamlMasconDataPattern mascon_on_off_check_data;
 			if (cv.brake) mascon_on_off_check_data = yvs.mascon_data.braking;
 			else mascon_on_off_check_data = yvs.mascon_data.accelerating;
+
 			if (cv.mascon_on)
 			{
-				mascon_off_check = check_for_mascon_off(cv, control, mascon_on_off_check_data.on.control_freq_go_to);
-				control.set_Free_Freq_Change(mascon_on_off_check_data.on.freq_per_sec);
-			}
-			else
+                control.set_Free_Freq_Change(mascon_on_off_check_data.on.freq_per_sec);
+                max_voltage_freq = mascon_on_off_check_data.on.control_freq_go_to;
+                if (cv.free_run)
+				{
+					if(cv.wave_stat > max_voltage_freq)
+					{
+                        double rolling_freq = control.get_Sine_Freq();
+                        control.set_Control_Frequency(rolling_freq);
+						cv.wave_stat = rolling_freq;
+                    }
+				}
+            } else
 			{
-				mascon_off_check = check_for_mascon_off(cv, control, mascon_on_off_check_data.off.control_freq_go_to);
-				control.set_Free_Freq_Change(mascon_on_off_check_data.off.freq_per_sec);
-			}
-			if (mascon_off_check != -1) cv.wave_stat = mascon_off_check;
+                control.set_Free_Freq_Change(mascon_on_off_check_data.off.freq_per_sec);
+				max_voltage_freq = mascon_on_off_check_data.off.control_freq_go_to;
+                if (cv.free_run)
+                {
+                    if (cv.wave_stat > max_voltage_freq)
+                    {
+                        control.set_Control_Frequency(max_voltage_freq);
+                        cv.wave_stat = max_voltage_freq;
+                    }
+                }
+            }
 
-			//
-			// control stat solve
-			//
-			List<YamlControlData> control_list = new(cv.brake ? yvs.braking_pattern : yvs.accelerate_pattern);
+			//if (cv.free_run)
+			//{
+			//	if (cv.mascon_on)
+			//	{
+			//		double x_ref = control.get_Sine_Freq() > max_voltage_freq ? max_voltage_freq : control.get_Sine_Freq();
+   //                 double x = cv.wave_stat / x_ref;
+			//		double k;
+			//		if(x < 0.3) k = Math.Pow(0.3, 0.18) / 0.3 * x;
+			//		else k = Math.Pow(x, 0.18);
+   //                 cv.wave_stat = x_ref * k;
+   //             }
+			//}
+            //
+            // control stat solve
+            //
+            List<YamlControlData> control_list = new(cv.brake ? yvs.braking_pattern : yvs.accelerate_pattern);
 			control_list.Sort((a, b) => b.from.CompareTo(a.from));
 
 			//determine what control data to solve
@@ -158,7 +186,6 @@ namespace VvvfSimulator.Yaml.VVVFSound
 					else
 					{
 						control.set_Control_Frequency(control.get_Sine_Freq());
-						cv.wave_stat = control.get_Sine_Freq();
 						return new PwmCalculateValues() { none = true };
 					}
 				}

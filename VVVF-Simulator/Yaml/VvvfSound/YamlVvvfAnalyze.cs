@@ -54,8 +54,8 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
         public class YamlMasconData
         {
-            public YamlMasconDataOnOff braking { get; set; } = new YamlMasconDataOnOff();
-            public YamlMasconDataOnOff accelerating { get; set; } = new YamlMasconDataOnOff();
+            public YamlMasconDataPattern braking { get; set; } = new YamlMasconDataPattern();
+            public YamlMasconDataPattern accelerating { get; set; } = new YamlMasconDataPattern();
 
             public override string ToString()
             {
@@ -68,10 +68,10 @@ namespace VvvfSimulator.Yaml.VVVFSound
                 return final;
             }
 
-            public class YamlMasconDataOnOff
+            public class YamlMasconDataPattern
             {
-                public YamlMasconDataSingle on { get; set; } = new YamlMasconDataSingle();
-                public YamlMasconDataSingle off { get; set; } = new YamlMasconDataSingle();
+                public YamlMasconDataPatternMode on { get; set; } = new YamlMasconDataPatternMode();
+                public YamlMasconDataPatternMode off { get; set; } = new YamlMasconDataPatternMode();
 
                 public override string ToString()
                 {
@@ -84,7 +84,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
                     return final;
                 }
 
-                public class YamlMasconDataSingle
+                public class YamlMasconDataPatternMode
                 {
                     public double freq_per_sec { get; set; } = 60;
                     public double control_freq_go_to { get; set; } = 60;
@@ -611,7 +611,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
     }
     public static class YamlVvvfManage
     {
-        public static YamlVvvfSoundData current_data = new();
+        public static YamlVvvfSoundData CurrentData = new();
 
         public static bool save_Yaml(String path)
         {
@@ -619,7 +619,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
             {
                 using TextWriter writer = File.CreateText(path);
                 var serializer = new Serializer();
-                serializer.Serialize(writer, current_data);
+                serializer.Serialize(writer, CurrentData);
                 writer.Close();
                 return true;
             }
@@ -631,19 +631,12 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
         public static bool load_Yaml(String path)
         {
-            try
-            {
-                var input = new StreamReader(path, Encoding.UTF8);
-                var deserializer = new Deserializer();
-                YamlVvvfSoundData deserializeObject = deserializer.Deserialize<YamlVvvfSoundData>(input);
-                YamlVvvfManage.current_data = deserializeObject;
-                input.Close();
-                return true;
-            }
-            catch (YamlException e)
-            {
-                throw e;
-            }
+            var input = new StreamReader(path, Encoding.UTF8);
+            var deserializer = new Deserializer();
+            YamlVvvfSoundData deserializeObject = deserializer.Deserialize<YamlVvvfSoundData>(input);
+            YamlVvvfManage.CurrentData = deserializeObject;
+            input.Close();
+            return true;
         }
 
         public static YamlVvvfSoundData DeepClone(YamlVvvfSoundData src)

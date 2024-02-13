@@ -17,19 +17,19 @@ namespace VvvfSimulator.Yaml.TrainAudio_Setting
             private int FinalSampleFreq { get; set; } = 192000;
             public List<HarmonicData> Gear_Harmonics { get; set; } = new List<HarmonicData>()
             {
-                new HarmonicData{harmonic = 14, amplitude = new HarmonicData.HarmonicDataAmplitude{start=0,start_val=0x10,end=60,end_val=0x30,min_val = 0,max_val=0x60},disappear = 10000},
-                new HarmonicData{harmonic = 99, amplitude = new HarmonicData.HarmonicDataAmplitude{start=0,start_val=0x10,end=60,end_val=0x30,min_val = 0,max_val=0x60},disappear = 10000},
+                new HarmonicData{harmonic = 14, amplitude = new HarmonicData.HarmonicDataAmplitude{start=0,start_val=0.1,end=60,end_val=0.2,min_val = 0,max_val=0.2},disappear = 10000},
+                new HarmonicData{harmonic = 99, amplitude = new HarmonicData.HarmonicDataAmplitude{start=0,start_val=0.1,end=60,end_val=0.2,min_val = 0,max_val=0.2},disappear = 10000},
             };
             public List<HarmonicData> Sine_Harmonics { get; set; } = new List<HarmonicData>()
             {
-                new HarmonicData{harmonic = 1, amplitude = new HarmonicData.HarmonicDataAmplitude{start=0,start_val=0x10,end=60,end_val=0x30,min_val = 0,max_val=0x60},disappear = 10000},
-                new HarmonicData{harmonic = 5, amplitude = new HarmonicData.HarmonicDataAmplitude{start=0,start_val=0x10,end=60,end_val=0x30,min_val = 0,max_val=0x60},disappear = 10000},
-                new HarmonicData{harmonic = 7, amplitude = new HarmonicData.HarmonicDataAmplitude{start=0,start_val=0x10,end=60,end_val=0x30,min_val = 0,max_val=0x60},disappear = 10000},
+                new HarmonicData{harmonic = 1, amplitude = new HarmonicData.HarmonicDataAmplitude{start=0,start_val=0.1,end=60,end_val=0.2,min_val = 0,max_val=0.2},disappear = 10000},
+                new HarmonicData{harmonic = 5, amplitude = new HarmonicData.HarmonicDataAmplitude{start=0,start_val=0.1,end=60,end_val=0.2,min_val = 0,max_val=0.2},disappear = 10000},
+                new HarmonicData{harmonic = 7, amplitude = new HarmonicData.HarmonicDataAmplitude{start=0,start_val=0.1,end=60,end_val=0.2,min_val = 0,max_val=0.2},disappear = 10000},
             };
             public List<SoundFilter> Filteres { get; set; } = new List<SoundFilter>()
             {
-                new(SoundFilter.FilterType.HighPassFilter,-1,50,2f),
-                new(SoundFilter.FilterType.LowPassFilter,-1,900,2f),
+                new(SoundFilter.FilterType.HighPassFilter,-3,50,2f),
+                new(SoundFilter.FilterType.LowPassFilter,-3,900,2f),
             };
 
             public MotorSpecification Motor_Specification { get; set; } = new MotorSpecification();
@@ -149,25 +149,25 @@ namespace VvvfSimulator.Yaml.TrainAudio_Setting
             public BiQuadFilter[,] Get_NFilters() { return NFilteres; }
 
 
-            public void Set_Calculated_Gear_Harmonics(int Gear1, int Gear2)
+            public void SetCalculatedGearHarmonics(int Gear1, int Gear2)
             {
-                List<HarmonicData> Gear_Harmonics_List = new List<HarmonicData>();
+                List<HarmonicData> GearHarmonicsList = new List<HarmonicData>();
 
-                HarmonicData.HarmonicDataAmplitude amp_Strong = new HarmonicData.HarmonicDataAmplitude { start = 0, start_val = 0x0, end = 40, end_val = 0x60, min_val = 0, max_val = 0x60 };
-                HarmonicData.HarmonicDataAmplitude amp_Weak = new HarmonicData.HarmonicDataAmplitude { start = 0, start_val = 0x0, end = 40, end_val = 0x20, min_val = 0, max_val = 0x20 };
+                HarmonicData.HarmonicDataAmplitude amp_Strong = new HarmonicData.HarmonicDataAmplitude { start = 0, start_val = 0x0, end = 40, end_val = 0.1, min_val = 0, max_val = 0.1 };
+                HarmonicData.HarmonicDataAmplitude amp_Weak = new HarmonicData.HarmonicDataAmplitude { start = 0, start_val = 0x0, end = 40, end_val = 0.05, min_val = 0, max_val = 0.05 };
 
                 double gear_rate = Gear2 / (double)Gear1;
                 double motor_r = 120 / 4 / 60.0;
 
                 // Sound From Gear 1
                 // It has `Gear1` amount of teeth.
-                Gear_Harmonics_List.Add(new HarmonicData { harmonic = motor_r * Gear1 * 3, amplitude = amp_Strong, disappear = -1 });
-                Gear_Harmonics_List.Add(new HarmonicData { harmonic = motor_r * Gear1 * 2.5, amplitude = amp_Strong, disappear = -1 });
-                Gear_Harmonics_List.Add(new HarmonicData { harmonic = motor_r * Gear1 * 1, amplitude = amp_Strong, disappear = -1 });
+                GearHarmonicsList.Add(new HarmonicData { harmonic = motor_r * Gear1 * 3, amplitude = amp_Strong, disappear = -1 });
+                GearHarmonicsList.Add(new HarmonicData { harmonic = motor_r * Gear1 * 2.5, amplitude = amp_Strong, disappear = -1 });
+                GearHarmonicsList.Add(new HarmonicData { harmonic = motor_r * Gear1 * 1, amplitude = amp_Strong, disappear = -1 });
 
-                Gear_Harmonics_List.Add(new HarmonicData { harmonic = motor_r * 86 * 2, amplitude = new HarmonicData.HarmonicDataAmplitude { start = 0, start_val = 0x0, end = 20, end_val = 0x60, min_val = 0, max_val = 0x30 }, disappear = -1 });
+                GearHarmonicsList.Add(new HarmonicData { harmonic = motor_r * 86 * 2, amplitude = amp_Weak, disappear = -1 });
 
-                Gear_Harmonics = new List<HarmonicData>(Gear_Harmonics_List);
+                Gear_Harmonics = new List<HarmonicData>(GearHarmonicsList);
             }
             public YamlTrainSoundData Clone()
             {
@@ -183,7 +183,7 @@ namespace VvvfSimulator.Yaml.TrainAudio_Setting
             public YamlTrainSoundData(int SampleFreq, int Gear1, int Gear2)
             {
                 Set_NFilteres(SampleFreq);
-                Set_Calculated_Gear_Harmonics(Gear1, Gear2);
+                SetCalculatedGearHarmonics(Gear1, Gear2);
             }
 
             public YamlTrainSoundData() { }

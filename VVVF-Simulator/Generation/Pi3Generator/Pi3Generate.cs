@@ -37,7 +37,7 @@ namespace VvvfSimulator.Generation.Pi3Generator
        
         private static void _WriteWaveStatChange(
             Pi3Compiler compiler,
-            YamlVvvfSoundData.YamlMasconData.YamlMasconDataOnOff yaml,
+            YamlVvvfSoundData.YamlMasconData.YamlMasconDataPattern yaml,
             double min_freq
         )
         {
@@ -74,7 +74,7 @@ namespace VvvfSimulator.Generation.Pi3Generator
         private static void _WriteWavePatterns(
             Pi3Compiler compiler,
             List<YamlVvvfSoundData.YamlControlData> list,
-            YamlMasconData.YamlMasconDataOnOff freqInfo
+            YamlMasconData.YamlMasconDataPattern freqInfo
         )
         {
             List<YamlControlData> control_list = new(list);

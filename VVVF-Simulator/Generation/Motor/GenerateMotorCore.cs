@@ -59,7 +59,7 @@ namespace VvvfSimulator.Generation.Motor
 
                 // Others
                 public double i_m1 { get; set; } = 0;
-                public double pre_Te { get; set; } = 0;
+                public double TePre { get; set; } = 0;
             }
 
 
@@ -150,7 +150,7 @@ namespace VvvfSimulator.Generation.Motor
                 motor_Param.w_r = w_r;
                 motor_Param.r_Flux = FLUX;
                 motor_Param.wsl = wsl;
-                motor_Param.pre_Te = motor_Param.Te;
+                motor_Param.TePre = motor_Param.Te;
                 motor_Param.Te = T_e;
                 motor_Param.i_m1 = i_m1;
             }

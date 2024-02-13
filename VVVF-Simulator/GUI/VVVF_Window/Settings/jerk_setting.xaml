@@ -8,191 +8,169 @@
       d:DesignHeight="434" d:DesignWidth="661"
       Title="mascon_off_setting">
 
-    <Grid>
+    <Page.Resources>
+        <LinearGradientBrush x:Key="AccelerateActive" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FF6EA4ED"/>
+            <GradientStop Color="#FF165CB9" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="AccelerateActiveText" Color="#FF9BD8FF"/>
+        <LinearGradientBrush x:Key="BrakeActive" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFFFA243"/>
+            <GradientStop Color="Red" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="BrakeActiveText" Color="#FFFFEDAD"/>
+        <SolidColorBrush x:Key="Inactive" Color="#FFDDDDDD"/>
+        <SolidColorBrush x:Key="InactiveText" Color="#FFC8C8C8"/>
+        <LinearGradientBrush x:Key="Active" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FF6BEF67" Offset="0.003"/>
+            <GradientStop Color="#FF24CE1F" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="ActiveText" Color="#FFE3FFC8"/>
+    </Page.Resources>
+
+    <Grid x:Name="Whole">
         <Grid.RowDefinitions>
-            <RowDefinition Height="24*"/>
-            <RowDefinition Height="167*"/>
-            <RowDefinition Height="24*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="15*"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="1">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="16*"/>
-                    <RowDefinition Height="41*"/>
-                    <RowDefinition Height="246*"/>
-                    <RowDefinition Height="34*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="40*"/>
-                    <ColumnDefinition Width="295*"/>
-                    <ColumnDefinition Width="295*"/>
-                    <ColumnDefinition Width="40*"/>
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="1" Grid.Row="1" Background="#FF86AEFF">
-                    <Border BorderBrush="#FF969696" BorderThickness="1">
-                        <Label Content="Accelerate" FontSize="20" FontFamily="M PLUS 2" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
-                    </Border>
-                </Grid>
-                <Grid Grid.Column="2" Grid.Row="1" Background="#FF86AEFF">
-                    <Border BorderBrush="#FF969696" BorderThickness="1">
-                        <Label Content="Brake" FontSize="20" FontFamily="M PLUS 2" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
-                    </Border>
-                </Grid>
-                <Grid Grid.Column="1" Grid.Row="2" Background="White">
-                    <Border BorderBrush="#FF969696" BorderThickness="1">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"/>
-                                <ColumnDefinition Width="1*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="35*"/>
-                                <RowDefinition Height="35*"/>
-                                <RowDefinition Height="85*"/>
-                                <RowDefinition Height="35*"/>
-                                <RowDefinition Height="85*"/>
-                            </Grid.RowDefinitions>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Background="#FFCDDEFF">
-                                <Grid>
-                                    <Label Content="Mascon ON" HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="16" FontFamily="M PLUS 2" FontWeight="Bold" Foreground="#FF0036A0"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Background="#FFCDDEFF">
-                                <Grid>
-                                    <Label Content="Mascon OFF" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontFamily="M PLUS 2" FontWeight="Bold" Foreground="#FF0036A0"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="1" Background="#FFE6E8EC">
-                                <Grid>
-                                    <Label Content="Freq Goto" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="1" Background="#FFE6E8EC">
-                                <Grid>
-                                    <Label Content="Freq Goto" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="2">
-                                <Grid>
-                                    <TextBox x:Name="Accel_Mascon_On_Freq_Goto" TextWrapping="Wrap" Text="60.0" Margin="9,0,33,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Accel-On-Freq" VerticalAlignment="Center" Height="22"/>
-                                    <Label Content="Hz" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="2">
-                                <Grid>
-                                    <TextBox x:Name="Accel_Mascon_Off_Freq_Goto" TextWrapping="Wrap" Text="60.0" Margin="9,0,33,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Accel-Off-Freq" Height="22" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-                                    <Label Content="Hz" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="3" Background="#FFE6E8EC">
-                                <Grid>
-                                    <Label Content="Change Rate[Hz/s]" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="3" Background="#FFE6E8EC">
-                                <Grid>
-                                    <Label Content="Change Rate[Hz/s]" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="4">
-                                <Grid>
-                                    <TextBox x:Name="Accel_Mascon_On_Rate" TextWrapping="Wrap" Text="20000" Margin="9,0,9,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Accel-On-Div" Height="22" VerticalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="4">
-                                <Grid>
-                                    <TextBox x:Name="Accel_Mascon_Off_Rate" TextWrapping="Wrap" Text="20000" Margin="9,0,9,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Accel-Off-Div" Height="22" VerticalAlignment="Center"/>
-                                </Grid>
-                            </Border>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid x:Name="ModeSelect" Grid.Column="1" Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Button x:Name="ButtonModeAccelerate" Content="Accelerate" FontFamily="M PLUS 2" BorderBrush="{x:Null}" FontWeight="Bold" Click="onClick" FontSize="15">
+                <Button.LayoutTransform>
+                    <RotateTransform Angle="-90"/>
+                </Button.LayoutTransform>
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="7,7,0,0"/>
+                    </Style>
 
-                        </Grid>
-                    </Border>
-                </Grid>
-                <Grid Grid.Column="2" Grid.Row="2" Background="White">
-                    <Border BorderBrush="#FF969696" BorderThickness="1">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"/>
-                                <ColumnDefinition Width="1*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="35*"/>
-                                <RowDefinition Height="35*"/>
-                                <RowDefinition Height="85*"/>
-                                <RowDefinition Height="35*"/>
-                                <RowDefinition Height="85*"/>
-                            </Grid.RowDefinitions>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Background="#FFCDDEFF">
-                                <Grid>
-                                    <Label Content="Mascon ON" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontFamily="M PLUS 2" FontWeight="Bold" Foreground="#FF0036A0"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Background="#FFCDDEFF">
-                                <Grid>
-                                    <Label Content="Mascon OFF" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontFamily="M PLUS 2" FontWeight="Bold" Foreground="#FF0036A0"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="1" Background="#FFE6E8EC">
-                                <Grid>
-                                    <Label Content="Freq Goto" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="1" Background="#FFE6E8EC">
-                                <Grid>
-                                    <Label Content="Freq Goto" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="2">
-                                <Grid>
-                                    <TextBox x:Name="Brake_Mascon_On_Freq_Goto" TextWrapping="Wrap" Text="60.0" Margin="9,0,33,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Brake-On-Freq" Height="20" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-                                    <Label Content="Hz" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="2">
-                                <Grid>
-                                    <TextBox x:Name="Brake_Mascon_Off_Freq_Goto" TextWrapping="Wrap" Text="60.0" Margin="9,0,33,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Brake-Off-Freq" Height="22" VerticalAlignment="Center"/>
-                                    <Label Content="Hz" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="3" Background="#FFE6E8EC">
-                                <Grid>
-                                    <Label Content="Change Rate[Hz/s]" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="3" Background="#FFE6E8EC">
-                                <Grid>
-                                    <Label Content="Change Rate[Hz/s]" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="4">
-                                <Grid>
-                                    <TextBox x:Name="Brake_Mascon_On_Rate" TextWrapping="Wrap" Text="20000" Margin="9,0,9,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Brake-On-Div" Height="22" VerticalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="4">
-                                <Grid>
-                                    <TextBox x:Name="Brake_Mascon_Off_Rate" TextWrapping="Wrap" Text="20000" Margin="9,0,9,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Brake-Off-Div" Height="22" VerticalAlignment="Center"/>
-                                </Grid>
-                            </Border>
+                    <Style TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsAccelerateActive}" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource AccelerateActive}" />
+                                <Setter Property="Foreground" Value="{DynamicResource AccelerateActiveText}" />
+                            </DataTrigger>
 
-                        </Grid>
-                    </Border>
-                </Grid>
-            </Grid>
+                            <DataTrigger Binding="{Binding IsAccelerateActive}" Value="False">
+                                <Setter Property="Background" Value="{DynamicResource Inactive}" />
+                                <Setter Property="Foreground" Value="{DynamicResource InactiveText}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Button x:Name="ButtonModeBrake" Content="Brake" FontFamily="M PLUS 2" Margin="0,1,0,0" Grid.Row="1" BorderBrush="{x:Null}" FontWeight="Bold" Click="onClick" FontSize="15">
+                <Button.LayoutTransform>
+                    <RotateTransform Angle="-90"/>
+                </Button.LayoutTransform>
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="7,7,0,0"/>
+                    </Style>
+
+                    <Style TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsAccelerateActive}" Value="False">
+                                <Setter Property="Background" Value="{DynamicResource BrakeActive}" />
+                                <Setter Property="Foreground" Value="{DynamicResource BrakeActiveText}" />
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding IsAccelerateActive}" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource Inactive}" />
+                                <Setter Property="Foreground" Value="{DynamicResource InactiveText}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Resources>
+            </Button>
         </Grid>
-        <Grid Background="#FF86AEFF">
-            <Label Content="JERK SETTING" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" RenderTransformOrigin="0.5,0.5" FontWeight="Bold" Foreground="White">
-                <Label.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="0.15"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </Label.RenderTransform>
-            </Label>
-        </Grid>
-        <Grid Grid.Row="2" Background="#FF86AEFF"/>
+        <Grid x:Name="TurnSelect" Grid.Column="2" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="ButtonTurnOn" Content="Turn On" BorderBrush="{x:Null}" FontFamily="M PLUS 2" FontWeight="Bold" Click="onClick" FontSize="15">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="7,7,0,0"/>
+                    </Style>
 
+                    <Style TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsTurnOnActive}" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource Active}" />
+                                <Setter Property="Foreground" Value="{DynamicResource ActiveText}" />
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding IsTurnOnActive}" Value="False">
+                                <Setter Property="Background" Value="{DynamicResource Inactive}" />
+                                <Setter Property="Foreground" Value="{DynamicResource InactiveText}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Button x:Name="ButtonTurnOff" Content="Turn Off" BorderBrush="{x:Null}" FontFamily="M PLUS 2" FontWeight="Bold" Grid.Column="1" Click="onClick" FontSize="15">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="7,7,0,0"/>
+                    </Style>
+
+                    <Style TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsTurnOnActive}" Value="False">
+                                <Setter Property="Background" Value="{DynamicResource Active}" />
+                                <Setter Property="Foreground" Value="{DynamicResource ActiveText}" />
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding IsTurnOnActive}" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource Inactive}" />
+                                <Setter Property="Foreground" Value="{DynamicResource InactiveText}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </Grid>
+        <Grid x:Name="Main" Grid.Column="2" Grid.Row="2" Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Border BorderBrush="#FFDDDDDD" BorderThickness="0,2,0,0" Grid.Row="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="MaxVoltageFreqInput" TextWrapping="Wrap" Text="60" FontFamily="M PLUS 2" FontSize="20" FontWeight="DemiBold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1" Margin="0,0,40,0" TextChanged="ValueUpdated"/>
+                    <Label Content="MAX VOLTAGE FREQUENCY" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" VerticalAlignment="Center"/>
+                    <Label Content="Hz" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="10" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" VerticalAlignment="Bottom" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,8,9"/>
+                </Grid>
+            </Border>
+            <Border BorderBrush="#FFDDDDDD" BorderThickness="0,2,0,0" Grid.Row="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="FreqChangeRateInput" TextWrapping="Wrap" Text="60" FontFamily="M PLUS 2" FontSize="20" FontWeight="DemiBold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1" Margin="0,0,40,0" TextChanged="ValueUpdated"/>
+                    <Label Content="FREQUENCY CHANGE RATE" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" VerticalAlignment="Center"/>
+                    <Label Content="Hz/s" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="10" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" VerticalAlignment="Bottom" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,0,9"/>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </Page>

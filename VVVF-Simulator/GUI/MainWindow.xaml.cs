@@ -92,7 +92,7 @@ namespace VvvfSimulator
             String[] command = tag_str.Split("_");
 
             var list_view = command[0].Equals("accelerate") ? accelerate_settings : brake_settings;
-            var settings = command[0].Equals("accelerate") ? YamlVvvfManage.current_data.accelerate_pattern : YamlVvvfManage.current_data.braking_pattern;
+            var settings = command[0].Equals("accelerate") ? YamlVvvfManage.CurrentData.accelerate_pattern : YamlVvvfManage.CurrentData.braking_pattern;
 
             if (command[1].Equals("remove"))
             {
@@ -146,7 +146,7 @@ namespace VvvfSimulator
             int selected = accelerate_settings.SelectedIndex;
             if (selected < 0) return;
 
-            YamlVvvfSoundData ysd = YamlVvvfManage.current_data;
+            YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
             var selected_data = ysd.accelerate_pattern[selected];
             setting_window.Navigate(new Control_Setting_Page_Common(selected_data, this, ysd.level));
 
@@ -156,15 +156,15 @@ namespace VvvfSimulator
             int selected = brake_settings.SelectedIndex;
             if (selected < 0) return;
 
-            YamlVvvfSoundData ysd = YamlVvvfManage.current_data;
+            YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
             var selected_data = ysd.braking_pattern[selected];
             setting_window.Navigate(new Control_Setting_Page_Common(selected_data, this, ysd.level));
         }
 
         public void update_Control_List_View()
         {
-            accelerate_settings.ItemsSource = YamlVvvfManage.current_data.accelerate_pattern;
-            brake_settings.ItemsSource = YamlVvvfManage.current_data.braking_pattern;
+            accelerate_settings.ItemsSource = YamlVvvfManage.CurrentData.accelerate_pattern;
+            brake_settings.ItemsSource = YamlVvvfManage.CurrentData.braking_pattern;
             accelerate_settings.Items.Refresh();
             brake_settings.Items.Refresh();
         }
@@ -192,7 +192,7 @@ namespace VvvfSimulator
             {
                 if (command[1].Equals("sort"))
                 {
-                    YamlVvvfManage.current_data.braking_pattern.Sort((a, b) => Math.Sign(b.from - a.from));
+                    YamlVvvfManage.CurrentData.braking_pattern.Sort((a, b) => Math.Sign(b.from - a.from));
                     update_Control_List_View();
                     brake_selected_show();
                 }
@@ -201,9 +201,9 @@ namespace VvvfSimulator
                     int selected = brake_settings.SelectedIndex;
                     if (selected < 0) return;
 
-                    YamlVvvfSoundData ysd = YamlVvvfManage.current_data;
+                    YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
                     var selected_data = ysd.braking_pattern[selected];
-                    YamlVvvfManage.current_data.braking_pattern.Add(selected_data.Clone());
+                    YamlVvvfManage.CurrentData.braking_pattern.Add(selected_data.Clone());
                     update_Control_List_View();
                     brake_selected_show();
                 }
@@ -212,7 +212,7 @@ namespace VvvfSimulator
             {
                 if (command[1].Equals("sort"))
                 {
-                    YamlVvvfManage.current_data.accelerate_pattern.Sort((a, b) => Math.Sign(b.from - a.from));
+                    YamlVvvfManage.CurrentData.accelerate_pattern.Sort((a, b) => Math.Sign(b.from - a.from));
                     update_Control_List_View();
                     accelerate_selected_show();
                 }
@@ -221,9 +221,9 @@ namespace VvvfSimulator
                     int selected = accelerate_settings.SelectedIndex;
                     if (selected < 0) return;
 
-                    YamlVvvfSoundData ysd = YamlVvvfManage.current_data;
+                    YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
                     YamlControlData selected_data = ysd.accelerate_pattern[selected];
-                    YamlVvvfManage.current_data.accelerate_pattern.Add(selected_data.Clone());
+                    YamlVvvfManage.CurrentData.accelerate_pattern.Add(selected_data.Clone());
                     update_Control_List_View();
                     brake_selected_show();
                 }
@@ -266,7 +266,8 @@ namespace VvvfSimulator
 
                 load_path = dialog.FileName;
                 update_Control_List_View();
-                update_Control_Showing();
+                //update_Control_Showing();
+                setting_window.Navigate(null);
 
             }
             else if (tag.Equals("Save_As"))
@@ -321,7 +322,7 @@ namespace VvvfSimulator
                 {
                     using (StreamWriter outputFile = new(dialog.FileName))
                     {
-                        outputFile.Write(Pi3Generate.GenerateC(YamlVvvfManage.current_data, Path.GetFileNameWithoutExtension(dialog.FileName)));
+                        outputFile.Write(Pi3Generate.GenerateC(YamlVvvfManage.CurrentData, Path.GetFileNameWithoutExtension(dialog.FileName)));
                     }
                     MessageBox.Show("Export as C complete.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
                 }catch
@@ -403,7 +404,7 @@ namespace VvvfSimulator
         {
             GenerationBasicParameter generationBasicParameter = new(
                 Yaml_Mascon_Manage.CurrentData.GetCompiled(),
-                YamlVvvfManage.DeepClone(YamlVvvfManage.current_data),
+                YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData),
                 new ProgressData()
             );
 
@@ -501,9 +502,9 @@ namespace VvvfSimulator
                             bool do_clone = !Properties.Settings.Default.RealTime_VVVF_EditAllow;
                             YamlVvvfSoundData data;
                             if (do_clone)
-                                data = YamlVvvfManage.DeepClone(YamlVvvfManage.current_data);
+                                data = YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData);
                             else
-                                data = YamlVvvfManage.current_data;
+                                data = YamlVvvfManage.CurrentData;
                             Generation.Audio.VVVF_Sound.RealTimeVVVFAudio.RealTime_VVVF_Generation(data, parameter);
                         }
                         catch (Exception e)
@@ -610,9 +611,9 @@ namespace VvvfSimulator
                             bool do_clone = !Properties.Settings.Default.RealTime_Train_EditAllow;
                             YamlVvvfSoundData data;
                             if (do_clone)
-                                data = YamlVvvfManage.DeepClone(YamlVvvfManage.current_data);
+                                data = YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData);
                             else
-                                data = YamlVvvfManage.current_data;
+                                data = YamlVvvfManage.CurrentData;
                             Generation.Audio.TrainSound.RealTimeTrainAudio.RealTime_Train_Generation(data , parameter);
                         }
                         catch (Exception e)
@@ -763,7 +764,7 @@ namespace VvvfSimulator
                     Task task = Task.Run(() => {
                         try
                         {
-                            YamlVvvfSoundData clone = YamlVvvfManage.DeepClone(YamlVvvfManage.current_data);
+                            YamlVvvfSoundData clone = YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData);
                             Generation.Video.Hexagon.GenerateHexagonOriginal.Generate_Hexagon_Original_Image(dialog.FileName, clone, circle, Generation_Params.Double_Values[0]);
                         }
                         catch (Exception e)
@@ -809,7 +810,7 @@ namespace VvvfSimulator
                     Task task = Task.Run(() => {
                         try
                         {
-                            YamlVvvfSoundData clone = YamlVvvfManage.DeepClone(YamlVvvfManage.current_data);
+                            YamlVvvfSoundData clone = YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData);
                             Generation.Video.FFT.GenerateFFT.Generate_FFT_Image(dialog.FileName, clone, Generation_Params.Double_Values[0]);
                         }
                         catch (Exception e)
@@ -884,7 +885,7 @@ namespace VvvfSimulator
                 Task.Run(() =>
                 {
                     MessageBox.Show("The settings which is not using `Linear` will be skipped.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    bool result = YamlVvvfUtil.Auto_Voltage(YamlVvvfManage.current_data);
+                    bool result = YamlVvvfUtil.Auto_Voltage(YamlVvvfManage.CurrentData);
                     if(!result)
                         MessageBox.Show("Please check next things.\r\nAll of the amplitude mode are linear.\r\nAccel and Braking has more than 2 settings.\r\nFrom is grater or equal to 0", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -897,7 +898,7 @@ namespace VvvfSimulator
                 BindingData.Blocked = true;
                 Task.Run(() =>
                 {
-                    bool result = YamlVvvfUtil.Set_All_FreeRunAmp_Zero(YamlVvvfManage.current_data);
+                    bool result = YamlVvvfUtil.Set_All_FreeRunAmp_Zero(YamlVvvfManage.CurrentData);
                     if (!result)
                         MessageBox.Show("Something went wrong.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 

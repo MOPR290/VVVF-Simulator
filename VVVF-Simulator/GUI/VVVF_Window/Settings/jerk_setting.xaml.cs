@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,9 +16,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using VvvfSimulator.Yaml.VVVFSound;
+using YamlDotNet.Core.Tokens;
 using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
 using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlMasconData;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlMasconData.YamlMasconDataOnOff;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlMasconData.YamlMasconDataPattern;
 
 namespace VvvfSimulator.VVVF_Window.Settings
 {
@@ -25,69 +28,89 @@ namespace VvvfSimulator.VVVF_Window.Settings
     /// </summary>
     public partial class jerk_setting : Page
     {
+        private class Controller : INotifyPropertyChanged
+        {
+            private bool _IsAccelerateActive = true;
+            public bool IsAccelerateActive { get { return _IsAccelerateActive; } set { _IsAccelerateActive = value; RaisePropertyChanged(nameof(IsAccelerateActive)); } }
+
+            private bool _IsTurnOnActive = true;
+            public bool IsTurnOnActive
+            {
+                get { return _IsTurnOnActive; }
+                set { _IsTurnOnActive = value; RaisePropertyChanged(nameof(IsTurnOnActive)); }
+            }
+
+            public event PropertyChangedEventHandler? PropertyChanged;
+            protected virtual void RaisePropertyChanged(string propertyName)
+            {
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public void updateView()
+        {
+            Controller dc = (Controller)this.DataContext;
+            YamlMasconData mascon = YamlVvvfManage.CurrentData.mascon_data;
+            YamlMasconDataPattern pattern = dc.IsAccelerateActive ? mascon.accelerating : mascon.braking;
+            YamlMasconDataPatternMode mode = dc.IsTurnOnActive ? pattern.on : pattern.off;
+            MaxVoltageFreqInput.Text = mode.control_freq_go_to.ToString();
+            FreqChangeRateInput.Text = mode.freq_per_sec.ToString();
+        }
+
+        public void setValue()
+        {
+            double _parse(TextBox tb)
+            {
+                try
+                {
+                    double b = Double.Parse(tb.Text);
+                    tb.Background = new BrushConverter().ConvertFrom("#FFFFFFFF") as Brush;
+                    return b;
+                }
+                catch
+                {
+                    tb.Background = new BrushConverter().ConvertFrom("#FFfed0d0") as Brush;
+                    return 0;
+                }                
+            }
+
+            Controller dc = (Controller)this.DataContext;
+            if(dc == null) return;
+
+            YamlMasconData mascon = YamlVvvfManage.CurrentData.mascon_data;
+            YamlMasconDataPattern pattern = dc.IsAccelerateActive ? mascon.accelerating : mascon.braking;
+            YamlMasconDataPatternMode mode = dc.IsTurnOnActive ? pattern.on : pattern.off;
+            mode.control_freq_go_to = _parse(MaxVoltageFreqInput);
+            mode.freq_per_sec = _parse(FreqChangeRateInput);
+        }
+
         public jerk_setting()
         {
             InitializeComponent();
-            YamlVvvfSoundData ysd = YamlVvvfManage.current_data;
-
-            Accel_Mascon_On_Freq_Goto.Text = ysd.mascon_data.accelerating.on.control_freq_go_to.ToString();
-            Accel_Mascon_On_Rate.Text = ysd.mascon_data.accelerating.on.freq_per_sec.ToString();
-            Accel_Mascon_Off_Freq_Goto.Text = ysd.mascon_data.accelerating.off.control_freq_go_to.ToString();
-            Accel_Mascon_Off_Rate.Text = ysd.mascon_data.accelerating.off.freq_per_sec.ToString();
-
-            Brake_Mascon_On_Freq_Goto.Text = ysd.mascon_data.braking.on.control_freq_go_to.ToString();
-            Brake_Mascon_On_Rate.Text = ysd.mascon_data.braking.on.freq_per_sec.ToString();
-            Brake_Mascon_Off_Rate.Text = ysd.mascon_data.braking.off.freq_per_sec.ToString();
-            Brake_Mascon_Off_Freq_Goto.Text = ysd.mascon_data.braking.off.control_freq_go_to.ToString();
+            DataContext = new Controller();
+            updateView();
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void ValueUpdated(object sender, TextChangedEventArgs e)
         {
 
-            TextBox tb = (TextBox)sender;
-            Object? tag = tb.Tag;
-            if (tag == null) return;
-            String? tag_name = tag.ToString();
-            if (tag_name == null) return;
-            String[] name_data = tag_name.Split("-");
+            setValue();
 
-            //Accel_On_Freq
-            YamlMasconData ymd = YamlVvvfManage.current_data.mascon_data;
-            YamlMasconDataOnOff ymdoo;
-            YamlMasconDataSingle ymds;
+        }
 
-            if (name_data[0].Equals("Accel")) ymdoo = ymd.accelerating;
-            else ymdoo = ymd.braking;
+        private void onClick(object sender, RoutedEventArgs e)
+        {
+            
+            Button button = (Button)sender;
+            Controller dc = (Controller)this.DataContext;
 
-            if (name_data[1].Equals("On")) ymds = ymdoo.on;
-            else ymds = ymdoo.off;
+            string name = button.Name;
+            if (name.Equals("ButtonModeAccelerate")) dc.IsAccelerateActive = true;
+            else if (name.Equals("ButtonModeBrake")) dc.IsAccelerateActive = false;
+            if (name.Equals("ButtonTurnOn")) dc.IsTurnOnActive = true;
+            else if (name.Equals("ButtonTurnOff")) dc.IsTurnOnActive = false;
 
-            if (name_data[2].Equals("Freq"))
-            {
-                try
-                {
-                    double d = Double.Parse(tb.Text);
-                    tb.Background = new BrushConverter().ConvertFrom("#FFFFFFFF") as Brush;
-                    ymds.control_freq_go_to = d;
-                }
-                catch
-                {
-                    tb.Background = new BrushConverter().ConvertFrom("#FFfed0d0") as Brush;
-                }
-            }
-            else
-            {
-                try
-                {
-                    double d = Double.Parse(tb.Text);
-                    tb.Background = new BrushConverter().ConvertFrom("#FFFFFFFF") as Brush;
-                    ymds.freq_per_sec = d;
-                }
-                catch
-                {
-                    tb.Background = new BrushConverter().ConvertFrom("#FFfed0d0") as Brush;
-                }
-            }
+            updateView();
 
         }
     }

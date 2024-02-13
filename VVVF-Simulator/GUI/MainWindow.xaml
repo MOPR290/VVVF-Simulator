@@ -8,7 +8,7 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -19,25 +19,25 @@
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="7*"/>
             </Grid.ColumnDefinitions>
-            <Grid>
-                <TabControl x:Name="setting_tabs" Margin="10,10,10,10">
+            <Grid Background="#FFFFFF">
+                <TabControl x:Name="setting_tabs" Margin="10,10,10,10" Background="#FFFFFF" >
                     <TabItem Header="Settings">
-                        <Grid Background="#FFFFFFFF">
-                            <Button x:Name="settings_level" Content="PWM Level" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="Black" Click="setting_button_Click" Background="White">
+                        <Grid Background="#FFFFFF">
+                            <Button x:Name="settings_level" Content="PWM Level" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="setting_button_Click" Foreground="#FF616161" Background="White">
                                 <Button.Resources>
                                     <Style TargetType="Border">
                                         <Setter Property="CornerRadius" Value="14"/>
                                     </Style>
                                 </Button.Resources>
                             </Button>
-                            <Button x:Name="settings_minimum" Content="Minimum Frequency" HorizontalAlignment="Stretch" Margin="10,43,10,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="Black" Click="setting_button_Click" Background="White">
+                            <Button x:Name="settings_minimum" Content="Minimum Frequency" HorizontalAlignment="Stretch" Margin="10,43,10,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="setting_button_Click" Foreground="#FF616161" Background="White">
                                 <Button.Resources>
                                     <Style TargetType="Border">
                                         <Setter Property="CornerRadius" Value="14"/>
                                     </Style>
                                 </Button.Resources>
                             </Button>
-                            <Button x:Name="settings_mascon" Content="Jerk Control" HorizontalAlignment="Stretch" Margin="10,76,10,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="Black" Click="setting_button_Click" Background="White">
+                            <Button x:Name="settings_mascon" Content="Jerk Control" HorizontalAlignment="Stretch" Margin="10,76,10,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="setting_button_Click" Foreground="#FF616161" Background="White">
                                 <Button.Resources>
                                     <Style TargetType="Border">
                                         <Setter Property="CornerRadius" Value="14"/>
@@ -47,35 +47,35 @@
                         </Grid>
                     </TabItem>
                     <TabItem Header="Accelerate">
-                        <Grid Background="#FFFFFFFF">
+                        <Grid Background="#FFFFFF">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="50"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.RowSpan="2"/>
-                            <Grid Grid.RowSpan="2"/>
-                            <Button x:Name="accelerate_add" Tag="accelerate_add" Content="+" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="Blue" Click="settings_edit_Click" Margin="15,0,0,10" Background="White" Foreground="Blue">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="14"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
-                            <Button x:Name="accelerate_remove" Tag="accelerate_remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="Blue" Click="settings_edit_Click" Grid.Row="1" Margin="60,0,0,10" Background="White" Foreground="Blue">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="14"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
-                            <Button x:Name="accelerate_reset" Tag="accelerate_reset" Content="RESET" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,15,10" VerticalAlignment="Bottom" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="Blue" Click="settings_edit_Click" Background="White" Foreground="Blue">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="14"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
-                            <ListView x:Name="accelerate_settings" SelectionMode="Single" Loaded="settings_load" Tag="accelerate" SelectionChanged="settings_SelectionChanged" BorderBrush="White" >
+                            <Grid Background="#FFEDEDED" Grid.Row="1">
+                                <Button x:Name="accelerate_add" Tag="accelerate_add" Content="+" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF616161" Click="settings_edit_Click" Margin="17,0,0,0" Background="#FFFFFF" Foreground="#FF616161">
+                                    <Button.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius" Value="14"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                                <Button x:Name="accelerate_remove" Tag="accelerate_remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF616161" Click="settings_edit_Click" Background="#FFFFFF" Foreground="#FF616161" Margin="67,0,0,0">
+                                    <Button.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius" Value="14"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                                <Button x:Name="accelerate_reset" Tag="accelerate_reset" Content="RESET" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="settings_edit_Click" Background="#FFFFFF" Foreground="#FF616161" Margin="111,0,0,0">
+                                    <Button.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius" Value="14"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                            </Grid>
+                            <ListView x:Name="accelerate_settings" SelectionMode="Single" Loaded="settings_load" Tag="accelerate" SelectionChanged="settings_SelectionChanged" BorderBrush="#FFFFFF" Background="#FFFFFF" >
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>
@@ -96,34 +96,35 @@
                         </Grid>
                     </TabItem>
                     <TabItem Header="Brake">
-                        <Grid Background="#FFFFFFFF">
+                        <Grid Background="#FFFFFF">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="343*"/>
-                                <RowDefinition Height="43*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="50"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.RowSpan="2"/>
-                            <Grid Grid.RowSpan="2"/>
-                            <Button x:Name="brake_add" Tag="brake_add" Content="+" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="Blue" Click="settings_edit_Click" Margin="15,0,0,0" Background="White" Foreground="#FF0000FD">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="14"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
-                            <Button x:Name="brake_remove" Tag="brake_remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="Blue" Click="settings_edit_Click" Grid.Row="1" Margin="60,0,0,0" Background="White" Foreground="#FF0000FA">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="14"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
-                            <Button x:Name="brake_reset" Tag="brake_reset" Content="RESET" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="Blue" Click="settings_edit_Click" Background="White" Foreground="Blue">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="14"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
+
+                            <Grid Grid.Row="1" Background="#FFEDEDED">
+                                <Button x:Name="brake_add" Tag="brake_add" Content="+" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF616161" Click="settings_edit_Click" Background="White" Foreground="#FF616161" Margin="17,0,0,0">
+                                    <Button.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius" Value="14"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                                <Button x:Name="brake_remove" Tag="brake_remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF616161" Click="settings_edit_Click" Background="White" Foreground="#FF616161" Margin="67,0,0,0">
+                                    <Button.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius" Value="14"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                                <Button x:Name="brake_reset" Tag="brake_reset" Content="RESET" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="settings_edit_Click" Background="White" Foreground="#FF616161" Margin="111,0,0,0">
+                                    <Button.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius" Value="14"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                            </Grid>
                             <ListView x:Name="brake_settings" SelectionMode="Single" Loaded="settings_load" Tag="brake" SelectionChanged="settings_SelectionChanged" BorderBrush="White">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
@@ -156,34 +157,57 @@
             </Grid>
         </Grid>
         <DockPanel LastChildFill="True">
-            <Menu DockPanel.Dock="Top" >
+            <Menu DockPanel.Dock="Top" Foreground="#30292F">
                 <MenuItem Header="File">
-                    <MenuItem Header="Save" Tag="Save" Click="File_Menu_Click"/>
+                    <MenuItem Header="Save" Tag="Save" Click="File_Menu_Click" />
                     <MenuItem Header="Save As" Tag="Save_As" Click="File_Menu_Click"/>
-                    <MenuItem Header="Export as C" Tag="Export_As_C" Click="File_Menu_Click"/>
+                    <MenuItem Header="Export">
+                        <MenuItem Header="SourceCode">
+                            <MenuItem Header="RPi3" Tag="Export_As_C" Click="File_Menu_Click"/>
+                        </MenuItem>
+                        <MenuItem Header="Audio">
+                            <MenuItem Header="VVVF" Tag="VVVF_WAV" Click="Generation_Menu_Click"/>
+                            <Separator/>
+                            <MenuItem Header="Train" Tag="Train_WAV" Click="Generation_Menu_Click"/>
+                        </MenuItem>
+                        <MenuItem Header="Movie">
+                            <MenuItem Header="Control">
+                                <MenuItem Header="Original" Tag="Control_Original" Click="Generation_Menu_Click"/>
+                                <MenuItem Header="Original 2" Tag="Control_Original2" Click="Generation_Menu_Click"/>
+                            </MenuItem>
+                            <MenuItem Header="WaveForm">
+                                <MenuItem Header="Original" Tag="WaveForm_Original" Click="Generation_Menu_Click"/>
+                                <MenuItem Header="Spaced" Tag="WaveForm_Spaced" Click="Generation_Menu_Click"/>
+                                <MenuItem Header="U V W" Tag="WaveForm_UVW" Click="Generation_Menu_Click"/>
+                            </MenuItem>
+                            <MenuItem Header="Hexagon">
+                                <MenuItem Header="Original Video" Tag="Hexagon_Original" Click="Generation_Menu_Click"/>
+                                <MenuItem Header="Original Image" Tag="Hexagon_OriginalImage" Click="Generation_Menu_Click"/>
+                                <MenuItem Header="Explain" Tag="Hexagon_Explain" Click="Generation_Menu_Click"/>
+
+                            </MenuItem>
+                            <MenuItem Header="FFT">
+                                <MenuItem Header="FFT Video" Tag="FFT_Video" Click="Generation_Menu_Click"/>
+                                <MenuItem Header="FFT Image" Tag="FFT_Image" Click="Generation_Menu_Click"/>
+                            </MenuItem>
+                        </MenuItem>
+
+                    </MenuItem>
                     <MenuItem Header="Load" Tag="Load" Click="File_Menu_Click"/>
                 </MenuItem>
 
                 <MenuItem Header="Window">
                     <MenuItem Header="Linear Calculator" Tag="LCalc" Click="Window_Menu_Click"/>
                     <MenuItem Header="Task Progress View" Tag="TaskProgressView" Click="Window_Menu_Click"/>
-                </MenuItem>
-
-                <MenuItem Header="Setting">
-                    
                     <MenuItem Header="Base Freq Pattern" Tag="AccelPattern" Click="Setting_Menu_Click"/>
                     <MenuItem Header="Train Sound Setting" Tag="TrainSoundSetting" Click="Setting_Menu_Click"/>
                 </MenuItem>
 
                 <MenuItem Header="Util">
-                    <MenuItem Header="MIDI Conversion" Tag="MIDI" Click="Util_Menu_Click"/>
-                </MenuItem>
-
-                <MenuItem Header="Process">
                     <MenuItem Header="Auto Voltage Set" Tag="AutoVoltage" Click="Process_Menu_Click"/>
                     <MenuItem Header="FreeRun Amplitude Zero" Tag="FreeRunAmpZero" Click="Process_Menu_Click"/>
+                    <MenuItem Header="MIDI Conversion" Tag="MIDI" Click="Util_Menu_Click"/>
                 </MenuItem>
-
 
                 <MenuItem Header="RealTime">
                     <MenuItem Header="VVVF RealTime" Tag="VVVF_RealTime" Click="Generation_Menu_Click"/>
@@ -191,33 +215,6 @@
                     <Separator/>
                     <MenuItem Header="Train RealTime" Tag="Train_RealTime" Click="Generation_Menu_Click"/>
                     <MenuItem Header="Train RealTime Setting" Tag="Train_Setting" Click="Generation_Menu_Click"/>
-                </MenuItem>
-
-                <MenuItem Header="Sound">
-                    <MenuItem Header="WAV VVVF Sound" Tag="VVVF_WAV" Click="Generation_Menu_Click"/>
-                    <Separator/>
-                    <MenuItem Header="WAV Train Sound" Tag="Train_WAV" Click="Generation_Menu_Click"/>
-                </MenuItem>
-                
-                
-                <MenuItem Header="Control">
-                    <MenuItem Header="Original" Tag="Control_Original" Click="Generation_Menu_Click"/>
-                    <MenuItem Header="Original 2" Tag="Control_Original2" Click="Generation_Menu_Click"/>
-                </MenuItem>
-                <MenuItem Header="WaveForm">
-                    <MenuItem Header="Original" Tag="WaveForm_Original" Click="Generation_Menu_Click"/>
-                    <MenuItem Header="Spaced" Tag="WaveForm_Spaced" Click="Generation_Menu_Click"/>
-                    <MenuItem Header="U V W" Tag="WaveForm_UVW" Click="Generation_Menu_Click"/>
-                </MenuItem>
-                <MenuItem Header="Hexagon">
-                    <MenuItem Header="Original Video" Tag="Hexagon_Original" Click="Generation_Menu_Click"/>
-                    <MenuItem Header="Original Image" Tag="Hexagon_OriginalImage" Click="Generation_Menu_Click"/>
-                    <MenuItem Header="Explain" Tag="Hexagon_Explain" Click="Generation_Menu_Click"/>
-
-                </MenuItem>
-                <MenuItem Header="FFT">
-                    <MenuItem Header="FFT Video" Tag="FFT_Video" Click="Generation_Menu_Click"/>
-                    <MenuItem Header="FFT Image" Tag="FFT_Image" Click="Generation_Menu_Click"/>
                 </MenuItem>
             </Menu>
         </DockPanel>

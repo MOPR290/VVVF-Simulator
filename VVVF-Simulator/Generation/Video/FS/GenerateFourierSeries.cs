@@ -41,7 +41,7 @@ namespace VvvfSimulator.Generation.Video.FS
                 }
 
                 if (Ft == iFt) continue;
-                double iTime = MyMath.M_2PI * (i-1) / (UVW.Length - 1) - InitialPhase;
+                double iTime = MyMath.M_2PI * i / (UVW.Length - 1) - InitialPhase;
                 double sum = (-MyMath.cos(N * iTime) + MyMath.cos(N * Time)) * Ft / N;
                 integral += sum;
 

@@ -69,7 +69,7 @@ namespace VvvfSimulator.GUI.TrainAudio.Pages.Gear
             {
                 TrainAudio_Gear_Get_Window taggw = new(16,101);
                 taggw.ShowDialog();
-                train_Harmonic_Data.Set_Calculated_Gear_Harmonics(taggw.Gear1, taggw.Gear2);
+                train_Harmonic_Data.SetCalculatedGearHarmonics(taggw.Gear1, taggw.Gear2);
                 Update_ListView();
             }
         }
