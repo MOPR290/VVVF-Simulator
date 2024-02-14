@@ -172,7 +172,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
 
                 for(int i = 0; i < result_array.Length; i++)
                 {
-                    byte[] soundBytes = BitConverter.GetBytes(result_array[i] / result_array.Length);
+                    byte[] soundBytes = BitConverter.GetBytes(result_array[i] / 512);
                     if (!BitConverter.IsLittleEndian) Array.Reverse(soundBytes);
                     waveBuffer.AddSamples(soundBytes, 0, 4);
 
