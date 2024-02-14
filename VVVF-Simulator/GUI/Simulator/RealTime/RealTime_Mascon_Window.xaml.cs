@@ -208,7 +208,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             int at_abs = (at < 0) ? -at : at;
             bool nega = at < 0;
 
-            realTime_Parameter.change_amount = (nega ? -1 : 1) * ((at_abs - 1 < 0) ? 0 : at_abs - 1) * Math.PI * 0.0003;
+            realTime_Parameter.change_amount = (nega ? -1 : 1) * ((at_abs - 1 < 0) ? 0 : at_abs - 1) * Math.PI * 0.0003 * 512 / 20;
 
             bool pre_braking = realTime_Parameter.braking;
             realTime_Parameter.free_run = at == 0;

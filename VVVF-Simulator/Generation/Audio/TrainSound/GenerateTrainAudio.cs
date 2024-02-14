@@ -1,34 +1,28 @@
-﻿using NAudio.Dsp;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using VVVF_Simulator.Generation.Audio.TrainSound;
 using VvvfSimulator.Yaml.VVVFSound;
-using static VvvfSimulator.Generation.Audio.TrainSound.GenerateTrainAudioFilter.NAudioFilter;
+using static VvvfSimulator.Generation.Audio.TrainSound.AudioFilter;
 using static VvvfSimulator.Generation.GenerateCommon;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
 using static VvvfSimulator.Generation.Motor.GenerateMotorCore;
-using static VvvfSimulator.MainWindow;
 using static VvvfSimulator.MyMath;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
 using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
 using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze.YamlTrainSoundData;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlMasconData;
 
 namespace VvvfSimulator.Generation.Audio.TrainSound
 {
     public class GenerateTrainAudio
     {
         // -------- TRAIN SOUND --------------
-        public static byte Get_Train_Sound(VvvfValues control, YamlVvvfSoundData sound_data, MotorData motor, YamlTrainSoundData train_Harmonic_Data)
+        public static double Get_Train_Sound(VvvfValues control, YamlVvvfSoundData sound_data, MotorData motor, YamlTrainSoundData train_Harmonic_Data)
         {
 
-            double pwm_sound_val;
             ControlStatus cv = new()
             {
                 brake = control.is_Braking(),
@@ -43,11 +37,8 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             motor.AynMotorControler(new WaveValues() { U = value.W, V = value.V, W = value.U });
             motor.Asyn_Moduleabc();
 
-            pwm_sound_val = motor.motor_Param.Te - (motor.motor_Param.pre_Te + motor.motor_Param.Te) / 2.0;
-            pwm_sound_val *= 60;
-            pwm_sound_val = pwm_sound_val * 2 / 3.0;
-
-            double sound_val = 0, total_sound_count = 0;
+            double motorPwmSound = (motor.motor_Param.Te - motor.motor_Param.TePre) / 2.0;
+            double motorSound = 0;
 
             // MOTOR HARMONICS
             for (int harmonic = 0; harmonic < train_Harmonic_Data.Sine_Harmonics.Count; harmonic++)
@@ -72,15 +63,14 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
                     ((harmonic_data.disappear - harmonic_freq) / 100.0) : 1;
                 sine_val *= amplitude * amplitude_disappear;
 
-                sound_val += Math.Round(sine_val);
-                total_sound_count++;
+                motorSound += Math.Round(sine_val);
             }
 
             // 
             // Gear Sound
             //
             List<HarmonicData> Gear_Harmonics = train_Harmonic_Data.Gear_Harmonics;
-            double Gear_Sound = 0;
+            double gearSound = 0;
             for (int harmonic = 0; harmonic < Gear_Harmonics.Count; harmonic++)
             {
                 HarmonicData harmonic_data = Gear_Harmonics[harmonic];
@@ -102,33 +92,14 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
                     ((harmonic_data.disappear - harmonic_freq) / 100.0) : 1;
 
                 sine_val *= amplitude * (harmonic_data.disappear == -1 ? 1 : amplitude_disappear);
-                Gear_Sound += sine_val;
-                total_sound_count++;
+                gearSound += sine_val;
             }
-            // Gear sound amplitude change
-            YamlMasconDataOnOff ymdoo;
-            if (cv.brake) ymdoo = sound_data.mascon_data.braking;
-            else ymdoo = sound_data.mascon_data.accelerating;
-            double freq_to_go, gear_amp_rate;
-            if (cv.mascon_on) freq_to_go = ymdoo.on.control_freq_go_to;
-            else freq_to_go = ymdoo.off.control_freq_go_to;
-            gear_amp_rate = control.get_Control_Frequency() / (control.get_Sine_Freq() > freq_to_go ? freq_to_go : control.get_Sine_Freq());
-            sound_val += Math.Round(Gear_Sound * (gear_amp_rate > 1 ? 1 : gear_amp_rate));
 
-            int pre_sound_byte;
-
-            if(total_sound_count == 0)
-                pre_sound_byte = (int)Math.Round(pwm_sound_val * 2 + 0xFF / 2);
-            else
-                pre_sound_byte = (int)Math.Round(sound_val / total_sound_count / 2.0 + pwm_sound_val * 2 + 0xFF / 2);
-
-            byte sound_byte = (byte)(pre_sound_byte);
-            return sound_byte;
-
+            return motorPwmSound + motorSound + gearSound;
         }
 
 
-        public static void Export_Train_Sound(GenerationBasicParameter generationBasicParameter, String output_path, Boolean resize, YamlTrainSoundData train_Sound_Data)
+        unsafe public static void Export_Train_Sound(GenerationBasicParameter generationBasicParameter, String output_path, Boolean resize, YamlTrainSoundData train_Sound_Data)
         {
             YamlVvvfSoundData vvvfData = generationBasicParameter.vvvfData;
             YamlMasconDataCompiled masconData = generationBasicParameter.masconData;
@@ -142,52 +113,85 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             control.reset_control_variables();
             control.reset_all_variables();
 
-            int sample_freq = 200000;
+            int SamplingFrequency = 200000;
 
-            BufferedWaveProvider wave_provider = new(new WaveFormat(sample_freq, 8, 1));
-            wave_provider.BufferLength = 20000;
-
-            Equalizer equalizer = new(wave_provider.ToSampleProvider(), train_Sound_Data.Get_NFilters());
-            IWaveProvider equal_wave_provider = equalizer.ToWaveProvider();
-            WaveFileWriter writer = new(resize ? temp : output_path, equal_wave_provider.WaveFormat);
+            WaveFormat format = WaveFormat.CreateIeeeFloatWaveFormat(SamplingFrequency, 1);
+            BufferedWaveProvider waveBuffer = new(format)
+            {
+                BufferLength = 80000
+            };
+            MonauralFilter equalizer = new(waveBuffer.ToSampleProvider(), train_Sound_Data.Get_NFilters());
+            IWaveProvider equalizerBuffer = equalizer.ToWaveProvider();
+            WaveFileWriter writer = new(resize ? temp : output_path, format);
 
             MotorData motor = new()
             {
                 motor_Specification = train_Sound_Data.Motor_Specification.Clone(),
-                SIM_SAMPLE_FREQ = sample_freq,
+                SIM_SAMPLE_FREQ = SamplingFrequency,
             };
             motor.motor_Param.TL = 0.0;
 
-            progressData.Total = masconData.GetEstimatedSteps(1.0 / sample_freq);
+            progressData.Total = masconData.GetEstimatedSteps(1.0 / SamplingFrequency);
+
+            CppAudioFilter cppAudioFilter = new CppAudioFilter();
+            fixed (float* ir_address = &ImpulseResponseSample.dataArray[0])
+            {
+                cppAudioFilter.Init(4096 * 8, ir_address, ImpulseResponseSample.dataArray.Length);
+            }
+
+            float[] soundBuff = new float[waveBuffer.BufferLength / 4];
+            int soundBuffIndex = 0;
 
             while (true)
             {
-                control.add_Sine_Time(1.00 / sample_freq);
-                control.add_Saw_Time(1.00 / sample_freq);
+                control.add_Sine_Time(1.00 / SamplingFrequency);
+                control.add_Saw_Time(1.00 / SamplingFrequency);
 
-                byte sound_byte = Get_Train_Sound(control, vvvfData, motor , train_Sound_Data);
-
-                wave_provider.AddSamples(new byte[] { sound_byte }, 0, 1);
-
-                if (wave_provider.BufferedBytes == wave_provider.BufferLength)
-                {
-                    byte[] buffer = new byte[wave_provider.BufferedBytes];
-                    int bytesRead = equal_wave_provider.Read(buffer, 0, buffer.Length);
-                    writer.Write(buffer, 0, bytesRead);
-                }
+                double sound = Get_Train_Sound(control, vvvfData, motor , train_Sound_Data);
+                soundBuff[soundBuffIndex++] = (float)sound;
 
                 progressData.Progress++;
 
-                bool flag_continue = CheckForFreqChange(control, masconData, vvvfData.mascon_data, 1.0 / sample_freq);
+                bool flag_continue = CheckForFreqChange(control, masconData, vvvfData.mascon_data, 1.0 / SamplingFrequency);
                 bool flag_cancel = progressData.Cancel;
                 if (!flag_continue || flag_cancel) break;
+
+                if (soundBuffIndex < soundBuff.Length) continue;
+                soundBuffIndex = 0;
+
+                float[] result_array = new float[soundBuff.Length];
+
+                fixed (float* sample_array_address = &soundBuff[0])
+                {
+                    fixed (float* result_array_address = &result_array[0])
+                    {
+                        cppAudioFilter.Process(sample_array_address, result_array_address, soundBuff.Length);
+                    }
+
+                }
+
+                for(int i = 0; i < result_array.Length; i++)
+                {
+                    byte[] soundBytes = BitConverter.GetBytes(result_array[i] / result_array.Length);
+                    if (!BitConverter.IsLittleEndian) Array.Reverse(soundBytes);
+                    waveBuffer.AddSamples(soundBytes, 0, 4);
+
+                    if (waveBuffer.BufferedBytes == waveBuffer.BufferLength)
+                    {
+                        byte[] buffer = new byte[waveBuffer.BufferedBytes];
+                        int bytesRead = equalizerBuffer.Read(buffer, 0, buffer.Length);
+                        writer.Write(buffer, 0, bytesRead);
+                    }
+                }
+
+                
             }
 
             //last 
-            if (wave_provider.BufferedBytes > 0)
+            if (waveBuffer.BufferedBytes > 0)
             {
-                byte[] buffer = new byte[wave_provider.BufferedBytes];
-                int bytesRead = equal_wave_provider.Read(buffer, 0, buffer.Length);
+                byte[] buffer = new byte[waveBuffer.BufferedBytes];
+                int bytesRead = equalizerBuffer.Read(buffer, 0, buffer.Length);
                 writer.Write(buffer, 0, bytesRead);
             }
 
@@ -203,7 +207,6 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             }
 
             File.Delete(temp);
-
         }
     }
 }
