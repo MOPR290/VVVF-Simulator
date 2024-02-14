@@ -35,7 +35,7 @@ namespace VvvfSimulator.Generation.Audio
             double change_amo = param.change_amount;
 
             double sin_new_angle_freq = control.get_Sine_Angle_Freq();
-            sin_new_angle_freq += change_amo;
+            sin_new_angle_freq += change_amo * step;
             if (sin_new_angle_freq < 0) sin_new_angle_freq = 0;
 
             if (!control.is_Free_Running())

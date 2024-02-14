@@ -30,8 +30,6 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
 
             while (true)
             {
-                
-
                 int v = RealTime_CheckForFreq(control, realTime_Parameter, calcCount);
                 if (v != -1) return v;
 
