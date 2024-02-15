@@ -15,8 +15,8 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
     /// </summary>
     public partial class RealTime_Basic_Settings : Window
     {
-        private bool IgnoreUpdate = true;
-        private RealTime_Basic_Setting_Type _SettingType;
+        private readonly bool IgnoreUpdate = true;
+        private readonly RealTime_Basic_Setting_Type _SettingType;
 
         public enum RealTime_Basic_Setting_Type
         {
@@ -83,7 +83,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
             }
 
         }
-        private int ParseInteger(TextBox tb)
+        private static int ParseInteger(TextBox tb)
         {
             try
             {
@@ -227,7 +227,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
                 try
                 {
                     Font[] fonts = new Font[]{
-                        new Font(new FontFamily("Fugaz One"), 75, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel), //topic
+                        new(new FontFamily("Fugaz One"), 75, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel), //topic
                     };
                 }
                 catch

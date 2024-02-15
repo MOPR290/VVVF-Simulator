@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VvvfSimulator.VVVF_Window.Control_Settings.Async;
 using VvvfSimulator.Yaml.VVVFSound;
 using static VvvfSimulator.VvvfCalculate;
 using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;

@@ -310,5 +310,29 @@ namespace VvvfSimulator.Properties {
                 this["RealTime_Train_FS_Show"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public double RealTime_Train_SoundVolume {
+            get {
+                return ((double)(this["RealTime_Train_SoundVolume"]));
+            }
+            set {
+                this["RealTime_Train_SoundVolume"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public double RealTime_VVVF_SoundVolume {
+            get {
+                return ((double)(this["RealTime_VVVF_SoundVolume"]));
+            }
+            set {
+                this["RealTime_VVVF_SoundVolume"] = value;
+            }
+        }
     }
 }

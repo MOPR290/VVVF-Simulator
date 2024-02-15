@@ -4,27 +4,28 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using VvvfSimulator.Yaml.VVVFSound;
-using VvvfSimulator.VVVF_Window.Control_Settings;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
-using VvvfSimulator.GUI.Util;
 using System.ComponentModel;
 using System.Media;
+using System.Windows.Media;
 using System.Threading.Tasks;
+using YamlDotNet.Core;
+using VvvfSimulator.Yaml.VVVFSound;
+using VvvfSimulator.Generation.Pi3Generator;
+using VvvfSimulator.GUI.Create.Waveform;
+using VvvfSimulator.GUI.Util;
 using VvvfSimulator.GUI.Mascon;
+using VvvfSimulator.GUI.TrainAudio;
+using VvvfSimulator.GUI.TaskViewer;
 using VvvfSimulator.GUI.Simulator.RealTime;
 using VvvfSimulator.GUI.Simulator.RealTime.Display;
 using VvvfSimulator.GUI.Simulator.RealTime.Setting_Window;
-using YamlDotNet.Core;
-using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
-using VvvfSimulator.GUI.TrainAudio;
-using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
-using VvvfSimulator.GUI.TaskViewer;
-using System.Windows.Media;
-using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
 using static VvvfSimulator.Generation.GenerateCommon;
+using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
-using VvvfSimulator.Generation.Pi3Generator;
+using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
+using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
+using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
+
 using System.Diagnostics;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
@@ -35,7 +36,7 @@ namespace VvvfSimulator
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ViewData BindingData = new();
+        private readonly ViewData BindingData = new();
         public class ViewData : ViewModelBase
         {
             private bool _Blocked = false;
@@ -70,7 +71,7 @@ namespace VvvfSimulator
 
         
 
-        private void setting_button_Click(object sender, RoutedEventArgs e)
+        private void SettingButtonClick(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
             string name = button.Name;
@@ -82,7 +83,7 @@ namespace VvvfSimulator
                 setting_window.Navigate(new Uri("GUI/VVVF_Window/Settings/jerk_setting.xaml", UriKind.Relative));
         }
 
-        private void settings_edit_Click(object sender, RoutedEventArgs e)
+        private void SettingEditClick(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
             object? tag = btn.Tag;
@@ -107,7 +108,7 @@ namespace VvvfSimulator
 
             list_view.Items.Refresh();
         }
-        private void settings_load(object sender, RoutedEventArgs e)
+        private void SettingsLoad(object sender, RoutedEventArgs e)
         {
             ListView btn = (ListView)sender;
             object? tag = btn.Tag;
@@ -117,16 +118,16 @@ namespace VvvfSimulator
 
             if (tag.Equals("accelerate"))
             {
-                update_Control_List_View();
-                accelerate_selected_show();
+                UpdateControlList();
+                AccelerateSelectedShow();
             }
             else
             {
-                update_Control_List_View();
-                brake_selected_show();
+                UpdateControlList();
+                BrakeSelectedShow();
             }
         }
-        private void settings_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SettingsSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ListView btn = (ListView)sender;
             object? tag = btn.Tag;
@@ -136,12 +137,12 @@ namespace VvvfSimulator
 
 
             if(tag.Equals("accelerate"))
-                accelerate_selected_show();
+                AccelerateSelectedShow();
             else
-                brake_selected_show();
+                BrakeSelectedShow();
         }
        
-        private void accelerate_selected_show()
+        private void AccelerateSelectedShow()
         {
             int selected = accelerate_settings.SelectedIndex;
             if (selected < 0) return;
@@ -151,7 +152,7 @@ namespace VvvfSimulator
             setting_window.Navigate(new Control_Setting_Page_Common(selected_data, this, ysd.level));
 
         }
-        private void brake_selected_show()
+        private void BrakeSelectedShow()
         {
             int selected = brake_settings.SelectedIndex;
             if (selected < 0) return;
@@ -161,22 +162,22 @@ namespace VvvfSimulator
             setting_window.Navigate(new Control_Setting_Page_Common(selected_data, this, ysd.level));
         }
 
-        public void update_Control_List_View()
+        public void UpdateControlList()
         {
             accelerate_settings.ItemsSource = YamlVvvfManage.CurrentData.accelerate_pattern;
             brake_settings.ItemsSource = YamlVvvfManage.CurrentData.braking_pattern;
             accelerate_settings.Items.Refresh();
             brake_settings.Items.Refresh();
         }
-        public void update_Control_Showing()
+        public void UpdateContentSelected()
         {
             if (setting_tabs.SelectedIndex == 1)
             {
-                accelerate_selected_show();
+                AccelerateSelectedShow();
             }
             else if (setting_tabs.SelectedIndex == 2)
             {
-                brake_selected_show();
+                BrakeSelectedShow();
             }
         }
 
@@ -193,8 +194,8 @@ namespace VvvfSimulator
                 if (command[1].Equals("sort"))
                 {
                     YamlVvvfManage.CurrentData.braking_pattern.Sort((a, b) => Math.Sign(b.from - a.from));
-                    update_Control_List_View();
-                    brake_selected_show();
+                    UpdateControlList();
+                    BrakeSelectedShow();
                 }
                 else if (command[1].Equals("copy"))
                 {
@@ -204,8 +205,8 @@ namespace VvvfSimulator
                     YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
                     var selected_data = ysd.braking_pattern[selected];
                     YamlVvvfManage.CurrentData.braking_pattern.Add(selected_data.Clone());
-                    update_Control_List_View();
-                    brake_selected_show();
+                    UpdateControlList();
+                    BrakeSelectedShow();
                 }
             }
             else if (command[0].Equals("accelerate"))
@@ -213,8 +214,8 @@ namespace VvvfSimulator
                 if (command[1].Equals("sort"))
                 {
                     YamlVvvfManage.CurrentData.accelerate_pattern.Sort((a, b) => Math.Sign(b.from - a.from));
-                    update_Control_List_View();
-                    accelerate_selected_show();
+                    UpdateControlList();
+                    AccelerateSelectedShow();
                 }
                 else if (command[1].Equals("copy"))
                 {
@@ -224,8 +225,8 @@ namespace VvvfSimulator
                     YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
                     YamlControlData selected_data = ysd.accelerate_pattern[selected];
                     YamlVvvfManage.CurrentData.accelerate_pattern.Add(selected_data.Clone());
-                    update_Control_List_View();
-                    brake_selected_show();
+                    UpdateControlList();
+                    BrakeSelectedShow();
                 }
             }
         }
@@ -265,7 +266,7 @@ namespace VvvfSimulator
 
 
                 load_path = dialog.FileName;
-                update_Control_List_View();
+                UpdateControlList();
                 //update_Control_Showing();
                 setting_window.Navigate(null);
 
@@ -349,7 +350,7 @@ namespace VvvfSimulator
 
             BindingData.Blocked = true;
 
-            bool unblock = solve_Command(command);
+            bool unblock = SolveCommand(command);
 
             if (!unblock) return;
             BindingData.Blocked = false;
@@ -359,14 +360,14 @@ namespace VvvfSimulator
 
         public class TaskProgressData
         {
-            public ProgressData progressData { get; set; }
+            public ProgressData Data { get; set; }
             public Task Task { get; set; }
             public string Description { get; set; }
-            public Boolean Cancelable
+            public bool Cancelable
             {
                 get
                 {
-                    return (!progressData.Cancel && progressData.RelativeProgress < 99.9);
+                    return (!Data.Cancel && Data.RelativeProgress < 99.9);
                 }
             }
 
@@ -374,8 +375,8 @@ namespace VvvfSimulator
             {
                 get
                 {
-                    if (progressData.Cancel) return "Canceled";
-                    if (progressData.RelativeProgress > 99.9) return "Complete";
+                    if (Data.Cancel) return "Canceled";
+                    if (Data.RelativeProgress > 99.9) return "Complete";
                     return "Running";
                 }
             }
@@ -384,8 +385,8 @@ namespace VvvfSimulator
             {
                 get
                 {
-                    if (progressData.Cancel) return new SolidColorBrush(Color.FromRgb(0xFF,0xCB,0x47));
-                    if (progressData.RelativeProgress > 99.9) return new SolidColorBrush(Color.FromRgb(0x95, 0xE0, 0x6C));
+                    if (Data.Cancel) return new SolidColorBrush(Color.FromRgb(0xFF,0xCB,0x47));
+                    if (Data.RelativeProgress > 99.9) return new SolidColorBrush(Color.FromRgb(0x95, 0xE0, 0x6C));
                     return new SolidColorBrush(Color.FromRgb(0x4F, 0x86, 0xC6));
                 }
             }
@@ -393,7 +394,7 @@ namespace VvvfSimulator
             public TaskProgressData(Task Task, ProgressData progressData, string Description)
             {
                 this.Task = Task;
-                this.progressData = progressData;
+                this.Data = progressData;
                 this.Description = Description;
             }
         }
@@ -410,15 +411,18 @@ namespace VvvfSimulator
 
             return generationBasicParameter;
         }
-        private Boolean solve_Command(String[] command)
+        private Boolean SolveCommand(String[] command)
         {
 
             if (command[0].Equals("VVVF"))
             {
                 if (command[1].Equals("WAV"))
                 {
-                    var dialog = new SaveFileDialog { Filter = "Ultra High Resolution|*.wav|High Resolution|*.wav|Low Resolution|*.wav" };
-                    dialog.FilterIndex = 2;
+                    var dialog = new SaveFileDialog
+                    {
+                        Filter = "Ultra High Resolution|*.wav|High Resolution|*.wav|Low Resolution|*.wav",
+                        FilterIndex = 2
+                    };
                     if (dialog.ShowDialog() == false) return true;
 
                     int sample_freq = new int[] { 1000000 * 5, 192000, 192000 }[dialog.FilterIndex - 1];
@@ -444,8 +448,10 @@ namespace VvvfSimulator
                
                 else if(command[1].Equals("RealTime"))
                 {
-                    RealTimeParameter parameter = new();
-                    parameter.quit = false;
+                    RealTimeParameter parameter = new()
+                    {
+                        quit = false
+                    };
 
                     BindingData.Blocked = true;
 
@@ -553,8 +559,10 @@ namespace VvvfSimulator
                 }
                 else if (command[1].Equals("RealTime"))
                 {
-                    RealTimeParameter parameter = new();
-                    parameter.quit = false;
+                    RealTimeParameter parameter = new()
+                    {
+                        quit = false
+                    };
 
                     RealTime_Mascon_Window mascon = new(parameter);
                     mascon.Show();
@@ -920,7 +928,7 @@ namespace VvvfSimulator
 
             if(tag_str.Equals("MIDI"))
             {
-                GUI.MIDIConvert.MIDIConvert_Main mIDIConvert_Main = new GUI.MIDIConvert.MIDIConvert_Main();
+                GUI.MIDIConvert.MIDIConvert_Main mIDIConvert_Main = new();
                 mIDIConvert_Main.Show();
             }
 

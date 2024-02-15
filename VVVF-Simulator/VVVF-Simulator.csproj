@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <RootNamespace>VVVF_Simulator</RootNamespace>
+    <RootNamespace>VvvfSimulator</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>vvvf-simulator.ico</ApplicationIcon>
@@ -69,14 +69,6 @@
     <PackageReference Include="System.Drawing.Common" Version="8.0.1" />
     <PackageReference Include="System.IO.Ports" Version="8.0.0" />
     <PackageReference Include="YamlDotNet" Version="15.1.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\AudioFilter\AudioFilter.vcxproj">
-      <Private>True</Private>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>

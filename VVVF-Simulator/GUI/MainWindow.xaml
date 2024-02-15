@@ -23,21 +23,21 @@
                 <TabControl x:Name="setting_tabs" Margin="10,10,10,10" Background="#FFFFFF" >
                     <TabItem Header="Settings">
                         <Grid Background="#FFFFFF">
-                            <Button x:Name="settings_level" Content="PWM Level" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="setting_button_Click" Foreground="#FF616161" Background="White">
+                            <Button x:Name="settings_level" Content="PWM Level" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="SettingButtonClick" Foreground="#FF616161" Background="White">
                                 <Button.Resources>
                                     <Style TargetType="Border">
                                         <Setter Property="CornerRadius" Value="14"/>
                                     </Style>
                                 </Button.Resources>
                             </Button>
-                            <Button x:Name="settings_minimum" Content="Minimum Frequency" HorizontalAlignment="Stretch" Margin="10,43,10,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="setting_button_Click" Foreground="#FF616161" Background="White">
+                            <Button x:Name="settings_minimum" Content="Minimum Frequency" HorizontalAlignment="Stretch" Margin="10,43,10,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="SettingButtonClick" Foreground="#FF616161" Background="White">
                                 <Button.Resources>
                                     <Style TargetType="Border">
                                         <Setter Property="CornerRadius" Value="14"/>
                                     </Style>
                                 </Button.Resources>
                             </Button>
-                            <Button x:Name="settings_mascon" Content="Jerk Control" HorizontalAlignment="Stretch" Margin="10,76,10,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="setting_button_Click" Foreground="#FF616161" Background="White">
+                            <Button x:Name="settings_mascon" Content="Jerk Control" HorizontalAlignment="Stretch" Margin="10,76,10,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="SettingButtonClick" Foreground="#FF616161" Background="White">
                                 <Button.Resources>
                                     <Style TargetType="Border">
                                         <Setter Property="CornerRadius" Value="14"/>
@@ -53,21 +53,21 @@
                                 <RowDefinition Height="50"/>
                             </Grid.RowDefinitions>
                             <Grid Background="#FFEDEDED" Grid.Row="1">
-                                <Button x:Name="accelerate_add" Tag="accelerate_add" Content="+" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF616161" Click="settings_edit_Click" Margin="17,0,0,0" Background="#FFFFFF" Foreground="#FF616161">
+                                <Button x:Name="accelerate_add" Tag="accelerate_add" Content="+" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF616161" Click="SettingEditClick" Margin="17,0,0,0" Background="#FFFFFF" Foreground="#FF616161">
                                     <Button.Resources>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="CornerRadius" Value="14"/>
                                         </Style>
                                     </Button.Resources>
                                 </Button>
-                                <Button x:Name="accelerate_remove" Tag="accelerate_remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF616161" Click="settings_edit_Click" Background="#FFFFFF" Foreground="#FF616161" Margin="67,0,0,0">
+                                <Button x:Name="accelerate_remove" Tag="accelerate_remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF616161" Click="SettingEditClick" Background="#FFFFFF" Foreground="#FF616161" Margin="67,0,0,0">
                                     <Button.Resources>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="CornerRadius" Value="14"/>
                                         </Style>
                                     </Button.Resources>
                                 </Button>
-                                <Button x:Name="accelerate_reset" Tag="accelerate_reset" Content="RESET" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="settings_edit_Click" Background="#FFFFFF" Foreground="#FF616161" Margin="111,0,0,0">
+                                <Button x:Name="accelerate_reset" Tag="accelerate_reset" Content="RESET" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="SettingEditClick" Background="#FFFFFF" Foreground="#FF616161" Margin="111,0,0,0">
                                     <Button.Resources>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="CornerRadius" Value="14"/>
@@ -75,7 +75,7 @@
                                     </Button.Resources>
                                 </Button>
                             </Grid>
-                            <ListView x:Name="accelerate_settings" SelectionMode="Single" Loaded="settings_load" Tag="accelerate" SelectionChanged="settings_SelectionChanged" BorderBrush="#FFFFFF" Background="#FFFFFF" >
+                            <ListView x:Name="accelerate_settings" SelectionMode="Single" Loaded="SettingsLoad" Tag="accelerate" SelectionChanged="SettingsSelectionChanged" BorderBrush="#FFFFFF" Background="#FFFFFF" >
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>
@@ -103,21 +103,21 @@
                             </Grid.RowDefinitions>
 
                             <Grid Grid.Row="1" Background="#FFEDEDED">
-                                <Button x:Name="brake_add" Tag="brake_add" Content="+" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF616161" Click="settings_edit_Click" Background="White" Foreground="#FF616161" Margin="17,0,0,0">
+                                <Button x:Name="brake_add" Tag="brake_add" Content="+" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF616161" Click="SettingEditClick" Background="White" Foreground="#FF616161" Margin="17,0,0,0">
                                     <Button.Resources>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="CornerRadius" Value="14"/>
                                         </Style>
                                     </Button.Resources>
                                 </Button>
-                                <Button x:Name="brake_remove" Tag="brake_remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF616161" Click="settings_edit_Click" Background="White" Foreground="#FF616161" Margin="67,0,0,0">
+                                <Button x:Name="brake_remove" Tag="brake_remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF616161" Click="SettingEditClick" Background="White" Foreground="#FF616161" Margin="67,0,0,0">
                                     <Button.Resources>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="CornerRadius" Value="14"/>
                                         </Style>
                                     </Button.Resources>
                                 </Button>
-                                <Button x:Name="brake_reset" Tag="brake_reset" Content="RESET" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="settings_edit_Click" Background="White" Foreground="#FF616161" Margin="111,0,0,0">
+                                <Button x:Name="brake_reset" Tag="brake_reset" Content="RESET" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="SettingEditClick" Background="White" Foreground="#FF616161" Margin="111,0,0,0">
                                     <Button.Resources>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="CornerRadius" Value="14"/>
@@ -125,7 +125,7 @@
                                     </Button.Resources>
                                 </Button>
                             </Grid>
-                            <ListView x:Name="brake_settings" SelectionMode="Single" Loaded="settings_load" Tag="brake" SelectionChanged="settings_SelectionChanged" BorderBrush="White">
+                            <ListView x:Name="brake_settings" SelectionMode="Single" Loaded="SettingsLoad" Tag="brake" SelectionChanged="SettingsSelectionChanged" BorderBrush="White">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>

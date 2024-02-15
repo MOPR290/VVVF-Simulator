@@ -62,7 +62,7 @@ namespace VvvfSimulator.GUI.TaskViewer
                 MainWindow.TaskProgressData data = taskProgresses[i];
                 if (data.Task.Id.ToString().Equals(tag.ToString()))
                 {
-                    data.progressData.Cancel = true;
+                    data.Data.Cancel = true;
                     break;
                 }
             }

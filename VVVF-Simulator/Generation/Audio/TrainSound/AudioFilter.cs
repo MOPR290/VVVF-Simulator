@@ -1,6 +1,5 @@
 ﻿using NAudio.Dsp;
 using NAudio.Wave;
-using System;
 using System.Runtime.InteropServices;
 
 namespace VvvfSimulator.Generation.Audio.TrainSound
@@ -57,7 +56,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
 
         public class CppAudioFilter
         {
-            ulong address;
+            readonly ulong address;
 
             [DllImport("AudioFilter.dll")]
             private static extern ulong createConvolverInstance();

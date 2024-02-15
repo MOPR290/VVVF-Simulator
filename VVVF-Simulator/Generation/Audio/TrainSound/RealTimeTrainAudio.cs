@@ -1,15 +1,14 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System;
-using System.Collections.Generic;
-using VVVF_Simulator.Generation.Audio.TrainSound;
+using VvvfSimulator.Properties;
+using VvvfSimulator.Generation.Audio.TrainSound;
 using VvvfSimulator.Yaml.VVVFSound;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
 using static VvvfSimulator.Generation.Audio.TrainSound.GenerateTrainAudio;
 using static VvvfSimulator.Generation.Motor.GenerateMotorCore;
 using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
 using static VvvfSimulator.Generation.Audio.TrainSound.AudioFilter;
-using System.Net;
 using System.Windows;
 
 namespace VvvfSimulator.Generation.Audio.TrainSound
@@ -17,14 +16,14 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
     public class RealTimeTrainAudio
     {
         //---------- TRAIN SOUND --------------
-        static int calcCount = 512;
+        static readonly int calcCount = 512;
         unsafe private static int RealTime_Train_Generation_Calculate(BufferedWaveProvider provider, YamlVvvfSoundData sound_data, VvvfValues control, RealTimeParameter realTime_Parameter)
         {
 
-            CppAudioFilter cppAudioFilter = new CppAudioFilter();
-            fixed (float* ir_address = &ImpulseResponseSample.dataArray[0])
+            CppAudioFilter cppAudioFilter = new();
+            fixed (float* ir_address = &ImpulseResponseSample.sample1[0])
             {
-                cppAudioFilter.Init(calcCount, ir_address, ImpulseResponseSample.dataArray.Length);
+                cppAudioFilter.Init(calcCount, ir_address, ImpulseResponseSample.sample1.Length);
             }
             
 

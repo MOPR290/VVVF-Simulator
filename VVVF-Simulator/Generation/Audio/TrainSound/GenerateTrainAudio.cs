@@ -3,7 +3,7 @@ using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using VVVF_Simulator.Generation.Audio.TrainSound;
+using VvvfSimulator.Generation.Audio.TrainSound;
 using VvvfSimulator.Yaml.VVVFSound;
 using static VvvfSimulator.Generation.Audio.TrainSound.AudioFilter;
 using static VvvfSimulator.Generation.GenerateCommon;
@@ -134,9 +134,9 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             progressData.Total = masconData.GetEstimatedSteps(1.0 / SamplingFrequency);
 
             CppAudioFilter cppAudioFilter = new CppAudioFilter();
-            fixed (float* ir_address = &ImpulseResponseSample.dataArray[0])
+            fixed (float* ir_address = &ImpulseResponseSample.sample1[0])
             {
-                cppAudioFilter.Init(4096 * 8, ir_address, ImpulseResponseSample.dataArray.Length);
+                cppAudioFilter.Init(4096 * 8, ir_address, ImpulseResponseSample.sample1.Length);
             }
 
             float[] soundBuff = new float[waveBuffer.BufferLength / 4];
