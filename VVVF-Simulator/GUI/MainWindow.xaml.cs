@@ -26,9 +26,6 @@ using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
 using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
 
-using System.Diagnostics;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
-
 namespace VvvfSimulator
 {
     /// <summary>
@@ -76,11 +73,11 @@ namespace VvvfSimulator
             Button button = (Button)sender;
             string name = button.Name;
             if (name.Equals("settings_level"))
-                setting_window.Navigate(new Uri("GUI/VVVF_Window/Settings/level_setting.xaml", UriKind.Relative));
+                setting_window.Navigate(new Uri("GUI/Create/Settings/level_setting.xaml", UriKind.Relative));
             else if(name.Equals("settings_minimum"))
-                setting_window.Navigate(new Uri("GUI/VVVF_Window/Settings/minimum_freq_setting.xaml", UriKind.Relative));
+                setting_window.Navigate(new Uri("GUI/Create/Settings/minimum_freq_setting.xaml", UriKind.Relative));
             else if(name.Equals("settings_mascon"))
-                setting_window.Navigate(new Uri("GUI/VVVF_Window/Settings/jerk_setting.xaml", UriKind.Relative));
+                setting_window.Navigate(new Uri("GUI/Create/Settings/jerk_setting.xaml", UriKind.Relative));
         }
 
         private void SettingEditClick(object sender, RoutedEventArgs e)

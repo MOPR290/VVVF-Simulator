@@ -55,7 +55,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
 
                 for (int i = 0; i < calcCount; i++)
                 {
-                    byte[] soundSample = BitConverter.GetBytes(samples_res[i] / calcCount);
+                    byte[] soundSample = BitConverter.GetBytes(samples_res[i] / calcCount * 10);
                     //byte[] soundSample = BitConverter.GetBytes((float)value);
                     if (!BitConverter.IsLittleEndian) Array.Reverse(soundSample);
                     provider.AddSamples(soundSample, 0, 4);
