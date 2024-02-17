@@ -13,27 +13,16 @@ using System.Windows;
 
 namespace VvvfSimulator.Generation.Audio.TrainSound
 {
-    public class RealTimeTrainAudio
+    unsafe public class RealTimeTrainAudio
     {
         //---------- TRAIN SOUND --------------
         static readonly int calcCount = 512;
-        unsafe private static int RealTime_Train_Generation_Calculate(BufferedWaveProvider provider, YamlVvvfSoundData sound_data, VvvfValues control, RealTimeParameter realTime_Parameter)
+        private static int RealTime_Train_Generation_Calculate(BufferedWaveProvider provider, YamlVvvfSoundData sound_data, VvvfValues control, RealTimeParameter realTime_Parameter)
         {
-
-            CppAudioFilter cppAudioFilter = new();
-            fixed (float* ir_address = &ImpulseResponseSample.sample1[0])
-            {
-                cppAudioFilter.Init(calcCount, ir_address, ImpulseResponseSample.sample1.Length);
-            }
-            
-
             while (true)
             {
                 int v = RealTime_CheckForFreq(control, realTime_Parameter, calcCount);
                 if (v != -1) return v;
-
-                float[] samples = new float[calcCount];
-                float[] samples_res = new float[calcCount];
 
                 for (int i = 0; i < calcCount; i++)
                 {
@@ -41,36 +30,23 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
                     control.add_Saw_Time(1.0 / 192000.0);
                     control.Add_Generation_Current_Time(1.0 / 192000.0);
 
-                    double value = Get_Train_Sound(control, sound_data , realTime_Parameter.Motor, realTime_Parameter.Train_Sound_Data);
-                    samples[i] = (float)value;
-                }
-
-                fixed (float* sample_array_address = &samples[0])
-                {
-                    fixed (float* sample_res_array_address = &samples_res[0])
-                    {
-                        cppAudioFilter.Process(sample_array_address, sample_res_array_address, calcCount);
-                    }
-                }
-
-                for (int i = 0; i < calcCount; i++)
-                {
-                    byte[] soundSample = BitConverter.GetBytes(samples_res[i] / calcCount * 10);
-                    //byte[] soundSample = BitConverter.GetBytes((float)value);
+                    double value = CalculateTrainSound(control, sound_data , realTime_Parameter.Motor, realTime_Parameter.Train_Sound_Data);
+                    
+                    byte[] soundSample = BitConverter.GetBytes((float)value / 512);
                     if (!BitConverter.IsLittleEndian) Array.Reverse(soundSample);
                     provider.AddSamples(soundSample, 0, 4);
                 }
 
-                while (provider.BufferedBytes - calcCount > Properties.Settings.Default.RealTime_Train_BuffSize) ;
+                while (provider.BufferedBytes - calcCount > Settings.Default.RealTime_Train_BuffSize) ;
             }
         }
 
         public static void RealTime_Train_Generation(YamlVvvfSoundData ysd, RealTimeParameter realTime_Parameter)
         {
             int SamplingFrequency = 192000;
+
             realTime_Parameter.quit = false;
             realTime_Parameter.sound_data = ysd;
-
             realTime_Parameter.Motor = new MotorData() { 
                 SIM_SAMPLE_FREQ = SamplingFrequency ,
                 motor_Specification = realTime_Parameter.Train_Sound_Data.Motor_Specification.Clone(),
@@ -82,15 +58,17 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             control.reset_all_variables();
             control.reset_control_variables();
             realTime_Parameter.control_values = control;
+
             while (true)
             {
                 var bufferedWaveProvider = new BufferedWaveProvider(WaveFormat.CreateIeeeFloatWaveFormat(SamplingFrequency,1));
-                var equalizer = new MonauralFilter(bufferedWaveProvider.ToSampleProvider(), thd.Get_NFilters());
+                var monauralFilteredProvider = new MonauralFilter(bufferedWaveProvider.ToSampleProvider(), thd.Get_NFilters());
+                var convolutionFilteredProvider = ImpulseResponse.FromSample(monauralFilteredProvider, calcCount);
 
                 var mmDevice = new MMDeviceEnumerator().GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
                 IWavePlayer wavPlayer = new WasapiOut(mmDevice, AudioClientShareMode.Shared, false, 0);
 
-                wavPlayer.Init(equalizer);
+                wavPlayer.Init(convolutionFilteredProvider);
                 wavPlayer.Play();
 
                 int stat;
@@ -106,7 +84,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
                     mmDevice.Dispose();
                     bufferedWaveProvider.ClearBuffer();
 
-                    MessageBox.Show("FUCK YOU!");
+                    MessageBox.Show("An error occured on Audio processing.");
 
                     throw;
                 }

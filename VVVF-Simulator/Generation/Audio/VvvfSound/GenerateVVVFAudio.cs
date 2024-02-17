@@ -13,7 +13,7 @@ namespace VvvfSimulator.Generation.Audio.VVVF_Sound
     public class GenerateVVVFAudio
     {
         // -------- VVVF SOUND -------------
-        public static byte Get_VVVF_Sound(VvvfValues control, YamlVvvfSoundData sound_data)
+        public static byte CalculateVvvfSound(VvvfValues control, YamlVvvfSoundData sound_data)
         {
             ControlStatus cv = new()
             {
@@ -23,10 +23,10 @@ namespace VvvfSimulator.Generation.Audio.VVVF_Sound
                 wave_stat = control.get_Control_Frequency()
             };
             PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, sound_data);
-             return Get_VVVF_Sound(control, calculated_Values);
+             return CalculateVvvfSound(control, calculated_Values);
         }
 
-        public static byte Get_VVVF_Sound(VvvfValues control, PwmCalculateValues calculated_Values)
+        public static byte CalculateVvvfSound(VvvfValues control, PwmCalculateValues calculated_Values)
         {
             WaveValues value = VvvfCalculate.CalculatePhases(control, calculated_Values, 0);
 
@@ -86,7 +86,7 @@ namespace VvvfSimulator.Generation.Audio.VVVF_Sound
                 control.add_Sine_Time(1.00 / sample_freq);
                 control.add_Saw_Time(1.00 / sample_freq);
 
-                temp_bytes[temp_bytes_count] = Get_VVVF_Sound(control, vvvfData);
+                temp_bytes[temp_bytes_count] = CalculateVvvfSound(control, vvvfData);
                 temp_bytes_count++;
                 if (temp_bytes_count == 19200)
                 {

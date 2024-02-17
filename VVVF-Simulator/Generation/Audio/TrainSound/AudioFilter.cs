@@ -25,7 +25,6 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
                 this.filterCount = filters.Length;
                 updated = true;
             }
-            //       public WaveFormat WaveFormat => sourceProvider.WaveFormat;
             public WaveFormat WaveFormat
             {
                 get
@@ -33,7 +32,6 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
                     return sourceProvider.WaveFormat;
                 }
             }
-
             public int Read(float[] buffer, int offset, int count)
             {
                 int samplesRead = sourceProvider.Read(buffer, offset, count);
@@ -54,7 +52,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             }
         }
 
-        public class CppAudioFilter
+        public class CppConvolutionFilter : ISampleProvider
         {
             readonly ulong address;
 
@@ -70,22 +68,51 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             [DllImport("AudioFilter.dll")]
             private static extern void reset(ulong address);
 
+            // Audio Handler
 
-            public CppAudioFilter()
+            private readonly ISampleProvider sourceProvider;
+            private long blockSize;
+            public WaveFormat WaveFormat
+            {
+                get
+                {
+                    return sourceProvider.WaveFormat;
+                }
+            }
+            public CppConvolutionFilter(ISampleProvider sourceProvider)
             {
                 address = createConvolverInstance();
+                this.sourceProvider = sourceProvider;
             }
+            unsafe public int Read(float[] buffer, int offset, int count)
+            {
+                if (count < blockSize) return 0;
 
+                int samplesRead = sourceProvider.Read(buffer, offset, count);
+
+                fixed (float* array_address = &buffer[0])
+                {
+                    Process(array_address, array_address, samplesRead);
+                }
+                return samplesRead;
+            }
             public void Reset()
             {
                 reset(address);
             }
-
             unsafe public bool Init(long blockSize, float* ir, long irLen)
             {
+                this.blockSize = blockSize;
                 return init(address, blockSize, ir, irLen);
             }
-
+            unsafe public bool Init(long blockSize, float[] response)
+            {
+                this.blockSize = blockSize;
+                fixed (float* ir_address = &response[0])
+                {
+                    return init(address, blockSize, ir_address, response.Length);
+                }
+            }
             unsafe public void Process(float* input, float* output, long len)
             {
                 process(address, input, output, len);

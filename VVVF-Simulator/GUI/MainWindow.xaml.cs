@@ -63,7 +63,6 @@ namespace VvvfSimulator
         {
             DataContext = BindingData;
             InitializeComponent();
-
         }
 
         
@@ -542,7 +541,7 @@ namespace VvvfSimulator
                             bool resize = dialog.FilterIndex == 2;
 
                             YamlTrainSoundData trainSound_Data_clone = YamlTrainSoundDataManage.current_data.Clone();
-                            Generation.Audio.TrainSound.GenerateTrainAudio.Export_Train_Sound(generationBasicParameter, dialog.FileName, resize, trainSound_Data_clone);
+                            Generation.Audio.TrainSound.GenerateTrainAudio.ExportTrainSound(generationBasicParameter, dialog.FileName, resize, trainSound_Data_clone);
                         }
                         catch (Exception e)
                         {

@@ -37,7 +37,7 @@ namespace VvvfSimulator.Generation.Audio.VVVF_Sound
                     control.add_Saw_Time(1.0 / 192000.0);
                     control.Add_Generation_Current_Time(1.0 / 192000.0);
 
-                    byte sound_byte = GenerateVVVFAudio.Get_VVVF_Sound(control, calculated_Values);
+                    byte sound_byte = GenerateVVVFAudio.CalculateVvvfSound(control, calculated_Values);
 
                     add[i] = sound_byte;
                 }

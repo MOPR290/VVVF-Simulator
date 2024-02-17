@@ -20,9 +20,8 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
     public class GenerateTrainAudio
     {
         // -------- TRAIN SOUND --------------
-        public static double Get_Train_Sound(VvvfValues control, YamlVvvfSoundData sound_data, MotorData motor, YamlTrainSoundData train_Harmonic_Data)
+        public static double CalculateTrainSound(VvvfValues control, YamlVvvfSoundData sound_data, MotorData motor, YamlTrainSoundData train_Harmonic_Data)
         {
-
             ControlStatus cv = new()
             {
                 brake = control.is_Braking(),
@@ -37,7 +36,8 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             motor.AynMotorControler(new WaveValues() { U = value.W, V = value.V, W = value.U });
             motor.Asyn_Moduleabc();
 
-            double motorPwmSound = (motor.motor_Param.Te - motor.motor_Param.TePre) / 2.0;
+            double motorPwmSound = (motor.motor_Param.Te - motor.motor_Param.TePre);
+            //double motorPwmSound = value.U - value.V;
             double motorSound = 0;
 
             // MOTOR HARMONICS
@@ -99,7 +99,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
         }
 
 
-        unsafe public static void Export_Train_Sound(GenerationBasicParameter generationBasicParameter, String output_path, Boolean resize, YamlTrainSoundData train_Sound_Data)
+        unsafe public static void ExportTrainSound(GenerationBasicParameter generationBasicParameter, string output_path, bool resize, YamlTrainSoundData train_Sound_Data)
         {
             YamlVvvfSoundData vvvfData = generationBasicParameter.vvvfData;
             YamlMasconDataCompiled masconData = generationBasicParameter.masconData;
@@ -120,8 +120,9 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             {
                 BufferLength = 80000
             };
-            MonauralFilter equalizer = new(waveBuffer.ToSampleProvider(), train_Sound_Data.Get_NFilters());
-            IWaveProvider equalizerBuffer = equalizer.ToWaveProvider();
+            MonauralFilter monauralFilter = new(waveBuffer.ToSampleProvider(), train_Sound_Data.Get_NFilters());
+            CppConvolutionFilter cppConvolutionFilter = ImpulseResponse.FromSample(monauralFilter, 4096);
+            IWaveProvider exportWaveProvider = cppConvolutionFilter.ToWaveProvider();
             WaveFileWriter writer = new(resize ? temp : output_path, format);
 
             MotorData motor = new()
@@ -133,65 +134,36 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
 
             progressData.Total = masconData.GetEstimatedSteps(1.0 / SamplingFrequency);
 
-            CppAudioFilter cppAudioFilter = new CppAudioFilter();
-            fixed (float* ir_address = &ImpulseResponseSample.sample1[0])
-            {
-                cppAudioFilter.Init(4096 * 8, ir_address, ImpulseResponseSample.sample1.Length);
-            }
-
-            float[] soundBuff = new float[waveBuffer.BufferLength / 4];
-            int soundBuffIndex = 0;
-
             while (true)
             {
                 control.add_Sine_Time(1.00 / SamplingFrequency);
                 control.add_Saw_Time(1.00 / SamplingFrequency);
 
-                double sound = Get_Train_Sound(control, vvvfData, motor , train_Sound_Data);
-                soundBuff[soundBuffIndex++] = (float)sound;
+                float sound = (float)CalculateTrainSound(control, vvvfData, motor , train_Sound_Data);
+
+                byte[] soundBytes = BitConverter.GetBytes(sound / 512);
+                if (!BitConverter.IsLittleEndian) Array.Reverse(soundBytes);
+                waveBuffer.AddSamples(soundBytes, 0, 4);
+
+                if (waveBuffer.BufferedBytes == waveBuffer.BufferLength)
+                {
+                    byte[] buffer = new byte[waveBuffer.BufferedBytes];
+                    int bytesRead = exportWaveProvider.Read(buffer, 0, buffer.Length);
+                    writer.Write(buffer, 0, bytesRead);
+                }
 
                 progressData.Progress++;
 
                 bool flag_continue = CheckForFreqChange(control, masconData, vvvfData.mascon_data, 1.0 / SamplingFrequency);
                 bool flag_cancel = progressData.Cancel;
                 if (!flag_continue || flag_cancel) break;
-
-                if (soundBuffIndex < soundBuff.Length) continue;
-                soundBuffIndex = 0;
-
-                float[] result_array = new float[soundBuff.Length];
-
-                fixed (float* sample_array_address = &soundBuff[0])
-                {
-                    fixed (float* result_array_address = &result_array[0])
-                    {
-                        cppAudioFilter.Process(sample_array_address, result_array_address, soundBuff.Length);
-                    }
-
-                }
-
-                for(int i = 0; i < result_array.Length; i++)
-                {
-                    byte[] soundBytes = BitConverter.GetBytes(result_array[i] / 512);
-                    if (!BitConverter.IsLittleEndian) Array.Reverse(soundBytes);
-                    waveBuffer.AddSamples(soundBytes, 0, 4);
-
-                    if (waveBuffer.BufferedBytes == waveBuffer.BufferLength)
-                    {
-                        byte[] buffer = new byte[waveBuffer.BufferedBytes];
-                        int bytesRead = equalizerBuffer.Read(buffer, 0, buffer.Length);
-                        writer.Write(buffer, 0, bytesRead);
-                    }
-                }
-
-                
             }
 
             //last 
             if (waveBuffer.BufferedBytes > 0)
             {
                 byte[] buffer = new byte[waveBuffer.BufferedBytes];
-                int bytesRead = equalizerBuffer.Read(buffer, 0, buffer.Length);
+                int bytesRead = exportWaveProvider.Read(buffer, 0, buffer.Length);
                 writer.Write(buffer, 0, bytesRead);
             }
 
