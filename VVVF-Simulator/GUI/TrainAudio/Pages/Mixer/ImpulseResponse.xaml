@@ -1,0 +1,24 @@
+﻿<Page
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:VvvfSimulator.GUI.TrainAudio.Pages.Mixer"
+      xmlns:MyUserControl="clr-namespace:VvvfSimulator.GUI.MyUserControl" x:Class="VvvfSimulator.GUI.TrainAudio.Pages.Mixer.ImpulseResponse"
+      mc:Ignorable="d" d:DesignWidth="800"
+      Title="ImpulseResponse" Height="114">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="LoadButton" Content="Load" HorizontalAlignment="Center" VerticalAlignment="Center" Height="44" Width="150" Background="White" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="22" Foreground="Black" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="OnLoadButtonClick">
+            <Button.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="20"/>
+                </Style>
+            </Button.Resources>
+        </Button>
+        <Label Content="Impulse Response Audio" FontFamily="M PLUS 2" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Foreground="#FF7D7D7D" Height="24" Width="148"/>
+    </Grid>
+</Page>

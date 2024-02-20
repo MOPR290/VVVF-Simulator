@@ -4,7 +4,7 @@ using VvvfSimulator.Yaml.VVVFSound;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
 using static VvvfSimulator.VvvfStructs;
 
-namespace VvvfSimulator.Generation.Audio.VVVF_Sound
+namespace VvvfSimulator.Generation.Audio.VvvfSound
 {
     public class RealTimeVVVFAudio
     {
@@ -49,12 +49,12 @@ namespace VvvfSimulator.Generation.Audio.VVVF_Sound
         public static void RealTime_VVVF_Generation(YamlVvvfSoundData ysd, RealTimeParameter realTime_Parameter)
         {
             realTime_Parameter.quit = false;
-            realTime_Parameter.sound_data = ysd;
+            realTime_Parameter.VvvfSoundData = ysd;
 
             VvvfValues control = new();
             control.reset_all_variables();
             control.reset_control_variables();
-            realTime_Parameter.control_values = control;
+            realTime_Parameter.Control = control;
 
             while (true)
             {

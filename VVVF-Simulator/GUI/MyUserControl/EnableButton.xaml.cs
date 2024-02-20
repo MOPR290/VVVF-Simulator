@@ -53,7 +53,7 @@ namespace VvvfSimulator.GUI.MyUserControl
             setImg();
         }
 
-        public bool GetEnabled()
+        public bool IsEnabled()
         {
             return Enabled;
         }

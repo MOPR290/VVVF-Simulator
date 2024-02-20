@@ -37,8 +37,8 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
             }
         }
 
-        private RealTime_Mascon_Window main;
-        public RealTime_Device_Setting(RealTime_Mascon_Window main)
+        private MasconWindow main;
+        public RealTime_Device_Setting(MasconWindow main)
         {
             this.main = main;
             DataContext = view_model;
@@ -89,7 +89,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            main.Set_Config();
+            main.SetConfig();
         }
     }
 

@@ -429,7 +429,7 @@ namespace VvvfSimulator
                     Task task = Task.Run(() => {
                         try
                         {
-                            Generation.Audio.VVVF_Sound.GenerateVVVFAudio.Export_VVVF_Sound(generationBasicParameter, dialog.FileName, resize, sample_freq);
+                            Generation.Audio.VvvfSound.GenerateVVVFAudio.Export_VVVF_Sound(generationBasicParameter, dialog.FileName, resize, sample_freq);
                         }
                         catch (Exception e)
                         {
@@ -451,7 +451,7 @@ namespace VvvfSimulator
 
                     BindingData.Blocked = true;
 
-                    RealTime_Mascon_Window mascon = new(parameter);
+                    MasconWindow mascon = new(parameter);
                     mascon.Show();
                     mascon.Start_Task();
 
@@ -507,7 +507,7 @@ namespace VvvfSimulator
                                 data = YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData);
                             else
                                 data = YamlVvvfManage.CurrentData;
-                            Generation.Audio.VVVF_Sound.RealTimeVVVFAudio.RealTime_VVVF_Generation(data, parameter);
+                            Generation.Audio.VvvfSound.RealTimeVVVFAudio.RealTime_VVVF_Generation(data, parameter);
                         }
                         catch (Exception e)
                         {
@@ -540,8 +540,8 @@ namespace VvvfSimulator
                         {
                             bool resize = dialog.FilterIndex == 2;
 
-                            YamlTrainSoundData trainSound_Data_clone = YamlTrainSoundDataManage.current_data.Clone();
-                            Generation.Audio.TrainSound.GenerateTrainAudio.ExportTrainSound(generationBasicParameter, dialog.FileName, resize, trainSound_Data_clone);
+                            YamlTrainSoundData trainSound_Data_clone = YamlTrainSoundDataManage.CurrentData.Clone();
+                            Generation.Audio.TrainSound.Audio.Generate(generationBasicParameter, dialog.FileName, resize, trainSound_Data_clone);
                         }
                         catch (Exception e)
                         {
@@ -560,7 +560,7 @@ namespace VvvfSimulator
                         quit = false
                     };
 
-                    RealTime_Mascon_Window mascon = new(parameter);
+                    MasconWindow mascon = new(parameter);
                     mascon.Show();
                     mascon.Start_Task();
 
@@ -618,7 +618,7 @@ namespace VvvfSimulator
                                 data = YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData);
                             else
                                 data = YamlVvvfManage.CurrentData;
-                            Generation.Audio.TrainSound.RealTimeTrainAudio.RealTime_Train_Generation(data , parameter);
+                            Generation.Audio.TrainSound.RealTime.Generate(data , parameter);
                         }
                         catch (Exception e)
                         {
@@ -867,8 +867,8 @@ namespace VvvfSimulator
             else if (tag_str.Equals("TrainSoundSetting"))
             {
                 BindingData.Blocked = true;
-                YamlTrainSoundData _TrainSound_Data = YamlTrainSoundDataManage.current_data;
-                TrainAudio_Setting_Main tahw = new(_TrainSound_Data);
+                YamlTrainSoundData _TrainSound_Data = YamlTrainSoundDataManage.CurrentData;
+                SettingsWindow tahw = new(_TrainSound_Data);
                 tahw.ShowDialog();
                 BindingData.Blocked = false;
             }

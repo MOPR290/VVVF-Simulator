@@ -8,7 +8,7 @@ using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
 
-namespace VvvfSimulator.Generation.Audio.VVVF_Sound
+namespace VvvfSimulator.Generation.Audio.VvvfSound
 {
     public class GenerateVVVFAudio
     {

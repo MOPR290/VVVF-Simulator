@@ -24,15 +24,15 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
     /// <summary>
     /// Mascon.xaml の相互作用ロジック
     /// </summary>
-    public partial class RealTime_Mascon_Window : Window
+    public partial class MasconWindow : Window
     {
         RealTimeParameter realTime_Parameter;
-        public RealTime_Mascon_Window(RealTimeParameter parameter)
+        public MasconWindow(RealTimeParameter parameter)
         {
             realTime_Parameter = parameter;
 
             InitializeComponent();
-            set_Stat(0);
+            SetState(0);
             DataContext = view_model;
         }
 
@@ -43,22 +43,22 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
                 while (!realTime_Parameter.quit)
                 {
                     System.Threading.Thread.Sleep(20);
-                    view_model.sine_freq = realTime_Parameter.control_values.get_Video_Sine_Freq();
-                    view_model.pulse_state = get_Pulse_Name();
+                    view_model.sine_freq = realTime_Parameter.Control.get_Video_Sine_Freq();
+                    view_model.pulse_state = GetPulseName();
                 }
             });
             Task.Run(() => {
                 while (!realTime_Parameter.quit)
                 {
-                    VvvfValues solve_control = realTime_Parameter.control_values.Clone();
+                    VvvfValues solve_control = realTime_Parameter.Control.Clone();
                     solve_control.set_Allowed_Random_Freq_Move(false);
-                    double voltage = Generation.Video.ControlInfo.GenerateControlCommon.Get_Voltage_Rate(solve_control, realTime_Parameter.sound_data, false) * 100;
+                    double voltage = Generation.Video.ControlInfo.GenerateControlCommon.Get_Voltage_Rate(solve_control, realTime_Parameter.VvvfSoundData, false) * 100;
                     view_model.voltage = voltage;
                 }
             });
         }
 
-        private ViewModel view_model = new ViewModel();
+        private readonly ViewModel view_model = new ();
         public class ViewModel : ViewModelBase
         {
 
@@ -120,10 +120,10 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             }
         }
 
-        private String get_Pulse_Name()
+        private String GetPulseName()
         {
             // Recalculate
-            VvvfValues solve_control = realTime_Parameter.control_values.Clone();
+            VvvfValues solve_control = realTime_Parameter.Control.Clone();
             Task re_calculate = Task.Run(() =>
             {
                 solve_control.set_Allowed_Random_Freq_Move(false);
@@ -134,7 +134,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
                     free_run = solve_control.is_Free_Running(),
                     wave_stat = solve_control.get_Control_Frequency()
                 };
-                PwmCalculateValues calculated_Values = Yaml.VVVFSound.YamlVVVFWave.CalculateYaml(solve_control, cv, realTime_Parameter.sound_data);
+                PwmCalculateValues calculated_Values = Yaml.VVVFSound.YamlVVVFWave.CalculateYaml(solve_control, cv, realTime_Parameter.VvvfSoundData);
                 CalculatePhases(solve_control, calculated_Values, 0);
             });
             re_calculate.Wait();
@@ -202,7 +202,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             if (c == 5) view_model.P4 = brush;
         }
 
-        private void set_Stat(int at)
+        private void SetState(int at)
         {
             
             int at_abs = (at < 0) ? -at : at;
@@ -268,8 +268,8 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
 
         // Serial Port
         public string current_port = "COM3";
-        public SerialPort serialPort = new SerialPort();
-        public void Set_Config()
+        public SerialPort serialPort = new();
+        public void SetConfig()
         {
             if(current_mode == Device_Mode.PicoMascon)
             {
@@ -315,7 +315,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             if (current_stat > 5) current_stat = 5;
             if (current_stat < -5) current_stat = -5;
 
-            set_Stat(current_stat);
+            SetState(current_stat);
 
         }
         
@@ -332,7 +332,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
                     {
                         int current = Int32.Parse(read);
                         current_stat = current - 5;
-                        set_Stat(current_stat);
+                        SetState(current_stat);
                     });
                 }
                 catch (Exception)

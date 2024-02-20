@@ -2,7 +2,7 @@
 using NAudio.Wave;
 using System;
 using VvvfSimulator.Yaml.VVVFSound;
-using static VvvfSimulator.Generation.Audio.TrainSound.GenerateTrainAudio;
+using static VvvfSimulator.Generation.Audio.TrainSound.Audio;
 using static VvvfSimulator.Generation.Motor.GenerateMotorCore;
 using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
 
@@ -20,11 +20,10 @@ namespace VvvfSimulator.Generation.Audio
             public Boolean reselect { get; set; } = false;
             public Boolean free_run { get; set; } = false;
 
-            public VvvfValues control_values { get; set; } = new();
-            public YamlVvvfSoundData sound_data { get; set; } = new();
-
-            public MotorData Motor = new();
-            public YamlTrainSoundData Train_Sound_Data = YamlTrainSoundDataManage.current_data.Clone();
+            public VvvfValues Control { get; set; } = new();
+            public YamlVvvfSoundData VvvfSoundData { get; set; } = new();
+            public MotorData Motor { get; set; } = new();
+            public YamlTrainSoundData TrainSoundData { get; set; } = YamlTrainSoundDataManage.CurrentData.Clone();
         }
 
         public static int RealTime_CheckForFreq(VvvfValues control, RealTimeParameter param, int step)

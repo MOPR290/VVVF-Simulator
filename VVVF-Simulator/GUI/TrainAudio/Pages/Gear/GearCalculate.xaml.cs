@@ -17,12 +17,12 @@ namespace VvvfSimulator.GUI.TrainAudio.Pages.Gear
     /// <summary>
     /// TrainAudio_Gear_Get_Window.xaml の相互作用ロジック
     /// </summary>
-    public partial class TrainAudio_Gear_Get_Window : Window
+    public partial class GearCalculate : Window
     {
         public int Gear1, Gear2;
         private bool no_update = true;
 
-        public TrainAudio_Gear_Get_Window(int initial_gear1 , int initial_gear2)
+        public GearCalculate(int initial_gear1 , int initial_gear2)
         {
             Gear1 = initial_gear1;
             Gear2 = initial_gear2;

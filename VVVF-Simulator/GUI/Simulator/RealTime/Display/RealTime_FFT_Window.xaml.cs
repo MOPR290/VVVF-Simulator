@@ -69,8 +69,8 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Display
         {
             
 
-            VvvfValues control = _Parameter.control_values.Clone();
-            YamlVvvfSoundData ysd = _Parameter.sound_data;
+            VvvfValues control = _Parameter.Control.Clone();
+            YamlVvvfSoundData ysd = _Parameter.VvvfSoundData;
 
             control.set_Sine_Time(0);
             control.set_Saw_Time(0);

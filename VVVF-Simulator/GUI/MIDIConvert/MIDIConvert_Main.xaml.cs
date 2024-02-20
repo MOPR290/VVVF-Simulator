@@ -72,7 +72,7 @@ namespace VvvfSimulator.GUI.MIDIConvert
                     {
                         try
                         {
-                            Generation.Audio.VVVF_Sound.GenerateVVVFAudio.Export_VVVF_Sound(generationBasicParameter, export_path, false, midi_Convert_Config.SampleFrequency);
+                            Generation.Audio.VvvfSound.GenerateVVVFAudio.Export_VVVF_Sound(generationBasicParameter, export_path, false, midi_Convert_Config.SampleFrequency);
                             System.Media.SystemSounds.Beep.Play();
                         }
                         catch(Exception ex)

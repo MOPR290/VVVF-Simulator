@@ -21,16 +21,6 @@
     <None Remove="GUI\Images\MIDIConvert\B_MultiTask.png" />
     <None Remove="GUI\Images\MIDIConvert\B_Spanner.png" />
     <None Remove="GUI\Images\MIDIConvert\B_Start.png" />
-    <None Remove="GUI\Images\TrainAudio_Settings\filter_normal.png" />
-    <None Remove="GUI\Images\TrainAudio_Settings\filter_over.png" />
-    <None Remove="GUI\Images\TrainAudio_Settings\gear_normal.png" />
-    <None Remove="GUI\Images\TrainAudio_Settings\gear_over.png" />
-    <None Remove="GUI\Images\TrainAudio_Settings\load_normal.png" />
-    <None Remove="GUI\Images\TrainAudio_Settings\load_over.png" />
-    <None Remove="GUI\Images\TrainAudio_Settings\motor_normal.png" />
-    <None Remove="GUI\Images\TrainAudio_Settings\motor_over.png" />
-    <None Remove="GUI\Images\TrainAudio_Settings\save_normal.png" />
-    <None Remove="GUI\Images\TrainAudio_Settings\save_over.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,19 +37,6 @@
   <ItemGroup>
     <Resource Include="GUI\Images\MIDIConvert\B_Folder_Opend.png" />
     <Resource Include="GUI\Images\MIDIConvert\B_MIDI_Document.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="GUI\Images\TrainAudio_Settings\filter_normal.png" />
-    <Resource Include="GUI\Images\TrainAudio_Settings\filter_over.png" />
-    <Resource Include="GUI\Images\TrainAudio_Settings\gear_normal.png" />
-    <Resource Include="GUI\Images\TrainAudio_Settings\gear_over.png" />
-    <Resource Include="GUI\Images\TrainAudio_Settings\load_normal.png" />
-    <Resource Include="GUI\Images\TrainAudio_Settings\load_over.png" />
-    <Resource Include="GUI\Images\TrainAudio_Settings\motor_normal.png" />
-    <Resource Include="GUI\Images\TrainAudio_Settings\motor_over.png" />
-    <Resource Include="GUI\Images\TrainAudio_Settings\save_normal.png" />
-    <Resource Include="GUI\Images\TrainAudio_Settings\save_over.png" />
   </ItemGroup>
 
   <ItemGroup>

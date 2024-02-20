@@ -5,7 +5,7 @@ using VvvfSimulator.Properties;
 using VvvfSimulator.Generation.Audio.TrainSound;
 using VvvfSimulator.Yaml.VVVFSound;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
-using static VvvfSimulator.Generation.Audio.TrainSound.GenerateTrainAudio;
+using static VvvfSimulator.Generation.Audio.TrainSound.Audio;
 using static VvvfSimulator.Generation.Motor.GenerateMotorCore;
 using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
 using static VvvfSimulator.Generation.Audio.TrainSound.AudioFilter;
@@ -13,11 +13,11 @@ using System.Windows;
 
 namespace VvvfSimulator.Generation.Audio.TrainSound
 {
-    unsafe public class RealTimeTrainAudio
+    unsafe public class RealTime
     {
         //---------- TRAIN SOUND --------------
         static readonly int calcCount = 512;
-        private static int RealTime_Train_Generation_Calculate(BufferedWaveProvider provider, YamlVvvfSoundData sound_data, VvvfValues control, RealTimeParameter realTime_Parameter)
+        private static int Calculate(BufferedWaveProvider provider, YamlVvvfSoundData sound_data, VvvfValues control, RealTimeParameter realTime_Parameter)
         {
             while (true)
             {
@@ -30,7 +30,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
                     control.add_Saw_Time(1.0 / 192000.0);
                     control.Add_Generation_Current_Time(1.0 / 192000.0);
 
-                    double value = CalculateTrainSound(control, sound_data , realTime_Parameter.Motor, realTime_Parameter.Train_Sound_Data);
+                    double value = CalculateTrainSound(control, sound_data , realTime_Parameter.Motor, realTime_Parameter.TrainSoundData);
                     
                     byte[] soundSample = BitConverter.GetBytes((float)value / 512);
                     if (!BitConverter.IsLittleEndian) Array.Reverse(soundSample);
@@ -41,40 +41,41 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             }
         }
 
-        public static void RealTime_Train_Generation(YamlVvvfSoundData ysd, RealTimeParameter realTime_Parameter)
+        public static void Generate(YamlVvvfSoundData ysd, RealTimeParameter parameter)
         {
             int SamplingFrequency = 192000;
 
-            realTime_Parameter.quit = false;
-            realTime_Parameter.sound_data = ysd;
-            realTime_Parameter.Motor = new MotorData() { 
+            parameter.quit = false;
+            parameter.VvvfSoundData = ysd;
+            parameter.Motor = new MotorData() { 
                 SIM_SAMPLE_FREQ = SamplingFrequency ,
-                motor_Specification = realTime_Parameter.Train_Sound_Data.Motor_Specification.Clone(),
+                motor_Specification = parameter.TrainSoundData.MotorSpec.Clone(),
             };
 
-            YamlTrainSoundData thd = realTime_Parameter.Train_Sound_Data;
+            YamlTrainSoundData thd = parameter.TrainSoundData;
 
             VvvfValues control = new();
             control.reset_all_variables();
             control.reset_control_variables();
-            realTime_Parameter.control_values = control;
+            parameter.Control = control;
 
             while (true)
             {
                 var bufferedWaveProvider = new BufferedWaveProvider(WaveFormat.CreateIeeeFloatWaveFormat(SamplingFrequency,1));
-                var monauralFilteredProvider = new MonauralFilter(bufferedWaveProvider.ToSampleProvider(), thd.Get_NFilters());
-                var convolutionFilteredProvider = ImpulseResponse.FromSample(monauralFilteredProvider, calcCount);
+                ISampleProvider sampleProvider = bufferedWaveProvider.ToSampleProvider();
+                if (thd.UseFilteres) sampleProvider = new MonauralFilter(sampleProvider, thd.GetFilteres(SamplingFrequency));
+                if (thd.UseImpulseResponse) sampleProvider = ImpulseResponse.FromSample(sampleProvider, calcCount, thd.ImpulseResponse);
 
                 var mmDevice = new MMDeviceEnumerator().GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
                 IWavePlayer wavPlayer = new WasapiOut(mmDevice, AudioClientShareMode.Shared, false, 0);
 
-                wavPlayer.Init(convolutionFilteredProvider);
+                wavPlayer.Init(sampleProvider);
                 wavPlayer.Play();
 
                 int stat;
                 try
                 {
-                    stat = RealTime_Train_Generation_Calculate(bufferedWaveProvider, ysd, control, realTime_Parameter);
+                    stat = Calculate(bufferedWaveProvider, ysd, control, parameter);
                 }
                 catch
                 {

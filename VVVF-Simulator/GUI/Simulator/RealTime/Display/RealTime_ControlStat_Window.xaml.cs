@@ -76,18 +76,18 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Display
 
             if(_Style == RealTime_ControlStat_Style.Original)
             {
-                VvvfValues control = _Paremter.control_values.Clone();
+                VvvfValues control = _Paremter.Control.Clone();
                 image = Generation.Video.ControlInfo.GenerateControlOriginal.Get_Control_Original_Image(
                     control,
-                    _Paremter.control_values.get_Sine_Freq() == 0
+                    _Paremter.Control.get_Sine_Freq() == 0
                 );
             }
             else
             {
-                VvvfValues control = _Paremter.control_values.Clone();
+                VvvfValues control = _Paremter.Control.Clone();
                 image = Generation.Video.ControlInfo.GenerateControlOriginal2.Get_Control_Original2_Image(
                     control,
-                    _Paremter.sound_data,
+                    _Paremter.VvvfSoundData,
                     _ControlPrecise
                 );
             }

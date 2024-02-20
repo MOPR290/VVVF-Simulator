@@ -38,7 +38,7 @@ namespace VvvfSimulator.GUI.MIDIConvert
             String? tag = enableButton.Tag.ToString();
             if(tag == null) return;
 
-            if(tag.Equals("MultiThread")) config.MultiThread = enableButton.GetEnabled();
+            if(tag.Equals("MultiThread")) config.MultiThread = enableButton.IsEnabled();
         }
     }
 }
