@@ -15,25 +15,16 @@ namespace VvvfSimulator.Yaml.TrainAudio_Setting
     {
         public class YamlTrainSoundData
         {
-            public List<HarmonicData> GearSound { get; set; } = new List<HarmonicData>()
-            {
-                new() {Harmonic = 14, Amplitude = new HarmonicData.HarmonicDataAmplitude{Start=0,StartValue=0.1,End=60,EndValue=0.2,MinimumValue = 0,MaximumValue=0.2},Disappear = 10000},
-                new() {Harmonic = 99, Amplitude = new HarmonicData.HarmonicDataAmplitude{Start=0,StartValue=0.1,End=60,EndValue=0.2,MinimumValue = 0,MaximumValue=0.2},Disappear = 10000},
-            };
-            public List<HarmonicData> HarmonicSound { get; set; } = new List<HarmonicData>()
-            {
-                new() {Harmonic = 1, Amplitude = new HarmonicData.HarmonicDataAmplitude{Start=0,StartValue=0.1,End=60,EndValue=0.2,MinimumValue = 0,MaximumValue=0.2},Disappear = 10000},
-                new() {Harmonic = 5, Amplitude = new HarmonicData.HarmonicDataAmplitude{Start=0,StartValue=0.1,End=60,EndValue=0.2,MinimumValue = 0,MaximumValue=0.2},Disappear = 10000},
-                new() {Harmonic = 7, Amplitude = new HarmonicData.HarmonicDataAmplitude{Start=0,StartValue=0.1,End=60,EndValue=0.2,MinimumValue = 0,MaximumValue=0.2},Disappear = 10000},
-            };
+            public List<HarmonicData> GearSound { get; set; } = [];
+            public List<HarmonicData> HarmonicSound { get; set; } = [];
             public bool UseFilteres { get; set; } = true;
-            public List<SoundFilter> Filteres { get; set; } = new List<SoundFilter>()
-            {
+            public List<SoundFilter> Filteres { get; set; } =
+            [
                 new(SoundFilter.FilterType.HighPassFilter,-3,50,2f),
                 new(SoundFilter.FilterType.LowPassFilter,-3,900,2f),
-            };
+            ];
             public bool UseImpulseResponse { get; set; } = true;
-            public float[] ImpulseResponse { get; set; } = ImpulseResponseSample.data;
+            public float[] ImpulseResponse { get; set; } = Generation.Audio.TrainSound.ImpulseResponse.ReadResourceAudioFileSample(Generation.Audio.TrainSound.ImpulseResponse.SampleIrPath);
             public MotorSpecification MotorSpec { get; set; } = new MotorSpecification();
             public double MotorVolumeDb { get; set; } = 0.0;
             public double TotalVolumeDb { get; set; } = -0.5;
@@ -143,23 +134,19 @@ namespace VvvfSimulator.Yaml.TrainAudio_Setting
             }
             public void SetCalculatedGearHarmonics(int Gear1, int Gear2)
             {
-                List<HarmonicData> GearHarmonicsList = new();
-
-                HarmonicData.HarmonicDataAmplitude amp_Strong = new() { Start = 0, StartValue = 0x0, End = 40, EndValue = 0.1, MinimumValue = 0, MaximumValue = 0.1 };
-                HarmonicData.HarmonicDataAmplitude amp_Weak = new() { Start = 0, StartValue = 0x0, End = 40, EndValue = 0.05, MinimumValue = 0, MaximumValue = 0.05 };
-
-                double motor_r = 120 / 6 / 60.0;
+                List<HarmonicData> GearHarmonicsList = [];
+                double motor_r = 120 / Math.Pow(2, MotorSpec.NP) / 60.0;
 
                 // Sound From Gear 1
-                int[] harmonics = { 1, 3, 5, 9 };
+                double[] harmonics = [9, 5, 3, 1 / 3.0, 1, 1 / 7.0, 1 / 5.0, 1/9.0];
                 for(int i = 0; i < harmonics.Length; i++)
                 {
-                    int k = harmonics[i];
-                    GearHarmonicsList.Add(new HarmonicData { Harmonic = motor_r * Gear1 * k, Amplitude = amp_Strong, Disappear = -1 });
+                    HarmonicData.HarmonicDataAmplitude amplitude = new() { 
+                        Start = 0, StartValue = 0x0, End = 40, EndValue = 0.1 * Math.Pow(1.4, -i), MinimumValue = 0, MaximumValue = 0.1 
+                    };
+                    double k = harmonics[i];
+                    GearHarmonicsList.Add(new HarmonicData { Harmonic = motor_r * Gear1 * k, Amplitude = amplitude, Disappear = -1 });
                 }
-
-                // IDK
-                GearHarmonicsList.Add(new HarmonicData { Harmonic = motor_r * Gear1 * Gear2 / 9, Amplitude = amp_Weak, Disappear = -1 });
 
                 GearSound = new List<HarmonicData>(GearHarmonicsList);
             }

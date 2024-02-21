@@ -1,44 +1,53 @@
 ﻿using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
+using OpenCvSharp;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using static VvvfSimulator.Generation.Audio.TrainSound.AudioFilter;
 
 namespace VvvfSimulator.Generation.Audio.TrainSound
 {
     public class ImpulseResponse
     {
+        public static float[] ReadSample(ISampleProvider sampleProvider)
+        {
+            List<float> samples = [];
+            while (true)
+            {
+                float[] read = new float[1024];
+                int read_count = sampleProvider.Read(read, 0, 1024);
+                samples.AddRange(read);
+                if (read_count < 1024) break;
+            }
 
+            float[] samples_float = [.. samples];
+
+            return samples_float;
+        }
         public static float[] ReadAudioFileSample(string path)
         {
             // 192000 kHz
             AudioFileReader audioReader = new(path);
             ISampleProvider monoProvider = audioReader.ToMono();
             WdlResamplingSampleProvider resampler = new(monoProvider, 192000);
+            return ReadSample(resampler);
+        }
 
-            List<float> samples = new();
-            while (true)
-            {
-                float[] read = new float[1024];
-                int read_count = resampler.Read(read, 0, 1024);
-                samples.AddRange(read);
-                if (read_count < 1024) break;
-            }
+        public static string SampleIrPath { get; set; } = "VvvfSimulator.Generation.Audio.TrainSound.IrSample.sample6.wav";
+        public static float[] ReadResourceAudioFileSample(string path)
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            Stream? resource = assembly.GetManifestResourceStream(path);
 
-            float[] samples_float = samples.ToArray();
+            if (resource == null) return [1];
 
-            return samples_float;
+            WaveFileReader waveReader = new(resource);
+            ISampleProvider monoProvider = waveReader.ToSampleProvider().ToMono();
+            WdlResamplingSampleProvider resampler = new(monoProvider, 192000);
+            return ReadSample(resampler);
         }
     
-        public static CppConvolutionFilter FromAudio(ISampleProvider provider, int block, string path)
-        {
-
-            float[] samples_float = ReadAudioFileSample(path);
-            CppConvolutionFilter cppConvolutionFilter = new(provider);
-            cppConvolutionFilter.Init(block, samples_float);
-
-            return cppConvolutionFilter;
-        }
-
         public static CppConvolutionFilter FromSample(ISampleProvider provider, int block, float[] samples)
         {
             CppConvolutionFilter cppConvolutionFilter = new(provider);
@@ -46,11 +55,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             return cppConvolutionFilter;
         }
 
-        public static CppConvolutionFilter FromSample(ISampleProvider provider,int block)
-        {
-            CppConvolutionFilter cppConvolutionFilter = new(provider);
-            cppConvolutionFilter.Init(block, ImpulseResponseSample.data);
-            return cppConvolutionFilter;
-        }
+        
+
     }
 }

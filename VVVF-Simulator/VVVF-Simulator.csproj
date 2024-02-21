@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
     <RootNamespace>VvvfSimulator</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
@@ -14,6 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Generation\Audio\TrainSound\IrSample\sample6.wav" />
     <None Remove="GUI\Images\Enable_Button\B_Disabled.png" />
     <None Remove="GUI\Images\Enable_Button\B_Enabled.png" />
     <None Remove="GUI\Images\MIDIConvert\B_Folder_Opend.png" />
@@ -32,6 +33,10 @@
     <Resource Include="GUI\Images\VVVF_Settings\2-level.png" />
     <Resource Include="GUI\Images\VVVF_Settings\3-level.png" />
     <Content Include="vvvf-simulator.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Generation\Audio\TrainSound\IrSample\sample6.wav" />
   </ItemGroup>
 
   <ItemGroup>

@@ -26,7 +26,7 @@ namespace VvvfSimulator.GUI.TrainAudio.Pages.Mixer
             };
             if (dialog.ShowDialog() == false)
             {
-                data.ImpulseResponse = ImpulseResponseSample.data;
+                data.ImpulseResponse = Generation.Audio.TrainSound.ImpulseResponse.ReadResourceAudioFileSample(Generation.Audio.TrainSound.ImpulseResponse.SampleIrPath);
                 MessageBox.Show("Reset to default.", "Info", MessageBoxButton.OK, MessageBoxImage.Information); return;
             }
 

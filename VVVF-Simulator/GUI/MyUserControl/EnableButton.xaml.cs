@@ -25,7 +25,7 @@ namespace VvvfSimulator.GUI.MyUserControl
             InitializeComponent();
         }
 
-        private void setImg()
+        private void SetImg()
         {
             if (Enabled) StatImg.Source = new BitmapImage(new Uri("pack://application:,,,/GUI/Images/Enable_Button/B_Enabled.png", UriKind.Absolute));
             else StatImg.Source = new BitmapImage(new Uri("pack://application:,,,/GUI/Images/Enable_Button/B_Disabled.png", UriKind.Absolute));
@@ -37,23 +37,17 @@ namespace VvvfSimulator.GUI.MyUserControl
         private void StatImg_MouseUp(object sender, MouseButtonEventArgs e)
         {
             Enabled = !Enabled;
-            setImg();
-
-            if (OnClicked != null)
-            {
-                OnClicked(this, EventArgs.Empty);
-            }
-
-            
+            SetImg();
+            OnClicked?.Invoke(this, EventArgs.Empty);
         }
 
-        public void SetEnabled(bool enabled)
+        public void SetToggled(bool enabled)
         {
             Enabled = enabled;
-            setImg();
+            SetImg();
         }
 
-        public bool IsEnabled()
+        public bool IsToggled()
         {
             return Enabled;
         }

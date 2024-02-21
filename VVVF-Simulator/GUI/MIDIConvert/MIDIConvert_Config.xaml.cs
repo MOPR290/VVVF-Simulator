@@ -27,7 +27,7 @@ namespace VvvfSimulator.GUI.MIDIConvert
             InitializeComponent();
             this.config = config;
 
-            BtnMultiThread.SetEnabled(config.MultiThread);
+            BtnMultiThread.SetToggled(config.MultiThread);
 
         }
 
@@ -38,7 +38,7 @@ namespace VvvfSimulator.GUI.MIDIConvert
             String? tag = enableButton.Tag.ToString();
             if(tag == null) return;
 
-            if(tag.Equals("MultiThread")) config.MultiThread = enableButton.IsEnabled();
+            if(tag.Equals("MultiThread")) config.MultiThread = enableButton.IsToggled();
         }
     }
 }

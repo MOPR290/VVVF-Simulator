@@ -33,8 +33,8 @@ namespace VvvfSimulator.GUI.TrainAudio.Pages.Mixer
         {
             MasterVolume.Value = data.TotalVolumeDb;
             MotorVolume.Value = data.MotorVolumeDb;
-            EnableFrequencyFilter.SetEnabled(data.UseFilteres);
-            EnableIrFilter.SetEnabled(data.UseImpulseResponse);
+            EnableFrequencyFilter.SetToggled(data.UseFilteres);
+            EnableIrFilter.SetToggled(data.UseImpulseResponse);
         }
 
         private void MasterVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -49,12 +49,12 @@ namespace VvvfSimulator.GUI.TrainAudio.Pages.Mixer
 
         private void EnableFrequencyFilter_OnClicked(object sender, EventArgs e)
         {
-            data.UseFilteres = EnableFrequencyFilter.IsEnabled();
+            data.UseFilteres = EnableFrequencyFilter.IsToggled();
         }
 
         private void EnableIrFilter_OnClicked(object sender, EventArgs e)
         {
-            data.UseImpulseResponse = EnableIrFilter.IsEnabled();
+            data.UseImpulseResponse = EnableIrFilter.IsToggled();
         }
     }
 }
