@@ -79,7 +79,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Display
                 VvvfValues control = _Paremter.Control.Clone();
                 image = Generation.Video.ControlInfo.GenerateControlOriginal.Get_Control_Original_Image(
                     control,
-                    _Paremter.Control.get_Sine_Freq() == 0
+                    _Paremter.Control.GetSineFrequency() == 0
                 );
             }
             else

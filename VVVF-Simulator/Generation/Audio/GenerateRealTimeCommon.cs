@@ -28,63 +28,63 @@ namespace VvvfSimulator.Generation.Audio
 
         public static int RealTime_CheckForFreq(VvvfValues control, RealTimeParameter param, int step)
         {
-            control.set_Braking(param.braking);
-            control.set_Mascon_Off(param.free_run);
+            control.SetBraking(param.braking);
+            control.SetMasconOff(param.free_run);
 
             double change_amo = param.change_amount;
 
-            double sin_new_angle_freq = control.get_Sine_Angle_Freq();
+            double sin_new_angle_freq = control.GetSineAngleFrequency();
             sin_new_angle_freq += change_amo * step;
             if (sin_new_angle_freq < 0) sin_new_angle_freq = 0;
 
-            if (!control.is_Free_Running())
+            if (!control.IsFreeRun())
             {
-                if (control.is_Allowed_Sine_Time_Change())
+                if (control.IsSineTimeChangeAllowed())
                 {
                     if (sin_new_angle_freq != 0)
                     {
-                        double amp = control.get_Sine_Angle_Freq() / sin_new_angle_freq;
-                        control.multi_Sine_Time(amp);
+                        double amp = control.GetSineAngleFrequency() / sin_new_angle_freq;
+                        control.MultiplySineTime(amp);
                     }
                     else
-                        control.set_Sine_Time(0);
+                        control.SetSineTime(0);
                 }
 
-                control.set_Control_Frequency(control.get_Sine_Freq());
-                control.set_Sine_Angle_Freq(sin_new_angle_freq);
+                control.SetControlFrequency(control.GetSineFrequency());
+                control.SetSineAngleFrequency(sin_new_angle_freq);
             }
 
 
             if (param.quit) return 0;
             else if (param.reselect) return 1;
 
-            if (!control.is_Mascon_Off()) // mascon on
+            if (!control.IsMasconOff()) // mascon on
             {
-                if (!control.is_Free_Running())
-                    control.set_Control_Frequency(control.get_Sine_Freq());
+                if (!control.IsFreeRun())
+                    control.SetControlFrequency(control.GetSineFrequency());
                 else
                 {
-                    double freq_change = control.get_Free_Freq_Change() * 1.0 / 192000 * step;
-                    double final_freq = control.get_Control_Frequency() + freq_change;
+                    double freq_change = control.GetFreeFrequencyChange() * 1.0 / 192000 * step;
+                    double final_freq = control.GetControlFrequency() + freq_change;
 
-                    if (control.get_Sine_Freq() <= final_freq)
+                    if (control.GetSineFrequency() <= final_freq)
                     {
-                        control.set_Control_Frequency(control.get_Sine_Freq());
-                        control.set_Free_Running(false);
+                        control.SetControlFrequency(control.GetSineFrequency());
+                        control.SetFreeRun(false);
                     }
                     else
                     {
-                        control.set_Control_Frequency(final_freq);
-                        control.set_Free_Running(true);
+                        control.SetControlFrequency(final_freq);
+                        control.SetFreeRun(true);
                     }
                 }
             }
             else
             {
-                double freq_change = control.get_Free_Freq_Change() * 1.0 / 192000 * step;
-                double final_freq = control.get_Control_Frequency() - freq_change;
-                control.set_Control_Frequency(final_freq > 0 ? final_freq : 0);
-                control.set_Free_Running(true);
+                double freq_change = control.GetFreeFrequencyChange() * 1.0 / 192000 * step;
+                double final_freq = control.GetControlFrequency() - freq_change;
+                control.SetControlFrequency(final_freq > 0 ? final_freq : 0);
+                control.SetFreeRun(true);
             }
 
             return -1;

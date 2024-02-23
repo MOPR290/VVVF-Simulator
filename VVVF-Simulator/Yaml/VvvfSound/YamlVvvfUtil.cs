@@ -31,14 +31,14 @@ namespace VvvfSimulator.Yaml.VVVFSound
             parameter.cut_off_amp = -1;
 
             VvvfValues control = new();
-            control.reset_all_variables();
-            control.reset_control_variables();
-            control.set_Sine_Angle_Freq(target_freq * Math.PI * 2);
-            control.set_Control_Frequency(target_freq);
-            control.set_Mascon_Off(false);
-            control.set_Free_Running(false);
-            control.set_Braking(brake);
-            control.set_Allowed_Random_Freq_Move(false);
+            control.ResetMathematicValues();
+            control.ResetControlValues();
+            control.SetSineAngleFrequency(target_freq * Math.PI * 2);
+            control.SetControlFrequency(target_freq);
+            control.SetMasconOff(false);
+            control.SetFreeRun(false);
+            control.SetBraking(brake);
+            control.SetRandomFrequencyMoveAllowed(false);
 
             double desire_voltage = 1.0 / max_freq * target_freq * 100;
 

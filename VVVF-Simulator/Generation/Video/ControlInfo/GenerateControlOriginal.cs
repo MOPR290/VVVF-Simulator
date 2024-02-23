@@ -21,14 +21,14 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
     {
         private static String[] get_Pulse_Name(VvvfValues control)
         {
-            PulseModeNames mode = control.get_Video_Pulse_Mode().pulse_name;
+            PulseModeNames mode = control.GetVideoPulseMode().pulse_name;
             //Not in sync
             if (mode == PulseModeNames.Async )
             {
                 string[] names = new string[3];
                 int count = 0;
 
-                CarrierFreq carrier_freq_data = control.get_Video_Carrier_Freq_Data();
+                CarrierFreq carrier_freq_data = control.GetVideoCarrierFrequency();
 
                 names[count] = String.Format("Async - " + carrier_freq_data.base_freq.ToString("F2")).PadLeft(6);
                 count++;
@@ -39,9 +39,9 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                     count++;
                 }
 
-                if (control.get_Video_Dipolar() != -1)
+                if (control.GetVideoDipolar() != -1)
                 {
-                    names[count] = String.Format("Dipolar : " + control.get_Video_Dipolar().ToString("F0")).PadLeft(6);
+                    names[count] = String.Format("Dipolar : " + control.GetVideoDipolar().ToString("F0")).PadLeft(6);
                     //count++;
                 }
                 return names;
@@ -84,8 +84,8 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
 
                 mode_name += mode_name_type[1] + " Pulse";
 
-                if (control.get_Video_Dipolar() == -1) return new string[] { mode_name };
-                else return new string[] { mode_name, "Dipolar : " + control.get_Video_Dipolar().ToString("F1") };
+                if (control.GetVideoDipolar() == -1) return new string[] { mode_name };
+                else return new string[] { mode_name, "Dipolar : " + control.GetVideoDipolar().ToString("F1") };
             }
         }
 
@@ -170,11 +170,11 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             Graphics g = Graphics.FromImage(image);
 
             Color gradation_color;
-            if (control.is_Free_Running())
+            if (control.IsFreeRun())
             {
                 gradation_color = Color.FromArgb(0xE0, 0xFD, 0xE0);
             }
-            else if (!control.is_Braking())
+            else if (!control.IsBraking())
             {
                 gradation_color = Color.FromArgb(0xE0, 0xE0, 0xFD);
             }
@@ -245,7 +245,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             g.FillRectangle(new SolidBrush(Color.FromArgb(200, 200, 255)), 0, 226, image_width, 291 - 226);
             g.DrawString("Sine Freq[Hz]", title_fnt, title_brush, 17, 231);
             g.FillRectangle(Brushes.Blue, 0, 291, image_width, 8);
-            double sine_freq = control.get_Video_Sine_Freq();
+            double sine_freq = control.GetVideoSineFrequency();
             if (!final_show)
                 g.DrawString(String.Format("{0:f2}", sine_freq).PadLeft(6), val_fnt, letter_brush, 17, 323);
 
@@ -253,19 +253,19 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             g.DrawString("Sine Amplitude[%]", title_fnt, title_brush, 17, 452);
             g.FillRectangle(Brushes.Blue, 0, 513, image_width, 8);
             if (!final_show)
-                g.DrawString(String.Format("{0:f2}", control.get_Video_Sine_Amplitude() * 100).PadLeft(6), val_fnt, letter_brush, 17, 548);
+                g.DrawString(String.Format("{0:f2}", control.GetVideoSineAmplitude() * 100).PadLeft(6), val_fnt, letter_brush, 17, 548);
 
             g.FillRectangle(new SolidBrush(Color.FromArgb(240, 240, 240)), 0, 669, image_width, 735 - 669);
             g.DrawString("Freerun", title_fnt, title_brush, 17, 674);
             g.FillRectangle(Brushes.LightGray, 0, 735, image_width, 8);
             if (!final_show)
-                g.DrawString(control.is_Mascon_Off().ToString(), val_fnt, letter_brush, 17, 750);
+                g.DrawString(control.IsMasconOff().ToString(), val_fnt, letter_brush, 17, 750);
 
             g.FillRectangle(new SolidBrush(Color.FromArgb(240, 240, 240)), 0, 847, image_width, 913 - 847);
             g.DrawString("Brake", title_fnt, title_brush, 17, 852);
             g.FillRectangle(Brushes.LightGray, 0, 913, image_width, 8);
             if (!final_show)
-                g.DrawString(control.is_Braking().ToString(), val_fnt, letter_brush, 17, 930);
+                g.DrawString(control.IsBraking().ToString(), val_fnt, letter_brush, 17, 930);
 
             g.Dispose();
 
@@ -279,8 +279,8 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             ProgressData progressData = generationBasicParameter.progressData;
 
             VvvfValues control = new();
-            control.reset_control_variables();
-            control.reset_all_variables();
+            control.ResetControlValues();
+            control.ResetMathematicValues();
 
             int fps = 60;
 
@@ -305,16 +305,16 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             {
                 ControlStatus cv = new()
                 {
-                    brake = control.is_Braking(),
-                    mascon_on = !control.is_Mascon_Off(),
-                    free_run = control.is_Free_Running(),
-                    wave_stat = control.get_Control_Frequency()
+                    brake = control.IsBraking(),
+                    mascon_on = !control.IsMasconOff(),
+                    free_run = control.IsFreeRun(),
+                    wave_stat = control.GetControlFrequency()
                 };
                 PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, vvvfData);
                 _ = CalculatePhases(control, calculated_Values, 0);
 
-                control.set_Sine_Time(0);
-                control.set_Saw_Time(0);
+                control.SetSineTime(0);
+                control.SetSawTime(0);
                 Bitmap image = Get_Control_Original_Image(control, final_show);
                 MemoryStream ms = new();
                 image.Save(ms, ImageFormat.Png);

@@ -43,7 +43,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
                 while (!realTime_Parameter.quit)
                 {
                     System.Threading.Thread.Sleep(20);
-                    view_model.sine_freq = realTime_Parameter.Control.get_Video_Sine_Freq();
+                    view_model.sine_freq = realTime_Parameter.Control.GetVideoSineFrequency();
                     view_model.pulse_state = GetPulseName();
                 }
             });
@@ -51,7 +51,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
                 while (!realTime_Parameter.quit)
                 {
                     VvvfValues solve_control = realTime_Parameter.Control.Clone();
-                    solve_control.set_Allowed_Random_Freq_Move(false);
+                    solve_control.SetRandomFrequencyMoveAllowed(false);
                     double voltage = Generation.Video.ControlInfo.GenerateControlCommon.Get_Voltage_Rate(solve_control, realTime_Parameter.VvvfSoundData, false) * 100;
                     view_model.voltage = voltage;
                 }
@@ -126,25 +126,25 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             VvvfValues solve_control = realTime_Parameter.Control.Clone();
             Task re_calculate = Task.Run(() =>
             {
-                solve_control.set_Allowed_Random_Freq_Move(false);
+                solve_control.SetRandomFrequencyMoveAllowed(false);
                 ControlStatus cv = new ControlStatus
                 {
-                    brake = solve_control.is_Braking(),
-                    mascon_on = !solve_control.is_Mascon_Off(),
-                    free_run = solve_control.is_Free_Running(),
-                    wave_stat = solve_control.get_Control_Frequency()
+                    brake = solve_control.IsBraking(),
+                    mascon_on = !solve_control.IsMasconOff(),
+                    free_run = solve_control.IsFreeRun(),
+                    wave_stat = solve_control.GetControlFrequency()
                 };
                 PwmCalculateValues calculated_Values = Yaml.VVVFSound.YamlVVVFWave.CalculateYaml(solve_control, cv, realTime_Parameter.VvvfSoundData);
                 CalculatePhases(solve_control, calculated_Values, 0);
             });
             re_calculate.Wait();
 
-            PulseMode mode_p = solve_control.get_Video_Pulse_Mode();
+            PulseMode mode_p = solve_control.GetVideoPulseMode();
             PulseModeNames mode = mode_p.pulse_name;
             //Not in sync
             if (mode == PulseModeNames.Async)
             {
-                CarrierFreq carrier_freq_data = solve_control.get_Video_Carrier_Freq_Data();
+                CarrierFreq carrier_freq_data = solve_control.GetVideoCarrierFrequency();
                 String default_s = String.Format(carrier_freq_data.base_freq.ToString("F2"));
                 return default_s;
             }

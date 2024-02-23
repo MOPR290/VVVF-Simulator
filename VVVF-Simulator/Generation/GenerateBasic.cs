@@ -20,13 +20,13 @@ namespace VvvfSimulator.Generation
         /// <returns> One cycle of UVW </returns>
         public static WaveValues[] Get_UVW_Cycle(VvvfValues Control, YamlVvvfSoundData Sound, double InitialPhase, int Division, bool Precise)
         {
-            double _F = Control.get_Sine_Freq();
+            double _F = Control.GetSineFrequency();
             double _K = (_F > 0.01 && _F < 1) ? 1 / _F : 1;
             int Count = Precise ? (int)Math.Round(Division * _K) : Division;
             double InvDeltaT = Count * _F;
 
-            Control.set_Sine_Time(0);
-            Control.set_Saw_Time(0);
+            Control.SetSineTime(0);
+            Control.SetSawTime(0);
 
             return Get_UVW(Control, Sound, InitialPhase, InvDeltaT, Count);
         }
@@ -42,13 +42,13 @@ namespace VvvfSimulator.Generation
         /// <returns> WaveForm of UVW in 1 sec.</returns>
         public static WaveValues[] Get_UVW_Sec(VvvfValues Control, YamlVvvfSoundData Sound, double InitialPhase, int Division, bool Precise)
         {
-            double _F = Control.get_Sine_Freq();
+            double _F = Control.GetSineFrequency();
             double _K = (_F > 0.01 && _F < 1) ? 1 / _F : 1;
             int Count = Precise ? (int)Math.Round(Division * _K) : Division;
             double InvDeltaT = Count;
 
-            Control.set_Sine_Time(0);
-            Control.set_Saw_Time(0);
+            Control.SetSineTime(0);
+            Control.SetSawTime(0);
 
             return Get_UVW(Control, Sound, InitialPhase, InvDeltaT, Count);
         }
@@ -57,17 +57,17 @@ namespace VvvfSimulator.Generation
         {
             ControlStatus cv = new()
             {
-                brake = Control.is_Braking(),
-                mascon_on = !Control.is_Mascon_Off(),
-                free_run = Control.is_Free_Running(),
-                wave_stat = Control.get_Control_Frequency()
+                brake = Control.IsBraking(),
+                mascon_on = !Control.IsMasconOff(),
+                free_run = Control.IsFreeRun(),
+                wave_stat = Control.GetControlFrequency()
             };
             PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(Control, cv, Sound);
             WaveValues[] PWM_Array = new WaveValues[Count + 1];
             for (int i = 0; i <= Count; i++)
             {
-                Control.set_Sine_Time(i / InvDeltaT);
-                Control.set_Saw_Time(i / InvDeltaT);
+                Control.SetSineTime(i / InvDeltaT);
+                Control.SetSawTime(i / InvDeltaT);
                 WaveValues value = VvvfCalculate.CalculatePhases(Control, calculated_Values, InitialPhase);
                 PWM_Array[i] = value;
             }

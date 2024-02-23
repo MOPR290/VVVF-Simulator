@@ -41,7 +41,7 @@ namespace VvvfSimulator.Generation.Video.FFT
         }
         public static Bitmap Get_FFT_Image(VvvfValues control, YamlVvvfSoundData sound)
         {
-            control.set_Allowed_Random_Freq_Move(false);
+            control.SetRandomFrequencyMoveAllowed(false);
             WaveValues[] PWM_Array = GenerateBasic.Get_UVW_Sec(control, sound, MyMath.M_PI_6, (int)Math.Pow(2,pow) - 1, false);
             Complex[] FFT = FFTNAudio(ref PWM_Array);
 
@@ -72,10 +72,10 @@ namespace VvvfSimulator.Generation.Video.FFT
             ProgressData progressData = generationBasicParameter.progressData;
 
             VvvfValues control = new();
-            control.reset_control_variables();
-            control.reset_all_variables();
+            control.ResetControlValues();
+            control.ResetMathematicValues();
 
-            control.set_Allowed_Random_Freq_Move(false);
+            control.SetRandomFrequencyMoveAllowed(false);
 
             int fps = 60;
 
@@ -104,8 +104,8 @@ namespace VvvfSimulator.Generation.Video.FFT
             while (loop)
             {
 
-                control.set_Sine_Time(0);
-                control.set_Saw_Time(0);
+                control.SetSineTime(0);
+                control.SetSawTime(0);
 
                 Bitmap image = Get_FFT_Image(control, vvvfData);
 
@@ -152,12 +152,12 @@ namespace VvvfSimulator.Generation.Video.FFT
         {
             VvvfValues control = new();
 
-            control.reset_control_variables();
-            control.reset_all_variables();
-            control.set_Allowed_Random_Freq_Move(false);
+            control.ResetControlValues();
+            control.ResetMathematicValues();
+            control.SetRandomFrequencyMoveAllowed(false);
 
-            control.set_Sine_Angle_Freq(d * MyMath.M_2PI);
-            control.set_Control_Frequency(d);
+            control.SetSineAngleFrequency(d * MyMath.M_2PI);
+            control.SetControlFrequency(d);
 
             Bitmap image = Get_FFT_Image(control, sound_data);
 

@@ -60,10 +60,10 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Display
             YamlVvvfSoundData Sound = _Parameter.VvvfSoundData;
             VvvfValues Control = _Parameter.Control.Clone();
 
-            Control.set_Saw_Time(0);
-            Control.set_Sine_Time(0);
+            Control.SetSawTime(0);
+            Control.SetSineTime(0);
 
-            Control.set_Allowed_Random_Freq_Move(false);
+            Control.SetRandomFrequencyMoveAllowed(false);
 
             int image_width = 1200;
             int image_height = 450;
@@ -72,10 +72,10 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Display
 
             ControlStatus cv = new()
             {
-                brake = Control.is_Braking(),
-                mascon_on = !Control.is_Mascon_Off(),
-                free_run = Control.is_Free_Running(),
-                wave_stat = Control.get_Control_Frequency()
+                brake = Control.IsBraking(),
+                mascon_on = !Control.IsMasconOff(),
+                free_run = Control.IsFreeRun(),
+                wave_stat = Control.GetControlFrequency()
             };
             PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(Control, cv, Sound);
             Bitmap image = Generation.Video.WaveForm.GenerateWaveFormUV.Get_WaveForm_Image(Control, calculated_Values, image_width, image_height, wave_height, 2, calculate_div,0);

@@ -32,10 +32,10 @@ namespace VvvfSimulator.Generation.Video.Hexagon
         {
             WaveValues[] PWM_Array = GenerateBasic.Get_UVW_Cycle(Control, Sound, 0, Delta, PreciseDelta);
 
-            if (Control.get_Control_Frequency() == 0)
+            if (Control.GetControlFrequency() == 0)
                 return Get_Hexagon_Original_Image(ref PWM_Array, 0, Width, Height, Thickness, ZeroVectorCircle);
 
-            Bitmap image = Get_Hexagon_Original_Image(ref PWM_Array, Control.get_Control_Frequency(), Width, Height, Thickness, ZeroVectorCircle);
+            Bitmap image = Get_Hexagon_Original_Image(ref PWM_Array, Control.GetControlFrequency(), Width, Height, Thickness, ZeroVectorCircle);
             return image;
         }
 
@@ -185,9 +185,9 @@ namespace VvvfSimulator.Generation.Video.Hexagon
             ProgressData progressData = generationBasicParameter.progressData;
 
             VvvfValues control = new();
-            control.reset_control_variables();
-            control.reset_all_variables();
-            control.set_Allowed_Random_Freq_Move(false);
+            control.ResetControlValues();
+            control.ResetMathematicValues();
+            control.SetRandomFrequencyMoveAllowed(false);
 
             Boolean draw_zero_vector_circle = circle;
 
@@ -237,8 +237,8 @@ namespace VvvfSimulator.Generation.Video.Hexagon
             {
 
 
-                control.set_Sine_Time(0);
-                control.set_Saw_Time(0);
+                control.SetSineTime(0);
+                control.SetSawTime(0);
 
                 Bitmap final_image = Get_Hexagon_Original_Image(control, vvvfData, image_width, image_height, hex_div, 2, draw_zero_vector_circle, true);
 
@@ -298,14 +298,14 @@ namespace VvvfSimulator.Generation.Video.Hexagon
         {
             VvvfValues control = new();
 
-            control.reset_control_variables();
-            control.reset_all_variables();
-            control.set_Allowed_Random_Freq_Move(false);
+            control.ResetControlValues();
+            control.ResetMathematicValues();
+            control.SetRandomFrequencyMoveAllowed(false);
 
             Boolean draw_zero_vector_circle = circle;
 
-            control.set_Sine_Angle_Freq(d * M_2PI);
-            control.set_Control_Frequency(d);
+            control.SetSineAngleFrequency(d * M_2PI);
+            control.SetControlFrequency(d);
 
             int image_width = 1000;
             int image_height = 1000;

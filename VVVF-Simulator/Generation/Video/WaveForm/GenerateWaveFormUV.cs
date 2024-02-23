@@ -47,8 +47,8 @@ namespace VvvfSimulator.Generation.Video.WaveForm
             {
                 WaveValues value = CalculatePhases(Control, PWM_Data, Math.PI / 6.0);
                 values[i] = value;
-                Control.add_Saw_Time(2 / (60.0 * Count));
-                Control.add_Sine_Time(2 / (60.0 * Count));
+                Control.AddSawTime(2 / (60.0 * Count));
+                Control.AddSineTime(2 / (60.0 * Count));
             }
             return Get_WaveForm_Image(ref values, Width, Height, WaveHeight, WaveWidth, Spacing);
         }
@@ -111,10 +111,10 @@ namespace VvvfSimulator.Generation.Video.WaveForm
             ProgressData progressData = generationBasicParameter.progressData;
 
             VvvfValues control = new();
-            control.reset_control_variables();
-            control.reset_all_variables();
+            control.ResetControlValues();
+            control.ResetMathematicValues();
 
-            control.set_Allowed_Random_Freq_Move(false);
+            control.SetRandomFrequencyMoveAllowed(false);
 
             int fps = 60;
 
@@ -160,15 +160,15 @@ namespace VvvfSimulator.Generation.Video.WaveForm
             while (loop)
             {
 
-                control.set_Sine_Time(0);
-                control.set_Saw_Time(0);
+                control.SetSineTime(0);
+                control.SetSawTime(0);
 
                 ControlStatus cv = new()
                 {
-                    brake = control.is_Braking(),
-                    mascon_on = !control.is_Mascon_Off(),
-                    free_run = control.is_Free_Running(),
-                    wave_stat = control.get_Control_Frequency()
+                    brake = control.IsBraking(),
+                    mascon_on = !control.IsMasconOff(),
+                    free_run = control.IsFreeRun(),
+                    wave_stat = control.GetControlFrequency()
                 };
                 PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, vvvfData);
 
@@ -234,9 +234,9 @@ namespace VvvfSimulator.Generation.Video.WaveForm
             ProgressData progressData = generationBasicParameter.progressData;
 
             VvvfValues control = new();
-            control.reset_control_variables();
-            control.reset_all_variables();
-            control.set_Allowed_Random_Freq_Move(false);
+            control.ResetControlValues();
+            control.ResetMathematicValues();
+            control.SetRandomFrequencyMoveAllowed(false);
 
             int fps = 60;
 
@@ -284,15 +284,15 @@ namespace VvvfSimulator.Generation.Video.WaveForm
             while (loop)
             {
 
-                control.set_Sine_Time(0);
-                control.set_Saw_Time(0);
+                control.SetSineTime(0);
+                control.SetSawTime(0);
 
                 ControlStatus cv = new()
                 {
-                    brake = control.is_Braking(),
-                    mascon_on = !control.is_Mascon_Off(),
-                    free_run = control.is_Free_Running(),
-                    wave_stat = control.get_Control_Frequency()
+                    brake = control.IsBraking(),
+                    mascon_on = !control.IsMasconOff(),
+                    free_run = control.IsFreeRun(),
+                    wave_stat = control.GetControlFrequency()
                 };
                 PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, vvvfData);
 

@@ -61,12 +61,12 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
 
         private static String get_Pulse_Name(VvvfValues control)
         {
-            PulseMode mode_p = control.get_Video_Pulse_Mode();
+            PulseMode mode_p = control.GetVideoPulseMode();
             PulseModeNames mode = mode_p.pulse_name;
             //Not in sync
             if (mode == PulseModeNames.Async)
             {
-                CarrierFreq carrier_freq_data = control.get_Video_Carrier_Freq_Data();
+                CarrierFreq carrier_freq_data = control.GetVideoCarrierFrequency();
                 String default_s = String.Format(carrier_freq_data.base_freq.ToString("F2"));
                 return default_s;
             }
@@ -122,29 +122,29 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             // CALCULATE ONE CYCLE OF PWM
             Task CycleCalcTask = Task.Run(() =>
             {
-                CycleControl.set_Allowed_Random_Freq_Move(false);
-                CycleControl.set_Sine_Time(0);
-                CycleControl.set_Saw_Time(0);
+                CycleControl.SetRandomFrequencyMoveAllowed(false);
+                CycleControl.SetSineTime(0);
+                CycleControl.SetSawTime(0);
                 CycleUVW = GenerateBasic.Get_UVW_Cycle(CycleControl, Sound, MyMath.M_PI_6, (Precise ? 120000 : 6000), Precise);
             });
             Task WaveFormTask = Task.Run(() => {
                 VvvfValues WaveFormControl = Control.Clone();
-                WaveFormControl.set_Allowed_Random_Freq_Move(false);
-                WaveFormControl.set_Sine_Time(0);
-                WaveFormControl.set_Saw_Time(0);
+                WaveFormControl.SetRandomFrequencyMoveAllowed(false);
+                WaveFormControl.SetSineTime(0);
+                WaveFormControl.SetSawTime(0);
                 PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(WaveFormControl, new ControlStatus()
                 {
-                    brake = WaveFormControl.is_Braking(),
-                    mascon_on = !WaveFormControl.is_Mascon_Off(),
-                    free_run = WaveFormControl.is_Free_Running(),
-                    wave_stat = WaveFormControl.get_Control_Frequency()
+                    brake = WaveFormControl.IsBraking(),
+                    mascon_on = !WaveFormControl.IsMasconOff(),
+                    free_run = WaveFormControl.IsFreeRun(),
+                    wave_stat = WaveFormControl.GetControlFrequency()
                 }, Sound);
                 wave_form = Get_WaveForm_Image(WaveFormControl, calculated_Values, 1520, 400, 80, 2, Precise ? 60 : 1 ,50);
             });
             CycleCalcTask.Wait();
             Task HexagonRenderTask = Task.Run(() =>
             {
-                hexagon = new(Get_Hexagon_Original_Image(ref CycleUVW, CycleControl.get_Control_Frequency(), 1000, 1000, 2, true), 400, 400);
+                hexagon = new(Get_Hexagon_Original_Image(ref CycleUVW, CycleControl.GetControlFrequency(), 1000, 1000, 2, true), 400, 400);
             });
             Task VoltageCalcTask = Task.Run(() =>
             {
@@ -158,7 +158,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
 
             Color stat_color, back_color, stat_str_color;
             String stat_str;
-            bool stopping = CycleControl.get_Sine_Angle_Freq() == 0;
+            bool stopping = CycleControl.GetSineAngleFrequency() == 0;
             if (stopping)
             {
                 stat_str_color = Color.White;
@@ -167,7 +167,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 back_color = Color.FromArgb(0x81, 0x7F, 0x82);
                 stat_str = "Stop";
             }
-            else if (CycleControl.is_Free_Running())
+            else if (CycleControl.IsFreeRun())
             {
                 stat_str_color = Color.White;
                 stat_color = Color.FromArgb(0x36, 0xd0, 0x36);
@@ -175,7 +175,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 back_color = Color.FromArgb(0x81, 0x7F, 0x82);
                 stat_str = "Cruise";
             }
-            else if (!CycleControl.is_Braking())
+            else if (!CycleControl.IsBraking())
             {
                 stat_str_color = Color.White;
                 stat_color = Color.FromArgb(0x43,0x92, 0xF1);
@@ -206,7 +206,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             // pulse state
 
 
-            bool is_async = CycleControl.get_Video_Pulse_Mode().pulse_name.Equals(PulseModeNames.Async);
+            bool is_async = CycleControl.GetVideoPulseMode().pulse_name.Equals(PulseModeNames.Async);
             Draw_Topic_Value(
                 g, new Point(420, 10), new Size(480, 80),
                 new StringContent(topic_Font, "Pulse", new Point(0, 5)),
@@ -224,7 +224,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             Draw_Topic_Value(
                 g, new Point(1420, 10), new Size(480, 80),
                 new StringContent(topic_Font, "Freq", new Point(0, 5)),
-                new StringContent(value_Font, stopping ? "---.-" : String.Format("{0:F1}", CycleControl.get_Video_Sine_Freq()), new Point(0, 5)),
+                new StringContent(value_Font, stopping ? "---.-" : String.Format("{0:F1}", CycleControl.GetVideoSineFrequency()), new Point(0, 5)),
                 new StringContent(unit_font, "Hz", new Point(0, 9)),
                 200);
 
@@ -242,9 +242,9 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             ProgressData progressData = generationBasicParameter.progressData;
 
             VvvfValues control = new();
-            control.reset_control_variables();
-            control.reset_all_variables();
-            control.set_Allowed_Random_Freq_Move(false);
+            control.ResetControlValues();
+            control.ResetMathematicValues();
+            control.SetRandomFrequencyMoveAllowed(false);
 
             int fps = 60;
 

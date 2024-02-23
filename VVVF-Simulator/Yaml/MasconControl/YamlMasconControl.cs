@@ -58,7 +58,7 @@ namespace VvvfSimulator.Yaml.MasconControl
         {
             double ForceOnFrequency;
             bool Braking, IsMasconOn;
-            double CurrentTime = Control.Get_Generation_Current_Time();
+            double CurrentTime = Control.GetGenerationCurrentTime();
             List<YamlMasconDataCompiledPoint> SelectSource = MasconDataCompiled.Points;
             int DataAt = GetPointAtNum(CurrentTime,MasconDataCompiled);
             if (DataAt < 0) return false;
@@ -74,7 +74,7 @@ namespace VvvfSimulator.Yaml.MasconControl
             if (!IsMasconOn && PreviousTarget != null)
                 Braking = !PreviousTarget.IsAccel();
 
-            if (NextTarget != null && Control.is_Free_Running() && NextTarget.IsMasconOn)
+            if (NextTarget != null && Control.IsFreeRun() && NextTarget.IsMasconOn)
             {
 
                 double MasconOnFrequency = GetFreqAt(Target.EndTime, 0, MasconDataCompiled);
@@ -92,7 +92,7 @@ namespace VvvfSimulator.Yaml.MasconControl
 
                 double TargetFrequency = MasconOnFrequency > FreqGoto ? FreqGoto : MasconOnFrequency;
                 double RequireTime = TargetFrequency / FreqPerSec;
-                if (Target.EndTime - RequireTime < Control.Get_Generation_Current_Time())
+                if (Target.EndTime - RequireTime < Control.GetGenerationCurrentTime())
                 {
                     IsMasconOn = true;
                     Braking = !NextTarget.IsAccel();
@@ -103,51 +103,51 @@ namespace VvvfSimulator.Yaml.MasconControl
             double NewSineFrequency = GetFreqAt(CurrentTime, 0, MasconDataCompiled);
             if (NewSineFrequency < 0) NewSineFrequency = 0;
 
-            Control.set_Braking(Braking);
-            Control.set_Mascon_Off(!IsMasconOn);
-            Control.set_Free_Running(Target != null && !Target.IsMasconOn);
+            Control.SetBraking(Braking);
+            Control.SetMasconOff(!IsMasconOn);
+            Control.SetFreeRun(Target != null && !Target.IsMasconOn);
 
             {
-                double SineTimeAmplitude = NewSineFrequency == 0 ? 0 : Control.get_Sine_Freq() / NewSineFrequency;
-                Control.set_Sine_Angle_Freq(NewSineFrequency * Math.PI * 2);
-                if (Control.is_Allowed_Sine_Time_Change())
-                    Control.multi_Sine_Time(SineTimeAmplitude);
+                double SineTimeAmplitude = NewSineFrequency == 0 ? 0 : Control.GetSineFrequency() / NewSineFrequency;
+                Control.SetSineAngleFrequency(NewSineFrequency * Math.PI * 2);
+                if (Control.IsSineTimeChangeAllowed())
+                    Control.MultiplySineTime(SineTimeAmplitude);
             }
 
             if (ForceOnFrequency != -1)
             {
-                double SineTimeAmplitude = ForceOnFrequency == 0 ? 0 : Control.get_Sine_Freq() / ForceOnFrequency;
-                Control.set_Sine_Angle_Freq(ForceOnFrequency * Math.PI * 2);
-                if (Control.is_Allowed_Sine_Time_Change())
-                    Control.multi_Sine_Time(SineTimeAmplitude);
+                double SineTimeAmplitude = ForceOnFrequency == 0 ? 0 : Control.GetSineFrequency() / ForceOnFrequency;
+                Control.SetSineAngleFrequency(ForceOnFrequency * Math.PI * 2);
+                if (Control.IsSineTimeChangeAllowed())
+                    Control.MultiplySineTime(SineTimeAmplitude);
             }
 
             
 
             //This is also core of controlling. This should never changed.
-            if (!Control.is_Mascon_Off()) // mascon on
+            if (!Control.IsMasconOff()) // mascon on
             {
-                if (!Control.is_Free_Running())
-                    Control.set_Control_Frequency(Control.get_Sine_Freq());
+                if (!Control.IsFreeRun())
+                    Control.SetControlFrequency(Control.GetSineFrequency());
                 else
                 {
-                    double freq_change = Control.get_Free_Freq_Change() * TimeDelta;
-                    double final_freq = Control.get_Control_Frequency() + freq_change;
+                    double freq_change = Control.GetFreeFrequencyChange() * TimeDelta;
+                    double final_freq = Control.GetControlFrequency() + freq_change;
 
-                    if (Control.get_Sine_Freq() <= final_freq)
-                        Control.set_Control_Frequency(Control.get_Sine_Freq());
+                    if (Control.GetSineFrequency() <= final_freq)
+                        Control.SetControlFrequency(Control.GetSineFrequency());
                     else
-                        Control.set_Control_Frequency(final_freq);
+                        Control.SetControlFrequency(final_freq);
                 }
             }
             else
             {
-                double FreqChange = Control.get_Free_Freq_Change() * TimeDelta;
-                double FinalFrequency = Control.get_Control_Frequency() - FreqChange;
-                Control.set_Control_Frequency(FinalFrequency > 0 ? FinalFrequency : 0);
+                double FreqChange = Control.GetFreeFrequencyChange() * TimeDelta;
+                double FinalFrequency = Control.GetControlFrequency() - FreqChange;
+                Control.SetControlFrequency(FinalFrequency > 0 ? FinalFrequency : 0);
             }
 
-            Control.Add_Generation_Current_Time(TimeDelta);
+            Control.AddGenerationCurrentTime(TimeDelta);
 
             if (Target == null) return false;
             return true;

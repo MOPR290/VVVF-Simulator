@@ -12,8 +12,8 @@ namespace VvvfSimulator
             VvvfValues clone = (VvvfValues)MemberwiseClone();
 
             //Deep copy
-            clone.set_Video_Carrier_Freq_Data(clone.get_Video_Carrier_Freq_Data().Clone());
-            clone.set_Video_Pulse_Mode(clone.get_Video_Pulse_Mode().Clone());
+            clone.SetVideoCarrierFrequency(clone.GetVideoCarrierFrequency().Clone());
+            clone.SetVideoPulseMode(clone.GetVideoPulseMode().Clone());
 
             return clone;
         }
@@ -30,7 +30,7 @@ namespace VvvfSimulator
         private bool allow_sine_time_change = true;
         private bool allow_random_freq_move = true;
 
-        public void reset_control_variables()
+        public void ResetControlValues()
         {
             brake = false;
             free_run = false;
@@ -41,30 +41,27 @@ namespace VvvfSimulator
             free_freq_change = 1.0;
         }
 
-        public double get_Control_Frequency() { return wave_stat; }
-        public void set_Control_Frequency(double b) { wave_stat = b; }
-        public void add_Control_Frequency(double b) { wave_stat += b; }
+        public double GetControlFrequency() { return wave_stat; }
+        public void SetControlFrequency(double b) { wave_stat = b; }
+        public void AddControlFrequency(double b) { wave_stat += b; }
 
-        public bool is_Mascon_Off() { return mascon_off; }
-        public void set_Mascon_Off(bool b) { mascon_off = b; }
-        public void toggle_Mascon_Off() { mascon_off = !mascon_off; }
+        public bool IsMasconOff() { return mascon_off; }
+        public void SetMasconOff(bool b) { mascon_off = b; }
 
-        public bool is_Free_Running() { return free_run; }
-        public void set_Free_Running(bool b) { free_run = b; }
-        public void toggle_Free_Running() { free_run = !free_run; }
+        public bool IsFreeRun() { return free_run; }
+        public void SetFreeRun(bool b) { free_run = b; }
 
-        public bool is_Braking() { return brake; }
-        public void set_Braking(bool b) { brake = b; }
-        public void toggle_Braking() { brake = !brake; }
+        public bool IsBraking() { return brake; }
+        public void SetBraking(bool b) { brake = b; }
 
-        public bool is_Allowed_Sine_Time_Change() { return allow_sine_time_change; }
-        public void set_Allowed_Sine_Time_Change(bool b) { allow_sine_time_change = b; }
+        public bool IsSineTimeChangeAllowed() { return allow_sine_time_change; }
+        public void SetSineTimeChangeAllowed(bool b) { allow_sine_time_change = b; }
 
-        public bool is_Allowed_Random_Freq_Move() { return allow_random_freq_move; }
-        public void set_Allowed_Random_Freq_Move(bool b) { allow_random_freq_move = b; }
+        public bool IsRandomFrequencyMoveAllowed() { return allow_random_freq_move; }
+        public void SetRandomFrequencyMoveAllowed(bool b) { allow_random_freq_move = b; }
 
-        public double get_Free_Freq_Change() { return free_freq_change; }
-        public void set_Free_Freq_Change(double d) { free_freq_change = d; }
+        public double GetFreeFrequencyChange() { return free_freq_change; }
+        public void SetFreeFrequencyChange(double d) { free_freq_change = d; }
 
 
         //--- from vvvf wave calculate
@@ -78,42 +75,40 @@ namespace VvvfSimulator
         private double random_freq_pre_time = 0;
         private double vibrato_freq_pre_time = 0;
 
-        public void set_Sine_Angle_Freq(double b) { sin_angle_freq = b; }
-        public double get_Sine_Angle_Freq() { return sin_angle_freq; }
-        public void add_Sine_Angle_Freq(double b) { sin_angle_freq += b; }
+        public void SetSineAngleFrequency(double b) { sin_angle_freq = b; }
+        public double GetSineAngleFrequency() { return sin_angle_freq; }
+        public void AddSineAngleFrequency(double b) { sin_angle_freq += b; }
 
         // Util for sine angle freq
-        public double get_Sine_Freq() { return sin_angle_freq * M_1_2PI; }
+        public double GetSineFrequency() { return sin_angle_freq * M_1_2PI; }
 
-        public void set_Sine_Time(double t) { sin_time = t; }
-        public double get_Sine_Time() { return sin_time; }
-        public void add_Sine_Time(double t) { sin_time += t; }
-        public void multi_Sine_Time(double x) { sin_time *= x; }
+        public void SetSineTime(double t) { sin_time = t; }
+        public double GetSineTime() { return sin_time; }
+        public void AddSineTime(double t) { sin_time += t; }
+        public void MultiplySineTime(double x) { sin_time *= x; }
 
         
-        public void set_Saw_Angle_Freq(double f) { saw_angle_freq = f; }
-        public double get_Saw_Angle_Freq() { return saw_angle_freq; }
-        public void add_Saw_Angle_Freq(double f) { saw_angle_freq += f; }
+        public void SetSawAngleFrequency(double f) { saw_angle_freq = f; }
+        public double GetSawAngleFrequency() { return saw_angle_freq; }
+        public void AddSawAngleFrequency(double f) { saw_angle_freq += f; }
 
-        public void set_Saw_Time(double t) { saw_time = t; }
-        public double get_Saw_Time() { return saw_time; }
-        public void add_Saw_Time(double t) { saw_time += t; }
-        public void multi_Saw_Time(double x) { saw_time *= x; }
+        public void SetSawTime(double t) { saw_time = t; }
+        public double GetSawTime() { return saw_time; }
+        public void AddSawTime(double t) { saw_time += t; }
+        public void MultiplySawTime(double x) { saw_time *= x; }
 
-        public void set_Pre_Saw_Random_Freq(double f) { pre_saw_random_freq = f; }
-        public double get_Pre_Saw_Random_Freq() { return pre_saw_random_freq; }
+        public void SetPreviousSawRandomFrequency(double f) { pre_saw_random_freq = f; }
+        public double GetPreviousSawRandomFrequency() { return pre_saw_random_freq; }
         
 
-        public void set_Random_Freq_Pre_Time(double i) { random_freq_pre_time = i; }
-        public double get_Random_Freq_Pre_Time() { return random_freq_pre_time; }
-        public void add_Random_Freq_Pre_Time(double x) { random_freq_pre_time += x; }
+        public void SetRandomFrequencyPreviousTime(double i) { random_freq_pre_time = i; }
+        public double GetRandomFrequencyPreviousTime() { return random_freq_pre_time; }
+        public void AddRandomFrequencyPreviousTime(double x) { random_freq_pre_time += x; }
 
-        public void set_Vibrato_Freq_Pre_Time(double i) { vibrato_freq_pre_time = i; }
-        public double get_Vibrato_Freq_Pre_Time() { return vibrato_freq_pre_time; }
-        public void add_Vibrato_Freq_Pre_Time(double x) { vibrato_freq_pre_time += x; }
+        public void SetVibratoFrequencyPreviousTime(double i) { vibrato_freq_pre_time = i; }
+        public double GetVibratoFrequencyPreviousTime() { return vibrato_freq_pre_time; }
 
-
-        public void reset_all_variables()
+        public void ResetMathematicValues()
         {
             sin_angle_freq = 0;
             sin_time = 0;
@@ -124,39 +119,35 @@ namespace VvvfSimulator
             random_freq_pre_time = 0;
             random_freq_pre_time = 0;
 
-            Generation_Current_Time = 0;
+            GenerationCurrentTime = 0;
         }
 
-
-
         // Values for Video Generation.
-        private PulseMode v_pulse_mode { get; set; } = new();
-        private double v_sine_amplitude { get; set; }
-        private CarrierFreq v_carrier_freq_data { get; set; } = new CarrierFreq(0, 0, 0.0005);
-        private double v_dipolar { get; set; }
+        private PulseMode VideoPulseMode { get; set; } = new();
+        private double VideoSineAmplitude { get; set; }
+        private CarrierFreq VideoCarrierFrequency { get; set; } = new CarrierFreq(0, 0, 0.0005);
+        private double VideoDipolarValue { get; set; }
+        private double VideoSineFrequency { get; set; }
 
-        private double v_sine_freq { get; set; }
+        public void SetVideoPulseMode(PulseMode p) { VideoPulseMode = p; }
+        public PulseMode GetVideoPulseMode() { return VideoPulseMode; }
 
+        public void SetVideoSineAmplitude(double d) { VideoSineAmplitude = d; }
+        public double GetVideoSineAmplitude() { return VideoSineAmplitude; }
 
-        public void set_Video_Pulse_Mode(PulseMode p) { v_pulse_mode = p; }
-        public PulseMode get_Video_Pulse_Mode() { return v_pulse_mode; }
+        public void SetVideoCarrierFrequency(CarrierFreq c) { VideoCarrierFrequency = c; }
+        public CarrierFreq GetVideoCarrierFrequency() { return VideoCarrierFrequency; }
 
-        public void set_Video_Sine_Amplitude(double d) { v_sine_amplitude = d; }
-        public double get_Video_Sine_Amplitude() { return v_sine_amplitude; }
-
-        public void set_Video_Carrier_Freq_Data(CarrierFreq c) { v_carrier_freq_data = c; }
-        public CarrierFreq get_Video_Carrier_Freq_Data() { return v_carrier_freq_data; }
-
-        public void set_Video_Dipolar(double d) { v_dipolar = d; }
-        public double get_Video_Dipolar() { return v_dipolar; }
-        public void set_Video_Sine_Freq(double d) { v_sine_freq = d; }
-        public double get_Video_Sine_Freq() { return v_sine_freq; }
+        public void SetVideoDipolar(double d) { VideoDipolarValue = d; }
+        public double GetVideoDipolar() { return VideoDipolarValue; }
+        public void SetVideoSineFrequency(double d) { VideoSineFrequency = d; }
+        public double GetVideoSineFrequency() { return VideoSineFrequency; }
 
         // Values for Check mascon
-        private double Generation_Current_Time { get; set; } = 0;
-        public void Set_Generation_Current_Time(double d) { Generation_Current_Time = d; }
-        public double Get_Generation_Current_Time() { return Generation_Current_Time; }
-        public void Add_Generation_Current_Time(double d) { Generation_Current_Time += d; }
+        private double GenerationCurrentTime { get; set; } = 0;
+        public void SetGenerationCurrentTime(double d) { GenerationCurrentTime = d; }
+        public double GetGenerationCurrentTime() { return GenerationCurrentTime; }
+        public void AddGenerationCurrentTime(double d) { GenerationCurrentTime += d; }
 
     }
 

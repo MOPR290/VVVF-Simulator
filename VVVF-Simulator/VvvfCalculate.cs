@@ -288,10 +288,10 @@ namespace VvvfSimulator
 		{
 			if (data.range == 0) return data.base_freq;
 
-            if (control.is_Allowed_Random_Freq_Move())
+            if (control.IsRandomFrequencyMoveAllowed())
             {
 				double random_freq;
-				if (control.get_Random_Freq_Pre_Time() == 0 || control.get_Pre_Saw_Random_Freq() == 0)
+				if (control.GetRandomFrequencyPreviousTime() == 0 || control.GetPreviousSawRandomFrequency() == 0)
 				{
 					int random_v = MyMath.my_random();
 					double diff_freq = MyMath.mod_d(random_v, data.range);
@@ -299,16 +299,16 @@ namespace VvvfSimulator
 						diff_freq = -diff_freq;
 					double silent_random_freq = data.base_freq + diff_freq;
 					random_freq = silent_random_freq;
-					control.set_Pre_Saw_Random_Freq(silent_random_freq);
-					control.set_Random_Freq_Pre_Time(control.Get_Generation_Current_Time());
+					control.SetPreviousSawRandomFrequency(silent_random_freq);
+					control.SetRandomFrequencyPreviousTime(control.GetGenerationCurrentTime());
 				}
 				else
 				{
-					random_freq = control.get_Pre_Saw_Random_Freq();
+					random_freq = control.GetPreviousSawRandomFrequency();
 				}
 
-				if (control.get_Random_Freq_Pre_Time() + data.interval < control.Get_Generation_Current_Time())
-					control.set_Random_Freq_Pre_Time(0);
+				if (control.GetRandomFrequencyPreviousTime() + data.interval < control.GetGenerationCurrentTime())
+					control.SetRandomFrequencyPreviousTime(0);
 
 				return random_freq;
             }
@@ -320,12 +320,12 @@ namespace VvvfSimulator
 		public static double GetVibratoFrequency(double lowest, double highest, double interval_time, bool continuous , VvvfValues control)
 		{
 
-			if (!control.is_Allowed_Random_Freq_Move())
+			if (!control.IsRandomFrequencyMoveAllowed())
 				return (highest + lowest) / 2.0;
 
 			double random_freq;
-			double current_t = control.Get_Generation_Current_Time();
-			double solve_t = control.get_Vibrato_Freq_Pre_Time();
+			double current_t = control.GetGenerationCurrentTime();
+			double solve_t = control.GetVibratoFrequencyPreviousTime();
 
 			if (continuous)
 			{
@@ -343,7 +343,7 @@ namespace VvvfSimulator
 			}
 
 			if (current_t - solve_t > interval_time)
-				control.set_Vibrato_Freq_Pre_Time(current_t);
+				control.SetVibratoFrequencyPreviousTime(current_t);
 			return random_freq;
         }
 
@@ -353,20 +353,21 @@ namespace VvvfSimulator
 		public static WaveValues CalculatePhases(VvvfValues control,PwmCalculateValues value, double add_initial)
         {
 
-			if (control.get_Sine_Freq() < value.min_sine_freq && control.get_Control_Frequency() > 0) control.set_Video_Sine_Freq(value.min_sine_freq);
-			else control.set_Video_Sine_Freq(control.get_Sine_Freq());
+			if (control.GetSineFrequency() < value.min_sine_freq && control.GetControlFrequency() > 0) control.SetVideoSineFrequency(value.min_sine_freq);
+			else control.SetVideoSineFrequency(control.GetSineFrequency());
 
 			if (value.none) return new WaveValues() { U = 0, V = 0, W = 0 };
 
-			control.set_Video_Pulse_Mode(value.pulse_mode);
-			control.set_Video_Sine_Amplitude(value.amplitude);
-			if(value.carrier_freq != null) control.set_Video_Carrier_Freq_Data(value.carrier_freq.Clone());
-			control.set_Video_Dipolar(value.dipolar);
+			control.SetVideoPulseMode(value.pulse_mode);
+			control.SetVideoSineAmplitude(value.amplitude);
+			if(value.carrier_freq != null) control.SetVideoCarrierFrequency(value.carrier_freq.Clone());
+			control.SetVideoDipolar(value.dipolar);
 
 			int U=0, V = 0, W = 0;
-			for(int i = 0; i < 3; i++)
-            {
-				
+
+			for (int i = 0; i < 3; i++)
+			{
+
 				int val;
 				double initial = M_2PI / 3.0 * i + add_initial;
 				if (value.level == 2) val = CalculateTwoLevel(control, value, initial);
@@ -382,28 +383,28 @@ namespace VvvfSimulator
 
         public static int CalculateThreeLevel(VvvfValues control, PwmCalculateValues calculate_values, double initial_phase)
 		{
-			double sine_angle_freq = control.get_Sine_Angle_Freq();
-			double sine_time = control.get_Sine_Time();
+			double sine_angle_freq = control.GetSineAngleFrequency();
+			double sine_time = control.GetSineTime();
 			double min_sine_angle_freq = calculate_values.min_sine_freq * M_2PI;
 			PulseMode pulse_mode = calculate_values.pulse_mode;
 			CarrierFreq freq_data = calculate_values.carrier_freq;
 			double dipolar = calculate_values.dipolar;
 
-			if (sine_angle_freq < min_sine_angle_freq && control.get_Control_Frequency() > 0)
+			if (sine_angle_freq < min_sine_angle_freq && control.GetControlFrequency() > 0)
             {
-				control.set_Allowed_Sine_Time_Change(false);
+				control.SetSineTimeChangeAllowed(false);
 				sine_angle_freq = min_sine_angle_freq;
             }
             else
-				control.set_Allowed_Sine_Time_Change(true);
+				control.SetSineTimeChangeAllowed(true);
 
 			if (pulse_mode.pulse_name == PulseModeNames.Async)
             {
 
 				double desire_saw_angle_freq = (freq_data.range == 0) ? freq_data.base_freq * M_2PI : GetRandomFrequency(freq_data, control) * M_2PI;
 
-				double saw_time = control.get_Saw_Time();
-				double saw_angle_freq = control.get_Saw_Angle_Freq();
+				double saw_time = control.GetSawTime();
+				double saw_angle_freq = control.GetSawAngleFrequency();
 
 				if (desire_saw_angle_freq == 0)
 					saw_time = 0;
@@ -411,13 +412,13 @@ namespace VvvfSimulator
 					saw_time = saw_angle_freq / desire_saw_angle_freq * saw_time;
 				saw_angle_freq = desire_saw_angle_freq;
 
-				control.set_Saw_Angle_Freq(saw_angle_freq);
-				control.set_Saw_Time(saw_time);
+				control.SetSawAngleFrequency(saw_angle_freq);
+				control.SetSawTime(saw_time);
 
 				double sine_x = sine_time * sine_angle_freq + initial_phase;
 				double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sine_x, calculate_values.amplitude);
 
-				double saw_value = GetSaw(control.get_Saw_Time() * control.get_Saw_Angle_Freq());
+				double saw_value = GetSaw(control.GetSawTime() * control.GetSawAngleFrequency());
 				if (pulse_mode.Shift)
 					saw_value = -saw_value;
 
@@ -450,8 +451,8 @@ namespace VvvfSimulator
 				double changed_saw = ((dipolar != -1) ? dipolar : 0.5) * saw_value;
 				int pwm_value = ModulateSin(sin_value, changed_saw + 0.5) + ModulateSin(sin_value, changed_saw - 0.5);
 
-				control.set_Saw_Angle_Freq(sine_angle_freq * pulses);
-				control.set_Saw_Time(sine_time);
+				control.SetSawAngleFrequency(sine_angle_freq * pulses);
+				control.SetSawTime(sine_time);
 
 				return pwm_value;
 			}
@@ -461,19 +462,19 @@ namespace VvvfSimulator
 
 		public static int CalculateTwoLevel (VvvfValues control , PwmCalculateValues calculate_values, double initial_phase)
 		{
-			double sin_angle_freq = control.get_Sine_Angle_Freq();
-			double sin_time = control.get_Sine_Time();
+			double sin_angle_freq = control.GetSineAngleFrequency();
+			double sin_time = control.GetSineTime();
 			double min_sine_angle_freq = calculate_values.min_sine_freq * M_2PI;
-			if (sin_angle_freq < min_sine_angle_freq && control.get_Control_Frequency() > 0)
+			if (sin_angle_freq < min_sine_angle_freq && control.GetControlFrequency() > 0)
 			{
-				control.set_Allowed_Sine_Time_Change(false);
+				control.SetSineTimeChangeAllowed(false);
 				sin_angle_freq = min_sine_angle_freq;
 			}
 			else
-				control.set_Allowed_Sine_Time_Change(true);
+				control.SetSineTimeChangeAllowed(true);
 
-			double saw_time = control.get_Saw_Time();
-			double saw_angle_freq = control.get_Saw_Angle_Freq();
+			double saw_time = control.GetSawTime();
+			double saw_angle_freq = control.GetSawAngleFrequency();
 
 			double amplitude = calculate_values.amplitude;
 			PulseMode pulse_mode = calculate_values.pulse_mode;
@@ -506,8 +507,8 @@ namespace VvvfSimulator
 						double saw_value = GetSaw(saw_time * saw_angle_freq);
 						int pwm_value = ModulateSin(sin_value, saw_value) * 2;
 
-						control.set_Saw_Angle_Freq(saw_angle_freq);
-						control.set_Saw_Time(saw_time);
+						control.SetSawAngleFrequency(saw_angle_freq);
+						control.SetSawTime(saw_time);
 
 						return pwm_value;
 					}
@@ -800,8 +801,8 @@ namespace VvvfSimulator
                     double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), x, amplitude);
 					int pwm_value;
 					double fixed_x = (int)(x / M_PI_2) % 2 == 1 ? M_PI_2 - x % M_PI_2 : x % M_PI_2;
-                    control.set_Saw_Angle_Freq(sin_angle_freq * pulse_num);
-                    control.set_Saw_Time(sin_time);
+                    control.SetSawAngleFrequency(sin_angle_freq * pulse_num);
+                    control.SetSawTime(sin_time);
                     if (fixed_x < M_PI * GetPulseNum(pulse_mode, 2) / 54)
 					{
 						pwm_value = ModulateSin(sin_value, saw_value) * 2;
@@ -828,8 +829,8 @@ namespace VvvfSimulator
 
 				int pwm_value = ModulateSin(sin_value, saw_value) * 2;
 
-				control.set_Saw_Angle_Freq(sin_angle_freq * pulse_num);
-				control.set_Saw_Time(sin_time);
+				control.SetSawAngleFrequency(sin_angle_freq * pulse_num);
+				control.SetSawTime(sin_time);
 				//Console.WriteLine(pwm_value);
 				return pwm_value;
 			}
@@ -845,7 +846,7 @@ namespace VvvfSimulator
 		private double SQRT3 = Math.Sqrt(3);
 		private double SQRT3_2 = Math.Sqrt(3)/2.0;
 		//private double __2PI_3 = Math.PI * 2 / 3.0;
-		public class Function_time
+		public class FunctionTime
 		{
 			public double T0;
 			public double T1;
@@ -858,28 +859,28 @@ namespace VvvfSimulator
 			public double Ub;
 			public double Uc;
 
-			public static Vabc operator +(Vabc a, double d) => new Vabc()
+			public static Vabc operator +(Vabc a, double d) => new()
 			{
 				Ua = a.Ua + d,
 				Ub = a.Ub + d,
 				Uc = a.Uc + d
 			};
 
-			public static Vabc operator *(Vabc a, double d) => new Vabc()
+			public static Vabc operator *(Vabc a, double d) => new()
             {
 				Ua = a.Ua * d,
 				Ub = a.Ub * d,
 				Uc = a.Uc * d
 			};
 
-			public static Vabc operator -(Vabc a) => new Vabc()
+			public static Vabc operator -(Vabc a) => new()
             {
 				Ua = -a.Ua,
 				Ub = -a.Ub,
 				Uc = -a.Uc,
 			};
 
-			public static Vabc operator -(Vabc a, Vabc b) => new Vabc()
+			public static Vabc operator -(Vabc a, Vabc b) => new()
 			{
 				Ua = a.Ua - b.Ua,
 				Ub = a.Ub - b.Ub,
@@ -892,7 +893,7 @@ namespace VvvfSimulator
 			public double Ualpha;
 			public double Ubeta;
 		};
-		public int Sector_estimate(Valbe U)
+		public int EstimateSector(Valbe U)
 		{
 			int A = U.Ubeta > 0.0 ? 0 : 1;
 			int B = U.Ubeta - SQRT3 * U.Ualpha > 0.0 ? 0 : 1;
@@ -910,9 +911,9 @@ namespace VvvfSimulator
 				default: return 2;
 			}
 		}
-		Function_time getfunctiontime(Valbe Vin, int sector)
+		FunctionTime GetFunctionTime(Valbe Vin, int sector)
 		{
-			Function_time ft = new();
+			FunctionTime ft = new();
 			switch (sector)
 			{
 				case 1:
@@ -955,7 +956,7 @@ namespace VvvfSimulator
 			ft.T0 = 1.0 - ft.T1 - ft.T2;
 			return ft;
 		}
-		Vabc get_abcvolteage(Function_time Tin, int sector)
+		Vabc GetAbcVoltage(FunctionTime Tin, int sector)
 		{
 			Vabc v_out = new();
 			switch (sector)

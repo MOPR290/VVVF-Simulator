@@ -65,7 +65,7 @@ namespace VvvfSimulator.Generation.Video.FS
 
         public static double[] Get_Fourier_Coefficients(VvvfValues Control, YamlVvvfSoundData Sound, int Delta, int N)
         {
-            Control.set_Allowed_Random_Freq_Move(false);
+            Control.SetRandomFrequencyMoveAllowed(false);
             WaveValues[] PWM_Array = GenerateBasic.Get_UVW_Cycle(Control, Sound, MyMath.M_PI_6, Delta, false);
             return Get_Fourier_Coefficients(ref PWM_Array, N, 0);
         }

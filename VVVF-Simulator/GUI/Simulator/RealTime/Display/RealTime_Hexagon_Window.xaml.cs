@@ -76,15 +76,15 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Display
             VvvfValues control = _Parameter.Control.Clone();
             YamlVvvfSoundData ysd = _Parameter.VvvfSoundData;
 
-            control.set_Sine_Time(0);
-            control.set_Saw_Time(0);
+            control.SetSineTime(0);
+            control.SetSawTime(0);
 
             if(_Style == RealTime_Hexagon_Style.Original)
             {
                 int image_width = 1000;
                 int image_height = 1000;
                 int hex_div = 60000;
-                control.set_Allowed_Random_Freq_Move(false);
+                control.SetRandomFrequencyMoveAllowed(false);
                 image = Generation.Video.Hexagon.GenerateHexagonOriginal.Get_Hexagon_Original_Image(
                     control,
                     ysd, 

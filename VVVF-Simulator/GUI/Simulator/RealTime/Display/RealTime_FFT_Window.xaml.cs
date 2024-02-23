@@ -72,8 +72,8 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Display
             VvvfValues control = _Parameter.Control.Clone();
             YamlVvvfSoundData ysd = _Parameter.VvvfSoundData;
 
-            control.set_Sine_Time(0);
-            control.set_Saw_Time(0);
+            control.SetSineTime(0);
+            control.SetSawTime(0);
 
             Bitmap image = Generation.Video.FFT.GenerateFFT.Get_FFT_Image(control,ysd);
             //Bitmap image = Generation.Video.FS.Generate_FS.Get_FS_Image(control, ysd);

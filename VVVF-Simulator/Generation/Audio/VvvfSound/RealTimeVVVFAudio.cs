@@ -24,18 +24,18 @@ namespace VvvfSimulator.Generation.Audio.VvvfSound
 
                 ControlStatus cv = new()
                 {
-                    brake = control.is_Braking(),
-                    mascon_on = !control.is_Mascon_Off(),
-                    free_run = control.is_Free_Running(),
-                    wave_stat = control.get_Control_Frequency()
+                    brake = control.IsBraking(),
+                    mascon_on = !control.IsMasconOff(),
+                    free_run = control.IsFreeRun(),
+                    wave_stat = control.GetControlFrequency()
                 };
                 PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, sound_data);
 
                 for (int i = 0; i < bufsize; i++)
                 {
-                    control.add_Sine_Time(1.0 / 192000.0);
-                    control.add_Saw_Time(1.0 / 192000.0);
-                    control.Add_Generation_Current_Time(1.0 / 192000.0);
+                    control.AddSineTime(1.0 / 192000.0);
+                    control.AddSawTime(1.0 / 192000.0);
+                    control.AddGenerationCurrentTime(1.0 / 192000.0);
 
                     byte sound_byte = GenerateVVVFAudio.CalculateVvvfSound(control, calculated_Values);
 
@@ -52,8 +52,8 @@ namespace VvvfSimulator.Generation.Audio.VvvfSound
             realTime_Parameter.VvvfSoundData = ysd;
 
             VvvfValues control = new();
-            control.reset_all_variables();
-            control.reset_control_variables();
+            control.ResetMathematicValues();
+            control.ResetControlValues();
             realTime_Parameter.Control = control;
 
             while (true)

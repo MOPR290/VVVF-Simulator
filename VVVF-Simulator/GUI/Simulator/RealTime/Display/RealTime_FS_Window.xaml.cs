@@ -66,8 +66,8 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Display
             VvvfValues control = _Parameter.Control.Clone();
             YamlVvvfSoundData ysd = _Parameter.VvvfSoundData;
 
-            control.set_Sine_Time(0);
-            control.set_Saw_Time(0);
+            control.SetSineTime(0);
+            control.SetSawTime(0);
 
             double[] Coefficients = Get_Fourier_Coefficients(control, ysd, 10000, N);
             StrCoefficients = Get_Desmos_Fourier_Coefficients_Array(ref Coefficients);

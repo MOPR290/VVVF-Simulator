@@ -24,8 +24,8 @@ namespace VvvfSimulator.Generation.Video.WaveForm
             ProgressData progressData = generationBasicParameter.progressData;
 
             VvvfValues control = new();
-            control.reset_control_variables();
-            control.reset_all_variables();
+            control.ResetControlValues();
+            control.ResetMathematicValues();
 
             int fps = 60;
 
@@ -74,8 +74,8 @@ namespace VvvfSimulator.Generation.Video.WaveForm
             while (loop)
             {
 
-                control.set_Saw_Time(0);
-                control.set_Sine_Time(0);
+                control.SetSawTime(0);
+                control.SetSineTime(0);
 
                 Bitmap image = new(image_width, image_height);
                 Graphics g = Graphics.FromImage(image);
@@ -94,10 +94,10 @@ namespace VvvfSimulator.Generation.Video.WaveForm
                     {
                         ControlStatus cv = new()
                         {
-                            brake = control.is_Braking(),
-                            mascon_on = !control.is_Mascon_Off(),
-                            free_run = control.is_Free_Running(),
-                            wave_stat = control.get_Control_Frequency()
+                            brake = control.IsBraking(),
+                            mascon_on = !control.IsMasconOff(),
+                            free_run = control.IsFreeRun(),
+                            wave_stat = control.GetControlFrequency()
                         };
                         PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, vvvfData);
                         WaveValues value = CalculatePhases(control, calculated_Values, 0);
@@ -108,8 +108,8 @@ namespace VvvfSimulator.Generation.Video.WaveForm
 
                         if (j == 0)
                         {
-                            control.add_Saw_Time(Math.PI / (120000.0 * calculate_div));
-                            control.add_Sine_Time(Math.PI / (120000.0 * calculate_div));
+                            control.AddSawTime(Math.PI / (120000.0 * calculate_div));
+                            control.AddSineTime(Math.PI / (120000.0 * calculate_div));
                         }
                     }
 

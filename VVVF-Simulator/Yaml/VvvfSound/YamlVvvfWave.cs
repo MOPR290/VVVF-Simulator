@@ -77,9 +77,9 @@ namespace VvvfSimulator.Yaml.VVVFSound
 			bool enable_normal_condition = ysd.enable_normal && !cv.free_run;
 			if (!(enable_free_run_condition || enable_normal_condition)) return false;
 
-			bool over_from = ysd.from <= (compare_with_sine ? control.get_Sine_Freq() : cv.wave_stat);
-			bool is_sine_from = ysd.rotate_sine_from == -1 || ysd.rotate_sine_from <= control.get_Sine_Freq();
-			bool is_sine_below = ysd.rotate_sine_below == -1 || ysd.rotate_sine_below > control.get_Sine_Freq();
+			bool over_from = ysd.from <= (compare_with_sine ? control.GetSineFrequency() : cv.wave_stat);
+			bool is_sine_from = ysd.rotate_sine_from == -1 || ysd.rotate_sine_from <= control.GetSineFrequency();
+			bool is_sine_below = ysd.rotate_sine_below == -1 || ysd.rotate_sine_below > control.GetSineFrequency();
 
 			if (!is_sine_from) return false;
 			if (!is_sine_below) return false;
@@ -93,7 +93,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
 			if (free_run_data.stuck_at_here)
 			{
-				if (control.get_Sine_Freq() > ysd.from) return true;
+				if (control.GetSineFrequency() > ysd.from) return true;
 				return false;
 			}
 
@@ -117,26 +117,26 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
 			if (cv.mascon_on)
 			{
-                control.set_Free_Freq_Change(mascon_on_off_check_data.on.freq_per_sec);
+                control.SetFreeFrequencyChange(mascon_on_off_check_data.on.freq_per_sec);
                 max_voltage_freq = mascon_on_off_check_data.on.control_freq_go_to;
                 if (cv.free_run)
 				{
 					if(cv.wave_stat > max_voltage_freq)
 					{
-                        double rolling_freq = control.get_Sine_Freq();
-                        control.set_Control_Frequency(rolling_freq);
+                        double rolling_freq = control.GetSineFrequency();
+                        control.SetControlFrequency(rolling_freq);
 						cv.wave_stat = rolling_freq;
                     }
 				}
             } else
 			{
-                control.set_Free_Freq_Change(mascon_on_off_check_data.off.freq_per_sec);
+                control.SetFreeFrequencyChange(mascon_on_off_check_data.off.freq_per_sec);
 				max_voltage_freq = mascon_on_off_check_data.off.control_freq_go_to;
                 if (cv.free_run)
                 {
                     if (cv.wave_stat > max_voltage_freq)
                     {
-                        control.set_Control_Frequency(max_voltage_freq);
+                        control.SetControlFrequency(max_voltage_freq);
                         cv.wave_stat = max_voltage_freq;
                     }
                 }
@@ -180,12 +180,12 @@ namespace VvvfSimulator.Yaml.VVVFSound
                 {
                     if (!cv.mascon_on)
                     {
-						control.set_Control_Frequency(0);
+						control.SetControlFrequency(0);
 						return new PwmCalculateValues() { none = true };
 					}
 					else
 					{
-						control.set_Control_Frequency(control.get_Sine_Freq());
+						control.SetControlFrequency(control.GetSineFrequency());
 						return new PwmCalculateValues() { none = true };
 					}
 				}
@@ -229,7 +229,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 					for(int i = 0; i < async_carrier_freq_table.Count; i++)
                     {
 						var carrier = async_carrier_freq_table[i];
-						bool condition_1 = carrier.free_run_stuck_here && (control.get_Sine_Freq() < carrier.from) && cv.free_run;
+						bool condition_1 = carrier.free_run_stuck_here && (control.GetSineFrequency() < carrier.from) && cv.free_run;
 						bool condition_2 = original_wave_stat > carrier.from;
 						if (!condition_1 && !condition_2) continue;
 
@@ -310,10 +310,10 @@ namespace VvvfSimulator.Yaml.VVVFSound
 				double target_freq = free_run_amp_param.end_freq;
 				if (free_run_amp_param.end_freq == -1)
 				{
-					if (solve_data.amplitude_control.default_data.parameter.disable_range_limit) target_freq = control.get_Sine_Freq();
+					if (solve_data.amplitude_control.default_data.parameter.disable_range_limit) target_freq = control.GetSineFrequency();
 					else
 					{
-                        target_freq = (control.get_Sine_Freq() > max_control_freq) ? max_control_freq : control.get_Sine_Freq();
+                        target_freq = (control.GetSineFrequency() > max_control_freq) ? max_control_freq : control.GetSineFrequency();
 						target_freq = (target_freq > solve_data.amplitude_control.default_data.parameter.end_freq) ? solve_data.amplitude_control.default_data.parameter.end_freq : target_freq;
                     }
                     
@@ -322,11 +322,11 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
 				double target_amp = free_run_amp_param.end_amp;
 				if (free_run_amp_param.end_amp == -1)
-					target_amp = YamlAmplitudeCalculate(solve_data.amplitude_control.default_data, control.get_Sine_Freq());
+					target_amp = YamlAmplitudeCalculate(solve_data.amplitude_control.default_data, control.GetSineFrequency());
 
 				double start_amp = free_run_amp_param.start_amp;
 				if(start_amp == -1) 
-					start_amp = YamlAmplitudeCalculate(solve_data.amplitude_control.default_data, control.get_Sine_Freq());
+					start_amp = YamlAmplitudeCalculate(solve_data.amplitude_control.default_data, control.GetSineFrequency());
 
 
 				AmplitudeArgument aa = new()
@@ -346,7 +346,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
 				if (free_run_amp_param.cut_off_amp > amplitude) amplitude = 0;
 				if (free_run_amp_param.max_amp != -1 && amplitude > free_run_amp_param.max_amp) amplitude = free_run_amp_param.max_amp;
-				if (!cv.mascon_on && amplitude == 0) control.set_Control_Frequency(0);
+				if (!cv.mascon_on && amplitude == 0) control.SetControlFrequency(0);
 			}
 
 			if (cv.wave_stat == 0) return new PwmCalculateValues() { none = true };

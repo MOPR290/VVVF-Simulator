@@ -17,10 +17,10 @@ namespace VvvfSimulator.Generation.Audio.VvvfSound
         {
             ControlStatus cv = new()
             {
-                brake = control.is_Braking(),
-                mascon_on = !control.is_Mascon_Off(),
-                free_run = control.is_Free_Running(),
-                wave_stat = control.get_Control_Frequency()
+                brake = control.IsBraking(),
+                mascon_on = !control.IsMasconOff(),
+                free_run = control.IsFreeRun(),
+                wave_stat = control.GetControlFrequency()
             };
             PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, sound_data);
              return CalculateVvvfSound(control, calculated_Values);
@@ -53,8 +53,8 @@ namespace VvvfSimulator.Generation.Audio.VvvfSound
             string temp = Path.GetDirectoryName(output_path) + "\\" + "temp-" + gen_time + ".wav";
 
             VvvfValues control = new();
-            control.reset_control_variables();
-            control.reset_all_variables();
+            control.ResetControlValues();
+            control.ResetMathematicValues();
 
             int sound_block_count = 0;
 
@@ -83,8 +83,8 @@ namespace VvvfSimulator.Generation.Audio.VvvfSound
 
             while (true)
             {
-                control.add_Sine_Time(1.00 / sample_freq);
-                control.add_Saw_Time(1.00 / sample_freq);
+                control.AddSineTime(1.00 / sample_freq);
+                control.AddSawTime(1.00 / sample_freq);
 
                 temp_bytes[temp_bytes_count] = CalculateVvvfSound(control, vvvfData);
                 temp_bytes_count++;
