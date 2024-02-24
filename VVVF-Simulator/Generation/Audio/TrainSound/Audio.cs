@@ -82,28 +82,53 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
         }
 
 
-        unsafe public static void Generate(GenerationBasicParameter generationBasicParameter, string output_path, bool resize, YamlTrainSoundData soundData)
+        unsafe public static void ExportWavFile(GenerationBasicParameter generationBasicParameter, YamlTrainSoundData soundData, int SamplingFrequency, bool raw, string path)
         {
+            static void AddSample(float value, BufferedWaveProvider provider)
+            {
+                byte[] soundSample = BitConverter.GetBytes((float)value);
+                if (!BitConverter.IsLittleEndian) Array.Reverse(soundSample);
+                provider.AddSamples(soundSample, 0, 4);
+            }
+
+            static void Write(BufferedWaveProvider bufferedWaveProvider, ISampleProvider sampleProvider, WaveFileWriter writer)
+            {
+                byte[] buffer = new byte[bufferedWaveProvider.BufferedBytes];
+                int bytesRead = sampleProvider.ToWaveProvider().Read(buffer, 0, buffer.Length);
+                writer.Write(buffer, 0, bytesRead);
+            }
+
+            static void DownSample(int NewSamplingRate, string InputPath, string OutputPath, bool DeleteOld)
+            {
+                using (var reader = new AudioFileReader(InputPath))
+                {
+                    var resampler = new WdlResamplingSampleProvider(reader, NewSamplingRate);
+                    WaveFileWriter.CreateWaveFile16(OutputPath, resampler);
+                }
+
+                if(DeleteOld) File.Delete(InputPath);
+            }
+
             YamlVvvfSoundData vvvfData = generationBasicParameter.vvvfData;
             YamlMasconDataCompiled masconData = generationBasicParameter.masconData;
             ProgressData progressData = generationBasicParameter.progressData;
-
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            string temp = Path.GetDirectoryName(output_path) + "\\" + "temp-" + gen_time + ".wav";
 
             VvvfValues control = new();
             control.ResetControlValues();
             control.ResetMathematicValues();
 
-            int SamplingFrequency = 200000;
+            int DownSampledFrequency = 44100;
+            string pathTemp = Path.GetDirectoryName(path) + "\\" + "temp-" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".wav";
 
             var waveFormat = WaveFormat.CreateIeeeFloatWaveFormat(SamplingFrequency, 1);
-            var bufferedWaveProvider = new BufferedWaveProvider(waveFormat);
+            var bufferedWaveProvider = new BufferedWaveProvider(waveFormat)
+            {
+                BufferLength = 80000
+            };
             ISampleProvider sampleProvider = bufferedWaveProvider.ToSampleProvider();
             if (soundData.UseFilteres) sampleProvider = new MonauralFilter(sampleProvider, soundData.GetFilteres(SamplingFrequency));
             if (soundData.UseImpulseResponse) sampleProvider = ImpulseResponse.FromSample(sampleProvider, 4096, soundData.ImpulseResponse);
-            WaveFileWriter writer = new(resize ? temp : output_path, waveFormat);
+            WaveFileWriter writer = new(raw ? path : pathTemp, sampleProvider.WaveFormat);
 
             MotorData motor = new()
             {
@@ -112,7 +137,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             };
             motor.motor_Param.TL = 0.0;
 
-            progressData.Total = masconData.GetEstimatedSteps(1.0 / SamplingFrequency);
+            progressData.Total = masconData.GetEstimatedSteps(1.0 / SamplingFrequency) + (raw ? 0 : 100);
 
             while (true)
             {
@@ -121,16 +146,9 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
 
                 float sound = (float)CalculateTrainSound(control, vvvfData, motor , soundData);
 
-                byte[] soundBytes = BitConverter.GetBytes(sound / 512);
-                if (!BitConverter.IsLittleEndian) Array.Reverse(soundBytes);
-                bufferedWaveProvider.AddSamples(soundBytes, 0, 4);
-
+                AddSample(sound, bufferedWaveProvider);
                 if (bufferedWaveProvider.BufferedBytes == bufferedWaveProvider.BufferLength)
-                {
-                    byte[] buffer = new byte[bufferedWaveProvider.BufferedBytes];
-                    int bytesRead = sampleProvider.ToWaveProvider().Read(buffer, 0, buffer.Length);
-                    writer.Write(buffer, 0, bytesRead);
-                }
+                    Write(bufferedWaveProvider, sampleProvider, writer);
 
                 progressData.Progress++;
 
@@ -139,26 +157,13 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
                 if (!flag_continue || flag_cancel) break;
             }
 
-            //last 
             if (bufferedWaveProvider.BufferedBytes > 0)
-            {
-                byte[] buffer = new byte[bufferedWaveProvider.BufferedBytes];
-                int bytesRead = sampleProvider.ToWaveProvider().Read(buffer, 0, buffer.Length);
-                writer.Write(buffer, 0, bytesRead);
-            }
+                Write(bufferedWaveProvider, sampleProvider, writer);
 
             writer.Close();
 
-
-            if (!resize) return;
-            int outRate = 44800;
-            using (var reader = new AudioFileReader(temp))
-            {
-                var resampler = new WdlResamplingSampleProvider(reader, outRate);
-                WaveFileWriter.CreateWaveFile16(output_path, resampler);
-            }
-
-            System.IO.File.Delete(temp);
+            if (!raw) DownSample(DownSampledFrequency, pathTemp, path, true);
+            progressData.Progress += 100;
         }
     }
 }

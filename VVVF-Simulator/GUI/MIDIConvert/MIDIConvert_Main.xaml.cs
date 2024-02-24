@@ -25,7 +25,7 @@ namespace VvvfSimulator.GUI.MIDIConvert
             InitializeComponent();
         }
 
-        public static bool Conversion(String midi_path, String output_path, Midi_Convert_Config midi_Convert_Config)
+        public static bool Conversion(String midi_path, String output_path, MidiConvertConfig midi_Convert_Config)
         {
             //MIDIDataを変換
             MidiData midiData;
@@ -72,7 +72,7 @@ namespace VvvfSimulator.GUI.MIDIConvert
                     {
                         try
                         {
-                            Generation.Audio.VvvfSound.GenerateVVVFAudio.Export_VVVF_Sound(generationBasicParameter, export_path, false, midi_Convert_Config.SampleFrequency);
+                            Generation.Audio.VvvfSound.Audio.ExportWavFile(generationBasicParameter, midi_Convert_Config.SampleFrequency, midi_Convert_Config.ExportRaw, export_path);
                             System.Media.SystemSounds.Beep.Play();
                         }
                         catch(Exception ex)
@@ -94,11 +94,12 @@ namespace VvvfSimulator.GUI.MIDIConvert
             return true;
         }
 
-        public Midi_Convert_Config config = new();
-        public class Midi_Convert_Config
+        public MidiConvertConfig config = new();
+        public class MidiConvertConfig
         {
             public bool MultiThread { get; set; } = true;
             public int SampleFrequency { get; set; } = 192000;
+            public bool ExportRaw { get; set; } = false;
         }
 
         private string? midi_path;

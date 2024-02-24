@@ -27,7 +27,7 @@ namespace VvvfSimulator.Yaml.TrainAudio_Setting
             public float[] ImpulseResponse { get; set; } = Generation.Audio.TrainSound.ImpulseResponse.ReadResourceAudioFileSample(Generation.Audio.TrainSound.ImpulseResponse.SampleIrPath);
             public MotorSpecification MotorSpec { get; set; } = new MotorSpecification();
             public double MotorVolumeDb { get; set; } = 0.0;
-            public double TotalVolumeDb { get; set; } = -0.5;
+            public double TotalVolumeDb { get; set; } = -2.8;
 
             public class SoundFilter
             {

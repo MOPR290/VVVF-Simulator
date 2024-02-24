@@ -416,20 +416,20 @@ namespace VvvfSimulator
                 {
                     var dialog = new SaveFileDialog
                     {
-                        Filter = "Ultra High Resolution|*.wav|High Resolution|*.wav|Low Resolution|*.wav",
-                        FilterIndex = 2
+                        Filter = "normal(192k)|*.wav|normal(5M)|*.wav|raw(192k)|*.wav|raw(5M)|*.wav",
+                        FilterIndex = 1
                     };
                     if (dialog.ShowDialog() == false) return true;
 
-                    int sample_freq = new int[] { 1000000 * 5, 192000, 192000 }[dialog.FilterIndex - 1];
-                    bool resize = new bool[] {false,false,true}[dialog.FilterIndex - 1];
+                    int sample_freq = new int[] { 192000, 5000000, 192000, 5000000 }[dialog.FilterIndex - 1];
+                    bool raw = new bool[] {false, false, true, true}[dialog.FilterIndex - 1];
 
                     GenerationBasicParameter generationBasicParameter = GetGenerationBasicParameter();
 
                     Task task = Task.Run(() => {
                         try
                         {
-                            Generation.Audio.VvvfSound.GenerateVVVFAudio.Export_VVVF_Sound(generationBasicParameter, dialog.FileName, resize, sample_freq);
+                            Generation.Audio.VvvfSound.Audio.ExportWavFile(generationBasicParameter, sample_freq, raw, dialog.FileName);
                         }
                         catch (Exception e)
                         {
@@ -507,7 +507,7 @@ namespace VvvfSimulator
                                 data = YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData);
                             else
                                 data = YamlVvvfManage.CurrentData;
-                            Generation.Audio.VvvfSound.RealTimeVVVFAudio.RealTime_VVVF_Generation(data, parameter);
+                            Generation.Audio.VvvfSound.RealTime.RealTime_VVVF_Generation(data, parameter);
                         }
                         catch (Exception e)
                         {
@@ -530,7 +530,7 @@ namespace VvvfSimulator
                 if (command[1].Equals("WAV"))
                 {
 
-                    var dialog = new SaveFileDialog { Filter = "High Resolution|*.wav|Down Sampled|*.wav" };
+                    var dialog = new SaveFileDialog { Filter = "wav|*.wav|raw|*.wav" };
                     if (dialog.ShowDialog() == false) return true;
 
                     GenerationBasicParameter generationBasicParameter = GetGenerationBasicParameter();
@@ -538,10 +538,9 @@ namespace VvvfSimulator
                     Task task = Task.Run(() => {
                         try
                         {
-                            bool resize = dialog.FilterIndex == 2;
-
+                            bool raw = dialog.FilterIndex == 2;
                             YamlTrainSoundData trainSound_Data_clone = YamlTrainSoundDataManage.CurrentData.Clone();
-                            Generation.Audio.TrainSound.Audio.Generate(generationBasicParameter, dialog.FileName, resize, trainSound_Data_clone);
+                            Generation.Audio.TrainSound.Audio.ExportWavFile(generationBasicParameter, trainSound_Data_clone, 192000, raw, dialog.FileName);
                         }
                         catch (Exception e)
                         {

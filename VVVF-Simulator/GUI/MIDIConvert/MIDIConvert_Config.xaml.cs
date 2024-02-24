@@ -21,8 +21,8 @@ namespace VvvfSimulator.GUI.MIDIConvert
     /// </summary>
     public partial class MIDIConvert_Config : Window
     {
-        private Midi_Convert_Config config;
-        public MIDIConvert_Config(Midi_Convert_Config config)
+        private MidiConvertConfig config;
+        public MIDIConvert_Config(MidiConvertConfig config)
         {
             InitializeComponent();
             this.config = config;

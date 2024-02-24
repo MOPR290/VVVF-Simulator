@@ -16,9 +16,17 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
     unsafe public class RealTime
     {
         //---------- TRAIN SOUND --------------
-        static readonly int calcCount = 512;
+        private static readonly int calcCount = 512;
+        private static readonly int SamplingFrequency = 192000;
         private static int Calculate(BufferedWaveProvider provider, YamlVvvfSoundData sound_data, VvvfValues control, RealTimeParameter realTime_Parameter)
         {
+            static void AddSample(float value, BufferedWaveProvider provider)
+            {
+                byte[] soundSample = BitConverter.GetBytes((float)value);
+                if (!BitConverter.IsLittleEndian) Array.Reverse(soundSample);
+                provider.AddSamples(soundSample, 0, 4);
+            }
+
             while (true)
             {
                 int v = RealTime_CheckForFreq(control, realTime_Parameter, calcCount);
@@ -26,15 +34,12 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
 
                 for (int i = 0; i < calcCount; i++)
                 {
-                    control.AddSineTime(1.0 / 192000.0);
-                    control.AddSawTime(1.0 / 192000.0);
-                    control.AddGenerationCurrentTime(1.0 / 192000.0);
+                    control.AddSineTime(1.0 / SamplingFrequency);
+                    control.AddSawTime(1.0 / SamplingFrequency);
+                    control.AddGenerationCurrentTime(1.0 / SamplingFrequency);
 
                     double value = CalculateTrainSound(control, sound_data , realTime_Parameter.Motor, realTime_Parameter.TrainSoundData);
-                    
-                    byte[] soundSample = BitConverter.GetBytes((float)value / 512);
-                    if (!BitConverter.IsLittleEndian) Array.Reverse(soundSample);
-                    provider.AddSamples(soundSample, 0, 4);
+                    AddSample((float)value, provider);
                 }
 
                 while (provider.BufferedBytes - calcCount > Settings.Default.RealTime_Train_BuffSize) ;
@@ -43,8 +48,6 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
 
         public static void Generate(YamlVvvfSoundData ysd, RealTimeParameter parameter)
         {
-            int SamplingFrequency = 192000;
-
             parameter.quit = false;
             parameter.VvvfSoundData = ysd;
             parameter.Motor = new MotorData() { 
