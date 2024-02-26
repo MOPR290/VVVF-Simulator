@@ -162,8 +162,11 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
 
             writer.Close();
 
-            if (!raw) DownSample(DownSampledFrequency, pathTemp, path, true);
-            progressData.Progress += 100;
+            if (!raw)
+            {
+                DownSample(DownSampledFrequency, pathTemp, path, true);
+                progressData.Progress += 100;
+            }
         }
     }
 }
