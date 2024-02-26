@@ -68,12 +68,7 @@ namespace VvvfSimulator.Generation.Motor
                 int VW = v.V - v.W;
                 int WU = v.W - v.U;
 
-                return new WaveValues()
-                {
-                    U = UV,
-                    V = VW,
-                    W = WU
-                };
+                return new(UV, VW, WU);
             }
 
             public void AynMotorControler(WaveValues v)

@@ -23,7 +23,7 @@ namespace VvvfSimulator.Generation.Video.Hexagon
             VvvfValues Control,
             YamlVvvfSoundData Sound,
             int Width,
-            int Height, 
+            int Height,
             int Delta,
             int Thickness,
             bool ZeroVectorCircle,
@@ -47,7 +47,7 @@ namespace VvvfSimulator.Generation.Video.Hexagon
             public PointD(double X, double Y)
             {
                 this.X = X;
-                this.Y = Y; 
+                this.Y = Y;
             }
 
             public bool IsZero()
@@ -65,9 +65,9 @@ namespace VvvfSimulator.Generation.Video.Hexagon
                 return new PointD(a.X + b.X, a.Y + b.Y);
             }
 
-            public static PointD operator *(double k,PointD a)
+            public static PointD operator *(double k, PointD a)
             {
-                return new PointD(k*a.X, k*a.Y);
+                return new PointD(k * a.X, k * a.Y);
             }
 
             public static PointD Max(PointD a, PointD b)
@@ -79,8 +79,8 @@ namespace VvvfSimulator.Generation.Video.Hexagon
             {
                 return new PointD(a.X < b.X ? a.X : b.X, a.Y < b.Y ? a.Y : b.Y);
             }
-            
-            
+
+
 
         }
 
@@ -103,13 +103,13 @@ namespace VvvfSimulator.Generation.Video.Hexagon
             }
 
             bool drawn_circle = false;
-            PointD CurrentPoint = new(0,0);
+            PointD CurrentPoint = new(0, 0);
             PointD MaxValue = new(double.MinValue, double.MinValue);
             PointD MinValue = new(double.MaxValue, double.MaxValue);
             List<PointD> ZeroPoints = new();
             List<PointD> LinePoints = new() { CurrentPoint };
 
-            WaveValues pre_wave_Values = new();
+            WaveValues pre_wave_Values = new(0, 0, 0);
 
             for (int i = 0; i < UVW.Length; i++)
             {
@@ -125,11 +125,12 @@ namespace VvvfSimulator.Generation.Video.Hexagon
                     pre_wave_Values = value.Clone();
                 }
 
-                if(DeltaMove.IsZero() && ZeroVectorCircle && !drawn_circle)
+                if (DeltaMove.IsZero() && ZeroVectorCircle && !drawn_circle)
                 {
                     drawn_circle = true;
                     ZeroPoints.Add(CurrentPoint);
-                }else if (!DeltaMove.IsZero())
+                }
+                else if (!DeltaMove.IsZero())
                 {
                     drawn_circle = false;
                 }
@@ -145,20 +146,20 @@ namespace VvvfSimulator.Generation.Video.Hexagon
             double k = 1200.0 / (UVW.Length - 1);
 
             PointD CorrectionAmount = new(
-                Width / 2.0 - k*(MinValue.X + (MaxValue.X - MinValue.X) / 2.0),
+                Width / 2.0 - k * (MinValue.X + (MaxValue.X - MinValue.X) / 2.0),
                 Height / 2.0 - k * (MinValue.Y + (MaxValue.Y - MinValue.Y) / 2.0)
             );
 
             for (int i = 0; i < LinePoints.Count - 1; i++)
             {
                 Point start = (k * LinePoints[i] + CorrectionAmount).ToPoint();
-                Point end = (k  * LinePoints[i+1] + CorrectionAmount).ToPoint();
+                Point end = (k * LinePoints[i + 1] + CorrectionAmount).ToPoint();
                 GResult.DrawLine(new Pen(Color.Black, Thickness), start, end);
             }
 
             for (int i = 0; i < ZeroPoints.Count; i++)
             {
-                Point point = (k*ZeroPoints[i] + CorrectionAmount).ToPoint();
+                Point point = (k * ZeroPoints[i] + CorrectionAmount).ToPoint();
 
                 double radius = 15 * ((ControlFrequency > 40) ? 1 : (ControlFrequency / 40.0));
                 GResult.FillEllipse(new SolidBrush(Color.White),

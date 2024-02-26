@@ -352,7 +352,7 @@ namespace VvvfSimulator
             if (control.GetSineFrequency() < value.min_sine_freq && control.GetControlFrequency() > 0) control.SetVideoSineFrequency(value.min_sine_freq);
             else control.SetVideoSineFrequency(control.GetSineFrequency());
 
-            if (value.none) return new WaveValues() { U = 0, V = 0, W = 0 };
+            if (value.none) return new WaveValues(0, 0, 0);
 
             control.SetVideoPulseMode(value.pulse_mode);
             control.SetVideoSineAmplitude(value.amplitude);
@@ -374,7 +374,7 @@ namespace VvvfSimulator
 
             }
 
-            return new WaveValues() { U = U, V = V, W = W };
+            return new(U, V, W);
         }
 
         public static int CalculateThreeLevel(VvvfValues control, PwmCalculateValues calculate_values, double initial_phase)

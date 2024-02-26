@@ -153,11 +153,11 @@ namespace VvvfSimulator
 
     public static class VvvfStructs
     {
-        public class WaveValues
+        public class WaveValues(int u, int v, int w)
         {
-            public int U = 0;
-            public int V = 0;
-            public int W = 0;
+            public int U = u;
+            public int V = v;
+            public int W = w;
 
             public WaveValues Clone()
             {

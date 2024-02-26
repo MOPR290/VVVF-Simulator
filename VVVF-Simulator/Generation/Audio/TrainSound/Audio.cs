@@ -33,7 +33,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             WaveValues value = VvvfCalculate.CalculatePhases(control, calculated_Values, 0);
 
             motor.motor_Param.sitamr = control.GetVideoSineFrequency() * Math.PI * 2 * control.GetSineTime();
-            motor.AynMotorControler(new WaveValues() { U = value.W, V = value.V, W = value.U });
+            motor.AynMotorControler(new(value.W, value.V, value.U));
             motor.Asyn_Moduleabc();
 
             double motorTorqueSound = motor.motor_Param.Te - motor.motor_Param.TePre;
