@@ -138,7 +138,7 @@ namespace VvvfSimulator.Yaml.TrainAudio_Setting
                 double motor_r = 120 / Math.Pow(2, MotorSpec.NP) / 60.0;
 
                 // Sound From Gear 1
-                double[] harmonics = [9, 5, 3, 1 / 3.0, 1, 1 / 7.0, 1 / 5.0, 1/9.0];
+                double[] harmonics = [9.0 * 2 * Gear1 / Gear2 * 189.0 / 225, 9.0 * 2 * Gear1 / Gear2, 9.0, 1.0];
                 for(int i = 0; i < harmonics.Length; i++)
                 {
                     HarmonicData.HarmonicDataAmplitude amplitude = new() { 
