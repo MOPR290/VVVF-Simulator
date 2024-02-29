@@ -3,7 +3,6 @@ using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using VvvfSimulator.Generation.Audio.TrainSound;
 using VvvfSimulator.Yaml.VVVFSound;
 using static VvvfSimulator.Generation.Audio.TrainSound.AudioFilter;
 using static VvvfSimulator.Generation.GenerateCommon;
@@ -127,7 +126,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             };
             ISampleProvider sampleProvider = bufferedWaveProvider.ToSampleProvider();
             if (soundData.UseFilteres) sampleProvider = new MonauralFilter(sampleProvider, soundData.GetFilteres(SamplingFrequency));
-            if (soundData.UseImpulseResponse) sampleProvider = ImpulseResponse.FromSample(sampleProvider, 4096, soundData.ImpulseResponse);
+            if (soundData.UseImpulseResponse) sampleProvider = new CppConvolutionFilter(sampleProvider, 4096, soundData.ImpulseResponse);
             WaveFileWriter writer = new(raw ? path : pathTemp, sampleProvider.WaveFormat);
 
             MotorData motor = new()

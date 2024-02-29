@@ -229,3 +229,17 @@ void reset(uint64_t address) {
 	fftconvolver::FFTConvolver* p_conv = ((fftconvolver::FFTConvolver*)address);
 	p_conv->reset();
 }
+
+void stereo2monaural(float *input, long len, float *outputL, float *outputR) {
+	for (int i = 0; i < len / 2; i++) {
+		outputL[i] = input[2 * i];
+		outputR[i] = input[2 * i + 1];
+	}
+}
+
+void monaural2stereo(float* inputL, float* inputR, float *output, long len) {
+	for (int i = 0; i < len / 2; i++) {
+		output[2 * i] = inputL[i];
+		output[2 * i + 1] = inputR[i];
+	}
+}

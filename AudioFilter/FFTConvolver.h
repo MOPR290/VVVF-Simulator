@@ -106,6 +106,8 @@ extern "C" __declspec(dllexport) void deleteConvolverInstance(uint64_t);
 extern "C" __declspec(dllexport) bool init(uint64_t, long, float*, long);
 extern "C" __declspec(dllexport) void process(uint64_t, float*, float*, long);
 extern "C" __declspec(dllexport) void reset(uint64_t);
+extern "C" __declspec(dllexport) void stereo2monaural(float*, long, float*, float*);
+extern "C" __declspec(dllexport) void monaural2stereo(float*, float*, float*, long);
 
 
 #endif // Header guard

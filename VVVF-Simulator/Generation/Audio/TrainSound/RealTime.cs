@@ -67,7 +67,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
                 var bufferedWaveProvider = new BufferedWaveProvider(WaveFormat.CreateIeeeFloatWaveFormat(SamplingFrequency,1));
                 ISampleProvider sampleProvider = bufferedWaveProvider.ToSampleProvider();
                 if (thd.UseFilteres) sampleProvider = new MonauralFilter(sampleProvider, thd.GetFilteres(SamplingFrequency));
-                if (thd.UseImpulseResponse) sampleProvider = ImpulseResponse.FromSample(sampleProvider, calcCount, thd.ImpulseResponse);
+                if (thd.UseImpulseResponse) sampleProvider = new CppConvolutionFilter(sampleProvider, 4096, thd.ImpulseResponse);
 
                 var mmDevice = new MMDeviceEnumerator().GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
                 IWavePlayer wavPlayer = new WasapiOut(mmDevice, AudioClientShareMode.Shared, false, 0);

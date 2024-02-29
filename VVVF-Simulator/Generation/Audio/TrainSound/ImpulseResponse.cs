@@ -47,15 +47,6 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             WdlResamplingSampleProvider resampler = new(monoProvider, 192000);
             return ReadSample(resampler);
         }
-    
-        public static CppConvolutionFilter FromSample(ISampleProvider provider, int block, float[] samples)
-        {
-            CppConvolutionFilter cppConvolutionFilter = new(provider);
-            cppConvolutionFilter.Init(block, samples);
-            return cppConvolutionFilter;
-        }
-
-        
 
     }
 }
