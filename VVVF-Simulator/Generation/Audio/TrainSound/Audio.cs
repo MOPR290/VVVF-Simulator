@@ -81,7 +81,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
         }
 
 
-        unsafe public static void ExportWavFile(GenerationBasicParameter generationBasicParameter, YamlTrainSoundData soundData, int SamplingFrequency, bool raw, string path)
+        public static void ExportWavFile(GenerationBasicParameter generationBasicParameter, YamlTrainSoundData soundData, int SamplingFrequency, bool raw, string path)
         {
             static void AddSample(float value, BufferedWaveProvider provider)
             {

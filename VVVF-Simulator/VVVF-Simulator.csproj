@@ -10,7 +10,7 @@
     <Authors>JOTAN</Authors>
     <Description>A simple application to simulate VVVF sound</Description>
     <PackageIcon>vvvf-simulator.png</PackageIcon>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

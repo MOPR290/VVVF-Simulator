@@ -13,7 +13,7 @@ using System.Windows;
 
 namespace VvvfSimulator.Generation.Audio.TrainSound
 {
-    unsafe public class RealTime
+    public class RealTime
     {
         //---------- TRAIN SOUND --------------
         private static readonly int calcCount = 512;
