@@ -72,18 +72,6 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Display
             double[] Coefficients = Get_Fourier_Coefficients(control, ysd, 10000, N);
             StrCoefficients = Get_Desmos_Fourier_Coefficients_Array(ref Coefficients);
             Bitmap image = Get_FS_Image(ref Coefficients);
-            /*
-            List<double> CoefficientsList = new(Coefficients);
-            int remove_pos = 1;
-            while (true)
-            {
-                CoefficientsList.RemoveAt(remove_pos);
-                remove_pos++;
-                if (remove_pos >= CoefficientsList.Count) break;
-            }
-            double[] ProcessedArray = CoefficientsList.ToArray();
-            */
-
 
             if (!Resized)
             {
@@ -112,7 +100,11 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Display
         {
             Dispatcher.Invoke(() =>
             {
-                Clipboard.SetText(StrCoefficients);
+                try
+                {
+                    Clipboard.SetText(StrCoefficients);
+                }
+                catch { }
             });
         }
 
