@@ -12,23 +12,23 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
         private static void Auto_Voltage_Task(YamlVvvfSoundData ysd_x,bool brake,int i,int x, double max_freq)
         {
-            List<YamlVvvfSoundData.YamlControlData> ysd = brake ? ysd_x.braking_pattern : ysd_x.accelerate_pattern;
-            var parameter = ysd[i].amplitude_control.default_data.parameter;
+            List<YamlVvvfSoundData.YamlControlData> ysd = brake ? ysd_x.BrakingPattern : ysd_x.AcceleratePattern;
+            var parameter = ysd[i].Amplitude.DefaultAmplitude.Parameter;
 
-            if (ysd[i].amplitude_control.default_data.mode != VvvfCalculate.AmplitudeMode.Linear) return;
+            if (ysd[i].Amplitude.DefaultAmplitude.Mode != VvvfCalculate.AmplitudeMode.Linear) return;
 
-            parameter.disable_range_limit = false;
+            parameter.DisableRangeLimit = false;
 
             double target_freq;
             if (ysd.Count == i + x)
-                target_freq = ysd[i].from + 0.1 * x;
+                target_freq = ysd[i].ControlFrequencyFrom + 0.1 * x;
             else
-                target_freq = ysd[i + x].from - 0.001 * x;
-            if (x == 0) parameter.start_freq = target_freq;
-            else parameter.end_freq = target_freq;
+                target_freq = ysd[i + x].ControlFrequencyFrom - 0.001 * x;
+            if (x == 0) parameter.StartFrequency = target_freq;
+            else parameter.EndFrequency = target_freq;
 
-            parameter.max_amp = -1;
-            parameter.cut_off_amp = -1;
+            parameter.MaxAmplitude = -1;
+            parameter.CutOffAmplitude = -1;
 
             VvvfValues control = new();
             control.ResetMathematicValues();
@@ -50,8 +50,8 @@ namespace VvvfSimulator.Yaml.VVVFSound
                 amplitude_seed++;
 
                 double try_amplitude = amplitude_seed / 1000.0;
-                if (x == 0) parameter.start_amp = try_amplitude;
-                else parameter.end_amp = try_amplitude;
+                if (x == 0) parameter.StartAmplitude = try_amplitude;
+                else parameter.EndAmplitude = try_amplitude;
 
                 if (desire_voltage == 0) return;
 
@@ -79,10 +79,10 @@ namespace VvvfSimulator.Yaml.VVVFSound
                     {
                         for (int l = 0; l < 2; l++)
                         {
-                            var free_run_param = l == 0 ? ysd[i].amplitude_control.free_run_data.mascon_off.parameter : ysd[i].amplitude_control.free_run_data.mascon_on.parameter;
-                            free_run_param.disable_range_limit = false;
-                            free_run_param.start_amp = try_amplitude;
-                            free_run_param.start_freq = target_freq;
+                            var free_run_param = l == 0 ? ysd[i].Amplitude.FreeRunAmplitude.Off.Parameter : ysd[i].Amplitude.FreeRunAmplitude.On.Parameter;
+                            free_run_param.DisableRangeLimit = false;
+                            free_run_param.StartAmplitude = try_amplitude;
+                            free_run_param.StartFrequency = target_freq;
                         }
                     }
                     break;
@@ -98,23 +98,23 @@ namespace VvvfSimulator.Yaml.VVVFSound
         }
         public static bool Auto_Voltage(YamlVvvfSoundData data)
         {
-            var accel = data.accelerate_pattern;
+            var accel = data.AcceleratePattern;
             bool accel_has_settings = accel.Count > 1;
             bool allow_accel = true;
             for (int i = 0; i < accel.Count; i++)
             {
-                bool flg_2 = accel[i].from >= 0;
+                bool flg_2 = accel[i].ControlFrequencyFrom >= 0;
                 if (flg_2) continue;
                 allow_accel = false;
                 break;
             }
 
-            var brake = data.braking_pattern;
+            var brake = data.BrakingPattern;
             bool brake_has_settings = brake.Count > 1;
             bool allow_brake = true;
             for (int i = 0; i < brake.Count; i++)
             {
-                bool flg_2 = brake[i].from >= 0;
+                bool flg_2 = brake[i].ControlFrequencyFrom >= 0;
                 if (flg_2) continue;
                 allow_brake = false;
                 break;
@@ -122,11 +122,11 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
             if (!accel_has_settings || !allow_accel || !brake_has_settings || !allow_brake) return false;
 
-            accel.Sort((a, b) => Math.Sign(a.from - b.from));
-            brake.Sort((a, b) => Math.Sign(a.from - b.from));
+            accel.Sort((a, b) => Math.Sign(a.ControlFrequencyFrom - b.ControlFrequencyFrom));
+            brake.Sort((a, b) => Math.Sign(a.ControlFrequencyFrom - b.ControlFrequencyFrom));
 
-            double accel_end_freq = accel[accel.Count - 1].from;
-            double brake_end_freq = brake[brake.Count - 1].from;
+            double accel_end_freq = accel[accel.Count - 1].ControlFrequencyFrom;
+            double brake_end_freq = brake[brake.Count - 1].ControlFrequencyFrom;
 
             List<Task> tasks = new();
 
@@ -156,30 +156,30 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
             Task.WaitAll(tasks.ToArray());
 
-            accel.Sort((a, b) => Math.Sign(b.from - a.from));
-            brake.Sort((a, b) => Math.Sign(b.from - a.from));
+            accel.Sort((a, b) => Math.Sign(b.ControlFrequencyFrom - a.ControlFrequencyFrom));
+            brake.Sort((a, b) => Math.Sign(b.ControlFrequencyFrom - a.ControlFrequencyFrom));
 
             return true;
         }
 
         public static bool Set_All_FreeRunAmp_Zero(YamlVvvfSoundData data)
         {
-            var accel = data.accelerate_pattern;
+            var accel = data.AcceleratePattern;
             for(int i = 0; i < accel.Count; i++)
             {
-                accel[i].amplitude_control.free_run_data.mascon_off.parameter.start_amp = 0;
-                accel[i].amplitude_control.free_run_data.mascon_off.parameter.start_freq = 0;
-                accel[i].amplitude_control.free_run_data.mascon_on.parameter.start_amp = 0;
-                accel[i].amplitude_control.free_run_data.mascon_on.parameter.start_freq = 0;
+                accel[i].Amplitude.FreeRunAmplitude.Off.Parameter.StartAmplitude = 0;
+                accel[i].Amplitude.FreeRunAmplitude.Off.Parameter.StartFrequency = 0;
+                accel[i].Amplitude.FreeRunAmplitude.On.Parameter.StartAmplitude = 0;
+                accel[i].Amplitude.FreeRunAmplitude.On.Parameter.StartFrequency = 0;
             }
 
-            var brake = data.braking_pattern;
+            var brake = data.BrakingPattern;
             for (int i = 0; i < brake.Count; i++)
             {
-                brake[i].amplitude_control.free_run_data.mascon_off.parameter.start_amp = 0;
-                brake[i].amplitude_control.free_run_data.mascon_off.parameter.start_freq = 0;
-                brake[i].amplitude_control.free_run_data.mascon_on.parameter.start_amp = 0;
-                brake[i].amplitude_control.free_run_data.mascon_on.parameter.start_freq = 0;
+                brake[i].Amplitude.FreeRunAmplitude.Off.Parameter.StartAmplitude = 0;
+                brake[i].Amplitude.FreeRunAmplitude.Off.Parameter.StartFrequency = 0;
+                brake[i].Amplitude.FreeRunAmplitude.On.Parameter.StartAmplitude = 0;
+                brake[i].Amplitude.FreeRunAmplitude.On.Parameter.StartFrequency = 0;
             }
 
             return true;

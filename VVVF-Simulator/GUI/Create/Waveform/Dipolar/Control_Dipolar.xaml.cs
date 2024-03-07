@@ -45,9 +45,9 @@ namespace VvvfSimulator.GUI.Create.Waveform.Dipolar
         {
             YamlAsyncParameterDipolarMode[] modes = (YamlAsyncParameterDipolarMode[])Enum.GetValues(typeof(YamlAsyncParameterDipolarMode));
             dipolar_mode.ItemsSource = modes;
-            dipolar_mode.SelectedItem = target.async_data.dipoar_data.value_mode;
+            dipolar_mode.SelectedItem = target.AsyncModulationData.DipolarData.Mode;
 
-            set_Selected(target.async_data.dipoar_data.value_mode);
+            set_Selected(target.AsyncModulationData.DipolarData.Mode);
         }
 
         private void dipolar_mode_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -56,7 +56,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Dipolar
 
             YamlAsyncParameterDipolarMode selected = (YamlAsyncParameterDipolarMode)dipolar_mode.SelectedItem;
 
-            target.async_data.dipoar_data.value_mode = selected;
+            target.AsyncModulationData.DipolarData.Mode = selected;
 
             set_Selected(selected);
         }
@@ -66,7 +66,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Dipolar
             if (selected == YamlAsyncParameterDipolarMode.Const)
                 dipolar_param.Navigate(new Control_Dipolar_Const(target, main));
             else
-                dipolar_param.Navigate(new Control_Moving_Setting(target.async_data.dipoar_data.moving_value));
+                dipolar_param.Navigate(new Control_Moving_Setting(target.AsyncModulationData.DipolarData.MovingValue));
         }
     }
 }

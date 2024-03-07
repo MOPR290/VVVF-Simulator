@@ -151,7 +151,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
 
                 progressData.Progress++;
 
-                bool flag_continue = CheckForFreqChange(control, masconData, vvvfData.mascon_data, 1.0 / SamplingFrequency);
+                bool flag_continue = CheckForFreqChange(control, masconData, vvvfData.MasconData, 1.0 / SamplingFrequency);
                 bool flag_cancel = progressData.Cancel;
                 if (!flag_continue || flag_cancel) break;
             }

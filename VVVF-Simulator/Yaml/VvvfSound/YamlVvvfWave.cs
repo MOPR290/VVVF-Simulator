@@ -18,49 +18,49 @@ namespace VvvfSimulator.Yaml.VVVFSound
     {
 		private static double YamlAmplitudeCalculate(YamlControlDataAmplitude amp_data, double x)
 		{
-			var amp_param = amp_data.parameter;
+			var amp_param = amp_data.Parameter;
 			AmplitudeArgument aa = new(amp_param,x);
-			double amp = GetAmplitude(amp_data.mode, aa);
-			if (amp_param.cut_off_amp > amp) amp = 0;
-			if (amp_param.max_amp != -1 && amp_param.max_amp < amp) amp = amp_param.max_amp;
+			double amp = GetAmplitude(amp_data.Mode, aa);
+			if (amp_param.CutOffAmplitude > amp) amp = 0;
+			if (amp_param.MaxAmplitude != -1 && amp_param.MaxAmplitude < amp) amp = amp_param.MaxAmplitude;
 			return amp;
 		}
 
 		private static double GetMovingValue(YamlMovingValue moving_val, double current)
 		{
 			double val = 1000;
-			if (moving_val.type == YamlMovingValue.MovingValueType.Proportional)
+			if (moving_val.Type == YamlMovingValue.MovingValueType.Proportional)
 				val = get_Changing_Value(
-					moving_val.start,
-					moving_val.start_value,
-					moving_val.end,
-					moving_val.end_value,
+					moving_val.Start,
+					moving_val.StartValue,
+					moving_val.End,
+					moving_val.EndValue,
 					current
 				);
-			else if (moving_val.type == YamlMovingValue.MovingValueType.Pow2_Exponential)
-				val = (Math.Pow(2, Math.Pow((current - moving_val.start) / (moving_val.end - moving_val.start), moving_val.degree)) - 1) * (moving_val.end_value - moving_val.start_value) + moving_val.start_value;
-			else if(moving_val.type == YamlMovingValue.MovingValueType.Inv_Proportional)
+			else if (moving_val.Type == YamlMovingValue.MovingValueType.Pow2_Exponential)
+				val = (Math.Pow(2, Math.Pow((current - moving_val.Start) / (moving_val.End - moving_val.Start), moving_val.Degree)) - 1) * (moving_val.EndValue - moving_val.StartValue) + moving_val.StartValue;
+			else if(moving_val.Type == YamlMovingValue.MovingValueType.Inv_Proportional)
             {
 				double x = get_Changing_Value(
-					moving_val.start,
-					1 / moving_val.start_value,
-					moving_val.end,
-					1 / moving_val.end_value,
+					moving_val.Start,
+					1 / moving_val.StartValue,
+					moving_val.End,
+					1 / moving_val.EndValue,
 					current
 				);
 
-				double c = -moving_val.curve_rate;
-				double k = moving_val.end_value;
-				double l = moving_val.start_value;
+				double c = -moving_val.CurveRate;
+				double k = moving_val.EndValue;
+				double l = moving_val.StartValue;
 				double a = 1 / ((1 / l) - (1 / k)) * (1 / (l - c) - 1 / (k - c));
 				double b = 1 / (1 - (1 / l) * k) * (1 / (l - c) - (1 / l) * k / (k - c));
 
 				val = 1 / (a * x + b) + c;
 			}
-            else if (moving_val.type == YamlMovingValue.MovingValueType.Sine)
+            else if (moving_val.Type == YamlMovingValue.MovingValueType.Sine)
 			{
-				double x = (M_PI_2 - Math.Asin(moving_val.start_value / moving_val.end_value)) / (moving_val.end - moving_val.start) * (current - moving_val.start) + Math.Asin(moving_val.start_value / moving_val.end_value);
-				val = Math.Sin(x) * moving_val.end_value;
+				double x = (M_PI_2 - Math.Asin(moving_val.StartValue / moving_val.EndValue)) / (moving_val.End - moving_val.Start) * (current - moving_val.Start) + Math.Asin(moving_val.StartValue / moving_val.EndValue);
+				val = Math.Sin(x) * moving_val.EndValue;
             }
 
             return val;
@@ -69,17 +69,17 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
 		public static bool IsMatching(VvvfValues control, ControlStatus cv,YamlControlData ysd, bool compare_with_sine)
         {
-			Yaml_Free_Run_Condition_Single free_run_data;
-			if (cv.mascon_on) free_run_data = ysd.when_freerun.on;
-			else free_run_data = ysd.when_freerun.off;
+			YamlFreeRunConditionSingle free_run_data;
+			if (cv.mascon_on) free_run_data = ysd.FreeRunCondition.On;
+			else free_run_data = ysd.FreeRunCondition.Off;
 
-			bool enable_free_run_condition = cv.free_run && ((cv.mascon_on && ysd.enable_on_free_run) || (!cv.mascon_on && ysd.enable_off_free_run));
-			bool enable_normal_condition = ysd.enable_normal && !cv.free_run;
+			bool enable_free_run_condition = cv.free_run && ((cv.mascon_on && ysd.EnableFreeRunOn) || (!cv.mascon_on && ysd.EnableFreeRunOff));
+			bool enable_normal_condition = ysd.EnableNormal && !cv.free_run;
 			if (!(enable_free_run_condition || enable_normal_condition)) return false;
 
-			bool over_from = ysd.from <= (compare_with_sine ? control.GetSineFrequency() : cv.wave_stat);
-			bool is_sine_from = ysd.rotate_sine_from == -1 || ysd.rotate_sine_from <= control.GetSineFrequency();
-			bool is_sine_below = ysd.rotate_sine_below == -1 || ysd.rotate_sine_below > control.GetSineFrequency();
+			bool over_from = ysd.ControlFrequencyFrom <= (compare_with_sine ? control.GetSineFrequency() : cv.wave_stat);
+			bool is_sine_from = ysd.RotateFrequencyFrom == -1 || ysd.RotateFrequencyFrom <= control.GetSineFrequency();
+			bool is_sine_below = ysd.RotateFrequencyBelow == -1 || ysd.RotateFrequencyBelow > control.GetSineFrequency();
 
 			if (!is_sine_from) return false;
 			if (!is_sine_below) return false;
@@ -87,13 +87,13 @@ namespace VvvfSimulator.Yaml.VVVFSound
 			if (!cv.free_run && over_from) return true;
 			if (!cv.free_run && !over_from) return false;
 
-			if (free_run_data.skip) return false;
+			if (free_run_data.Skip) return false;
 
 			if (over_from) return true;
 
-			if (free_run_data.stuck_at_here)
+			if (free_run_data.StuckAtHere)
 			{
-				if (control.GetSineFrequency() > ysd.from) return true;
+				if (control.GetSineFrequency() > ysd.ControlFrequencyFrom) return true;
 				return false;
 			}
 
@@ -112,13 +112,13 @@ namespace VvvfSimulator.Yaml.VVVFSound
 			//
 			double max_voltage_freq;
             YamlMasconDataPattern mascon_on_off_check_data;
-			if (cv.brake) mascon_on_off_check_data = yvs.mascon_data.braking;
-			else mascon_on_off_check_data = yvs.mascon_data.accelerating;
+			if (cv.brake) mascon_on_off_check_data = yvs.MasconData.Braking;
+			else mascon_on_off_check_data = yvs.MasconData.Accelerating;
 
 			if (cv.mascon_on)
 			{
-                control.SetFreeFrequencyChange(mascon_on_off_check_data.on.freq_per_sec);
-                max_voltage_freq = mascon_on_off_check_data.on.control_freq_go_to;
+                control.SetFreeFrequencyChange(mascon_on_off_check_data.On.FrequencyChangeRate);
+                max_voltage_freq = mascon_on_off_check_data.On.MaxControlFrequency;
                 if (cv.free_run)
 				{
 					if(cv.wave_stat > max_voltage_freq)
@@ -130,8 +130,8 @@ namespace VvvfSimulator.Yaml.VVVFSound
 				}
             } else
 			{
-                control.SetFreeFrequencyChange(mascon_on_off_check_data.off.freq_per_sec);
-				max_voltage_freq = mascon_on_off_check_data.off.control_freq_go_to;
+                control.SetFreeFrequencyChange(mascon_on_off_check_data.Off.FrequencyChangeRate);
+				max_voltage_freq = mascon_on_off_check_data.Off.MaxControlFrequency;
                 if (cv.free_run)
                 {
                     if (cv.wave_stat > max_voltage_freq)
@@ -157,8 +157,8 @@ namespace VvvfSimulator.Yaml.VVVFSound
             //
             // control stat solve
             //
-            List<YamlControlData> control_list = new(cv.brake ? yvs.braking_pattern : yvs.accelerate_pattern);
-			control_list.Sort((a, b) => b.from.CompareTo(a.from));
+            List<YamlControlData> control_list = new(cv.brake ? yvs.BrakingPattern : yvs.AcceleratePattern);
+			control_list.Sort((a, b) => b.ControlFrequencyFrom.CompareTo(a.ControlFrequencyFrom));
 
 			//determine what control data to solve
 			int solve = -1;
@@ -197,43 +197,43 @@ namespace VvvfSimulator.Yaml.VVVFSound
 			// min sine freq solve
 			//
 			double minimum_sine_freq, original_wave_stat = cv.wave_stat;
-			if (cv.brake) minimum_sine_freq = yvs.min_freq.braking;
-			else minimum_sine_freq = yvs.min_freq.accelerate;
+			if (cv.brake) minimum_sine_freq = yvs.MinimumFrequency.Braking;
+			else minimum_sine_freq = yvs.MinimumFrequency.Accelerating;
 			if (0 < cv.wave_stat && cv.wave_stat < minimum_sine_freq && !cv.free_run) cv.wave_stat = minimum_sine_freq;
 
 			YamlControlData solve_data = control_list[solve];
-			pulse_mode = solve_data.pulse_Mode;
+			pulse_mode = solve_data.PulseMode;
 
-			if (pulse_mode.pulse_name == PulseModeNames.Async)
+			if (pulse_mode.PulseName == PulseModeNames.Async)
 			{
-				var async_data = solve_data.async_data;
+				var async_data = solve_data.AsyncModulationData;
 
 				//
 				//carrier freq solve
 				//
-				var carrier_data = async_data.carrier_wave_data;
-				var carrier_freq_mode = carrier_data.carrier_mode;
+				var carrier_data = async_data.CarrierWaveData;
+				var carrier_freq_mode = carrier_data.Mode;
 				double carrier_freq_val = 100;
 				if (carrier_freq_mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncCarrierMode.Const)
-					carrier_freq_val = carrier_data.const_value;
+					carrier_freq_val = carrier_data.Constant;
 				else if (carrier_freq_mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncCarrierMode.Moving)
-					carrier_freq_val = GetMovingValue(carrier_data.moving_value, original_wave_stat);
+					carrier_freq_val = GetMovingValue(carrier_data.MovingValue, original_wave_stat);
 				else if (carrier_freq_mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncCarrierMode.Table)
 				{
-					var table_data = carrier_data.carrier_table_value;
+					var table_data = carrier_data.CarrierFrequencyTable;
 
 					//Solve from high.
-					List<YamlAsyncParameterCarrierFreqTableValue> async_carrier_freq_table = new(table_data.carrier_freq_table);
-					async_carrier_freq_table.Sort((a, b) => Math.Sign(b.from - a.from));
+					List<YamlAsyncParameterCarrierFreqTableValue> async_carrier_freq_table = new(table_data.CarrierFrequencyTableValues);
+					async_carrier_freq_table.Sort((a, b) => Math.Sign(b.ControlFrequencyFrom - a.ControlFrequencyFrom));
 	
 					for(int i = 0; i < async_carrier_freq_table.Count; i++)
                     {
 						var carrier = async_carrier_freq_table[i];
-						bool condition_1 = carrier.free_run_stuck_here && (control.GetSineFrequency() < carrier.from) && cv.free_run;
-						bool condition_2 = original_wave_stat > carrier.from;
+						bool condition_1 = carrier.FreeRunStuckAtHere && (control.GetSineFrequency() < carrier.ControlFrequencyFrom) && cv.free_run;
+						bool condition_2 = original_wave_stat > carrier.ControlFrequencyFrom;
 						if (!condition_1 && !condition_2) continue;
 
-						carrier_freq_val = carrier.carrier_freq;
+						carrier_freq_val = carrier.CarrierFrequency;
 						break;
 
 					}
@@ -241,55 +241,55 @@ namespace VvvfSimulator.Yaml.VVVFSound
 				}
 				else if(carrier_freq_mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncCarrierMode.Vibrato)
 				{
-					var vibrato_data = carrier_data.vibrato_value;
+					var vibrato_data = carrier_data.VibratoData;
 
 					double highest, lowest;
-					if (vibrato_data.highest.mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncParameterCarrierFreqVibrato.YamlAsyncParameterVibratoValue.YamlAsyncParameterVibratoMode.Const)
-						highest = vibrato_data.highest.const_value;
+					if (vibrato_data.Highest.Mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncParameterCarrierFreqVibrato.YamlAsyncParameterVibratoValue.YamlAsyncParameterVibratoMode.Const)
+						highest = vibrato_data.Highest.Constant;
 					else
 					{
-						var moving_val = vibrato_data.highest.moving_value;
+						var moving_val = vibrato_data.Highest.MovingValue;
 						highest = GetMovingValue(moving_val, original_wave_stat);
 					}
 
-					if (vibrato_data.lowest.mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncParameterCarrierFreqVibrato.YamlAsyncParameterVibratoValue.YamlAsyncParameterVibratoMode.Const)
-						lowest = vibrato_data.lowest.const_value;
+					if (vibrato_data.Lowest.Mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncParameterCarrierFreqVibrato.YamlAsyncParameterVibratoValue.YamlAsyncParameterVibratoMode.Const)
+						lowest = vibrato_data.Lowest.Constant;
 					else
 					{
-						var moving_val = vibrato_data.lowest.moving_value;
+						var moving_val = vibrato_data.Lowest.MovingValue;
 						lowest = GetMovingValue(moving_val, original_wave_stat);
 					}
 
 					double interval;
-					if (vibrato_data.interval.mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncParameterCarrierFreqVibrato.YamlAsyncParameterVibratoValue.YamlAsyncParameterVibratoMode.Const)
-						interval = vibrato_data.interval.const_value;
+					if (vibrato_data.Interval.Mode == YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncParameterCarrierFreqVibrato.YamlAsyncParameterVibratoValue.YamlAsyncParameterVibratoMode.Const)
+						interval = vibrato_data.Interval.Constant;
 					else
-						interval = GetMovingValue(vibrato_data.interval.moving_value, original_wave_stat);
+						interval = GetMovingValue(vibrato_data.Interval.MovingValue, original_wave_stat);
 
-					carrier_freq_val = GetVibratoFrequency(lowest, highest, interval, vibrato_data.continuous, control);
+					carrier_freq_val = GetVibratoFrequency(lowest, highest, interval, vibrato_data.Continuous, control);
 				}
 
 				//
 				//random range solve
 				//
 				double random_range = 0, random_interval = 0;
-				if (async_data.random_data.random_range.value_mode == Yaml_Async_Parameter_Random_Value_Mode.Const) random_range = async_data.random_data.random_range.const_value;
-				else random_range = GetMovingValue(async_data.random_data.random_range.moving_value, original_wave_stat);
+				if (async_data.RandomData.Range.Mode == YamlAsyncParameterRandomValueMode.Const) random_range = async_data.RandomData.Range.Constant;
+				else random_range = GetMovingValue(async_data.RandomData.Range.MovingValue, original_wave_stat);
 
-				if (async_data.random_data.random_interval.value_mode == Yaml_Async_Parameter_Random_Value_Mode.Const) random_interval = async_data.random_data.random_interval.const_value;
-				else random_interval = GetMovingValue(async_data.random_data.random_interval.moving_value, original_wave_stat);
+				if (async_data.RandomData.Interval.Mode == YamlAsyncParameterRandomValueMode.Const) random_interval = async_data.RandomData.Interval.Constant;
+				else random_interval = GetMovingValue(async_data.RandomData.Interval.MovingValue, original_wave_stat);
 
 				carrier_freq = new CarrierFreq(carrier_freq_val, random_range, random_interval);
 
 				//
 				// dipolar solve
 				//
-				var dipolar_data = async_data.dipoar_data;
-				if (dipolar_data.value_mode == YamlAsyncParameter.YamlAsyncParameterDipolar.YamlAsyncParameterDipolarMode.Const)
-					dipolar = dipolar_data.const_value;
+				var dipolar_data = async_data.DipolarData;
+				if (dipolar_data.Mode == YamlAsyncParameter.YamlAsyncParameterDipolar.YamlAsyncParameterDipolarMode.Const)
+					dipolar = dipolar_data.Constant;
 				else
 				{
-					var moving_val = dipolar_data.moving_value;
+					var moving_val = dipolar_data.MovingValue;
 					dipolar = GetMovingValue(moving_val, original_wave_stat);
 				}
 
@@ -297,55 +297,55 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
 			}
 
-			amplitude = YamlAmplitudeCalculate(solve_data.amplitude_control.default_data, cv.wave_stat);
+			amplitude = YamlAmplitudeCalculate(solve_data.Amplitude.DefaultAmplitude, cv.wave_stat);
 
-			if (cv.free_run && solve_data.amplitude_control.free_run_data != null)
+			if (cv.free_run && solve_data.Amplitude.FreeRunAmplitude != null)
 			{
-				var free_run_data = solve_data.amplitude_control.free_run_data;
-				var free_run_amp_data = (cv.mascon_on) ? free_run_data.mascon_on : free_run_data.mascon_off;
-				var free_run_amp_param = free_run_amp_data.parameter;
+				var free_run_data = solve_data.Amplitude.FreeRunAmplitude;
+				var free_run_amp_data = (cv.mascon_on) ? free_run_data.On : free_run_data.Off;
+				var free_run_amp_param = free_run_amp_data.Parameter;
 
-				double max_control_freq = cv.mascon_on ? mascon_on_off_check_data.on.control_freq_go_to : mascon_on_off_check_data.off.control_freq_go_to;
+				double max_control_freq = cv.mascon_on ? mascon_on_off_check_data.On.MaxControlFrequency : mascon_on_off_check_data.Off.MaxControlFrequency;
 
-				double target_freq = free_run_amp_param.end_freq;
-				if (free_run_amp_param.end_freq == -1)
+				double target_freq = free_run_amp_param.EndFrequency;
+				if (free_run_amp_param.EndFrequency == -1)
 				{
-					if (solve_data.amplitude_control.default_data.parameter.disable_range_limit) target_freq = control.GetSineFrequency();
+					if (solve_data.Amplitude.DefaultAmplitude.Parameter.DisableRangeLimit) target_freq = control.GetSineFrequency();
 					else
 					{
                         target_freq = (control.GetSineFrequency() > max_control_freq) ? max_control_freq : control.GetSineFrequency();
-						target_freq = (target_freq > solve_data.amplitude_control.default_data.parameter.end_freq) ? solve_data.amplitude_control.default_data.parameter.end_freq : target_freq;
+						target_freq = (target_freq > solve_data.Amplitude.DefaultAmplitude.Parameter.EndFrequency) ? solve_data.Amplitude.DefaultAmplitude.Parameter.EndFrequency : target_freq;
                     }
                     
                 }
 					
 
-				double target_amp = free_run_amp_param.end_amp;
-				if (free_run_amp_param.end_amp == -1)
-					target_amp = YamlAmplitudeCalculate(solve_data.amplitude_control.default_data, control.GetSineFrequency());
+				double target_amp = free_run_amp_param.EndAmplitude;
+				if (free_run_amp_param.EndAmplitude == -1)
+					target_amp = YamlAmplitudeCalculate(solve_data.Amplitude.DefaultAmplitude, control.GetSineFrequency());
 
-				double start_amp = free_run_amp_param.start_amp;
+				double start_amp = free_run_amp_param.StartAmplitude;
 				if(start_amp == -1) 
-					start_amp = YamlAmplitudeCalculate(solve_data.amplitude_control.default_data, control.GetSineFrequency());
+					start_amp = YamlAmplitudeCalculate(solve_data.Amplitude.DefaultAmplitude, control.GetSineFrequency());
 
 
 				AmplitudeArgument aa = new()
 				{
-					min_freq = free_run_amp_param.start_freq,
+					min_freq = free_run_amp_param.StartFrequency,
 					min_amp = start_amp,
 					max_freq = target_freq,
 					max_amp = target_amp,
 
 					current = cv.wave_stat,
-					disable_range_limit = free_run_amp_param.disable_range_limit,
-					polynomial = free_run_amp_param.polynomial,
-					change_const = free_run_amp_param.curve_change_rate
+					disable_range_limit = free_run_amp_param.DisableRangeLimit,
+					polynomial = free_run_amp_param.Polynomial,
+					change_const = free_run_amp_param.CurveChangeRate
 				};
 				
-				amplitude = GetAmplitude(free_run_amp_data.mode, aa);
+				amplitude = GetAmplitude(free_run_amp_data.Mode, aa);
 
-				if (free_run_amp_param.cut_off_amp > amplitude) amplitude = 0;
-				if (free_run_amp_param.max_amp != -1 && amplitude > free_run_amp_param.max_amp) amplitude = free_run_amp_param.max_amp;
+				if (free_run_amp_param.CutOffAmplitude > amplitude) amplitude = 0;
+				if (free_run_amp_param.MaxAmplitude != -1 && amplitude > free_run_amp_param.MaxAmplitude) amplitude = free_run_amp_param.MaxAmplitude;
 				if (!cv.mascon_on && amplitude == 0) control.SetControlFrequency(0);
 			}
 
@@ -357,7 +357,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 				none = false,
 				carrier_freq = carrier_freq,
 				pulse_mode = pulse_mode,
-				level = yvs.level,
+				level = yvs.Level,
 				dipolar = dipolar,
 
 				min_sine_freq = minimum_sine_freq,

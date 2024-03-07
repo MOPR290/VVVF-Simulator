@@ -57,7 +57,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async.Random_Range
             if (no_update) return;
 
             double v = parse_d((TextBox)sender);
-            target.const_value = v;
+            target.Constant = v;
         }
     }
 }

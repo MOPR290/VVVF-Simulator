@@ -89,7 +89,7 @@ namespace VvvfSimulator
             String[] command = tag_str.Split("_");
 
             var list_view = command[0].Equals("accelerate") ? accelerate_settings : brake_settings;
-            var settings = command[0].Equals("accelerate") ? YamlVvvfManage.CurrentData.accelerate_pattern : YamlVvvfManage.CurrentData.braking_pattern;
+            var settings = command[0].Equals("accelerate") ? YamlVvvfManage.CurrentData.AcceleratePattern : YamlVvvfManage.CurrentData.BrakingPattern;
 
             if (command[1].Equals("remove"))
             {
@@ -144,8 +144,8 @@ namespace VvvfSimulator
             if (selected < 0) return;
 
             YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
-            var selected_data = ysd.accelerate_pattern[selected];
-            setting_window.Navigate(new Control_Setting_Page_Common(selected_data, this, ysd.level));
+            var selected_data = ysd.AcceleratePattern[selected];
+            setting_window.Navigate(new Control_Setting_Page_Common(selected_data, this, ysd.Level));
 
         }
         private void BrakeSelectedShow()
@@ -154,14 +154,14 @@ namespace VvvfSimulator
             if (selected < 0) return;
 
             YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
-            var selected_data = ysd.braking_pattern[selected];
-            setting_window.Navigate(new Control_Setting_Page_Common(selected_data, this, ysd.level));
+            var selected_data = ysd.BrakingPattern[selected];
+            setting_window.Navigate(new Control_Setting_Page_Common(selected_data, this, ysd.Level));
         }
 
         public void UpdateControlList()
         {
-            accelerate_settings.ItemsSource = YamlVvvfManage.CurrentData.accelerate_pattern;
-            brake_settings.ItemsSource = YamlVvvfManage.CurrentData.braking_pattern;
+            accelerate_settings.ItemsSource = YamlVvvfManage.CurrentData.AcceleratePattern;
+            brake_settings.ItemsSource = YamlVvvfManage.CurrentData.BrakingPattern;
             accelerate_settings.Items.Refresh();
             brake_settings.Items.Refresh();
         }
@@ -189,7 +189,7 @@ namespace VvvfSimulator
             {
                 if (command[1].Equals("sort"))
                 {
-                    YamlVvvfManage.CurrentData.braking_pattern.Sort((a, b) => Math.Sign(b.from - a.from));
+                    YamlVvvfManage.CurrentData.BrakingPattern.Sort((a, b) => Math.Sign(b.ControlFrequencyFrom - a.ControlFrequencyFrom));
                     UpdateControlList();
                     BrakeSelectedShow();
                 }
@@ -199,8 +199,8 @@ namespace VvvfSimulator
                     if (selected < 0) return;
 
                     YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
-                    var selected_data = ysd.braking_pattern[selected];
-                    YamlVvvfManage.CurrentData.braking_pattern.Add(selected_data.Clone());
+                    var selected_data = ysd.BrakingPattern[selected];
+                    YamlVvvfManage.CurrentData.BrakingPattern.Add(selected_data.Clone());
                     UpdateControlList();
                     BrakeSelectedShow();
                 }
@@ -209,7 +209,7 @@ namespace VvvfSimulator
             {
                 if (command[1].Equals("sort"))
                 {
-                    YamlVvvfManage.CurrentData.accelerate_pattern.Sort((a, b) => Math.Sign(b.from - a.from));
+                    YamlVvvfManage.CurrentData.AcceleratePattern.Sort((a, b) => Math.Sign(b.ControlFrequencyFrom - a.ControlFrequencyFrom));
                     UpdateControlList();
                     AccelerateSelectedShow();
                 }
@@ -219,8 +219,8 @@ namespace VvvfSimulator
                     if (selected < 0) return;
 
                     YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
-                    YamlControlData selected_data = ysd.accelerate_pattern[selected];
-                    YamlVvvfManage.CurrentData.accelerate_pattern.Add(selected_data.Clone());
+                    YamlControlData selected_data = ysd.AcceleratePattern[selected];
+                    YamlVvvfManage.CurrentData.AcceleratePattern.Add(selected_data.Clone());
                     UpdateControlList();
                     BrakeSelectedShow();
                 }
@@ -249,7 +249,7 @@ namespace VvvfSimulator
 
                 try
                 {
-                    YamlVvvfManage.load_Yaml(dialog.FileName);
+                    YamlVvvfManage.Load(dialog.FileName);
                     MessageBox.Show("Load OK.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch(YamlException ex)
@@ -278,7 +278,7 @@ namespace VvvfSimulator
                 // ダイアログを表示する
                 if (dialog.ShowDialog() == false) return;
                 load_path = dialog.FileName;
-                if (YamlVvvfManage.save_Yaml(dialog.FileName))
+                if (YamlVvvfManage.Save(dialog.FileName))
                     MessageBox.Show("Save OK.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
                 else
                     MessageBox.Show("Error occurred on saving.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -299,7 +299,7 @@ namespace VvvfSimulator
                     load_path = dialog.FileName;
                     save_path = load_path;
                 }
-                if (YamlVvvfManage.save_Yaml(save_path))
+                if (YamlVvvfManage.Save(save_path))
                     MessageBox.Show("Save OK.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
                 else
                     MessageBox.Show("Error occurred on saving.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);

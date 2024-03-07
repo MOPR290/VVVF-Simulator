@@ -40,7 +40,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async
 
         private void apply_data()
         {
-            const_box.Text = target.async_data.carrier_wave_data.const_value.ToString();
+            const_box.Text = target.AsyncModulationData.CarrierWaveData.Constant.ToString();
         }
 
         private double parse_d(TextBox tb)
@@ -62,7 +62,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async
             TextBox tb = (TextBox)sender;
             double d = parse_d(tb);
 
-            target.async_data.carrier_wave_data.const_value = d;
+            target.AsyncModulationData.CarrierWaveData.Constant = d;
 
             MainWindow.UpdateControlList();
         }

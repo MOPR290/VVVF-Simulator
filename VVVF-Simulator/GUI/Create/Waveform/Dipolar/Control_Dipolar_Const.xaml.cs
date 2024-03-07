@@ -33,7 +33,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Dipolar
 
             InitializeComponent();
 
-            const_box.Text = target.async_data.dipoar_data.const_value.ToString();
+            const_box.Text = target.AsyncModulationData.DipolarData.Constant.ToString();
 
             no_update = false;
         }
@@ -58,7 +58,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Dipolar
 
             TextBox tb = (TextBox)sender;
             double v = parse_d(tb);
-            target.async_data.dipoar_data.const_value = v;
+            target.AsyncModulationData.DipolarData.Constant = v;
         }
     }
 }

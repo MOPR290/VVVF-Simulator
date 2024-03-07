@@ -98,7 +98,7 @@ namespace VvvfSimulator.Generation.Audio.VvvfSound
 
                 progressData.Progress++;
 
-                bool flag_continue = CheckForFreqChange(control, masconData, vvvfData.mascon_data, 1.0 / sampleFrequency);
+                bool flag_continue = CheckForFreqChange(control, masconData, vvvfData.MasconData, 1.0 / sampleFrequency);
                 bool flag_cancel = progressData.Cancel;
 
                 if (flag_cancel || !flag_continue) break;

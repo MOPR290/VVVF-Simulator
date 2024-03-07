@@ -140,7 +140,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             re_calculate.Wait();
 
             PulseMode mode_p = solve_control.GetVideoPulseMode();
-            PulseModeNames mode = mode_p.pulse_name;
+            PulseModeNames mode = mode_p.PulseName;
             //Not in sync
             if (mode == PulseModeNames.Async)
             {

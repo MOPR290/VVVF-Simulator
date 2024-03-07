@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -12,87 +13,85 @@ namespace VvvfSimulator.Yaml.VVVFSound
 {
     public class YamlVvvfSoundData
     {
-        private static String get_Value(Object? o)
+        private static string GetValueString(object? o)
         {
-            if (o == null)
-                return "null";
-            String? str = o.ToString();
-            if (str == null)
-                return "null";
-            else
+            if (o == null) return "null";
+            if(o.GetType() == typeof(ArrayList))
+            {
+                string str = "[";
+                ArrayList list = (ArrayList) o;
+                for(int i = 0; i < list.Count; i++)
+                {
+                    str += GetValueString(list[i]) + (i + 1 == list.Count ? "]" : ", ");
+                }
                 return str;
-        }
-        public int level { get; set; } = 2;
-        public YamlMasconData mascon_data { get; set; } = new YamlMasconData();
-        public YamlMinSineFrequency min_freq { get; set; } = new YamlMinSineFrequency();
-        public List<YamlControlData> accelerate_pattern { get; set; } = new List<YamlControlData>();
-        public List<YamlControlData> braking_pattern { get; set; } = new List<YamlControlData>();
+            }
 
+            string? value = o.ToString();
+            if(value == null) return "null";
+            return value;
+        }
+        public int Level { get; set; } = 2;
+        public YamlMasconData MasconData { get; set; } = new();
+        public YamlMinSineFrequency MinimumFrequency { get; set; } = new();
+        public List<YamlControlData> AcceleratePattern { get; set; } = new();
+        public List<YamlControlData> BrakingPattern { get; set; } = new();
         public override string ToString()
         {
-            String final = "[\r\n";
-            final += "level : " + get_Value(level) + "\r\n";
-            final += "mascon_data : " + get_Value(mascon_data) + "\r\n";
-            final += "min_freq : " + get_Value(min_freq) + "\r\n";
-            final += "accelerate_pattern : [";
-
-            for (int i = 0; i < accelerate_pattern.Count; i++)
+            Type t = typeof(YamlVvvfSoundData);
+            string final = "[\r\n";
+            foreach (var f in t.GetFields())
             {
-                final += get_Value(accelerate_pattern[i]) + "\r\n";
+                final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
             }
-            final += "]";
-
-            final += "braking_pattern : [";
-            for (int i = 0; i < braking_pattern.Count; i++)
-            {
-                final += get_Value(braking_pattern[i]) + "\r\n";
-            }
-            final += "]\r\n";
             final += "]";
             return final;
         }
 
         public class YamlMasconData
         {
-            public YamlMasconDataPattern braking { get; set; } = new YamlMasconDataPattern();
-            public YamlMasconDataPattern accelerating { get; set; } = new YamlMasconDataPattern();
-
+            public YamlMasconDataPattern Braking { get; set; } = new YamlMasconDataPattern();
+            public YamlMasconDataPattern Accelerating { get; set; } = new YamlMasconDataPattern();
             public override string ToString()
             {
-                String final;
-                final = "[\r\n";
-                final += "braking : " + get_Value(braking) + "\r\n";
-                final += "accelerate : " + get_Value(accelerating) + "\r\n";
+                Type t = typeof(YamlMasconData);
+                string final = "[\r\n";
+                foreach (var f in t.GetFields())
+                {
+                    final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                }
                 final += "]";
-
                 return final;
             }
-
             public class YamlMasconDataPattern
             {
-                public YamlMasconDataPatternMode on { get; set; } = new YamlMasconDataPatternMode();
-                public YamlMasconDataPatternMode off { get; set; } = new YamlMasconDataPatternMode();
-
+                public YamlMasconDataPatternMode On { get; set; } = new YamlMasconDataPatternMode();
+                public YamlMasconDataPatternMode Off { get; set; } = new YamlMasconDataPatternMode();
                 public override string ToString()
                 {
-                    String final;
-                    final = "[\r\n";
-                    final += "on : " + get_Value(on) + "\r\n";
-                    final += "off : " + get_Value(off) + "\r\n";
+                    Type t = typeof(YamlMasconDataPattern);
+                    string final = "[\r\n";
+                    foreach (var f in t.GetFields())
+                    {
+                        final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                    }
                     final += "]";
-
                     return final;
                 }
-
                 public class YamlMasconDataPatternMode
                 {
-                    public double freq_per_sec { get; set; } = 60;
-                    public double control_freq_go_to { get; set; } = 60;
-
+                    public double FrequencyChangeRate { get; set; } = 60;
+                    public double MaxControlFrequency { get; set; } = 60;
                     public override string ToString()
                     {
-                        String re = "[freq_per_sec : " + get_Value(freq_per_sec) + " , " + "control_freq_go_to : " + String.Format("{0:f3}", control_freq_go_to) + "]";
-                        return re;
+                        Type t = typeof(YamlMasconDataPatternMode);
+                        string final = "[\r\n";
+                        foreach (var f in t.GetFields())
+                        {
+                            final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                        }
+                        final += "]";
+                        return final;
                     }
                 }
             }
@@ -102,14 +101,16 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
         public class YamlMinSineFrequency
         {
-            public double accelerate { get; set; } = -1.0;
-            public double braking { get; set; } = -1.0;
-
+            public double Accelerating { get; set; } = -1.0;
+            public double Braking { get; set; } = -1.0;
             public override string ToString()
             {
-                String final = "[";
-                final += "accelerate : " + String.Format("{0:f3}", accelerate) + ",";
-                final += "braking : " + String.Format("{0:f3}", braking);
+                Type t = typeof(YamlMinSineFrequency);
+                string final = "[\r\n";
+                foreach (var f in t.GetFields())
+                {
+                    final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                }
                 final += "]";
                 return final;
             }
@@ -117,63 +118,52 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
         public class YamlControlData
         {
-            public double from { get; set; } = -1;
-            public double rotate_sine_from { get; set; } = -1;
-            public double rotate_sine_below { get; set; } = -1;
-            public bool enable_on_free_run { get; set; } = true;
-            public bool enable_off_free_run { get; set; } = true;
-            public bool enable_normal { get; set; } = true;
+            public double ControlFrequencyFrom { get; set; } = -1;
+            public double RotateFrequencyFrom { get; set; } = -1;
+            public double RotateFrequencyBelow { get; set; } = -1;
+            public bool EnableFreeRunOn { get; set; } = true;
+            public bool EnableFreeRunOff { get; set; } = true;
+            public bool EnableNormal { get; set; } = true;
 
             // Null check !
-            private PulseMode _pulse_mode = new();
-            public PulseMode pulse_Mode
-            {
-                get { return _pulse_mode; }
-                set { if (value != null) _pulse_mode = value; }
-            }
-            public YamlFreeRunCondition when_freerun { get; set; } = new YamlFreeRunCondition();
-            public YamlControlDataAmplitudeControl amplitude_control { get; set; } = new YamlControlDataAmplitudeControl();
-            public YamlAsyncParameter async_data { get; set; } = new YamlAsyncParameter();
+            public PulseMode PulseMode { get; set; } = new();
+            public YamlFreeRunCondition FreeRunCondition { get; set; } = new YamlFreeRunCondition();
+            public YamlControlDataAmplitudeControl Amplitude { get; set; } = new YamlControlDataAmplitudeControl();
+            public YamlAsyncParameter AsyncModulationData { get; set; } = new YamlAsyncParameter();
 
             public YamlControlData Clone()
             {
                 YamlControlData clone = (YamlControlData)MemberwiseClone();
 
                 //Deep copy
-                clone.when_freerun = when_freerun.Clone();
-                clone.amplitude_control = amplitude_control.Clone();
-                clone.async_data = async_data.Clone();
-                clone.pulse_Mode = pulse_Mode.Clone();
+                clone.FreeRunCondition = FreeRunCondition.Clone();
+                clone.Amplitude = Amplitude.Clone();
+                clone.AsyncModulationData = AsyncModulationData.Clone();
+                clone.PulseMode = PulseMode.Clone();
 
                 return clone;
             }
             public override string ToString()
             {
-                String change_line = "\r\n";
-                String final = "From : " + String.Format("{0:f3}", from) + change_line;
-                final += "rotate_sine_from : " + get_Value(rotate_sine_from) + change_line;
-                final += "rotate_sine_below : " + get_Value(rotate_sine_below) + change_line;
-                final += "enable_on_free_run : " + get_Value(enable_on_free_run) + change_line;
-                final += "enable_off_free_run : " + get_Value(enable_off_free_run) + change_line;
-                final += "enable_normal : " + get_Value(enable_normal) + change_line;
-                final += "PulseMode : " + get_Value(pulse_Mode) + change_line;
-                final += "when_freerun : " + get_Value(when_freerun) + change_line;
-                final += "amplitude_control : " + get_Value(amplitude_control) + change_line;
-                final += "async_data : " + get_Value(async_data);
+                Type t = typeof(YamlControlData);
+                string final = "[\r\n";
+                foreach (var f in t.GetFields())
+                {
+                    final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                }
+                final += "]";
                 return final;
             }
 
-
             public class YamlMovingValue
             {
-                public MovingValueType type { get; set; } = MovingValueType.Proportional;
-                public double start { get; set; } = 0;
-                public double start_value { get; set; } = 0;
-                public double end { get; set; } = 1;
-                public double end_value { get; set; } = 100;
-                public double degree { get; set; } = 2;
-
-                public double curve_rate { get; set; } = 0;
+                public MovingValueType Type { get; set; } = MovingValueType.Proportional;
+                public double Start { get; set; } = 0;
+                public double StartValue { get; set; } = 0;
+                public double End { get; set; } = 1;
+                public double EndValue { get; set; } = 100;
+                public double Degree { get; set; } = 2;
+                public double CurveRate { get; set; } = 0;
 
                 public enum MovingValueType
                 {
@@ -182,14 +172,13 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
                 public override string ToString()
                 {
-                    String final = "[";
-                    final += "Type : " + type.ToString() + ",";
-                    final += "Degree : " + String.Format("{0:f3}", degree) + ",";
-                    final += "CurveRate : " + String.Format("{0:f3}", curve_rate) + ",";
-                    final += "Start : " + String.Format("{0:f3}", start) + ",";
-                    final += "Start_Val : " + String.Format("{0:f3}", start_value) + ",";
-                    final += "End : " + String.Format("{0:f3}", end) + ",";
-                    final += "End_Val : " + String.Format("{0:f3}", end_value) + "]";
+                    Type t = typeof(YamlMovingValue);
+                    string final = "[\r\n";
+                    foreach (var f in t.GetFields())
+                    {
+                        final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                    }
+                    final += "]";
                     return final;
                 }
 
@@ -201,42 +190,48 @@ namespace VvvfSimulator.Yaml.VVVFSound
             }
             public class YamlFreeRunCondition
             {
-                public Yaml_Free_Run_Condition_Single on { get; set; } = new Yaml_Free_Run_Condition_Single();
-                public Yaml_Free_Run_Condition_Single off { get; set; } = new Yaml_Free_Run_Condition_Single();
+                public YamlFreeRunConditionSingle On { get; set; } = new YamlFreeRunConditionSingle();
+                public YamlFreeRunConditionSingle Off { get; set; } = new YamlFreeRunConditionSingle();
 
                 public override string ToString()
                 {
-                    String re = "[ " +
-                             "on : " + get_Value(on) + " , " +
-                             "off : " + get_Value(off) + " , " +
-                        "]";
-                    return re;
+                    Type t = typeof(YamlFreeRunCondition);
+                    string final = "[\r\n";
+                    foreach (var f in t.GetFields())
+                    {
+                        final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                    }
+                    final += "]";
+                    return final;
                 }
 
                 public YamlFreeRunCondition Clone()
                 {
                     YamlFreeRunCondition clone = (YamlFreeRunCondition)MemberwiseClone();
-                    clone.on = on.Clone();
-                    clone.off = off.Clone();
+                    clone.On = On.Clone();
+                    clone.Off = Off.Clone();
                     return clone;
                 }
 
-                public class Yaml_Free_Run_Condition_Single
+                public class YamlFreeRunConditionSingle
                 {
-                    public bool skip { get; set; } = false;
-                    public bool stuck_at_here { get; set; } = false;
+                    public bool Skip { get; set; } = false;
+                    public bool StuckAtHere { get; set; } = false;
                     public override string ToString()
                     {
-                        String re = "[ " +
-                             "skip : " + get_Value(skip) + " , " +
-                             "stuck_at_here : " + get_Value(stuck_at_here) + " , " +
-                        "]";
-                        return re;
+                        Type t = typeof(YamlFreeRunConditionSingle);
+                        string final = "[\r\n";
+                        foreach (var f in t.GetFields())
+                        {
+                            final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                        }
+                        final += "]";
+                        return final;
                     }
 
-                    public Yaml_Free_Run_Condition_Single Clone()
+                    public YamlFreeRunConditionSingle Clone()
                     {
-                        Yaml_Free_Run_Condition_Single clone = (Yaml_Free_Run_Condition_Single)MemberwiseClone();
+                        YamlFreeRunConditionSingle clone = (YamlFreeRunConditionSingle)MemberwiseClone();
                         return clone;
                     }
                 }
@@ -245,64 +240,65 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
             public class YamlAsyncParameter
             {
-                private YamlAsyncParameterRandom _random_data = new();
-                public YamlAsyncParameterRandom random_data { get { return _random_data; } set { if (value != null) _random_data = value; } }
-
-                public YamlAsyncParameterCarrierFreq carrier_wave_data { get; set; } = new();
-                public YamlAsyncParameterDipolar dipoar_data { get; set; } = new();
-
+                public YamlAsyncParameterRandom RandomData { get; set; } = new();
+                public YamlAsyncParameterCarrierFreq CarrierWaveData { get; set; } = new();
+                public YamlAsyncParameterDipolar DipolarData { get; set; } = new();
                 public override string ToString()
                 {
-                    String re = "[ " +
-                             "random_data : " + get_Value(random_data) + " , " +
-                             "dipoar_data : " + get_Value(dipoar_data) + " , " +
-                             "carrier_wave_data : " + get_Value(carrier_wave_data) +
-                        "]";
-                    return re;
+                    Type t = typeof(YamlAsyncParameter);
+                    string final = "[\r\n";
+                    foreach (var f in t.GetFields())
+                    {
+                        final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                    }
+                    final += "]";
+                    return final;
                 }
 
                 public YamlAsyncParameter Clone()
                 {
                     YamlAsyncParameter clone = (YamlAsyncParameter)MemberwiseClone();
-                    clone.random_data = random_data.Clone();
-                    clone.carrier_wave_data = carrier_wave_data.Clone();
-                    clone.dipoar_data = dipoar_data.Clone();
+                    clone.RandomData = RandomData.Clone();
+                    clone.CarrierWaveData = CarrierWaveData.Clone();
+                    clone.DipolarData = DipolarData.Clone();
                     return clone;
                 }
 
                 public class YamlAsyncParameterRandom
                 {
-                    public YamlAsyncParameterRandomValue random_range { get; set; } = new();
-                    public YamlAsyncParameterRandomValue random_interval { get; set; } = new();
-
+                    public YamlAsyncParameterRandomValue Range { get; set; } = new();
+                    public YamlAsyncParameterRandomValue Interval { get; set; } = new();
                     public override string ToString()
                     {
-                        String final = "[\r\n";
-                        final += "Random_Range : " + get_Value(random_range) + "\r\n";
-                        final += "Random_Interval : " + get_Value(random_interval) + "\r\n";
+                        Type t = typeof(YamlAsyncParameterRandom);
+                        string final = "[\r\n";
+                        foreach (var f in t.GetFields())
+                        {
+                            final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                        }
                         final += "]";
                         return final;
                     }
-
                     public YamlAsyncParameterRandom Clone()
                     {
                         YamlAsyncParameterRandom clone = (YamlAsyncParameterRandom)MemberwiseClone();
-                        clone.random_range = random_range.Clone();
-                        clone.random_interval = random_interval.Clone();
+                        clone.Range = Range.Clone();
+                        clone.Interval = Interval.Clone();
                         return clone;
                     }
-
                     public class YamlAsyncParameterRandomValue
                     {
-                        public Yaml_Async_Parameter_Random_Value_Mode value_mode { get; set; }
-                        public double const_value { get; set; } = 0;
-                        public YamlMovingValue moving_value { get; set; } = new YamlMovingValue();
+                        public YamlAsyncParameterRandomValueMode Mode { get; set; }
+                        public double Constant { get; set; } = 0;
+                        public YamlMovingValue MovingValue { get; set; } = new YamlMovingValue();
                         public override string ToString()
                         {
-                            String final = "[\r\n";
-                            final += "value_mode : " + value_mode.ToString() + "\r\n";
-                            final += "const_value : " + String.Format("{0:f3}", const_value) + "\r\n";
-                            final += "moving_value : " + get_Value(moving_value) + "\r\n";
+                            Type t = typeof(YamlAsyncParameterRandomValue);
+                            string final = "[\r\n";
+                            foreach (var f in t.GetFields())
+                            {
+                                final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                            }
                             final += "]";
                             return final;
                         }
@@ -310,11 +306,11 @@ namespace VvvfSimulator.Yaml.VVVFSound
                         public YamlAsyncParameterRandomValue Clone()
                         {
                             YamlAsyncParameterRandomValue clone = (YamlAsyncParameterRandomValue)MemberwiseClone();
-                            clone.moving_value = this.moving_value.Clone();
+                            clone.MovingValue = this.MovingValue.Clone();
                             return clone;
                         }
 
-                        public enum Yaml_Async_Parameter_Random_Value_Mode
+                        public enum YamlAsyncParameterRandomValueMode
                         {
                             Const, Moving
                         }
@@ -324,30 +320,31 @@ namespace VvvfSimulator.Yaml.VVVFSound
                 }
                 public class YamlAsyncParameterCarrierFreq
                 {
-                    public YamlAsyncCarrierMode carrier_mode { get; set; }
-                    public double const_value { get; set; } = -1.0;
-                    public YamlMovingValue moving_value { get; set; } = new YamlMovingValue();
-                    public YamlAsyncParameterCarrierFreqVibrato vibrato_value { get; set; } = new YamlAsyncParameterCarrierFreqVibrato();
-                    public YamlAsyncParameterCarrierFreqTable carrier_table_value { get; set; } = new YamlAsyncParameterCarrierFreqTable();
+                    public YamlAsyncCarrierMode Mode { get; set; }
+                    public double Constant { get; set; } = -1.0;
+                    public YamlMovingValue MovingValue { get; set; } = new YamlMovingValue();
+                    public YamlAsyncParameterCarrierFreqVibrato VibratoData { get; set; } = new YamlAsyncParameterCarrierFreqVibrato();
+                    public YamlAsyncParameterCarrierFreqTable CarrierFrequencyTable { get; set; } = new YamlAsyncParameterCarrierFreqTable();
 
                     public override string ToString()
                     {
-                        String final = "[\r\n";
-                        final += "carrier_mode : " + carrier_mode.ToString() + "\r\n";
-                        final += "const_value : " + String.Format("{0:f3}", const_value) + "\r\n";
-                        final += "moving_value : " + get_Value(moving_value) + "\r\n";
-                        final += "vibrato_value : " + get_Value(vibrato_value) + "\r\n";
-                        final += "carrier_table_value : " + get_Value(carrier_table_value) + "\r\n";
+                        Type t = typeof(YamlAsyncParameterCarrierFreq);
+                        string final = "[\r\n";
+                        foreach (var f in t.GetFields())
+                        {
+                            final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                        }
                         final += "]";
                         return final;
                     }
 
+
                     public YamlAsyncParameterCarrierFreq Clone()
                     {
                         YamlAsyncParameterCarrierFreq clone = (YamlAsyncParameterCarrierFreq)MemberwiseClone();
-                        clone.moving_value = moving_value.Clone();
-                        clone.vibrato_value = vibrato_value.Clone();
-                        clone.carrier_table_value = carrier_table_value.Clone();
+                        clone.MovingValue = MovingValue.Clone();
+                        clone.VibratoData = VibratoData.Clone();
+                        clone.CarrierFrequencyTable = CarrierFrequencyTable.Clone();
                         return clone;
                     }
 
@@ -358,53 +355,49 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
                     public class YamlAsyncParameterCarrierFreqVibrato
                     {
-                        public YamlAsyncParameterVibratoValue highest { get; set; } = new();
-                        public YamlAsyncParameterVibratoValue lowest { get; set; } = new();
-
-
-                        private YamlAsyncParameterVibratoValue _interval = new();
-                        public YamlAsyncParameterVibratoValue interval { get { return _interval; } set { if (value != null) _interval = value; } }
-
-                        public bool continuous { get; set; } = true;
-
+                        public YamlAsyncParameterVibratoValue Highest { get; set; } = new();
+                        public YamlAsyncParameterVibratoValue Lowest { get; set; } = new();
+                        public YamlAsyncParameterVibratoValue Interval { get; set; } = new();
+                        public bool Continuous { get; set; } = true;
                         public override string ToString()
                         {
-                            String final = "[\r\n";
-                            final += "highest : " + get_Value(highest) + "\r\n";
-                            final += "lowest : " + get_Value(lowest) + "\r\n";
-                            final += "interval : " + get_Value(interval) + "\r\n";
+                            Type t = typeof(YamlAsyncParameterCarrierFreqVibrato);
+                            string final = "[\r\n";
+                            foreach (var f in t.GetFields())
+                            {
+                                final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                            }
                             final += "]";
                             return final;
                         }
-
                         public YamlAsyncParameterCarrierFreqVibrato Clone()
                         {
                             YamlAsyncParameterCarrierFreqVibrato clone = (YamlAsyncParameterCarrierFreqVibrato)MemberwiseClone();
-                            clone.highest = highest.Clone();
-                            clone.lowest = lowest.Clone();
-                            clone.interval = interval.Clone();
+                            clone.Highest = Highest.Clone();
+                            clone.Lowest = Lowest.Clone();
+                            clone.Interval = Interval.Clone();
                             return clone;
                         }
-
                         public class YamlAsyncParameterVibratoValue
                         {
-                            public YamlAsyncParameterVibratoMode mode { get; set; } = YamlAsyncParameterVibratoMode.Const;
-                            public double const_value { get; set; } = -1;
-                            public YamlMovingValue moving_value { get; set; } = new YamlMovingValue();
+                            public YamlAsyncParameterVibratoMode Mode { get; set; } = YamlAsyncParameterVibratoMode.Const;
+                            public double Constant { get; set; } = -1;
+                            public YamlMovingValue MovingValue { get; set; } = new();
                             public override string ToString()
                             {
-                                String final = "[\r\n";
-                                final += "mode : " + mode.ToString() + "\r\n";
-                                final += "const_value : " + String.Format("{0:f3}", const_value) + "\r\n";
-                                final += "moving_value : " + get_Value(moving_value) + "\r\n";
+                                Type t = typeof(YamlAsyncParameterVibratoValue);
+                                string final = "[\r\n";
+                                foreach (var f in t.GetFields())
+                                {
+                                    final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                                }
                                 final += "]";
                                 return final;
                             }
-
                             public YamlAsyncParameterVibratoValue Clone()
                             {
                                 YamlAsyncParameterVibratoValue clone = (YamlAsyncParameterVibratoValue)MemberwiseClone();
-                                clone.moving_value = this.moving_value.Clone();
+                                clone.MovingValue = this.MovingValue.Clone();
                                 return clone;
                             }
 
@@ -418,19 +411,20 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
                     public class YamlAsyncParameterCarrierFreqTable
                     {
-                        public List<YamlAsyncParameterCarrierFreqTableValue> carrier_freq_table { get; set; } = new List<YamlAsyncParameterCarrierFreqTableValue>();
+                        public List<YamlAsyncParameterCarrierFreqTableValue> CarrierFrequencyTableValues { get; set; } = new List<YamlAsyncParameterCarrierFreqTableValue>();
                         public class YamlAsyncParameterCarrierFreqTableValue
                         {
-                            public double from { get; set; } = -1;
-                            public double carrier_freq { get; set; } = 1000;
-                            public bool free_run_stuck_here { get; set; } = false;
-
+                            public double ControlFrequencyFrom { get; set; } = -1;
+                            public double CarrierFrequency { get; set; } = 1000;
+                            public bool FreeRunStuckAtHere { get; set; } = false;
                             public override string ToString()
                             {
-                                String final = "[\r\n";
-                                final += "from : " + String.Format("{0:f3}", from) + ",";
-                                final += "carrier_freq : " + String.Format("{0:f3}", carrier_freq) + ",";
-                                final += "free_run_stuck_here : " + get_Value(free_run_stuck_here) + ",";
+                                Type t = typeof(YamlAsyncParameterCarrierFreqTableValue);
+                                string final = "[\r\n";
+                                foreach (var f in t.GetFields())
+                                {
+                                    final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                                }
                                 final += "]";
                                 return final;
                             }
@@ -441,24 +435,23 @@ namespace VvvfSimulator.Yaml.VVVFSound
                                 return clone;
                             }
                         }
-
                         public override string ToString()
                         {
-                            String final = "[\r\n";
-                            for (int i = 0; i < carrier_freq_table.Count; i++)
+                            Type t = typeof(YamlAsyncParameterCarrierFreqTable);
+                            string final = "[\r\n";
+                            foreach (var f in t.GetFields())
                             {
-                                final += carrier_freq_table[i].ToString() + "\r\n";
+                                final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
                             }
                             final += "]";
                             return final;
                         }
-
                         public YamlAsyncParameterCarrierFreqTable Clone()
                         {
                             YamlAsyncParameterCarrierFreqTable clone = new();
-                            for (int i = 0; i < carrier_freq_table.Count; i++)
+                            for (int i = 0; i < CarrierFrequencyTableValues.Count; i++)
                             {
-                                clone.carrier_freq_table.Add(carrier_freq_table[i].Clone());
+                                clone.CarrierFrequencyTableValues.Add(CarrierFrequencyTableValues[i].Clone());
                             }
                             return clone;
                         }
@@ -466,23 +459,24 @@ namespace VvvfSimulator.Yaml.VVVFSound
                 }
                 public class YamlAsyncParameterDipolar
                 {
-                    public YamlAsyncParameterDipolarMode value_mode { get; set; } = YamlAsyncParameterDipolarMode.Const;
-                    public double const_value { get; set; } = -1;
-                    public YamlMovingValue moving_value { get; set; } = new YamlMovingValue();
+                    public YamlAsyncParameterDipolarMode Mode { get; set; } = YamlAsyncParameterDipolarMode.Const;
+                    public double Constant { get; set; } = -1;
+                    public YamlMovingValue MovingValue { get; set; } = new YamlMovingValue();
                     public override string ToString()
                     {
-                        String final = "[\r\n";
-                        final += "value_mode : " + value_mode.ToString() + "\r\n";
-                        final += "const_value : " + String.Format("{0:f3}", const_value) + "\r\n";
-                        final += "moving_value : " + get_Value(moving_value) + "\r\n";
+                        Type t = typeof(YamlAsyncParameterDipolar);
+                        string final = "[\r\n";
+                        foreach (var f in t.GetFields())
+                        {
+                            final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                        }
                         final += "]";
                         return final;
                     }
-
                     public YamlAsyncParameterDipolar Clone()
                     {
                         YamlAsyncParameterDipolar clone = (YamlAsyncParameterDipolar)MemberwiseClone();
-                        clone.moving_value = this.moving_value.Clone();
+                        clone.MovingValue = this.MovingValue.Clone();
                         return clone;
                     }
 
@@ -498,16 +492,18 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
             public class YamlControlDataAmplitudeControl
             {
-                public YamlControlDataAmplitude default_data { get; set; } = new YamlControlDataAmplitude();
-                public YamlControlDataAmplitudeFreeRun free_run_data { get; set; } = new YamlControlDataAmplitudeFreeRun();
-
+                public YamlControlDataAmplitude DefaultAmplitude { get; set; } = new YamlControlDataAmplitude();
+                public YamlControlDataAmplitudeFreeRun FreeRunAmplitude { get; set; } = new YamlControlDataAmplitudeFreeRun();
                 public override string ToString()
                 {
-                    String re = "[ " +
-                             "default_data : " + get_Value(default_data) + " , " +
-                             "free_run_data : " + get_Value(free_run_data) +
-                        "]";
-                    return re;
+                    Type t = typeof(YamlControlDataAmplitudeControl);
+                    string final = "[\r\n";
+                    foreach (var f in t.GetFields())
+                    {
+                        final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                    }
+                    final += "]";
+                    return final;
                 }
 
                 public YamlControlDataAmplitudeControl Clone()
@@ -515,90 +511,79 @@ namespace VvvfSimulator.Yaml.VVVFSound
                     YamlControlDataAmplitudeControl clone = (YamlControlDataAmplitudeControl)MemberwiseClone();
 
                     //Deep copy
-                    clone.default_data = default_data.Clone();
-                    clone.free_run_data = free_run_data.Clone();
+                    clone.DefaultAmplitude = DefaultAmplitude.Clone();
+                    clone.FreeRunAmplitude = FreeRunAmplitude.Clone();
 
                     return clone;
                 }
 
                 public class YamlControlDataAmplitudeFreeRun
                 {
-                    public YamlControlDataAmplitude mascon_on { get; set; } = new YamlControlDataAmplitude();
-                    public YamlControlDataAmplitude mascon_off { get; set; } = new YamlControlDataAmplitude();
-
+                    public YamlControlDataAmplitude On { get; set; } = new YamlControlDataAmplitude();
+                    public YamlControlDataAmplitude Off { get; set; } = new YamlControlDataAmplitude();
                     public override string ToString()
                     {
-                        String re = "[ " +
-                                 "mascon_on : " + get_Value(mascon_on) + " , " +
-                                 "mascon_off : " + get_Value(mascon_off) +
-                            "]";
-                        return re;
+                        Type t = typeof(YamlControlDataAmplitudeFreeRun);
+                        string final = "[\r\n";
+                        foreach (var f in t.GetFields())
+                        {
+                            final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                        }
+                        final += "]";
+                        return final;
                     }
-
                     public YamlControlDataAmplitudeFreeRun Clone()
                     {
                         YamlControlDataAmplitudeFreeRun clone = (YamlControlDataAmplitudeFreeRun)MemberwiseClone();
-
-                        //Deep copy
-                        clone.mascon_on = mascon_on.Clone();
-                        clone.mascon_off = mascon_off.Clone();
-
+                        clone.On = On.Clone();
+                        clone.Off = Off.Clone();
                         return clone;
                     }
 
                 }
                 public class YamlControlDataAmplitude
                 {
-                    public AmplitudeMode mode { get; set; } = AmplitudeMode.Linear;
-                    public YamlControlDataAmplitudeParameter parameter { get; set; } = new YamlControlDataAmplitudeParameter();
-
+                    public AmplitudeMode Mode { get; set; } = AmplitudeMode.Linear;
+                    public YamlControlDataAmplitudeParameter Parameter { get; set; } = new YamlControlDataAmplitudeParameter();
                     public override string ToString()
                     {
-                        String re = "[ " +
-                                 "Amplitude_Mode : " + get_Value(mode) + " , " +
-                                 "parameter : " + get_Value(parameter) +
-                            "]";
-                        return re;
+                        Type t = typeof(YamlControlDataAmplitude);
+                        string final = "[\r\n";
+                        foreach (var f in t.GetFields())
+                        {
+                            final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                        }
+                        final += "]";
+                        return final;
                     }
-
                     public YamlControlDataAmplitude Clone()
                     {
                         YamlControlDataAmplitude clone = (YamlControlDataAmplitude)MemberwiseClone();
-                        clone.parameter = parameter.Clone();
+                        clone.Parameter = Parameter.Clone();
                         return clone;
                     }
-
-
                     public class YamlControlDataAmplitudeParameter
                     {
-                        public double start_freq { get; set; } = -1;
-                        public double start_amp { get; set; } = -1;
-                        public double end_freq { get; set; } = -1;
-                        public double end_amp { get; set; } = -1;
-                        public double curve_change_rate { get; set; } = 0;
-                        public double cut_off_amp { get; set; } = -1;
-                        public double max_amp { get; set; } = -1;
-                        public bool disable_range_limit { get; set; } = false;
-                        public double polynomial { get; set; } = 0;
-
-
+                        public double StartFrequency { get; set; } = -1;
+                        public double StartAmplitude { get; set; } = -1;
+                        public double EndFrequency { get; set; } = -1;
+                        public double EndAmplitude { get; set; } = -1;
+                        public double CurveChangeRate { get; set; } = 0;
+                        public double CutOffAmplitude { get; set; } = -1;
+                        public double MaxAmplitude { get; set; } = -1;
+                        public bool DisableRangeLimit { get; set; } = false;
+                        public double Polynomial { get; set; } = 0;
                         public override string ToString()
                         {
-                            String re = "[ " +
-                                 "start_freq : " + String.Format("{0:f3}", start_freq) + " , " +
-                                 "start_amp : " + String.Format("{0:f3}", start_amp) + " , " +
-                                 "end_freq : " + String.Format("{0:f3}", end_freq) + " , " +
-                                 "end_amp : " + String.Format("{0:f3}", end_amp) + " , " +
-                                 "curve_change_rate : " + String.Format("{0:f3}", curve_change_rate) + " , " +
-                                 "cut_off_amp : " + String.Format("{0:f3}", cut_off_amp) + " , " +
-                                 "max_amp : " + String.Format("{0:f3}", max_amp) + " , " +
-                                 "disable_range_limit : " + get_Value(disable_range_limit) + " , " +
-                                 "polynomial : " + polynomial.ToString() +
-
-                            "]";
-                            return re;
+                            Type t = typeof(YamlControlDataAmplitudeParameter);
+                            string final = "[\r\n";
+                            foreach (var f in t.GetFields())
+                            {
+                                final += string.Format("{0} : {1}", f.Name, GetValueString(f.GetValue(t))) + "\r\n";
+                            }
+                            final += "]";
+                            return final;
                         }
-
                         public YamlControlDataAmplitudeParameter Clone()
                         {
                             YamlControlDataAmplitudeParameter clone = (YamlControlDataAmplitudeParameter)MemberwiseClone();
@@ -613,7 +598,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
     {
         public static YamlVvvfSoundData CurrentData = new();
 
-        public static bool save_Yaml(String path)
+        public static bool Save(String path)
         {
             try
             {
@@ -628,8 +613,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
                 return false;
             }
         }
-
-        public static bool load_Yaml(String path)
+        public static bool Load(String path)
         {
             var input = new StreamReader(path, Encoding.UTF8);
             var deserializer = new Deserializer();
@@ -638,7 +622,6 @@ namespace VvvfSimulator.Yaml.VVVFSound
             input.Close();
             return true;
         }
-
         public static YamlVvvfSoundData DeepClone(YamlVvvfSoundData src)
         {
             YamlVvvfSoundData deserializeObject = new Deserializer().Deserialize<YamlVvvfSoundData>(new Serializer().Serialize(src));

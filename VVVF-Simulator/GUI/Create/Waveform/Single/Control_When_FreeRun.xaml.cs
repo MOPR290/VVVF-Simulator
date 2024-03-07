@@ -42,11 +42,11 @@ namespace VvvfSimulator.GUI.Create.Waveform
 
         private void apply_view()
         {
-            on_skip.IsChecked = target.when_freerun.on.skip;
-            off_skip.IsChecked = target.when_freerun.off.skip;
+            on_skip.IsChecked = target.FreeRunCondition.On.Skip;
+            off_skip.IsChecked = target.FreeRunCondition.Off.Skip;
 
-            on_stuck.IsChecked = target.when_freerun.on.stuck_at_here;
-            off_stuck.IsChecked = target.when_freerun.off.stuck_at_here;
+            on_stuck.IsChecked = target.FreeRunCondition.On.StuckAtHere;
+            off_stuck.IsChecked = target.FreeRunCondition.Off.StuckAtHere;
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
@@ -61,19 +61,19 @@ namespace VvvfSimulator.GUI.Create.Waveform
 
             String[] mode = tag_str.Split("_");
 
-            Yaml_Free_Run_Condition_Single condition;
-            if (mode[0].Equals("ON")) condition = target.when_freerun.on;
-            else condition = target.when_freerun.off;
+            YamlFreeRunConditionSingle condition;
+            if (mode[0].Equals("ON")) condition = target.FreeRunCondition.On;
+            else condition = target.FreeRunCondition.Off;
 
             bool is_cheked = cb.IsChecked != false;
 
             if (mode[1].Equals("Stuck"))
             {
-                condition.stuck_at_here = is_cheked;
+                condition.StuckAtHere = is_cheked;
             }
             else
             {
-                condition.skip = is_cheked;
+                condition.Skip = is_cheked;
             }
 
             MainWindow.UpdateControlList();

@@ -45,10 +45,10 @@ namespace VvvfSimulator.Generation.Pi3Generator
             compiler.WriteLineCode("{");
             compiler.AddIndent();
 
-            compiler.WriteLineCode("status->free_freq_change = " + yaml.off.freq_per_sec + ";");
-            compiler.WriteLineCode("if (status->wave_stat > " + yaml.off.control_freq_go_to + ")");
+            compiler.WriteLineCode("status->free_freq_change = " + yaml.Off.FrequencyChangeRate + ";");
+            compiler.WriteLineCode("if (status->wave_stat > " + yaml.Off.MaxControlFrequency + ")");
             compiler.AddIndent();
-            compiler.WriteLineCode("status->wave_stat = " + yaml.off.control_freq_go_to + ";");
+            compiler.WriteLineCode("status->wave_stat = " + yaml.Off.MaxControlFrequency + ";");
             compiler.DecrementIndent();
 
             compiler.DecrementIndent();
@@ -57,8 +57,8 @@ namespace VvvfSimulator.Generation.Pi3Generator
             compiler.WriteLineCode("{");
             compiler.AddIndent();
 
-            compiler.WriteLineCode("status->free_freq_change = " + yaml.on.freq_per_sec + ";");
-            compiler.WriteLineCode("if (status->wave_stat >= " + yaml.on.control_freq_go_to + ")");
+            compiler.WriteLineCode("status->free_freq_change = " + yaml.On.FrequencyChangeRate + ";");
+            compiler.WriteLineCode("if (status->wave_stat >= " + yaml.On.MaxControlFrequency + ")");
             compiler.AddIndent();
             compiler.WriteLineCode("status->wave_stat = status->sin_angle_freq * M_1_2PI;");
             compiler.DecrementIndent();
@@ -74,43 +74,43 @@ namespace VvvfSimulator.Generation.Pi3Generator
         )
         {
             List<YamlControlData> control_list = new(list);
-            control_list.Sort((a, b) => b.from.CompareTo(a.from));
+            control_list.Sort((a, b) => b.ControlFrequencyFrom.CompareTo(a.ControlFrequencyFrom));
 
             for (int i = 0; control_list.Count > i;i++)
             {
                 YamlControlData data = control_list[i];
                 List<string> _if = new();
 
-                if(!data.enable_normal)
+                if(!data.EnableNormal)
                     _if.Add("status->free_run");
-                if (!data.enable_off_free_run)
+                if (!data.EnableFreeRunOff)
                     _if.Add("!(status->free_run && status->mascon_off)");
-                if (!data.enable_on_free_run)
+                if (!data.EnableFreeRunOn)
                     _if.Add("!(status->free_run && !status->mascon_off)");
 
                 {
-                    string _condition = "(" + data.from + " <= _wave_stat)";
+                    string _condition = "(" + data.ControlFrequencyFrom + " <= _wave_stat)";
 
-                    if (data.when_freerun.on.stuck_at_here && data.when_freerun.off.stuck_at_here)
-                        _condition += " || " + "(status->free_run && status->sin_angle_freq > " + data.from + " * M_2PI)";
+                    if (data.FreeRunCondition.On.StuckAtHere && data.FreeRunCondition.Off.StuckAtHere)
+                        _condition += " || " + "(status->free_run && status->sin_angle_freq > " + data.ControlFrequencyFrom + " * M_2PI)";
                     else
                     {
-                        if (data.when_freerun.on.stuck_at_here) _condition += " || (!status->mascon_off && status->free_run && status->sin_angle_freq > " + data.from + " * M_2PI)";
-                        if (data.when_freerun.off.stuck_at_here) _condition += " || (status->mascon_off && status->free_run && status->sin_angle_freq > " + data.from + " * M_2PI)";
+                        if (data.FreeRunCondition.On.StuckAtHere) _condition += " || (!status->mascon_off && status->free_run && status->sin_angle_freq > " + data.ControlFrequencyFrom + " * M_2PI)";
+                        if (data.FreeRunCondition.Off.StuckAtHere) _condition += " || (status->mascon_off && status->free_run && status->sin_angle_freq > " + data.ControlFrequencyFrom + " * M_2PI)";
                     }
 
                     _if.Add(_condition);
                 }
                 
 
-                if (data.when_freerun.on.skip && data.when_freerun.off.skip)
+                if (data.FreeRunCondition.On.Skip && data.FreeRunCondition.Off.Skip)
                     _if.Add("!status->free_run");
                 else {
-                    if (data.when_freerun.on.skip) _if.Add("!(status->free_run && !status->mascon_off)");
-                    if (data.when_freerun.off.skip) _if.Add("!(status->free_run && status->mascon_off)");
+                    if (data.FreeRunCondition.On.Skip) _if.Add("!(status->free_run && !status->mascon_off)");
+                    if (data.FreeRunCondition.Off.Skip) _if.Add("!(status->free_run && status->mascon_off)");
                 }
-                if (data.rotate_sine_below != -1) _if.Add("status->sin_angle_freq <" + data.rotate_sine_below + " * M_2PI");
-                if (data.rotate_sine_from != -1) _if.Add("status->sin_angle_freq > " + data.rotate_sine_from + " * M_2PI");
+                if (data.RotateFrequencyBelow != -1) _if.Add("status->sin_angle_freq <" + data.RotateFrequencyBelow + " * M_2PI");
+                if (data.RotateFrequencyFrom != -1) _if.Add("status->sin_angle_freq > " + data.RotateFrequencyFrom + " * M_2PI");
 
                 string _s = (i == 0 ? "if" : "else if") + "(";
                 for(int x = 0; x < _if.Count; x++)
@@ -122,11 +122,11 @@ namespace VvvfSimulator.Generation.Pi3Generator
                 compiler.WriteLineCode("{");
                 compiler.AddIndent();
 
-                compiler.WriteLineCode("pwm->pulse_mode.pulse_name = " + data.pulse_Mode.pulse_name.ToString() + ";");
-                compiler.WriteLineCode("pwm->pulse_mode.alt_mode = " + data.pulse_Mode.Alt_Mode.ToString() + ";");
+                compiler.WriteLineCode("pwm->pulse_mode.pulse_name = " + data.PulseMode.PulseName.ToString() + ";");
+                compiler.WriteLineCode("pwm->pulse_mode.alt_mode = " + data.PulseMode.AltMode.ToString() + ";");
 
                 {
-                    YamlControlData.YamlControlDataAmplitudeControl amplitude = data.amplitude_control;
+                    YamlControlData.YamlControlDataAmplitudeControl amplitude = data.Amplitude;
                     static void _WriteAmplitudeControl(
                         Pi3Compiler compiler,
                         YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude? _default,
@@ -143,106 +143,106 @@ namespace VvvfSimulator.Generation.Pi3Generator
 
                             compiler.WriteLineCode("{"); compiler.AddIndent();
 
-                            YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter _t = _target.parameter;
+                            YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter _t = _target.Parameter;
 
-                            if(_t.end_amp == _t.start_amp) compiler.WriteLineCode("_amp = " + _t.start_amp + ";");
-                            else if (_target.mode == AmplitudeMode.Linear)
+                            if(_t.EndAmplitude == _t.StartAmplitude) compiler.WriteLineCode("_amp = " + _t.StartAmplitude + ";");
+                            else if (_target.Mode == AmplitudeMode.Linear)
                             {
                                 _WriteRangeLimitCheck(compiler, null, _t, true, true); ;
-                                double _a = (_t.end_amp - _t.start_amp) / (_t.end_freq - _t.start_freq);
-                                compiler.WriteLineCode("_amp = " + _a + " * _c + " + (-_a * _t.start_freq + _t.start_amp) + ";");
+                                double _a = (_t.EndAmplitude - _t.StartAmplitude) / (_t.EndFrequency - _t.StartFrequency);
+                                compiler.WriteLineCode("_amp = " + _a + " * _c + " + (-_a * _t.StartFrequency + _t.StartAmplitude) + ";");
                             }
-                            else if (_target.mode == AmplitudeMode.Wide_3_Pulse)
+                            else if (_target.Mode == AmplitudeMode.Wide_3_Pulse)
                             {
                                 _WriteRangeLimitCheck(compiler, null, _t, true, true);
-                                double _a = (_t.end_amp - _t.start_amp) / (_t.end_freq - _t.start_freq);
-                                double _b = -_a * _t.start_freq + _t.start_amp;
+                                double _a = (_t.EndAmplitude - _t.StartAmplitude) / (_t.EndFrequency - _t.StartFrequency);
+                                double _b = -_a * _t.StartFrequency + _t.StartAmplitude;
                                 compiler.WriteLineCode("_amp = " + (0.2 * _a) + " * _c + " + (0.2 * _b + 0.8) + ";");
                             }
-                            else if (_target.mode == AmplitudeMode.Inv_Proportional)
+                            else if (_target.Mode == AmplitudeMode.Inv_Proportional)
                             {
                                 _WriteRangeLimitCheck(compiler, null, _t, true, true);
-                                double _a = (1.0 / _t.end_amp - 1.0 / _t.start_amp) / (_t.end_freq - _t.start_freq);
-                                double _b = -_a * _t.start_freq + (1.0 / _t.start_amp);
+                                double _a = (1.0 / _t.EndAmplitude - 1.0 / _t.StartAmplitude) / (_t.EndFrequency - _t.StartFrequency);
+                                double _b = -_a * _t.StartFrequency + (1.0 / _t.StartAmplitude);
                                 compiler.WriteLineCode("double _x = " + _a + " * _c + " + _b + ";");
 
-                                double c = -_t.curve_change_rate;
-                                double k = _t.end_amp;
-                                double l = _t.start_amp;
+                                double c = -_t.CurveChangeRate;
+                                double k = _t.EndAmplitude;
+                                double l = _t.StartAmplitude;
                                 double a = 1 / ((1 / l) - (1 / k)) * (1 / (l - c) - 1 / (k - c));
                                 double b = 1 / (1 - 1 / l * k) * (1 / (l - c) - 1 / l * k / (k - c));
                                 compiler.WriteLineCode("_amp = 1 / (" + a + " * _x + " + b + ") +" + c + " ;");
                             }
-                            else if (_target.mode == AmplitudeMode.Sine)
+                            else if (_target.Mode == AmplitudeMode.Sine)
                             {
                                 _WriteRangeLimitCheck(compiler, null, _t, false, true);
-                                compiler.WriteLineCode("double _x = _c * " + (Math.PI / (2.0 * _t.end_freq)));
-                                compiler.WriteLineCode("_amp = _x * " + _t.end_amp);
+                                compiler.WriteLineCode("double _x = _c * " + (Math.PI / (2.0 * _t.EndFrequency)));
+                                compiler.WriteLineCode("_amp = _x * " + _t.EndAmplitude);
                             }
                             else
                             {
                                 compiler.WriteLineCode(" // @ 20231019180255");
                             }
 
-                            if (_t.cut_off_amp >= 0)
-                                compiler.WriteLineCode("if (" + _t.cut_off_amp + " > _amp) _amp = 0;");
-                            if (_t.max_amp != -1)
-                                compiler.WriteLineCode("if (" + _t.max_amp + " < _amp) _amp = " + _t.max_amp + ";");
+                            if (_t.CutOffAmplitude >= 0)
+                                compiler.WriteLineCode("if (" + _t.CutOffAmplitude + " > _amp) _amp = 0;");
+                            if (_t.MaxAmplitude != -1)
+                                compiler.WriteLineCode("if (" + _t.MaxAmplitude + " < _amp) _amp = " + _t.MaxAmplitude + ";");
 
                             compiler.DecrementIndent(); compiler.WriteLineCode("}");
                         }
                         else
                         {
-                            YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter _t = _target.parameter;
-                            YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter _d = _default.parameter;
+                            YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter _t = _target.Parameter;
+                            YamlControlData.YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter _d = _default.Parameter;
 
-                            if (_t.end_amp == -1 || _t.start_amp == -1) _WriteAmplitudeControl(compiler, null, _default, true, 0);
+                            if (_t.EndAmplitude == -1 || _t.StartAmplitude == -1) _WriteAmplitudeControl(compiler, null, _default, true, 0);
                             else compiler.WriteLineCode("double _c, _amp;");
 
                             compiler.WriteLineCode("{"); compiler.AddIndent();
 
                             compiler.WriteLineCode("_c = _wave_stat;");
 
-                            if(_t.end_freq == -1)
+                            if(_t.EndFrequency == -1)
                             {
-                                if (_d.disable_range_limit) compiler.WriteLineCode("double _f_end = status->sin_angle_freq * M_1_2PI;");
+                                if (_d.DisableRangeLimit) compiler.WriteLineCode("double _f_end = status->sin_angle_freq * M_1_2PI;");
                                 else
                                 {
                                     compiler.WriteLineCode("double _f_end = status->sin_angle_freq * M_1_2PI > " + max_freq + " ? " + max_freq + " : status->sin_angle_freq * M_1_2PI;");
-                                    compiler.WriteLineCode("_f_end = _f_end > " + _d.end_freq + " ? " + _d.end_freq + " : _f_end;");
+                                    compiler.WriteLineCode("_f_end = _f_end > " + _d.EndFrequency + " ? " + _d.EndFrequency + " : _f_end;");
                                 }
                             }
 
-                            if (_target.mode == AmplitudeMode.Linear)
+                            if (_target.Mode == AmplitudeMode.Linear)
                             {
                                 _WriteRangeLimitCheck(compiler, _d, _t, true, true);
-                                string _a = "double _a = (" + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + " - " + (_t.start_amp == -1 ? "_amp" : _t.start_amp.ToString()) + ") / (" + (_t.end_freq == -1 ? "_f_end" : _t.end_freq.ToString()) + " - " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + ");";
-                                string _b = "double _b = -_a * " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + " + " + (_t.start_amp == -1 ? "_amp" : _t.start_amp.ToString()) + ";";
+                                string _a = "double _a = (" + (_t.EndAmplitude == -1 ? "_amp" : _t.EndAmplitude.ToString()) + " - " + (_t.StartAmplitude == -1 ? "_amp" : _t.StartAmplitude.ToString()) + ") / (" + (_t.EndFrequency == -1 ? "_f_end" : _t.EndFrequency.ToString()) + " - " + (_t.StartFrequency == -1 ? "0" : _t.StartFrequency.ToString()) + ");";
+                                string _b = "double _b = -_a * " + (_t.StartFrequency == -1 ? "0" : _t.StartFrequency.ToString()) + " + " + (_t.StartAmplitude == -1 ? "_amp" : _t.StartAmplitude.ToString()) + ";";
                                 compiler.WriteLineCode(_a);
                                 compiler.WriteLineCode(_b);
                                 compiler.WriteLineCode("_amp = _a * _c + _b;");
                             }
-                            else if (_target.mode == AmplitudeMode.Wide_3_Pulse)
+                            else if (_target.Mode == AmplitudeMode.Wide_3_Pulse)
                             {
                                 _WriteRangeLimitCheck(compiler, _d, _t, true, true);
-                                string _a = "double _a = (" + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + " - " + (_t.start_amp == -1 ? "_amp" : _t.start_amp.ToString()) + ") / (" + (_t.end_freq == -1 ? "_f_end" : _t.end_freq.ToString()) + " - " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + ");";
-                                string _b = "double _b = -_a * " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + " + " + (_t.start_amp == -1 ? "_amp" : _t.start_amp.ToString()) + ";";
+                                string _a = "double _a = (" + (_t.EndAmplitude == -1 ? "_amp" : _t.EndAmplitude.ToString()) + " - " + (_t.StartAmplitude == -1 ? "_amp" : _t.StartAmplitude.ToString()) + ") / (" + (_t.EndFrequency == -1 ? "_f_end" : _t.EndFrequency.ToString()) + " - " + (_t.StartFrequency == -1 ? "0" : _t.StartFrequency.ToString()) + ");";
+                                string _b = "double _b = -_a * " + (_t.StartFrequency == -1 ? "0" : _t.StartFrequency.ToString()) + " + " + (_t.StartAmplitude == -1 ? "_amp" : _t.StartAmplitude.ToString()) + ";";
                                 compiler.WriteLineCode(_a);
                                 compiler.WriteLineCode(_b);
                                 compiler.WriteLineCode("_amp = 0.2 * (_a * _c + _b) + 0.8;");
                             }
-                            else if (_target.mode == AmplitudeMode.Inv_Proportional)
+                            else if (_target.Mode == AmplitudeMode.Inv_Proportional)
                             {
                                 _WriteRangeLimitCheck(compiler, _d, _t, true, true);
-                                string _a = "double _a = (1.0 / " + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + " - 1.0 / " + (_t.start_amp == -1 ? "1" : _t.start_amp.ToString()) + ") / (" + (_t.end_freq == -1 ? "_f_end" : _t.end_freq.ToString()) + " - " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + ");";                                
-                                string _b = "double _b = -_a * " + (_t.start_freq == -1 ? "0" : _t.start_freq.ToString()) + " + 1.0 / " + (_t.start_amp == -1 ? "1" : _t.start_amp.ToString()) + ";";
+                                string _a = "double _a = (1.0 / " + (_t.EndAmplitude == -1 ? "_amp" : _t.EndAmplitude.ToString()) + " - 1.0 / " + (_t.StartAmplitude == -1 ? "1" : _t.StartAmplitude.ToString()) + ") / (" + (_t.EndFrequency == -1 ? "_f_end" : _t.EndFrequency.ToString()) + " - " + (_t.StartFrequency == -1 ? "0" : _t.StartFrequency.ToString()) + ");";                                
+                                string _b = "double _b = -_a * " + (_t.StartFrequency == -1 ? "0" : _t.StartFrequency.ToString()) + " + 1.0 / " + (_t.StartAmplitude == -1 ? "1" : _t.StartAmplitude.ToString()) + ";";
                                 compiler.WriteLineCode(_a);
                                 compiler.WriteLineCode(_b);
                                 compiler.WriteLineCode("double _x = _a * _c + _b;");
 
-                                compiler.WriteLineCode("double c = " + -(_t.curve_change_rate == -1 ? _d.curve_change_rate : _t.curve_change_rate) + ";");
-                                compiler.WriteLineCode("double k = " + (_t.end_amp == -1 ? "_amp" : _t.end_amp) + ";");
-                                compiler.WriteLineCode("double l = " + (_t.start_amp == -1 ? "1" : _t.start_amp) + ";");
+                                compiler.WriteLineCode("double c = " + -(_t.CurveChangeRate == -1 ? _d.CurveChangeRate : _t.CurveChangeRate) + ";");
+                                compiler.WriteLineCode("double k = " + (_t.EndAmplitude == -1 ? "_amp" : _t.EndAmplitude) + ";");
+                                compiler.WriteLineCode("double l = " + (_t.StartAmplitude == -1 ? "1" : _t.StartAmplitude) + ";");
                                 compiler.WriteLineCode("if(l == k)"); compiler.WriteLineCode("{"); compiler.AddIndent();
                                 compiler.WriteLineCode("_amp = l;");
                                 compiler.DecrementIndent(); compiler.WriteLineCode("}"); 
@@ -252,21 +252,21 @@ namespace VvvfSimulator.Generation.Pi3Generator
                                 compiler.WriteLineCode("_amp = 1.0 / (a * _x + b) + c;");
                                 compiler.DecrementIndent(); compiler.WriteLineCode("}"); 
                             }
-                            else if (_target.mode == AmplitudeMode.Sine)
+                            else if (_target.Mode == AmplitudeMode.Sine)
                             {
                                 _WriteRangeLimitCheck(compiler, _d, _t, false, true);
-                                compiler.WriteLineCode("double _x = M_PI_2 * _c /" +  (_t.end_freq == -1 ? "_f_end" : _t.end_freq.ToString()) + ";");
-                                compiler.WriteLineCode("_amp = sin(_x) * " + (_t.end_amp == -1 ? "_amp" : _t.end_amp.ToString()) + ";");
+                                compiler.WriteLineCode("double _x = M_PI_2 * _c /" +  (_t.EndFrequency == -1 ? "_f_end" : _t.EndFrequency.ToString()) + ";");
+                                compiler.WriteLineCode("_amp = sin(_x) * " + (_t.EndAmplitude == -1 ? "_amp" : _t.EndAmplitude.ToString()) + ";");
                             }
                             else
                             {
                                 compiler.WriteLineCode(" // @ 20231018213430");
                             }
 
-                            if ((_t.cut_off_amp == -1 ? _d.cut_off_amp : _t.cut_off_amp) >= 0)
-                                compiler.WriteLineCode("if (" + (_t.cut_off_amp == -1 ? _d.cut_off_amp : _t.cut_off_amp) + " > _amp) _amp = 0;");
-                            if ((_t.max_amp == -1 ? _d.max_amp : _t.max_amp) != -1)
-                                compiler.WriteLineCode("if (" + (_t.max_amp == -1 ? _d.max_amp : _t.max_amp) + " < _amp) _amp = " + (_t.max_amp == -1 ? _d.max_amp : _t.max_amp) + ";");
+                            if ((_t.CutOffAmplitude == -1 ? _d.CutOffAmplitude : _t.CutOffAmplitude) >= 0)
+                                compiler.WriteLineCode("if (" + (_t.CutOffAmplitude == -1 ? _d.CutOffAmplitude : _t.CutOffAmplitude) + " > _amp) _amp = 0;");
+                            if ((_t.MaxAmplitude == -1 ? _d.MaxAmplitude : _t.MaxAmplitude) != -1)
+                                compiler.WriteLineCode("if (" + (_t.MaxAmplitude == -1 ? _d.MaxAmplitude : _t.MaxAmplitude) + " < _amp) _amp = " + (_t.MaxAmplitude == -1 ? _d.MaxAmplitude : _t.MaxAmplitude) + ";");
 
                             compiler.DecrementIndent(); compiler.WriteLineCode("}");
 
@@ -279,64 +279,64 @@ namespace VvvfSimulator.Generation.Pi3Generator
                             bool min, bool max
                         )
                         {
-                            if (_t.disable_range_limit) return;
+                            if (_t.DisableRangeLimit) return;
                             if(_d == null)
                             {
-                                if (min) compiler.WriteLineCode("if (_c < " + _t.start_freq + ") _c = " + _t.start_freq + ";");
-                                if (max) compiler.WriteLineCode("if (_c > " + _t.end_freq + ") _c = " + _t.end_freq + ";");
+                                if (min) compiler.WriteLineCode("if (_c < " + _t.StartFrequency + ") _c = " + _t.StartFrequency + ";");
+                                if (max) compiler.WriteLineCode("if (_c > " + _t.EndFrequency + ") _c = " + _t.EndFrequency + ";");
                             }
                             else
                             {
-                                if (min) compiler.WriteLineCode("if (_c < " + (_t.start_freq == -1 ? _d.start_freq : _t.start_freq) + ") _c = " + (_t.start_freq == -1 ? _d.start_freq : _t.start_freq) + ";");
-                                if (max) compiler.WriteLineCode("if (_c > " + (_t.end_freq == -1 ? _d.end_freq : _t.end_freq) + ") _c = " + (_t.end_freq == -1 ? _d.end_freq : _t.end_freq) + ";");
+                                if (min) compiler.WriteLineCode("if (_c < " + (_t.StartFrequency == -1 ? _d.StartFrequency : _t.StartFrequency) + ") _c = " + (_t.StartFrequency == -1 ? _d.StartFrequency : _t.StartFrequency) + ";");
+                                if (max) compiler.WriteLineCode("if (_c > " + (_t.EndFrequency == -1 ? _d.EndFrequency : _t.EndFrequency) + ") _c = " + (_t.EndFrequency == -1 ? _d.EndFrequency : _t.EndFrequency) + ";");
                             }
                         }
                     }
 
                     compiler.WriteLineCode("if (!status->free_run) {"); compiler.AddIndent();
-                    _WriteAmplitudeControl(compiler, null, amplitude.default_data, false, 0);
+                    _WriteAmplitudeControl(compiler, null, amplitude.DefaultAmplitude, false, 0);
                     compiler.WriteLineCode("pwm->amplitude = _amp;");
                     compiler.DecrementIndent(); compiler.WriteLineCode("}");
 
                     compiler.WriteLineCode("if (status->free_run && !status->mascon_off) {"); compiler.AddIndent();
-                    _WriteAmplitudeControl(compiler, amplitude.default_data, amplitude.free_run_data.mascon_on, false, freqInfo.on.control_freq_go_to);
+                    _WriteAmplitudeControl(compiler, amplitude.DefaultAmplitude, amplitude.FreeRunAmplitude.On, false, freqInfo.On.MaxControlFrequency);
                     compiler.WriteLineCode("pwm->amplitude = _amp;");
                     compiler.DecrementIndent(); compiler.WriteLineCode("}");
 
                     compiler.WriteLineCode("if (status->free_run && status->mascon_off) {"); compiler.AddIndent();
-                    _WriteAmplitudeControl(compiler, amplitude.default_data, amplitude.free_run_data.mascon_off, false, freqInfo.off.control_freq_go_to);
+                    _WriteAmplitudeControl(compiler, amplitude.DefaultAmplitude, amplitude.FreeRunAmplitude.Off, false, freqInfo.Off.MaxControlFrequency);
                     compiler.WriteLineCode("pwm->amplitude = _amp;");
                     compiler.DecrementIndent(); compiler.WriteLineCode("}");
 
 
                 }
 
-                if (data.pulse_Mode.pulse_name == VvvfStructs.PulseMode.PulseModeNames.Async)
+                if (data.PulseMode.PulseName == VvvfStructs.PulseMode.PulseModeNames.Async)
                 {
                     {
-                        YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq async = data.async_data.carrier_wave_data;
-                        if (async.carrier_mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncCarrierMode.Const)
+                        YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq async = data.AsyncModulationData.CarrierWaveData;
+                        if (async.Mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncCarrierMode.Const)
                         {
-                            compiler.WriteLineCode("pwm->carrier_freq.base_freq = " + async.const_value + ";");
+                            compiler.WriteLineCode("pwm->carrier_freq.base_freq = " + async.Constant + ";");
                         }
-                        else if (async.carrier_mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncCarrierMode.Moving)
+                        else if (async.Mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncCarrierMode.Moving)
                         {
-                            YamlControlData.YamlMovingValue moving = async.moving_value;
-                            if (moving.type == YamlControlData.YamlMovingValue.MovingValueType.Proportional)
+                            YamlControlData.YamlMovingValue moving = async.MovingValue;
+                            if (moving.Type == YamlControlData.YamlMovingValue.MovingValueType.Proportional)
                             {
                                 compiler.WriteLineCode("{"); compiler.AddIndent();
-                                double _a = (moving.end_value - moving.start_value) / (moving.end - moving.start);
-                                double _b = -_a * moving.start + moving.start_value;
+                                double _a = (moving.EndValue - moving.StartValue) / (moving.End - moving.Start);
+                                double _b = -_a * moving.Start + moving.StartValue;
                                 compiler.WriteLineCode("pwm->carrier_freq.base_freq = " + _a + " * _wave_stat + " + _b + ";");
                                 compiler.DecrementIndent(); compiler.WriteLineCode("}");
                             }
-                            else if (moving.type == YamlControlData.YamlMovingValue.MovingValueType.Sine)
+                            else if (moving.Type == YamlControlData.YamlMovingValue.MovingValueType.Sine)
                             {
                                 compiler.WriteLineCode("{"); compiler.AddIndent();
-                                double _start = Math.Asin(moving.start_value / moving.end_value);
-                                double _a = (Math.PI / 2.0 - _start) / (moving.end - moving.start);
-                                double _b = -_a * moving.start + _start;
-                                compiler.WriteLineCode("pwm->carrier_freq.base_freq = sin(" + _a + " * _wave_stat + " + _b + ") * " + moving.end_value + ";");
+                                double _start = Math.Asin(moving.StartValue / moving.EndValue);
+                                double _a = (Math.PI / 2.0 - _start) / (moving.End - moving.Start);
+                                double _b = -_a * moving.Start + _start;
+                                compiler.WriteLineCode("pwm->carrier_freq.base_freq = sin(" + _a + " * _wave_stat + " + _b + ") * " + moving.EndValue + ";");
                                 compiler.DecrementIndent(); compiler.WriteLineCode("}");
                             }
                             else
@@ -344,19 +344,19 @@ namespace VvvfSimulator.Generation.Pi3Generator
                                 compiler.WriteLineCode(" // @ 20231018205819");
                             }
 
-                        }else if (async.carrier_mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncCarrierMode.Table)
+                        }else if (async.Mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterCarrierFreq.YamlAsyncCarrierMode.Table)
                         {
-                            List<YamlAsyncParameterCarrierFreqTableValue> _list = new(async.carrier_table_value.carrier_freq_table);
-                            _list.Sort((a, b) => b.from.CompareTo(a.from));
+                            List<YamlAsyncParameterCarrierFreqTableValue> _list = new(async.CarrierFrequencyTable.CarrierFrequencyTableValues);
+                            _list.Sort((a, b) => b.ControlFrequencyFrom.CompareTo(a.ControlFrequencyFrom));
                             for (int x = 0; x < _list.Count; x++)
                             {
                                 YamlAsyncParameterCarrierFreqTableValue val = _list[x];
                                 string _con = (x == 0 ? "if" : "else if") + "(";
-                                _con += "_wave_stat >= " + val.from;
-                                if(val.free_run_stuck_here) _con += " || " + "(status->free_run && status->sin_angle_freq > " + val.from + " * M_2PI)";
+                                _con += "_wave_stat >= " + val.ControlFrequencyFrom;
+                                if(val.FreeRunStuckAtHere) _con += " || " + "(status->free_run && status->sin_angle_freq > " + val.ControlFrequencyFrom + " * M_2PI)";
                                 _con += ")";
                                 compiler.WriteLineCode(_con);
-                                compiler.AddIndent(); compiler.WriteLineCode("pwm->carrier_freq.base_freq = " + val.carrier_freq + ";");
+                                compiler.AddIndent(); compiler.WriteLineCode("pwm->carrier_freq.base_freq = " + val.CarrierFrequency + ";");
                                 compiler.DecrementIndent();
 
                             }
@@ -369,19 +369,19 @@ namespace VvvfSimulator.Generation.Pi3Generator
                     }
 
                     {
-                        YamlControlData.YamlAsyncParameter.YamlAsyncParameterRandom.YamlAsyncParameterRandomValue random_interval = data.async_data.random_data.random_interval;
-                        if (random_interval.value_mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterRandom.YamlAsyncParameterRandomValue.Yaml_Async_Parameter_Random_Value_Mode.Const)
+                        YamlControlData.YamlAsyncParameter.YamlAsyncParameterRandom.YamlAsyncParameterRandomValue random_interval = data.AsyncModulationData.RandomData.Interval;
+                        if (random_interval.Mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterRandom.YamlAsyncParameterRandomValue.YamlAsyncParameterRandomValueMode.Const)
                         {
-                            compiler.WriteLineCode("pwm->carrier_freq.interval = " + random_interval.const_value + ";");
+                            compiler.WriteLineCode("pwm->carrier_freq.interval = " + random_interval.Constant + ";");
                         }
-                        else if (random_interval.value_mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterRandom.YamlAsyncParameterRandomValue.Yaml_Async_Parameter_Random_Value_Mode.Moving)
+                        else if (random_interval.Mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterRandom.YamlAsyncParameterRandomValue.YamlAsyncParameterRandomValueMode.Moving)
                         {
-                            YamlControlData.YamlMovingValue moving = random_interval.moving_value;
-                            if (moving.type == YamlControlData.YamlMovingValue.MovingValueType.Proportional)
+                            YamlControlData.YamlMovingValue moving = random_interval.MovingValue;
+                            if (moving.Type == YamlControlData.YamlMovingValue.MovingValueType.Proportional)
                             {
                                 compiler.WriteLineCode("{"); compiler.AddIndent();
-                                double _a = (moving.end_value - moving.start_value) / (moving.end - moving.start);
-                                double _b = -_a * moving.start + moving.start_value;
+                                double _a = (moving.EndValue - moving.StartValue) / (moving.End - moving.Start);
+                                double _b = -_a * moving.Start + moving.StartValue;
                                 compiler.WriteLineCode("pwm->carrier_freq.interval = " + _a + " * _wave_stat + " + _b + ";");
                                 compiler.DecrementIndent(); compiler.WriteLineCode("}");
                             }
@@ -398,19 +398,19 @@ namespace VvvfSimulator.Generation.Pi3Generator
                     }
 
                     {
-                        YamlControlData.YamlAsyncParameter.YamlAsyncParameterRandom.YamlAsyncParameterRandomValue random_range = data.async_data.random_data.random_range;
-                        if (random_range.value_mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterRandom.YamlAsyncParameterRandomValue.Yaml_Async_Parameter_Random_Value_Mode.Const)
+                        YamlControlData.YamlAsyncParameter.YamlAsyncParameterRandom.YamlAsyncParameterRandomValue random_range = data.AsyncModulationData.RandomData.Range;
+                        if (random_range.Mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterRandom.YamlAsyncParameterRandomValue.YamlAsyncParameterRandomValueMode.Const)
                         {
-                            compiler.WriteLineCode("pwm->carrier_freq.range = " + random_range.const_value + ";");
+                            compiler.WriteLineCode("pwm->carrier_freq.range = " + random_range.Constant + ";");
                         }
-                        else if (random_range.value_mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterRandom.YamlAsyncParameterRandomValue.Yaml_Async_Parameter_Random_Value_Mode.Moving)
+                        else if (random_range.Mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterRandom.YamlAsyncParameterRandomValue.YamlAsyncParameterRandomValueMode.Moving)
                         {
-                            YamlControlData.YamlMovingValue moving = random_range.moving_value;
-                            if (moving.type == YamlControlData.YamlMovingValue.MovingValueType.Proportional)
+                            YamlControlData.YamlMovingValue moving = random_range.MovingValue;
+                            if (moving.Type == YamlControlData.YamlMovingValue.MovingValueType.Proportional)
                             {
                                 compiler.WriteLineCode("{"); compiler.AddIndent();
-                                double _a = (moving.end_value - moving.start_value) / (moving.end - moving.start);
-                                double _b = -_a * moving.start + moving.start_value;
+                                double _a = (moving.EndValue - moving.StartValue) / (moving.End - moving.Start);
+                                double _b = -_a * moving.Start + moving.StartValue;
                                 compiler.WriteLineCode("pwm->carrier_freq.range = " + _a + " * _wave_stat + " + _b + ";");
                                 compiler.DecrementIndent(); compiler.WriteLineCode("}");
                             }
@@ -427,19 +427,19 @@ namespace VvvfSimulator.Generation.Pi3Generator
                     }
 
                     {
-                        YamlControlData.YamlAsyncParameter.YamlAsyncParameterDipolar dipolar = data.async_data.dipoar_data;
-                        if (dipolar.value_mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterDipolar.YamlAsyncParameterDipolarMode.Const)
+                        YamlControlData.YamlAsyncParameter.YamlAsyncParameterDipolar dipolar = data.AsyncModulationData.DipolarData;
+                        if (dipolar.Mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterDipolar.YamlAsyncParameterDipolarMode.Const)
                         {
-                            compiler.WriteLineCode("pwm->dipolar = " + dipolar.const_value + ";");
+                            compiler.WriteLineCode("pwm->dipolar = " + dipolar.Constant + ";");
                         }
-                        else if (dipolar.value_mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterDipolar.YamlAsyncParameterDipolarMode.Moving)
+                        else if (dipolar.Mode == YamlControlData.YamlAsyncParameter.YamlAsyncParameterDipolar.YamlAsyncParameterDipolarMode.Moving)
                         {
-                            YamlControlData.YamlMovingValue moving = dipolar.moving_value;
-                            if (moving.type == YamlControlData.YamlMovingValue.MovingValueType.Proportional)
+                            YamlControlData.YamlMovingValue moving = dipolar.MovingValue;
+                            if (moving.Type == YamlControlData.YamlMovingValue.MovingValueType.Proportional)
                             {
                                 compiler.WriteLineCode("{"); compiler.AddIndent();
-                                double _a = (moving.end_value - moving.start_value) / (moving.end - moving.start);
-                                double _b = -_a * moving.start + moving.start_value;
+                                double _a = (moving.EndValue - moving.StartValue) / (moving.End - moving.Start);
+                                double _b = -_a * moving.Start + moving.StartValue;
                                 compiler.WriteLineCode("pwm->dipolar = " + _a + " * _wave_stat + " + _b + ";");
                                 compiler.DecrementIndent(); compiler.WriteLineCode("}");
                             }
@@ -481,7 +481,7 @@ namespace VvvfSimulator.Generation.Pi3Generator
             {
                 "CarrierFreq carrier_freq = {0, 0, 0};",
                 "PulseMode pulse_mode = {P_1, Default};",
-                "pwm->level = " + vfsoundData.level.ToString() + ";",
+                "pwm->level = " + vfsoundData.Level.ToString() + ";",
                 "pwm->dipolar = -1;",
                 "pwm->min_freq = 0;",
                 "pwm->amplitude = 0;",
@@ -498,8 +498,8 @@ namespace VvvfSimulator.Generation.Pi3Generator
             compiler.WriteLineCode("{");
             compiler.AddIndent();
 
-            _WriteWaveStatChange(compiler, vfsoundData.mascon_data.braking, vfsoundData.min_freq.braking);
-            _WriteWavePatterns(compiler, vfsoundData.braking_pattern, vfsoundData.mascon_data.braking);
+            _WriteWaveStatChange(compiler, vfsoundData.MasconData.Braking, vfsoundData.MinimumFrequency.Braking);
+            _WriteWavePatterns(compiler, vfsoundData.BrakingPattern, vfsoundData.MasconData.Braking);
 
             compiler.DecrementIndent();
             compiler.WriteLineCode("}");
@@ -507,8 +507,8 @@ namespace VvvfSimulator.Generation.Pi3Generator
             compiler.WriteLineCode("{");
             compiler.AddIndent();
 
-            _WriteWaveStatChange(compiler, vfsoundData.mascon_data.accelerating, vfsoundData.min_freq.accelerate);
-            _WriteWavePatterns(compiler, vfsoundData.accelerate_pattern, vfsoundData.mascon_data.accelerating);
+            _WriteWaveStatChange(compiler, vfsoundData.MasconData.Accelerating, vfsoundData.MinimumFrequency.Accelerating);
+            _WriteWavePatterns(compiler, vfsoundData.AcceleratePattern, vfsoundData.MasconData.Accelerating);
 
             compiler.DecrementIndent();
             compiler.WriteLineCode("}");

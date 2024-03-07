@@ -33,7 +33,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async
         {
             InitializeComponent();
 
-            vd.Async_Table_Data = data.async_data.carrier_wave_data.carrier_table_value.carrier_freq_table;
+            vd.Async_Table_Data = data.AsyncModulationData.CarrierWaveData.CarrierFrequencyTable.CarrierFrequencyTableValues;
             DataContext = vd;
             target = data;
 
@@ -41,7 +41,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async
 
         private void DataGrid_TargetUpdated(object sender, DataTransferEventArgs e)
         {
-            target.async_data.carrier_wave_data.carrier_table_value.carrier_freq_table = vd.Async_Table_Data;
+            target.AsyncModulationData.CarrierWaveData.CarrierFrequencyTable.CarrierFrequencyTableValues = vd.Async_Table_Data;
         }
     }
 }

@@ -79,8 +79,8 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding from}"/>
-                                            <TextBlock Text="{Binding pulse_Mode.pulse_name}" FontSize="20"/>
+                                            <TextBlock Text="{Binding ControlFrequencyFrom}"/>
+                                            <TextBlock Text="{Binding PulseMode.PulseName}" FontSize="20"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
@@ -129,8 +129,8 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding from}"/>
-                                            <TextBlock Text="{Binding pulse_Mode.pulse_name}" FontSize="20"/>
+                                            <TextBlock Text="{Binding ControlFrequencyFrom}"/>
+                                            <TextBlock Text="{Binding PulseMode.PulseName}" FontSize="20"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>

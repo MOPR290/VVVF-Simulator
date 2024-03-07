@@ -47,18 +47,18 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async.Vibrato
             lowest_mode.ItemsSource = modes;
             interval_mode.ItemsSource = modes;
 
-            var vibrato_data = target.async_data.carrier_wave_data.vibrato_value;
+            var vibrato_data = target.AsyncModulationData.CarrierWaveData.VibratoData;
 
-            highest_mode.SelectedItem = vibrato_data.highest.mode;
-            set_Selected(0, vibrato_data.highest.mode);
+            highest_mode.SelectedItem = vibrato_data.Highest.Mode;
+            set_Selected(0, vibrato_data.Highest.Mode);
 
-            lowest_mode.SelectedItem = vibrato_data.lowest.mode;
-            set_Selected(1, vibrato_data.lowest.mode);
+            lowest_mode.SelectedItem = vibrato_data.Lowest.Mode;
+            set_Selected(1, vibrato_data.Lowest.Mode);
 
-            interval_mode.SelectedItem = vibrato_data.interval.mode;
-            set_Selected(2, vibrato_data.interval.mode);
+            interval_mode.SelectedItem = vibrato_data.Interval.Mode;
+            set_Selected(2, vibrato_data.Interval.Mode);
 
-            Continuous_CheckBox.IsChecked = vibrato_data.continuous;
+            Continuous_CheckBox.IsChecked = vibrato_data.Continuous;
         }
 
         private void selection_change(object sender, SelectionChangedEventArgs e)
@@ -71,17 +71,17 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async.Vibrato
             YamlAsyncParameterVibratoMode mode = (YamlAsyncParameterVibratoMode)cb.SelectedItem;
             if (tag.Equals("Highest"))
             {
-                target.async_data.carrier_wave_data.vibrato_value.highest.mode = mode;
+                target.AsyncModulationData.CarrierWaveData.VibratoData.Highest.Mode = mode;
                 set_Selected(0, mode);
             }
             else if(tag.Equals("Lowest"))
             {
-                target.async_data.carrier_wave_data.vibrato_value.lowest.mode = mode;
+                target.AsyncModulationData.CarrierWaveData.VibratoData.Lowest.Mode = mode;
                 set_Selected(1, mode);
             }
             else if (tag.Equals("Interval"))
             {
-                target.async_data.carrier_wave_data.vibrato_value.interval.mode = mode;
+                target.AsyncModulationData.CarrierWaveData.VibratoData.Interval.Mode = mode;
                 set_Selected(2, mode);
             }
 
@@ -99,23 +99,23 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async.Vibrato
             if (cate == 0)
             {
                 if(mode == YamlAsyncParameterVibratoMode.Const)
-                    highest_param_frame.Navigate(new Control_Async_Vibrato_Const(target.async_data.carrier_wave_data.vibrato_value.highest, main));
+                    highest_param_frame.Navigate(new Control_Async_Vibrato_Const(target.AsyncModulationData.CarrierWaveData.VibratoData.Highest, main));
                 else
-                    highest_param_frame.Navigate(new Control_Moving_Setting(target.async_data.carrier_wave_data.vibrato_value.highest.moving_value));
+                    highest_param_frame.Navigate(new Control_Moving_Setting(target.AsyncModulationData.CarrierWaveData.VibratoData.Highest.MovingValue));
             }
             else if(cate == 1)
             {
                 if (mode == YamlAsyncParameterVibratoMode.Const)
-                    lowest_param_frame.Navigate(new Control_Async_Vibrato_Const(target.async_data.carrier_wave_data.vibrato_value.lowest, main));
+                    lowest_param_frame.Navigate(new Control_Async_Vibrato_Const(target.AsyncModulationData.CarrierWaveData.VibratoData.Lowest, main));
                 else
-                    lowest_param_frame.Navigate(new Control_Moving_Setting(target.async_data.carrier_wave_data.vibrato_value.lowest.moving_value));
+                    lowest_param_frame.Navigate(new Control_Moving_Setting(target.AsyncModulationData.CarrierWaveData.VibratoData.Lowest.MovingValue));
             }
             else if (cate == 2)
             {
                 if (mode == YamlAsyncParameterVibratoMode.Const)
-                    interval_mode_frame.Navigate(new Control_Async_Vibrato_Const(target.async_data.carrier_wave_data.vibrato_value.interval, main));
+                    interval_mode_frame.Navigate(new Control_Async_Vibrato_Const(target.AsyncModulationData.CarrierWaveData.VibratoData.Interval, main));
                 else
-                    interval_mode_frame.Navigate(new Control_Moving_Setting(target.async_data.carrier_wave_data.vibrato_value.interval.moving_value));
+                    interval_mode_frame.Navigate(new Control_Moving_Setting(target.AsyncModulationData.CarrierWaveData.VibratoData.Interval.MovingValue));
             }
         }
 
@@ -123,7 +123,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async.Vibrato
         {
             if (no_update) return;
 
-            target.async_data.carrier_wave_data.vibrato_value.continuous = Continuous_CheckBox.IsChecked == true;
+            target.AsyncModulationData.CarrierWaveData.VibratoData.Continuous = Continuous_CheckBox.IsChecked == true;
         }
     }
 }

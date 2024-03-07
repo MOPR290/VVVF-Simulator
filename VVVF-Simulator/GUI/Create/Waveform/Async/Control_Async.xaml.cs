@@ -49,17 +49,17 @@ namespace VvvfSimulator.GUI.Create.Waveform
         {
             YamlAsyncCarrierMode[] modes = (YamlAsyncCarrierMode[])Enum.GetValues(typeof(YamlAsyncCarrierMode));
             carrier_freq_mode.ItemsSource = modes;
-            carrier_freq_mode.SelectedItem = data.async_data.carrier_wave_data.carrier_mode;
+            carrier_freq_mode.SelectedItem = data.AsyncModulationData.CarrierWaveData.Mode;
 
-            Random_Range_Type_Selector.ItemsSource = (Yaml_Async_Parameter_Random_Value_Mode[])Enum.GetValues(typeof(Yaml_Async_Parameter_Random_Value_Mode));
-            Random_Range_Type_Selector.SelectedItem = data.async_data.random_data.random_range.value_mode;
+            Random_Range_Type_Selector.ItemsSource = (YamlAsyncParameterRandomValueMode[])Enum.GetValues(typeof(YamlAsyncParameterRandomValueMode));
+            Random_Range_Type_Selector.SelectedItem = data.AsyncModulationData.RandomData.Range.Mode;
             
-            Random_Interval_Type_Selector.ItemsSource = (Yaml_Async_Parameter_Random_Value_Mode[])Enum.GetValues(typeof(Yaml_Async_Parameter_Random_Value_Mode));
-            Random_Interval_Type_Selector.SelectedItem = data.async_data.random_data.random_interval.value_mode;
+            Random_Interval_Type_Selector.ItemsSource = (YamlAsyncParameterRandomValueMode[])Enum.GetValues(typeof(YamlAsyncParameterRandomValueMode));
+            Random_Interval_Type_Selector.SelectedItem = data.AsyncModulationData.RandomData.Interval.Mode;
 
-            show_selected_carrier_mode(data.async_data.carrier_wave_data.carrier_mode);
-            Show_Random_Setting(Random_Range_Setting_Frame, data.async_data.random_data.random_range);
-            Show_Random_Setting(Random_Interval_Setting_Frame, data.async_data.random_data.random_interval);
+            show_selected_carrier_mode(data.AsyncModulationData.CarrierWaveData.Mode);
+            Show_Random_Setting(Random_Range_Setting_Frame, data.AsyncModulationData.RandomData.Range);
+            Show_Random_Setting(Random_Interval_Setting_Frame, data.AsyncModulationData.RandomData.Interval);
         }
 
         private void ComboBox_Changed(object sender, SelectionChangedEventArgs e)
@@ -72,20 +72,20 @@ namespace VvvfSimulator.GUI.Create.Waveform
 
             if (tag.Equals("Random_Range"))
             {
-                Yaml_Async_Parameter_Random_Value_Mode selected = (Yaml_Async_Parameter_Random_Value_Mode)Random_Range_Type_Selector.SelectedItem;
-                data.async_data.random_data.random_range.value_mode = selected;
-                Show_Random_Setting(Random_Range_Setting_Frame, data.async_data.random_data.random_range);
+                YamlAsyncParameterRandomValueMode selected = (YamlAsyncParameterRandomValueMode)Random_Range_Type_Selector.SelectedItem;
+                data.AsyncModulationData.RandomData.Range.Mode = selected;
+                Show_Random_Setting(Random_Range_Setting_Frame, data.AsyncModulationData.RandomData.Range);
             }
             else if (tag.Equals("Random_Interval"))
             {
-                Yaml_Async_Parameter_Random_Value_Mode selected = (Yaml_Async_Parameter_Random_Value_Mode)Random_Interval_Type_Selector.SelectedItem;
-                data.async_data.random_data.random_interval.value_mode = selected;
-                Show_Random_Setting(Random_Interval_Setting_Frame, data.async_data.random_data.random_interval);
+                YamlAsyncParameterRandomValueMode selected = (YamlAsyncParameterRandomValueMode)Random_Interval_Type_Selector.SelectedItem;
+                data.AsyncModulationData.RandomData.Interval.Mode = selected;
+                Show_Random_Setting(Random_Interval_Setting_Frame, data.AsyncModulationData.RandomData.Interval);
             }
             else if (tag.Equals("Param"))
             {
                 YamlAsyncCarrierMode selected = (YamlAsyncCarrierMode)carrier_freq_mode.SelectedItem;
-                data.async_data.carrier_wave_data.carrier_mode = selected;
+                data.AsyncModulationData.CarrierWaveData.Mode = selected;
                 show_selected_carrier_mode(selected);
             }
         }
@@ -95,7 +95,7 @@ namespace VvvfSimulator.GUI.Create.Waveform
             if (selected == YamlAsyncCarrierMode.Const)
                 carrier_setting.Navigate(new Control_Async_Carrier_Const(data, MainWindow));
             else if (selected == YamlAsyncCarrierMode.Moving)
-                carrier_setting.Navigate(new Control_Moving_Setting(data.async_data.carrier_wave_data.moving_value));
+                carrier_setting.Navigate(new Control_Moving_Setting(data.AsyncModulationData.CarrierWaveData.MovingValue));
             else if (selected == YamlAsyncCarrierMode.Vibrato)
                 carrier_setting.Navigate(new Control_Async_Vibrato(data, MainWindow));
             else if(selected == YamlAsyncCarrierMode.Table)
@@ -104,10 +104,10 @@ namespace VvvfSimulator.GUI.Create.Waveform
 
         private void Show_Random_Setting(Frame ShowFrame, YamlAsyncParameterRandomValue SettingValue)
         {
-            if (SettingValue.value_mode == Yaml_Async_Parameter_Random_Value_Mode.Const)
+            if (SettingValue.Mode == YamlAsyncParameterRandomValueMode.Const)
                 ShowFrame.Navigate(new Control_Async_Random_Const(SettingValue));
-            else if (SettingValue.value_mode == Yaml_Async_Parameter_Random_Value_Mode.Moving)
-                ShowFrame.Navigate(new Control_Moving_Setting(SettingValue.moving_value));
+            else if (SettingValue.Mode == YamlAsyncParameterRandomValueMode.Moving)
+                ShowFrame.Navigate(new Control_Moving_Setting(SettingValue.MovingValue));
         }
 
         private int parse_i(TextBox tb)

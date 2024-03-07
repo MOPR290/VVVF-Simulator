@@ -57,31 +57,31 @@ namespace VvvfSimulator
         {
             double sin_value = 0;
 
-            if (mode.Base_Wave.Equals(BaseWaveType.Saw))
+            if (mode.BaseWave.Equals(BaseWaveType.Saw))
                 sin_value = -GetSaw(x);
-            else if (mode.Base_Wave.Equals(BaseWaveType.Sine))
+            else if (mode.BaseWave.Equals(BaseWaveType.Sine))
                 sin_value = GetSine(x);
-            else if (mode.Base_Wave.Equals(BaseWaveType.Modified_Sine_1))
+            else if (mode.BaseWave.Equals(BaseWaveType.Modified_Sine_1))
                 sin_value = GetModifiedSine(x, 1);
-            else if (mode.Base_Wave.Equals(BaseWaveType.Modified_Sine_2))
+            else if (mode.BaseWave.Equals(BaseWaveType.Modified_Sine_2))
                 sin_value = GetModifiedSine(x, 2);
 
-            else if (mode.Base_Wave.Equals(BaseWaveType.Modified_Saw_1))
+            else if (mode.BaseWave.Equals(BaseWaveType.Modified_Saw_1))
                 sin_value = GetModifiedSaw(x);
 
 
-            for (int i = 0; i < mode.pulse_harmonics.Count; i++)
+            for (int i = 0; i < mode.PulseHarmonics.Count; i++)
             {
-                PulseHarmonic harmonic = mode.pulse_harmonics[i];
-                double harmonic_value = 0, harmonic_x = harmonic.harmonic * (x + harmonic.initial_phase);
-                if (harmonic.type == PulseHarmonic.PulseHarmonicType.Sine)
+                PulseHarmonic harmonic = mode.PulseHarmonics[i];
+                double harmonic_value = 0, harmonic_x = harmonic.Harmonic * (x + harmonic.InitialPhase);
+                if (harmonic.Type == PulseHarmonic.PulseHarmonicType.Sine)
                     harmonic_value = GetSine(harmonic_x);
-                else if (harmonic.type == PulseHarmonic.PulseHarmonicType.Saw)
+                else if (harmonic.Type == PulseHarmonic.PulseHarmonicType.Saw)
                     harmonic_value = -GetSaw(harmonic_x);
-                else if (harmonic.type == PulseHarmonic.PulseHarmonicType.Square)
+                else if (harmonic.Type == PulseHarmonic.PulseHarmonicType.Square)
                     harmonic_value = GetSquare(harmonic_x);
 
-                sin_value += harmonic_value * harmonic.amplitude;
+                sin_value += harmonic_value * harmonic.Amplitude;
             }
 
             sin_value = sin_value > 1 ? 1 : sin_value < -1 ? -1 : sin_value;
@@ -173,15 +173,15 @@ namespace VvvfSimulator
             public AmplitudeArgument() { }
             public AmplitudeArgument(YamlControlDataAmplitudeControl.YamlControlDataAmplitude.YamlControlDataAmplitudeParameter config, double current)
             {
-                change_const = config.curve_change_rate;
+                change_const = config.CurveChangeRate;
                 this.current = current;
-                disable_range_limit = config.disable_range_limit;
-                polynomial = config.polynomial;
+                disable_range_limit = config.DisableRangeLimit;
+                polynomial = config.Polynomial;
 
-                max_amp = config.end_amp;
-                max_freq = config.end_freq;
-                min_amp = config.start_amp;
-                min_freq = config.start_freq;
+                max_amp = config.EndAmplitude;
+                max_freq = config.EndFrequency;
+                min_amp = config.StartAmplitude;
+                min_freq = config.StartFrequency;
             }
         }
 
@@ -394,7 +394,7 @@ namespace VvvfSimulator
             else
                 control.SetSineTimeChangeAllowed(true);
 
-            if (pulse_mode.pulse_name == PulseModeNames.Async)
+            if (pulse_mode.PulseName == PulseModeNames.Async)
             {
 
                 double desire_saw_angle_freq = (freq_data.range == 0) ? freq_data.base_freq * M_2PI : GetRandomFrequency(freq_data, control) * M_2PI;
@@ -430,9 +430,9 @@ namespace VvvfSimulator
             {
                 double sine_x = sine_time * sine_angle_freq + initial_phase;
 
-                if (pulse_mode.pulse_name == PulseModeNames.P_1)
+                if (pulse_mode.PulseName == PulseModeNames.P_1)
                 {
-                    if (pulse_mode.Alt_Mode == PulseAlternativeMode.Alt1)
+                    if (pulse_mode.AltMode == PulseAlternativeMode.Alt1)
                         return Get3LevelP1(sine_x, calculate_values.amplitude);
                 }
 
@@ -473,7 +473,7 @@ namespace VvvfSimulator
 
             double amplitude = calculate_values.amplitude;
             PulseMode pulse_mode = calculate_values.pulse_mode;
-            PulseModeNames pulse_name = pulse_mode.pulse_name;
+            PulseModeNames pulse_name = pulse_mode.PulseName;
             CarrierFreq carrier_freq_data = calculate_values.carrier_freq;
 
             if (calculate_values.none)
@@ -510,7 +510,7 @@ namespace VvvfSimulator
 
                 case PulseModeNames.CHMP_15:
                     {
-                        if (pulse_mode.Alt_Mode == PulseAlternativeMode.Default)
+                        if (pulse_mode.AltMode == PulseAlternativeMode.Default)
                         {
                             return GetPulseWithSwitchAngle(
                                 SwitchAngles._7Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
@@ -523,7 +523,7 @@ namespace VvvfSimulator
                                 SwitchAngles._7Alpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase
                             );
                         }
-                        else if (pulse_mode.Alt_Mode == PulseAlternativeMode.Alt1)
+                        else if (pulse_mode.AltMode == PulseAlternativeMode.Alt1)
                         {
                             return GetPulseWithSwitchAngle(
                                 SwitchAngles._7Alpha_Old[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
@@ -554,7 +554,7 @@ namespace VvvfSimulator
 
                 case PulseModeNames.CHMP_13:
                     {
-                        if (pulse_mode.Alt_Mode == PulseAlternativeMode.Default)
+                        if (pulse_mode.AltMode == PulseAlternativeMode.Default)
                         {
                             return GetPulseWithSwitchAngle(
                                 SwitchAngles._6Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
@@ -567,7 +567,7 @@ namespace VvvfSimulator
                                 SwitchAngles._6Alpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase
                             );
                         }
-                        else if (pulse_mode.Alt_Mode == PulseAlternativeMode.Alt1)
+                        else if (pulse_mode.AltMode == PulseAlternativeMode.Alt1)
                         {
                             return GetPulseWithSwitchAngle(
                                 SwitchAngles._6Alpha_Old[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
@@ -597,7 +597,7 @@ namespace VvvfSimulator
                     }
                 case PulseModeNames.CHMP_11:
                     {
-                        if (pulse_mode.Alt_Mode == PulseAlternativeMode.Default)
+                        if (pulse_mode.AltMode == PulseAlternativeMode.Default)
                         {
                             return GetPulseWithSwitchAngle(
                                 SwitchAngles._5Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
@@ -610,7 +610,7 @@ namespace VvvfSimulator
                                 SwitchAngles._5Alpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase
                             );
                         }
-                        else if (pulse_mode.Alt_Mode == PulseAlternativeMode.Alt1)
+                        else if (pulse_mode.AltMode == PulseAlternativeMode.Alt1)
                         {
                             return GetPulseWithSwitchAngle(
                                 SwitchAngles._5Alpha_Old[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
@@ -788,7 +788,7 @@ namespace VvvfSimulator
 
             if (pulse_name == PulseModeNames.P_17 || pulse_name == PulseModeNames.P_13 || pulse_name == PulseModeNames.P_9 || pulse_name == PulseModeNames.P_5)
             {
-                if (pulse_mode.Alt_Mode == PulseAlternativeMode.Alt1)
+                if (pulse_mode.AltMode == PulseAlternativeMode.Alt1)
                 {
                     int pulse_num = 27;
                     double x = sin_angle_freq * sin_time + initial_phase;

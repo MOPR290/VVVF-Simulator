@@ -81,13 +81,13 @@ namespace VvvfSimulator.Yaml.MasconControl
                 double FreqPerSec, FreqGoto;
                 if (!NextTarget.IsAccel())
                 {
-                    FreqPerSec = MasconChangeData.braking.on.freq_per_sec;
-                    FreqGoto = MasconChangeData.braking.on.control_freq_go_to;
+                    FreqPerSec = MasconChangeData.Braking.On.FrequencyChangeRate;
+                    FreqGoto = MasconChangeData.Braking.On.MaxControlFrequency;
                 }
                 else
                 {
-                    FreqPerSec = MasconChangeData.accelerating.on.freq_per_sec;
-                    FreqGoto = MasconChangeData.accelerating.on.control_freq_go_to;
+                    FreqPerSec = MasconChangeData.Accelerating.On.FrequencyChangeRate;
+                    FreqGoto = MasconChangeData.Accelerating.On.MaxControlFrequency;
                 }
 
                 double TargetFrequency = MasconOnFrequency > FreqGoto ? FreqGoto : MasconOnFrequency;

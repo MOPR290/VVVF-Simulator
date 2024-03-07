@@ -222,11 +222,11 @@ namespace VvvfSimulator
             {
                 var x = (PulseMode)MemberwiseClone();
                 List<PulseHarmonic> clone_pulse_harmonics = new();
-                for (int i = 0; i < pulse_harmonics.Count; i++)
+                for (int i = 0; i < PulseHarmonics.Count; i++)
                 {
-                    clone_pulse_harmonics.Add(pulse_harmonics[i].Clone());
+                    clone_pulse_harmonics.Add(PulseHarmonics[i].Clone());
                 }
-                x.pulse_harmonics = clone_pulse_harmonics;
+                x.PulseHarmonics = clone_pulse_harmonics;
                 return x;
 
             }
@@ -237,7 +237,7 @@ namespace VvvfSimulator
             //
             // Pulse Mode Name
             //
-            public PulseModeNames pulse_name { get; set; }
+            public PulseModeNames PulseName { get; set; }
             public enum PulseModeNames
             {
                 Async, P_Wide_3,
@@ -262,7 +262,7 @@ namespace VvvfSimulator
             //
             // Compare Base Wave
             //
-            public BaseWaveType Base_Wave { get; set; } = BaseWaveType.Sine;
+            public BaseWaveType BaseWave { get; set; } = BaseWaveType.Sine;
             public enum BaseWaveType
             {
                 Sine, Saw, Modified_Sine_1, Modified_Sine_2, Modified_Saw_1
@@ -271,24 +271,13 @@ namespace VvvfSimulator
             //
             // Compare Wave Harmonics
             //
-            private List<PulseHarmonic> _pulse_harmonics = new();
-            public List<PulseHarmonic> pulse_harmonics
-            {
-                set
-                {
-                    if (value != null) _pulse_harmonics = value;
-                }
-                get
-                {
-                    return _pulse_harmonics;
-                }
-            }
+            public List<PulseHarmonic> PulseHarmonics { get; set; } = new();
             public class PulseHarmonic
             {
-                public double harmonic { get; set; } = 3;
-                public double amplitude { get; set; } = 0.2;
-                public double initial_phase { get; set; } = 0;
-                public PulseHarmonicType type { get; set; } = PulseHarmonicType.Sine;
+                public double Harmonic { get; set; } = 3;
+                public double Amplitude { get; set; } = 0.2;
+                public double InitialPhase { get; set; } = 0;
+                public PulseHarmonicType Type { get; set; } = PulseHarmonicType.Sine;
 
                 public enum PulseHarmonicType
                 {
@@ -304,7 +293,7 @@ namespace VvvfSimulator
             //
             // Alternative Modes
             //
-            public PulseAlternativeMode Alt_Mode { get; set; } = PulseAlternativeMode.Default;
+            public PulseAlternativeMode AltMode { get; set; } = PulseAlternativeMode.Default;
             public enum PulseAlternativeMode
             {
                 Default, Alt1
@@ -364,14 +353,14 @@ namespace VvvfSimulator
                 // Selective harmonic elimination Pulse width modulation
                 false,false,false,false,false,false,false,
             };
-            return pulse_list[(int)mode.pulse_name];
+            return pulse_list[(int)mode.PulseName];
         }
 
         public static bool IsPulseShiftedAvailable(PulseMode mode, int level)
         {
             if (level == 3) return true;
 
-            int id = (int)mode.pulse_name;
+            int id = (int)mode.PulseName;
             bool stat_1 = (id > (int)PulseModeNames.P_1 && id <= (int)PulseModeNames.P_61);
 
             return stat_1;
@@ -381,7 +370,7 @@ namespace VvvfSimulator
         {
             if (level == 3) return false;
 
-            int id = (int)mode.pulse_name;
+            int id = (int)mode.PulseName;
             bool stat_1 = (id > (int)PulseModeNames.P_1 && id <= (int)PulseModeNames.P_61);
 
             return stat_1;
@@ -389,7 +378,7 @@ namespace VvvfSimulator
 
         public static int GetPulseNum(PulseMode mode, int level)
         {
-            int pulses = GetPulseNameNum(mode.pulse_name);
+            int pulses = GetPulseNameNum(mode.PulseName);
             if (level == 3) return pulses;
 
             if (mode.Square)
@@ -406,7 +395,7 @@ namespace VvvfSimulator
 
             if (mode.Square)
             {
-                if (GetPulseNameNum(mode.pulse_name) % 2 == 0) return M_PI_2;
+                if (GetPulseNameNum(mode.PulseName) % 2 == 0) return M_PI_2;
                 else return 0;
             }
 
@@ -417,24 +406,24 @@ namespace VvvfSimulator
         {
             if(level == 3) // level 3
             {
-                if (pulse_Mode.pulse_name == PulseModeNames.P_1)
+                if (pulse_Mode.PulseName == PulseModeNames.P_1)
                     return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
             }
             else // level 2
             {
-                if (pulse_Mode.pulse_name == PulseModeNames.CHMP_11)
+                if (pulse_Mode.PulseName == PulseModeNames.CHMP_11)
                     return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
-                if (pulse_Mode.pulse_name == PulseModeNames.CHMP_13)
+                if (pulse_Mode.PulseName == PulseModeNames.CHMP_13)
                     return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
-                if (pulse_Mode.pulse_name == PulseModeNames.CHMP_15)
+                if (pulse_Mode.PulseName == PulseModeNames.CHMP_15)
                     return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
-                if (pulse_Mode.pulse_name == PulseModeNames.P_17)
+                if (pulse_Mode.PulseName == PulseModeNames.P_17)
                     return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
-                if (pulse_Mode.pulse_name == PulseModeNames.P_13)
+                if (pulse_Mode.PulseName == PulseModeNames.P_13)
                     return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
-                if (pulse_Mode.pulse_name == PulseModeNames.P_9)
+                if (pulse_Mode.PulseName == PulseModeNames.P_9)
                     return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
-                if (pulse_Mode.pulse_name == PulseModeNames.P_5)
+                if (pulse_Mode.PulseName == PulseModeNames.P_5)
                     return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
             }
 

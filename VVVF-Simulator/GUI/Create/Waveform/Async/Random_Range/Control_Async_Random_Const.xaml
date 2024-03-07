@@ -21,7 +21,7 @@
             <Grid Background="#FF86AEFF"/>
             <Grid Grid.Column="1" Background="White"/>
             <Label Content="Const Value" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="White" FontFamily="M PLUS 2 Medium"/>
-            <TextBox x:Name="const_box" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding const_value}" VerticalAlignment="Center" Width="380" Height="31" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="M PLUS 2 Medium" FontWeight="Bold" FontSize="16" TextChanged="const_box_TextChanged"/>
+            <TextBox x:Name="const_box" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding Constant}" VerticalAlignment="Center" Width="380" Height="31" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="M PLUS 2 Medium" FontWeight="Bold" FontSize="16" TextChanged="const_box_TextChanged"/>
         </Grid>
 
     </Grid>

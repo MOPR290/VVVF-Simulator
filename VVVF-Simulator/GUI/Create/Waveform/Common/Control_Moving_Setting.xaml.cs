@@ -82,17 +82,17 @@ namespace VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common
             if (tag == null) return;
 
             if (tag.Equals("start"))
-                view_model.Moving_Value.start = parse_d(tb);
+                view_model.Moving_Value.Start = parse_d(tb);
             else if (tag.Equals("start_val"))
-                view_model.Moving_Value.start_value = parse_d(tb);
+                view_model.Moving_Value.StartValue = parse_d(tb);
             else if (tag.Equals("end"))
-                view_model.Moving_Value.end = parse_d(tb);
+                view_model.Moving_Value.End = parse_d(tb);
             else if (tag.Equals("end_val"))
-                view_model.Moving_Value.end_value = parse_d(tb);
+                view_model.Moving_Value.EndValue = parse_d(tb);
             else if (tag.Equals("degree"))
-                view_model.Moving_Value.degree = parse_d(tb);
+                view_model.Moving_Value.Degree = parse_d(tb);
             else if (tag.Equals("curve_rate"))
-                view_model.Moving_Value.curve_rate = parse_d(tb);
+                view_model.Moving_Value.CurveRate = parse_d(tb);
 
         }
 
@@ -101,7 +101,7 @@ namespace VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common
             if (no_update) return;
 
             YamlMovingValue.MovingValueType selected = (YamlMovingValue.MovingValueType)Move_Mode_Selector.SelectedItem;
-            view_model.Moving_Value.type = selected;
+            view_model.Moving_Value.Type = selected;
             set_Visibility();
 
 

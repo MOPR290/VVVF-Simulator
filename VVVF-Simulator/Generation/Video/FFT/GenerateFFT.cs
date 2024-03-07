@@ -130,7 +130,7 @@ namespace VvvfSimulator.Generation.Video.FFT
 
                 image.Dispose();
 
-                loop = GenerateCommon.CheckForFreqChange(control, masconData, vvvfData.mascon_data, 1.0 / fps);
+                loop = GenerateCommon.CheckForFreqChange(control, masconData, vvvfData.MasconData, 1.0 / fps);
                 if (progressData.Cancel) loop = false;
 
                 // PROGRESS CHANGE

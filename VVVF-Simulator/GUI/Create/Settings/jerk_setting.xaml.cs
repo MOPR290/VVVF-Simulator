@@ -50,11 +50,11 @@ namespace VvvfSimulator.GUI.Create.Settings
         public void updateView()
         {
             Controller dc = (Controller)this.DataContext;
-            YamlMasconData mascon = YamlVvvfManage.CurrentData.mascon_data;
-            YamlMasconDataPattern pattern = dc.IsAccelerateActive ? mascon.accelerating : mascon.braking;
-            YamlMasconDataPatternMode mode = dc.IsTurnOnActive ? pattern.on : pattern.off;
-            MaxVoltageFreqInput.Text = mode.control_freq_go_to.ToString();
-            FreqChangeRateInput.Text = mode.freq_per_sec.ToString();
+            YamlMasconData mascon = YamlVvvfManage.CurrentData.MasconData;
+            YamlMasconDataPattern pattern = dc.IsAccelerateActive ? mascon.Accelerating : mascon.Braking;
+            YamlMasconDataPatternMode mode = dc.IsTurnOnActive ? pattern.On : pattern.Off;
+            MaxVoltageFreqInput.Text = mode.MaxControlFrequency.ToString();
+            FreqChangeRateInput.Text = mode.FrequencyChangeRate.ToString();
         }
 
         public void setValue()
@@ -77,11 +77,11 @@ namespace VvvfSimulator.GUI.Create.Settings
             Controller dc = (Controller)this.DataContext;
             if(dc == null) return;
 
-            YamlMasconData mascon = YamlVvvfManage.CurrentData.mascon_data;
-            YamlMasconDataPattern pattern = dc.IsAccelerateActive ? mascon.accelerating : mascon.braking;
-            YamlMasconDataPatternMode mode = dc.IsTurnOnActive ? pattern.on : pattern.off;
-            mode.control_freq_go_to = _parse(MaxVoltageFreqInput);
-            mode.freq_per_sec = _parse(FreqChangeRateInput);
+            YamlMasconData mascon = YamlVvvfManage.CurrentData.MasconData;
+            YamlMasconDataPattern pattern = dc.IsAccelerateActive ? mascon.Accelerating : mascon.Braking;
+            YamlMasconDataPatternMode mode = dc.IsTurnOnActive ? pattern.On : pattern.Off;
+            mode.MaxControlFrequency = _parse(MaxVoltageFreqInput);
+            mode.FrequencyChangeRate = _parse(FreqChangeRateInput);
         }
 
         public jerk_setting()

@@ -255,7 +255,7 @@ namespace VvvfSimulator.Generation.Video.Hexagon
 
                 vr.Write(mat);
 
-                loop = CheckForFreqChange(control, masconData, vvvfData.mascon_data, 1.0 / fps);
+                loop = CheckForFreqChange(control, masconData, vvvfData.MasconData, 1.0 / fps);
                 if (progressData.Cancel) loop = false;
 
                 // PROGRESS CHANGE

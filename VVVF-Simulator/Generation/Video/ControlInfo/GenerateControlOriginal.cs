@@ -21,7 +21,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
     {
         private static String[] get_Pulse_Name(VvvfValues control)
         {
-            PulseModeNames mode = control.GetVideoPulseMode().pulse_name;
+            PulseModeNames mode = control.GetVideoPulseMode().PulseName;
             //Not in sync
             if (mode == PulseModeNames.Async )
             {
@@ -341,7 +341,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                     continue;
                 }
 
-                video_finished = !CheckForFreqChange(control, masconData, vvvfData.mascon_data, 1.0 / fps);
+                video_finished = !CheckForFreqChange(control, masconData, vvvfData.MasconData, 1.0 / fps);
                 if (video_finished)
                 {
                     final_show = true;

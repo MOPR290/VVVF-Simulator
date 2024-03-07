@@ -153,7 +153,7 @@ namespace VvvfSimulator.Generation.Video.WaveForm
                 g.Dispose();
                 image.Dispose();
 
-                loop = CheckForFreqChange(control, masconData, vvvfData.mascon_data, 1.0 / fps);
+                loop = CheckForFreqChange(control, masconData, vvvfData.MasconData, 1.0 / fps);
                 if (progressData.Cancel) loop = false;
 
                 // PROGRESS CHANGE

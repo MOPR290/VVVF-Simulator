@@ -43,7 +43,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async.Vibrato
 
         private void apply_data()
         {
-            const_box.Text = target.const_value.ToString();
+            const_box.Text = target.Constant.ToString();
         }
 
         private double parse_d(TextBox tb)
@@ -63,7 +63,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async.Vibrato
         private void const_box_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (no_update) return;
-            target.const_value = parse_d((TextBox)sender);
+            target.Constant = parse_d((TextBox)sender);
         }
     }
 }

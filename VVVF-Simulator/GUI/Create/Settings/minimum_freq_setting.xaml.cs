@@ -25,8 +25,8 @@ namespace VvvfSimulator.GUI.Create.Settings
         {
             InitializeComponent();
 
-            accelerate_min_freq_box.Text = YamlVvvfManage.CurrentData.min_freq.accelerate.ToString();
-            braking_min_freq_box.Text = YamlVvvfManage.CurrentData.min_freq.braking.ToString();
+            accelerate_min_freq_box.Text = YamlVvvfManage.CurrentData.MinimumFrequency.Accelerating.ToString();
+            braking_min_freq_box.Text = YamlVvvfManage.CurrentData.MinimumFrequency.Braking.ToString();
         }
 
         private void textbox_value_change(object sender, TextChangedEventArgs e)
@@ -42,7 +42,7 @@ namespace VvvfSimulator.GUI.Create.Settings
                     double d = Double.Parse(accelerate_min_freq_box.Text);
                     accelerate_min_freq_box.Background = new BrushConverter().ConvertFrom("#FFFFFFFF") as Brush;
 
-                    YamlVvvfManage.CurrentData.min_freq.accelerate = d;
+                    YamlVvvfManage.CurrentData.MinimumFrequency.Accelerating = d;
                 }
                 catch
                 {
@@ -55,7 +55,7 @@ namespace VvvfSimulator.GUI.Create.Settings
                     double d = Double.Parse(braking_min_freq_box.Text);
                     accelerate_min_freq_box.Background = new BrushConverter().ConvertFrom("#FFFFFFFF") as Brush;
 
-                    YamlVvvfManage.CurrentData.min_freq.braking = d;
+                    YamlVvvfManage.CurrentData.MinimumFrequency.Braking = d;
                 }
                 catch
                 {

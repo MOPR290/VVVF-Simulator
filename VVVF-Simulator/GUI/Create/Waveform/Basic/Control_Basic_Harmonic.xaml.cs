@@ -50,37 +50,37 @@ namespace VvvfSimulator.GUI.Pages.Control_Settings.Basic
             {
                 case Preset_Harmonics.THI:
                     return new List<PulseHarmonic>() { 
-                        new PulseHarmonic() { amplitude = 0.2, harmonic = 3 } 
+                        new PulseHarmonic() { Amplitude = 0.2, Harmonic = 3 } 
                     };
                 case Preset_Harmonics.SVM:
                     return new List<PulseHarmonic>() { 
-                        new PulseHarmonic() { amplitude = 0.25, harmonic = 3 , type = PulseHarmonic.PulseHarmonicType.Saw} 
+                        new PulseHarmonic() { Amplitude = 0.25, Harmonic = 3 , Type = PulseHarmonic.PulseHarmonicType.Saw} 
                     };
                 case Preset_Harmonics.DPM1:
                     return new List<PulseHarmonic>() {
-                        new PulseHarmonic() { amplitude = -0.05, harmonic = 3 },
-                        new PulseHarmonic() { amplitude = 0.2, harmonic = 3, type = PulseHarmonic.PulseHarmonicType.Square }
+                        new PulseHarmonic() { Amplitude = -0.05, Harmonic = 3 },
+                        new PulseHarmonic() { Amplitude = 0.2, Harmonic = 3, Type = PulseHarmonic.PulseHarmonicType.Square }
                     };
                 case Preset_Harmonics.DPM2:
                     return new List<PulseHarmonic>() {
-                        new PulseHarmonic() { amplitude = -0.05, harmonic = 3, initial_phase = 1.57079633, type = PulseHarmonic.PulseHarmonicType.Saw},
-                        new PulseHarmonic() { amplitude = 0.2, harmonic = 3, type = PulseHarmonic.PulseHarmonicType.Square }
+                        new PulseHarmonic() { Amplitude = -0.05, Harmonic = 3, InitialPhase = 1.57079633, Type = PulseHarmonic.PulseHarmonicType.Saw},
+                        new PulseHarmonic() { Amplitude = 0.2, Harmonic = 3, Type = PulseHarmonic.PulseHarmonicType.Square }
                     };
                 case Preset_Harmonics.DPM3:
                     return new List<PulseHarmonic>() {
-                        new PulseHarmonic() { amplitude = -0.05, harmonic = 3, initial_phase = -1.57079633, type = PulseHarmonic.PulseHarmonicType.Saw},
-                        new PulseHarmonic() { amplitude = 0.2, harmonic = 3, type = PulseHarmonic.PulseHarmonicType.Square }
+                        new PulseHarmonic() { Amplitude = -0.05, Harmonic = 3, InitialPhase = -1.57079633, Type = PulseHarmonic.PulseHarmonicType.Saw},
+                        new PulseHarmonic() { Amplitude = 0.2, Harmonic = 3, Type = PulseHarmonic.PulseHarmonicType.Square }
                     };
                 case Preset_Harmonics.DPM4: //case Preset_Harmonics.DPM4:
                     return new List<PulseHarmonic>() {
-                        new PulseHarmonic() { amplitude = 0.05, harmonic = 3, type = PulseHarmonic.PulseHarmonicType.Saw},
-                        new PulseHarmonic() { amplitude = 0.2, harmonic = 3, type = PulseHarmonic.PulseHarmonicType.Square }
+                        new PulseHarmonic() { Amplitude = 0.05, Harmonic = 3, Type = PulseHarmonic.PulseHarmonicType.Saw},
+                        new PulseHarmonic() { Amplitude = 0.2, Harmonic = 3, Type = PulseHarmonic.PulseHarmonicType.Square }
                     };
                 default:
                     List<PulseHarmonic> harmonics = new();
                     for (int i = 0; i < 10; i++)
                     {
-                        harmonics.Add(new PulseHarmonic() { amplitude = 1.0 / (2 * i + 3), harmonic = 2 * i + 3 });
+                        harmonics.Add(new PulseHarmonic() { Amplitude = 1.0 / (2 * i + 3), Harmonic = 2 * i + 3 });
                     }
                     return harmonics;
 
@@ -99,7 +99,7 @@ namespace VvvfSimulator.GUI.Pages.Control_Settings.Basic
         public Control_Basic_Harmonic(PulseMode data)
         {
 
-            vd.harmonic_data = data.pulse_harmonics;
+            vd.harmonic_data = data.PulseHarmonics;
             DataContext = vd;
             target = data;
 
@@ -114,7 +114,7 @@ namespace VvvfSimulator.GUI.Pages.Control_Settings.Basic
         private void DataGrid_TargetUpdated(object sender, DataTransferEventArgs e)
         {
             if (no_update) return;
-            target.pulse_harmonics = vd.harmonic_data;
+            target.PulseHarmonics = vd.harmonic_data;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

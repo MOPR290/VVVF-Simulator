@@ -62,13 +62,13 @@ namespace VvvfSimulator.GUI.Create.Waveform
 
         private void Set_Visibility(YamlControlData ycd , int level)
         {
-            PulseModeNames mode = ycd.pulse_Mode.pulse_name;
+            PulseModeNames mode = ycd.PulseMode.PulseName;
 
             viewModel.basic = Visibility.Visible;
             viewModel.freerun = Visibility.Visible;
             viewModel.amp_def = Visibility.Visible;
-            viewModel.amp_free_on = ycd.enable_on_free_run ? Visibility.Visible : Visibility.Collapsed;
-            viewModel.amp_free_off = ycd.enable_off_free_run ? Visibility.Visible : Visibility.Collapsed;
+            viewModel.amp_free_on = ycd.EnableFreeRunOn ? Visibility.Visible : Visibility.Collapsed;
+            viewModel.amp_free_off = ycd.EnableFreeRunOff ? Visibility.Visible : Visibility.Collapsed;
 
             if (level == 3 && mode == PulseModeNames.Async)
                 viewModel.dipolar = Visibility.Visible;
@@ -90,10 +90,10 @@ namespace VvvfSimulator.GUI.Create.Waveform
             Control_Basic.Navigate(new Control_Basic(ycd, mainWindow, level));
             Control_When_FreeRun.Navigate(new Control_When_FreeRun(ycd, mainWindow));
 
-            Control_Amplitude_Default.Navigate(new Control_Amplitude(ycd.amplitude_control.default_data, Control_Amplitude_Content.Default, mainWindow));
+            Control_Amplitude_Default.Navigate(new Control_Amplitude(ycd.Amplitude.DefaultAmplitude, Control_Amplitude_Content.Default, mainWindow));
 
-            Control_Amplitude_FreeRun_On.Navigate(new Control_Amplitude(ycd.amplitude_control.free_run_data.mascon_on, Control_Amplitude_Content.Free_Run_On, mainWindow));
-            Control_Amplitude_FreeRun_Off.Navigate(new Control_Amplitude(ycd.amplitude_control.free_run_data.mascon_off, Control_Amplitude_Content.Free_Run_Off, mainWindow));
+            Control_Amplitude_FreeRun_On.Navigate(new Control_Amplitude(ycd.Amplitude.FreeRunAmplitude.On, Control_Amplitude_Content.Free_Run_On, mainWindow));
+            Control_Amplitude_FreeRun_Off.Navigate(new Control_Amplitude(ycd.Amplitude.FreeRunAmplitude.Off, Control_Amplitude_Content.Free_Run_Off, mainWindow));
 
             Control_Dipolar.Navigate(new Control_Dipolar(ycd, mainWindow));
 

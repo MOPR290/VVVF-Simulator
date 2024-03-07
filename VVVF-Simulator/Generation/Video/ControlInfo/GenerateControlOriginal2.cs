@@ -62,7 +62,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
         private static String get_Pulse_Name(VvvfValues control)
         {
             PulseMode mode_p = control.GetVideoPulseMode();
-            PulseModeNames mode = mode_p.pulse_name;
+            PulseModeNames mode = mode_p.PulseName;
             //Not in sync
             if (mode == PulseModeNames.Async)
             {
@@ -206,7 +206,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             // pulse state
 
 
-            bool is_async = CycleControl.GetVideoPulseMode().pulse_name.Equals(PulseModeNames.Async);
+            bool is_async = CycleControl.GetVideoPulseMode().PulseName.Equals(PulseModeNames.Async);
             Draw_Topic_Value(
                 g, new Point(420, 10), new Size(480, 80),
                 new StringContent(topic_Font, "Pulse", new Point(0, 5)),
@@ -307,7 +307,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
 
                 final_image.Dispose();
 
-                if (!CheckForFreqChange(control, masconData, vvvfData.mascon_data, 1.0 / fps)) break;
+                if (!CheckForFreqChange(control, masconData, vvvfData.MasconData, 1.0 / fps)) break;
                 if (progressData.Cancel) break;
                 progressData.Progress++;
             }

@@ -87,19 +87,19 @@ namespace VvvfSimulator.GUI.Create.Waveform
         {
             AmplitudeMode[] modes = (AmplitudeMode[])Enum.GetValues(typeof(AmplitudeMode));
             amplitude_mode_selector.ItemsSource = modes;
-            amplitude_mode_selector.SelectedItem = target.mode;
+            amplitude_mode_selector.SelectedItem = target.Mode;
 
-            start_freq_box.Text = target.parameter.start_freq.ToString();
-            start_amp_box.Text = target.parameter.start_amp.ToString();
-            end_freq_box.Text = target.parameter.end_freq.ToString();
-            end_amp_box.Text = target.parameter.end_amp.ToString();
-            cutoff_amp_box.Text = target.parameter.cut_off_amp.ToString();
-            max_amp_box.Text = target.parameter.max_amp.ToString();
-            polynomial_box.Text = target.parameter.polynomial.ToString();
-            curve_rate_box.Text = target.parameter.curve_change_rate.ToString();
-            disable_range_limit_check.IsChecked = target.parameter.disable_range_limit;
+            start_freq_box.Text = target.Parameter.StartFrequency.ToString();
+            start_amp_box.Text = target.Parameter.StartAmplitude.ToString();
+            end_freq_box.Text = target.Parameter.EndFrequency.ToString();
+            end_amp_box.Text = target.Parameter.EndAmplitude.ToString();
+            cutoff_amp_box.Text = target.Parameter.CutOffAmplitude.ToString();
+            max_amp_box.Text = target.Parameter.MaxAmplitude.ToString();
+            polynomial_box.Text = target.Parameter.Polynomial.ToString();
+            curve_rate_box.Text = target.Parameter.CurveChangeRate.ToString();
+            disable_range_limit_check.IsChecked = target.Parameter.DisableRangeLimit;
 
-            grid_hider(target.mode, content);
+            grid_hider(target.Mode, content);
         }
 
         private double parse_d(TextBox tb)
@@ -139,21 +139,21 @@ namespace VvvfSimulator.GUI.Create.Waveform
             if (tag == null) return;
 
             if (tag.Equals("start_freq"))
-                target.parameter.start_freq = parse_d(tb);
+                target.Parameter.StartFrequency = parse_d(tb);
             else if (tag.Equals("start_amp"))
-                target.parameter.start_amp = parse_d(tb);
+                target.Parameter.StartAmplitude = parse_d(tb);
             else if (tag.Equals("end_freq"))
-                target.parameter.end_freq = parse_d(tb);
+                target.Parameter.EndFrequency = parse_d(tb);
             else if (tag.Equals("end_amp"))
-                target.parameter.end_amp = parse_d(tb);
+                target.Parameter.EndAmplitude = parse_d(tb);
             else if (tag.Equals("cutoff_amp"))
-                target.parameter.cut_off_amp = parse_d(tb);
+                target.Parameter.CutOffAmplitude = parse_d(tb);
             else if (tag.Equals("max_amp"))
-                target.parameter.max_amp = parse_d(tb);
+                target.Parameter.MaxAmplitude = parse_d(tb);
             else if(tag.Equals("curve_rate"))
-                target.parameter.curve_change_rate = parse_d(tb);
+                target.Parameter.CurveChangeRate = parse_d(tb);
             else if (tag.Equals("polynomial"))
-                target.parameter.polynomial = parse_d(tb);
+                target.Parameter.Polynomial = parse_d(tb);
 
             mainWindow.UpdateControlList();
         }
@@ -163,7 +163,7 @@ namespace VvvfSimulator.GUI.Create.Waveform
             if (no_update) return;
 
             CheckBox cb = (CheckBox)sender;
-            target.parameter.disable_range_limit = cb.IsChecked != false;
+            target.Parameter.DisableRangeLimit = cb.IsChecked != false;
             mainWindow.UpdateControlList();
         }
 
@@ -172,8 +172,8 @@ namespace VvvfSimulator.GUI.Create.Waveform
             if (no_update) return;
 
             AmplitudeMode selected = (AmplitudeMode)amplitude_mode_selector.SelectedItem;
-            target.mode = selected;
-            grid_hider(target.mode, content);
+            target.Mode = selected;
+            grid_hider(target.Mode, content);
 
             mainWindow.UpdateControlList();
 
