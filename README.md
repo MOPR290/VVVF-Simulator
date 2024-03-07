@@ -1,14 +1,20 @@
-# VVVF Simulator
-Simulates VVVF inverter sound on a PC.
+# Summary
+  - [Description](#description)
+  - [Term of use](#term-of-use)
+  - [Functions](#functions)
+  - [Setup](#setup)
+  - [How to use](#how-to-use)
+  - [Support](#support)
+  - [Related projects](#related-projects)
+  - [Contributor](#contributor)
 
 # Description
+`VVVF-Simulator` is the software simulates vvvf inverter sound on a PC.<br>
 This program is for the C# wpf app.<br>
-
-# Disclaimer
-We are not responsible for anything you do with this application.<br>
 
 # Term of use
 You are **free** to use the code in this program.<br>
+We are **not responsible** for anything you do with this application.<br>
 
 Please:<br>
 - Post the URL of this GitHub page<br>
@@ -36,7 +42,13 @@ The file will be the`.avi` extension. <br>
 ## Realtime Audio Generation
 You can generate the audio in real time and control if the sound increases or decreases in frequency as well as the rate that the frequency increases or decreases. <br>
 
-## How to Setup
+# Setup
+You can have code built on your PC or just download exe file.<br>
+## Setup with EXE
+Go to [Releases](https://github.com/JOTAN-0655/VVVF-Simulator/releases), download `VVVF-SIM.zip`.<br>
+Extract zip file. You should endup finding `VVVF-Simulator.exe`<br>
+
+## Setup with source code on Visual Studio
 First, download Visual Studio. Then run the installer and make sure you also select the .NET desktop development in the installer. Once it has installed open Visual Studio and click on "Clone a Repository." Now copy the url of the VVVF-Simulator page.
 <br>
 https://github.com/JOTAN-0655/VVVF-Simulator
@@ -44,7 +56,7 @@ https://github.com/JOTAN-0655/VVVF-Simulator
 Paste the url and click clone. Now click on "Solution 'VVVF-Simulator'" and then click on the green arrow to compile and run the program. Now you should see a window open.
 <br>
 
-## How to Use
+# How to Use
 To load or save a file click on file and select what you want to do from there.
 <br>
 <br>
@@ -91,16 +103,15 @@ I highly suggest looking at the sample VVVF files as messing with those will mak
 <br>
 <br>
 
-# Sample VVVF Files
-https://github.com/JOTAN-0655/VVVF-Simulator/releases/download/1.2.0.0/yaml.zip
+# Support
+- Join our [discord](https://discord.gg/SQr2tXJgVq)! You can ask frequently about vvvf simulator!
+- [Sample Files](https://github.com/JOTAN-0655/VVVF-Simulator/releases/download/1.6.0.0/yaml_samples.zip)
 
-# Parent Project
-This program was ported from RPi-Zero-VVVF
-https://github.com/JOTAN-0655/RPi-Zero-VVVF
+# Related projects
+ - [Raspberry Pi Zero Vvvf](https://github.com/JOTAN-0655/RPi-Zero-VVVF)
+ - [Raspberry Pi 3 Vvvf](https://github.com/JOTAN-0655/RPi-3-VVVF)
+ - [Youtube](https://www.youtube.com/channel/UCdo7fDodYWO29-Q_0G1S59g)
 
 # Contributor
-・Thunderfeng<br>
-https://github.com/Leifengfengfeng
-
-・Geek of the Week<br>
-https://github.com/geekotw
+ - [Thunderfeng](https://github.com/Leifengfengfeng)
+ - [Geek of the Week](https://github.com/geekotw)https://github.com/geekotw
