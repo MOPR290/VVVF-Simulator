@@ -65,7 +65,6 @@ namespace VvvfSimulator
                 sin_value = GetModifiedSine(x, 1);
             else if (mode.BaseWave.Equals(BaseWaveType.Modified_Sine_2))
                 sin_value = GetModifiedSine(x, 2);
-
             else if (mode.BaseWave.Equals(BaseWaveType.Modified_Saw_1))
                 sin_value = GetModifiedSaw(x);
 
@@ -428,7 +427,9 @@ namespace VvvfSimulator
             }
             else
             {
+                int pulses = PulseModeConfiguration.GetPulseNum(pulse_mode, 3);
                 double sine_x = sine_time * sine_angle_freq + initial_phase;
+                double saw_x = pulses * (sine_angle_freq * sine_time + initial_phase);
 
                 if (pulse_mode.PulseName == PulseModeNames.P_1)
                 {
@@ -436,9 +437,7 @@ namespace VvvfSimulator
                         return Get3LevelP1(sine_x, calculate_values.amplitude);
                 }
 
-
-                int pulses = GetPulseNum(pulse_mode, 3);
-                double saw_value = GetSaw(pulses * (sine_angle_freq * sine_time + initial_phase));
+                double saw_value = GetSaw(saw_x);
                 if (pulse_mode.Shift)
                     saw_value = -saw_value;
 
@@ -777,12 +776,12 @@ namespace VvvfSimulator
 
             if (
                 pulse_name == PulseModeNames.CHMP_3 ||
-                pulse_mode.Square && IsPulseSquareAvail(pulse_mode, 2)
+                pulse_mode.Square && PulseModeConfiguration.IsPulseSquareAvail(pulse_mode, 2)
             )
             {
                 bool is_shift = pulse_mode.Shift;
-                int pulse_num = GetPulseNum(pulse_mode, 2);
-                double pulse_initial_phase = GetPulseInitial(pulse_mode, 2);
+                int pulse_num = PulseModeConfiguration.GetPulseNum(pulse_mode, 2);
+                double pulse_initial_phase = PulseModeConfiguration.GetPulseInitial(pulse_mode, 2);
                 return GetPulseWithSaw(sin_angle_freq * sin_time + initial_phase, pulse_initial_phase, amplitude, pulse_num, is_shift);
             }
 
@@ -798,7 +797,7 @@ namespace VvvfSimulator
                     double fixed_x = (int)(x / M_PI_2) % 2 == 1 ? M_PI_2 - x % M_PI_2 : x % M_PI_2;
                     control.SetSawAngleFrequency(sin_angle_freq * pulse_num);
                     control.SetSawTime(sin_time);
-                    if (fixed_x < M_PI * GetPulseNum(pulse_mode, 2) / 54)
+                    if (fixed_x < M_PI * PulseModeConfiguration.GetPulseNum(pulse_mode, 2) / 54)
                     {
                         pwm_value = ModulateSin(sin_value, saw_value) * 2;
                     }
@@ -811,13 +810,13 @@ namespace VvvfSimulator
                 }
             }
 
-
             //sync mode but no the above.
             {
-                int pulse_num = GetPulseNum(pulse_mode, 2);
-                double x = sin_angle_freq * sin_time + initial_phase;
-                double saw_value = GetSaw(pulse_num * x);
-                double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), x, amplitude);
+                int pulse_num = PulseModeConfiguration.GetPulseNum(pulse_mode, 2);
+                double sin_x = sin_angle_freq * sin_time + initial_phase;
+                double saw_x = pulse_num * (sin_angle_freq * sin_time + initial_phase);
+                double saw_value = GetSaw(saw_x);
+                double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sin_x, amplitude);
 
                 if (pulse_mode.Shift)
                     saw_value = -saw_value;

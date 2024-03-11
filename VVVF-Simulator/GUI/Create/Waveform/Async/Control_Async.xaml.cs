@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using VvvfSimulator;
-using VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common;
+using VvvfSimulator.GUI.Create.Waveform.Common;
 using VvvfSimulator.GUI.Create.Waveform.Async;
 using VvvfSimulator.GUI.Create.Waveform.Async.Random_Range;
 using VvvfSimulator.GUI.Create.Waveform.Async.Vibrato;

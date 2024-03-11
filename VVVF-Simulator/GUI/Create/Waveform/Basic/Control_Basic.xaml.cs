@@ -92,7 +92,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
             Base_Wave_Selector.ItemsSource = (BaseWaveType[])Enum.GetValues(typeof(BaseWaveType));
             Base_Wave_Selector.SelectedItem = target.PulseMode.BaseWave;
 
-            Alt_Mode_Selector.ItemsSource = GetPulseAltModes(target.PulseMode, level);
+            Alt_Mode_Selector.ItemsSource = PulseModeConfiguration.GetPulseAltModes(target.PulseMode, level);
             Alt_Mode_Selector.SelectedItem = target.PulseMode.AltMode;
 
             Enable_FreeRun_On_Check.IsChecked = target.EnableFreeRunOn;
@@ -106,12 +106,12 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
         {
             PulseMode mode = target.PulseMode;
 
-            viewModel.Harmonic_Visible = IsPulseHarmonicBaseWaveChangeAvailable(mode, level);
-            viewModel.Shifted_Visible = IsPulseShiftedAvailable(mode, level);
-            viewModel.Base_Wave_Selector_Visible = IsPulseHarmonicBaseWaveChangeAvailable(mode, level);
-            viewModel.Square_Visible = IsPulseSquareAvail(mode, level);
+            viewModel.Harmonic_Visible = PulseModeConfiguration.IsPulseHarmonicBaseWaveChangeAvailable(mode, level);
+            viewModel.Shifted_Visible = PulseModeConfiguration.IsPulseShiftedAvailable(mode, level);
+            viewModel.Base_Wave_Selector_Visible = PulseModeConfiguration.IsPulseHarmonicBaseWaveChangeAvailable(mode, level);
+            viewModel.Square_Visible = PulseModeConfiguration.IsPulseSquareAvail(mode, level);
 
-            List<PulseAlternativeMode> modes = GetPulseAltModes(target.PulseMode, level);
+            List<PulseAlternativeMode> modes = PulseModeConfiguration.GetPulseAltModes(target.PulseMode, level);
             Alt_Mode_Selector.ItemsSource = modes;
             if (!Alt_Mode_Selector.Items.Contains(Alt_Mode_Selector.SelectedItem))
             {

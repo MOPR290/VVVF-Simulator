@@ -221,7 +221,7 @@ namespace VvvfSimulator
             public PulseMode Clone()
             {
                 var x = (PulseMode)MemberwiseClone();
-                List<PulseHarmonic> clone_pulse_harmonics = new();
+                List<PulseHarmonic> clone_pulse_harmonics = [];
                 for (int i = 0; i < PulseHarmonics.Count; i++)
                 {
                     clone_pulse_harmonics.Add(PulseHarmonics[i].Clone());
@@ -231,6 +231,9 @@ namespace VvvfSimulator
 
             }
 
+            //
+            // Flat Configurations
+            //
             public bool Shift { get; set; } = false;
             public bool Square { get; set; } = false;
 
@@ -300,12 +303,13 @@ namespace VvvfSimulator
             }
         }
 
-        
-
-        private static int GetPulseNameNum(PulseModeNames mode)
+        // "Pulse Mode" Configuration
+        public class PulseModeConfiguration
         {
-            int[] pulse_list = new int[]
+            private static int GetPulseNameNum(PulseModeNames mode)
             {
+                int[] pulse_list = new int[]
+                {
                 0, 0,
 
                 1,2,3,4,5,6,7,8,9,10,
@@ -323,18 +327,18 @@ namespace VvvfSimulator
 
                 // Selective harmonic elimination Pulse width modulation
                 0, 0, 0, 0, 0, 0, 0
-            };
-            return pulse_list[(int)mode];
-        }
+                };
+                return pulse_list[(int)mode];
+            }
 
-        public static bool IsPulseHarmonicBaseWaveChangeAvailable(PulseMode mode, int level)
-        {
-            if (level == 3) return true;
-
-            if (IsPulseSquareAvail(mode, level) && mode.Square) return false;
-
-            bool[] pulse_list = new bool[]
+            public static bool IsPulseHarmonicBaseWaveChangeAvailable(PulseMode mode, int level)
             {
+                if (level == 3) return true;
+
+                if (IsPulseSquareAvail(mode, level) && mode.Square) return false;
+
+                bool[] pulse_list = new bool[]
+                {
                 true, false,
 
                 false,true,true,true,true,true,true,true,true,true,
@@ -352,82 +356,83 @@ namespace VvvfSimulator
 
                 // Selective harmonic elimination Pulse width modulation
                 false,false,false,false,false,false,false,
-            };
-            return pulse_list[(int)mode.PulseName];
-        }
-
-        public static bool IsPulseShiftedAvailable(PulseMode mode, int level)
-        {
-            if (level == 3) return true;
-
-            int id = (int)mode.PulseName;
-            bool stat_1 = (id > (int)PulseModeNames.P_1 && id <= (int)PulseModeNames.P_61);
-
-            return stat_1;
-        }
-
-        public static bool IsPulseSquareAvail(PulseMode mode, int level)
-        {
-            if (level == 3) return false;
-
-            int id = (int)mode.PulseName;
-            bool stat_1 = (id > (int)PulseModeNames.P_1 && id <= (int)PulseModeNames.P_61);
-
-            return stat_1;
-        }
-
-        public static int GetPulseNum(PulseMode mode, int level)
-        {
-            int pulses = GetPulseNameNum(mode.PulseName);
-            if (level == 3) return pulses;
-
-            if (mode.Square)
-            {
-                if (pulses % 2 == 0) pulses = (int)(pulses * 1.5);
-                else pulses = (int)((pulses - 1) * 1.5);
+                };
+                return pulse_list[(int)mode.PulseName];
             }
 
-            return pulses;
-        }
-        public static double GetPulseInitial(PulseMode mode, int level)
-        {
-            if (level == 3) return 0;
-
-            if (mode.Square)
+            public static bool IsPulseShiftedAvailable(PulseMode mode, int level)
             {
-                if (GetPulseNameNum(mode.PulseName) % 2 == 0) return M_PI_2;
-                else return 0;
+                if (level == 3) return true;
+
+                int id = (int)mode.PulseName;
+                bool stat_1 = (id > (int)PulseModeNames.P_1 && id <= (int)PulseModeNames.P_61);
+
+                return stat_1;
             }
 
-            return 0;
-        }
+            public static bool IsPulseSquareAvail(PulseMode mode, int level)
+            {
+                if (level == 3) return false;
 
-        public static List<PulseAlternativeMode> GetPulseAltModes(PulseMode pulse_Mode, int level)
-        {
-            if(level == 3) // level 3
-            {
-                if (pulse_Mode.PulseName == PulseModeNames.P_1)
-                    return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
-            }
-            else // level 2
-            {
-                if (pulse_Mode.PulseName == PulseModeNames.CHMP_11)
-                    return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
-                if (pulse_Mode.PulseName == PulseModeNames.CHMP_13)
-                    return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
-                if (pulse_Mode.PulseName == PulseModeNames.CHMP_15)
-                    return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
-                if (pulse_Mode.PulseName == PulseModeNames.P_17)
-                    return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
-                if (pulse_Mode.PulseName == PulseModeNames.P_13)
-                    return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
-                if (pulse_Mode.PulseName == PulseModeNames.P_9)
-                    return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
-                if (pulse_Mode.PulseName == PulseModeNames.P_5)
-                    return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                int id = (int)mode.PulseName;
+                bool stat_1 = (id > (int)PulseModeNames.P_1 && id <= (int)PulseModeNames.P_61);
+
+                return stat_1;
             }
 
-            return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default };
+            public static int GetPulseNum(PulseMode mode, int level)
+            {
+                int pulses = GetPulseNameNum(mode.PulseName);
+                if (level == 3) return pulses;
+
+                if (mode.Square)
+                {
+                    if (pulses % 2 == 0) pulses = (int)(pulses * 1.5);
+                    else pulses = (int)((pulses - 1) * 1.5);
+                }
+
+                return pulses;
+            }
+            public static double GetPulseInitial(PulseMode mode, int level)
+            {
+                if (level == 3) return 0;
+
+                if (mode.Square)
+                {
+                    if (GetPulseNameNum(mode.PulseName) % 2 == 0) return M_PI_2;
+                    else return 0;
+                }
+
+                return 0;
+            }
+
+            public static List<PulseAlternativeMode> GetPulseAltModes(PulseMode pulse_Mode, int level)
+            {
+                if (level == 3) // level 3
+                {
+                    if (pulse_Mode.PulseName == PulseModeNames.P_1)
+                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                }
+                else // level 2
+                {
+                    if (pulse_Mode.PulseName == PulseModeNames.CHMP_11)
+                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                    if (pulse_Mode.PulseName == PulseModeNames.CHMP_13)
+                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                    if (pulse_Mode.PulseName == PulseModeNames.CHMP_15)
+                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                    if (pulse_Mode.PulseName == PulseModeNames.P_17)
+                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                    if (pulse_Mode.PulseName == PulseModeNames.P_13)
+                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                    if (pulse_Mode.PulseName == PulseModeNames.P_9)
+                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                    if (pulse_Mode.PulseName == PulseModeNames.P_5)
+                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                }
+
+                return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default };
+            }
         }
     }
 }

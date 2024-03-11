@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
 using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData;
 
-namespace VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common
+namespace VvvfSimulator.GUI.Create.Waveform.Common
 {
     /// <summary>
     /// Control_Moving_Setting.xaml の相互作用ロジック
@@ -34,7 +34,7 @@ namespace VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common
             private Visibility _CurveRate_Visibility = Visibility.Collapsed;
             public Visibility CurveRate_Visibility { get { return _CurveRate_Visibility; } set { _CurveRate_Visibility = value; RaisePropertyChanged(nameof(CurveRate_Visibility)); } }
 
-            public YamlMovingValue Moving_Value { get; set; } = new YamlMovingValue();
+            public YamlMovingValue MovingValue { get; set; } = new YamlMovingValue();
 
         };
         public class ViewModelBase : INotifyPropertyChanged
@@ -49,7 +49,7 @@ namespace VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common
         public Control_Moving_Setting(YamlMovingValue target)
         {
 
-            view_model.Moving_Value = target;
+            view_model.MovingValue = target;
             DataContext = view_model;
 
             InitializeComponent();
@@ -82,17 +82,17 @@ namespace VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common
             if (tag == null) return;
 
             if (tag.Equals("start"))
-                view_model.Moving_Value.Start = parse_d(tb);
+                view_model.MovingValue.Start = parse_d(tb);
             else if (tag.Equals("start_val"))
-                view_model.Moving_Value.StartValue = parse_d(tb);
+                view_model.MovingValue.StartValue = parse_d(tb);
             else if (tag.Equals("end"))
-                view_model.Moving_Value.End = parse_d(tb);
+                view_model.MovingValue.End = parse_d(tb);
             else if (tag.Equals("end_val"))
-                view_model.Moving_Value.EndValue = parse_d(tb);
+                view_model.MovingValue.EndValue = parse_d(tb);
             else if (tag.Equals("degree"))
-                view_model.Moving_Value.Degree = parse_d(tb);
+                view_model.MovingValue.Degree = parse_d(tb);
             else if (tag.Equals("curve_rate"))
-                view_model.Moving_Value.CurveRate = parse_d(tb);
+                view_model.MovingValue.CurveRate = parse_d(tb);
 
         }
 
@@ -101,7 +101,7 @@ namespace VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common
             if (no_update) return;
 
             YamlMovingValue.MovingValueType selected = (YamlMovingValue.MovingValueType)Move_Mode_Selector.SelectedItem;
-            view_model.Moving_Value.Type = selected;
+            view_model.MovingValue.Type = selected;
             set_Visibility();
 
 

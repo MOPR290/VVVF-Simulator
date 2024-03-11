@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using VvvfSimulator;
-using VvvfSimulator.GUI.VVVF_Window.Control_Settings.Common;
+using VvvfSimulator.GUI.Create.Waveform.Common;
 using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
 using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlAsyncParameter.YamlAsyncParameterDipolar;
 
