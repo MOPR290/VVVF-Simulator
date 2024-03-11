@@ -122,7 +122,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             var waveFormat = WaveFormat.CreateIeeeFloatWaveFormat(SamplingFrequency, 1);
             var bufferedWaveProvider = new BufferedWaveProvider(waveFormat)
             {
-                BufferLength = 80000
+                BufferLength = 4096
             };
             ISampleProvider sampleProvider = bufferedWaveProvider.ToSampleProvider();
             if (soundData.UseFilteres) sampleProvider = new MonauralFilter(sampleProvider, soundData.GetFilteres(SamplingFrequency));
