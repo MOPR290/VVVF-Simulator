@@ -42,7 +42,7 @@ namespace VvvfSimulator.Generation.Video.FFT
         public static Bitmap Get_FFT_Image(VvvfValues control, YamlVvvfSoundData sound)
         {
             control.SetRandomFrequencyMoveAllowed(false);
-            WaveValues[] PWM_Array = GenerateBasic.Get_UVW_Sec(control, sound, MyMath.M_PI_6, (int)Math.Pow(2,pow) - 1, false);
+            WaveValues[] PWM_Array = GenerateBasic.GetUVWSec(control, sound, MyMath.M_PI_6, (int)Math.Pow(2,pow) - 1, false);
             Complex[] FFT = FFTNAudio(ref PWM_Array);
 
             Bitmap image = new(1000, 1000);

@@ -30,7 +30,7 @@ namespace VvvfSimulator.Generation.Video.Hexagon
             bool PreciseDelta
         )
         {
-            WaveValues[] PWM_Array = GenerateBasic.Get_UVW_Cycle(Control, Sound, 0, Delta, PreciseDelta);
+            WaveValues[] PWM_Array = GenerateBasic.GetUVWCycle(Control, Sound, 0, Delta, PreciseDelta);
 
             if (Control.GetControlFrequency() == 0)
                 return Get_Hexagon_Original_Image(ref PWM_Array, 0, Width, Height, Thickness, ZeroVectorCircle);

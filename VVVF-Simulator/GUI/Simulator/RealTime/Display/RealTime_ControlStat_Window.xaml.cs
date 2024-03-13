@@ -77,7 +77,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Display
             if(_Style == RealTime_ControlStat_Style.Original)
             {
                 VvvfValues control = _Paremter.Control.Clone();
-                image = Generation.Video.ControlInfo.GenerateControlOriginal.Get_Control_Original_Image(
+                image = Generation.Video.ControlInfo.GenerateControlOriginal.GetImage(
                     control,
                     _Paremter.Control.GetSineFrequency() == 0
                 );
@@ -85,7 +85,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Display
             else
             {
                 VvvfValues control = _Paremter.Control.Clone();
-                image = Generation.Video.ControlInfo.GenerateControlOriginal2.Get_Control_Original2_Image(
+                image = Generation.Video.ControlInfo.GenerateControlOriginal2.GetImage(
                     control,
                     _Paremter.VvvfSoundData,
                     _ControlPrecise

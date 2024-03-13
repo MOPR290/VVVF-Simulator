@@ -8,7 +8,7 @@ namespace VvvfSimulator.Generation.Video.FS
     public class GenerateFourierSeries
     {
 
-        public static double Get_Fourier(ref WaveValues[] UVW, int N, double InitialPhase)
+        public static double GetFourier(ref WaveValues[] UVW, int N, double InitialPhase)
         {
             double integral = 0;
             double dt = 1.0 / (UVW.Length - 1);
@@ -23,7 +23,7 @@ namespace VvvfSimulator.Generation.Video.FS
             return Math.Round(bn, 4);
         }
 
-        public static double Get_Fourier_Fast(ref WaveValues[] UVW, int N, double InitialPhase)
+        public static double GetFourierFast(ref WaveValues[] UVW, int N, double InitialPhase)
         {
             double integral = 0;
 
@@ -52,25 +52,25 @@ namespace VvvfSimulator.Generation.Video.FS
             return Math.Round(bn, 4);
         }
 
-        public static double[] Get_Fourier_Coefficients(ref WaveValues[] UVW, int N, double InitialPhase)
+        public static double[] GetFourierCoefficients(ref WaveValues[] UVW, int N, double InitialPhase)
         {
             double[] coefficients = new double[N];
             for (int n = 1; n <= N; n++)
             {
-                double result = Get_Fourier_Fast(ref UVW, n, InitialPhase);
+                double result = GetFourierFast(ref UVW, n, InitialPhase);
                 coefficients[n-1] = result;
             }
             return coefficients;
         }
 
-        public static double[] Get_Fourier_Coefficients(VvvfValues Control, YamlVvvfSoundData Sound, int Delta, int N)
+        public static double[] GetFourierCoefficients(VvvfValues Control, YamlVvvfSoundData Sound, int Delta, int N)
         {
             Control.SetRandomFrequencyMoveAllowed(false);
-            WaveValues[] PWM_Array = GenerateBasic.Get_UVW_Cycle(Control, Sound, MyMath.M_PI_6, Delta, false);
-            return Get_Fourier_Coefficients(ref PWM_Array, N, 0);
+            WaveValues[] PWM_Array = GenerateBasic.GetUVWCycle(Control, Sound, MyMath.M_PI_6, Delta, false);
+            return GetFourierCoefficients(ref PWM_Array, N, 0);
         }
 
-        public static string Get_Desmos_Fourier_Coefficients_Array(ref double[] coefficients)
+        public static string GetDesmosFourierCoefficientsArray(ref double[] coefficients)
         {
             String array = "C = [";
             for(int i = 0; i < coefficients.Length; i++)
@@ -116,7 +116,7 @@ namespace VvvfSimulator.Generation.Video.FS
             }
         }
 
-        public static Bitmap Get_FS_Image(ref double[] Coefficients)
+        public static Bitmap GetImage(ref double[] Coefficients)
         {
             Bitmap image = new(1000, 1000);
             Graphics g = Graphics.FromImage(image);

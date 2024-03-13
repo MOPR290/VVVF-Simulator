@@ -55,7 +55,7 @@ namespace VvvfSimulator.Yaml.VVVFSound
 
                 if (desire_voltage == 0) return;
 
-                double voltage = Generation.Video.ControlInfo.GenerateControlCommon.Get_Voltage_Rate(control, ysd_x, true) * 100;
+                double voltage = Generation.Video.ControlInfo.GenerateControlCommon.GetVoltageRate(control, ysd_x, true) * 100;
                 if (voltage < -1) continue;
                 double diff = desire_voltage - voltage;
 

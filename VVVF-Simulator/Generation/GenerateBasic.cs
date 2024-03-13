@@ -18,7 +18,7 @@ namespace VvvfSimulator.Generation
         /// <param name="Division"> Recommend : 120000 , Brief : 2000 </param>
         /// <param name="Precise"> True for more precise calculation when Freq < 1 </param>
         /// <returns> One cycle of UVW </returns>
-        public static WaveValues[] Get_UVW_Cycle(VvvfValues Control, YamlVvvfSoundData Sound, double InitialPhase, int Division, bool Precise)
+        public static WaveValues[] GetUVWCycle(VvvfValues Control, YamlVvvfSoundData Sound, double InitialPhase, int Division, bool Precise)
         {
             double _F = Control.GetSineFrequency();
             double _K = (_F > 0.01 && _F < 1) ? 1 / _F : 1;
@@ -28,7 +28,7 @@ namespace VvvfSimulator.Generation
             Control.SetSineTime(0);
             Control.SetSawTime(0);
 
-            return Get_UVW(Control, Sound, InitialPhase, InvDeltaT, Count);
+            return GetUVW(Control, Sound, InitialPhase, InvDeltaT, Count);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace VvvfSimulator.Generation
         /// <param name="Division"> Recommend : 120000 , Brief : 2000 </param>
         /// <param name="Precise"> True for more precise calculation when Freq < 1</param>
         /// <returns> WaveForm of UVW in 1 sec.</returns>
-        public static WaveValues[] Get_UVW_Sec(VvvfValues Control, YamlVvvfSoundData Sound, double InitialPhase, int Division, bool Precise)
+        public static WaveValues[] GetUVWSec(VvvfValues Control, YamlVvvfSoundData Sound, double InitialPhase, int Division, bool Precise)
         {
             double _F = Control.GetSineFrequency();
             double _K = (_F > 0.01 && _F < 1) ? 1 / _F : 1;
@@ -50,10 +50,10 @@ namespace VvvfSimulator.Generation
             Control.SetSineTime(0);
             Control.SetSawTime(0);
 
-            return Get_UVW(Control, Sound, InitialPhase, InvDeltaT, Count);
+            return GetUVW(Control, Sound, InitialPhase, InvDeltaT, Count);
         }
 
-        public static WaveValues[] Get_UVW(VvvfValues Control, YamlVvvfSoundData Sound, double InitialPhase, double InvDeltaT, int Count)
+        public static WaveValues[] GetUVW(VvvfValues Control, YamlVvvfSoundData Sound, double InitialPhase, double InvDeltaT, int Count)
         {
             ControlStatus cv = new()
             {

@@ -636,8 +636,16 @@ namespace VvvfSimulator
             }
             else if (command[0].Equals("Control"))
             {
-                var dialog = new SaveFileDialog { Filter = "mp4 (*.mp4)|*.mp4" };
+                int[] valid_fps = [120, 60, 30, 10, 5];
+                string filter = "";
+                for(int i = 0; i < valid_fps.Length; i++)
+                {
+                    filter += valid_fps[i] + "fps|*.mp4" + (i + 1 == valid_fps.Length ? "" : "|");
+                }
+                var dialog = new SaveFileDialog { Filter = filter, FilterIndex = 2 };
                 if (dialog.ShowDialog() == false) return true;
+                int fps = valid_fps[dialog.FilterIndex - 1];
+
                 if (command[1].Equals("Original"))
                 {
                     GenerationBasicParameter generationBasicParameter = GetGenerationBasicParameter();
@@ -645,7 +653,7 @@ namespace VvvfSimulator
                     Task task = Task.Run(() => {
                         try
                         {
-                            Generation.Video.ControlInfo.GenerateControlOriginal.Generate_Control_Original_Video(generationBasicParameter, dialog.FileName);
+                            Generation.Video.ControlInfo.GenerateControlOriginal.ExportVideo(generationBasicParameter, dialog.FileName, fps);
                         }
                         catch (Exception e)
                         {
@@ -665,7 +673,7 @@ namespace VvvfSimulator
                     Task task = Task.Run(() => {
                         try
                         {
-                            Generation.Video.ControlInfo.GenerateControlOriginal2.Generate_Control_Original2_Video(generationBasicParameter, dialog.FileName);
+                            Generation.Video.ControlInfo.GenerateControlOriginal2.ExportVideo(generationBasicParameter, dialog.FileName, fps);
                         }
                         catch (Exception e)
                         {

@@ -34,14 +34,14 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 compensation = p;
             }
         }
-        private static void Draw_Topic_Value(Graphics g,Point start, Size size, StringContent topic, StringContent value, StringContent unit, int topic_width)
+        private static void DrawTopicAndValue(Graphics g,Point start, Size size, StringContent topic, StringContent value, StringContent unit, int topic_width)
         {
             SizeF topic_size = g.MeasureString(topic.content, topic.font);
             SizeF val_size = g.MeasureString(value.content, value.font) ;
             SizeF unit_size = g.MeasureString(unit.content, unit.font);
 
-            filled_corner_curved_rectangle(g, new SolidBrush(Color.FromArgb(0x33, 0x35, 0x33)), start, new Point(start.X + size.Width, start.Y + size.Height), 10);
-            line_corner_curved_rectangle(g, new Pen(Color.FromArgb(0xED, 0xF2, 0xF4), 5), start, new Point(start.X + size.Width, start.Y + size.Height), 10);
+            FilledCornerCurvedRectangle(g, new SolidBrush(Color.FromArgb(0x33, 0x35, 0x33)), start, new Point(start.X + size.Width, start.Y + size.Height), 10);
+            LineCornerCurvedRectangle(g, new Pen(Color.FromArgb(0xED, 0xF2, 0xF4), 5), start, new Point(start.X + size.Width, start.Y + size.Height), 10);
 
             g.DrawLine(new Pen(Color.White, 2), new Point(start.X + topic_width, start.Y + 10), new Point(start.X + topic_width, start.Y + size.Height - 10));
 
@@ -59,7 +59,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             g.DrawString(unit.content, unit.font, new SolidBrush(Color.White), new PointF(unit_x, unit_y));
         }
 
-        private static String get_Pulse_Name(VvvfValues control)
+        private static String GetPulseName(VvvfValues control)
         {
             PulseMode mode_p = control.GetVideoPulseMode();
             PulseModeNames mode = mode_p.PulseName;
@@ -106,7 +106,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             }
         }
 
-        public static Bitmap Get_Control_Original2_Image(VvvfValues Control, YamlVvvfSoundData Sound, bool Precise)
+        public static Bitmap GetImage(VvvfValues Control, YamlVvvfSoundData Sound, bool Precise)
         {
             int image_width = 1920;
             int image_height = 500;
@@ -125,7 +125,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 CycleControl.SetRandomFrequencyMoveAllowed(false);
                 CycleControl.SetSineTime(0);
                 CycleControl.SetSawTime(0);
-                CycleUVW = GenerateBasic.Get_UVW_Cycle(CycleControl, Sound, MyMath.M_PI_6, (Precise ? 120000 : 6000), Precise);
+                CycleUVW = GenerateBasic.GetUVWCycle(CycleControl, Sound, MyMath.M_PI_6, (Precise ? 120000 : 6000), Precise);
             });
             Task WaveFormTask = Task.Run(() => {
                 VvvfValues WaveFormControl = Control.Clone();
@@ -148,7 +148,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             });
             Task VoltageCalcTask = Task.Run(() =>
             {
-                voltage = Math.Abs(FS.GenerateFourierSeries.Get_Fourier_Fast(ref CycleUVW, 1, 0)) * 100;
+                voltage = Math.Abs(FS.GenerateFourierSeries.GetFourierFast(ref CycleUVW, 1, 0)) * 100;
             });
             HexagonRenderTask.Wait();
             VoltageCalcTask.Wait();
@@ -207,21 +207,21 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
 
 
             bool is_async = CycleControl.GetVideoPulseMode().PulseName.Equals(PulseModeNames.Async);
-            Draw_Topic_Value(
+            DrawTopicAndValue(
                 g, new Point(420, 10), new Size(480, 80),
                 new StringContent(topic_Font, "Pulse", new Point(0, 5)),
-                new StringContent(value_Font, stopping ? "-----" : get_Pulse_Name(CycleControl), new Point(0, 5)),
+                new StringContent(value_Font, stopping ? "-----" : GetPulseName(CycleControl), new Point(0, 5)),
                 new StringContent(unit_font, is_async ? "Hz" : "", new Point(0, 9)),
                 200);
 
-            Draw_Topic_Value(
+            DrawTopicAndValue(
                 g, new Point(920, 10), new Size(480, 80),
                 new StringContent(topic_Font, "Voltage", new Point(0, 5)),
                 new StringContent(value_Font, stopping ? "---.-" : String.Format("{0:F1}", voltage), new Point(0, 5)),
                 new StringContent(unit_font, "%", new Point(0, 9)),
                 200);
 
-            Draw_Topic_Value(
+            DrawTopicAndValue(
                 g, new Point(1420, 10), new Size(480, 80),
                 new StringContent(topic_Font, "Freq", new Point(0, 5)),
                 new StringContent(value_Font, stopping ? "---.-" : String.Format("{0:F1}", CycleControl.GetVideoSineFrequency()), new Point(0, 5)),
@@ -232,9 +232,10 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             return image;
         }
 
-        public static void Generate_Control_Original2_Video(
+        public static void ExportVideo(
             GenerationBasicParameter generationBasicParameter,
-            String output_path
+            String output_path,
+            int fps
         )
         {
             YamlVvvfSoundData vvvfData = generationBasicParameter.vvvfData;
@@ -246,8 +247,6 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             control.ResetMathematicValues();
             control.SetRandomFrequencyMoveAllowed(false);
 
-            int fps = 60;
-
             int image_width = 1920;
             int image_height = 500;
             VideoWriter vr = new(output_path, OpenCvSharp.FourCC.H264, fps, new OpenCvSharp.Size(image_width, image_height));
@@ -258,7 +257,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             }
 
             // PROGRESS INITIALIZE
-            progressData.Total = masconData.GetEstimatedSteps(1.0 / fps) + 120;
+            progressData.Total = masconData.GetEstimatedSteps(1.0 / fps) + 2 * fps;
 
             bool START_FRAMES = true;
             if (START_FRAMES)
@@ -273,19 +272,19 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 };
                 PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, vvvfData);
                 _ = CalculatePhases(control, calculated_Values, 0);
-                Bitmap final_image = Get_Control_Original2_Image(control, vvvfData, true);
+                Bitmap final_image = GetImage(control, vvvfData, true);
 
-                AddImageFrames(final_image, 60, vr);
+                AddImageFrames(final_image, fps, vr);
 
                 final_image.Dispose();
             }
 
             //PROGRESS ADD
-            progressData.Progress += 60;
+            progressData.Progress += fps;
 
             while (true)
             {
-                Bitmap final_image = Get_Control_Original2_Image(control,  vvvfData, true);
+                Bitmap final_image = GetImage(control,  vvvfData, true);
 
                 MemoryStream ms = new();
                 final_image.Save(ms, ImageFormat.Png);
@@ -325,14 +324,14 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 };
                 PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, vvvfData);
                 _ = CalculatePhases(control, calculated_Values, 0);
-                Bitmap final_image = Get_Control_Original2_Image(control, vvvfData, true);
-                AddImageFrames(final_image, 60, vr);
+                Bitmap final_image = GetImage(control, vvvfData, true);
+                AddImageFrames(final_image, fps, vr);
 
                 final_image.Dispose();
             }
 
             //PROGRESS ADD
-            progressData.Progress += 60;
+            progressData.Progress += fps;
 
             vr.Release();
             vr.Dispose();

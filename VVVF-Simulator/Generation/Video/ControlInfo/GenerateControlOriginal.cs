@@ -19,11 +19,11 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
 {
     public class GenerateControlOriginal
     {
-        private static String[] get_Pulse_Name(VvvfValues control)
+        private static String[] GetPulseName(VvvfValues control)
         {
             PulseModeNames mode = control.GetVideoPulseMode().PulseName;
             //Not in sync
-            if (mode == PulseModeNames.Async )
+            if (mode == PulseModeNames.Async)
             {
                 string[] names = new string[3];
                 int count = 0;
@@ -88,11 +88,10 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 else return new string[] { mode_name, "Dipolar : " + control.GetVideoDipolar().ToString("F1") };
             }
         }
-
-        private static void generate_opening(int image_width, int image_height, VideoWriter vr)
+        private static void GenerateOpening(int image_width, int image_height, VideoWriter vr)
         {
-            //opening
-            for (int i = 0; i < 128; i++)
+            double change_per_frame = 60 / vr.Fps;
+            for (double i = 0; i < 128; i += change_per_frame)
             {
                 Bitmap image = new(image_width, image_height);
                 Graphics g = Graphics.FromImage(image);
@@ -161,7 +160,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
 
         }
 
-        public static Bitmap Get_Control_Original_Image(VvvfValues control , bool final_show)
+        public static Bitmap GetImage(VvvfValues control, bool final_show)
         {
             int image_width = 500;
             int image_height = 1080;
@@ -222,7 +221,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             g.FillRectangle(Brushes.Blue, 0, 68, image_width, 8);
             if (!final_show)
             {
-                String[] pulse_name = get_Pulse_Name(control);
+                String[] pulse_name = GetPulseName(control);
 
                 g.DrawString(pulse_name[0], val_fnt, letter_brush, 17, 100);
 
@@ -272,7 +271,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             return image;
         }
 
-        public static void Generate_Control_Original_Video(GenerationBasicParameter generationBasicParameter, String output_path)
+        public static void ExportVideo(GenerationBasicParameter generationBasicParameter, String output_path, int fps)
         {
             YamlVvvfSoundData vvvfData = generationBasicParameter.vvvfData;
             YamlMasconDataCompiled masconData = generationBasicParameter.masconData;
@@ -281,8 +280,6 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             VvvfValues control = new();
             control.ResetControlValues();
             control.ResetMathematicValues();
-
-            int fps = 60;
 
             int image_width = 500;
             int image_height = 1080;
@@ -293,13 +290,13 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 return;
             }
 
-            generate_opening(image_width, image_height, vr);
+            GenerateOpening(image_width, image_height, vr);
 
 
             bool loop = true, video_finished, final_show = false, first_show = true;
             int freeze_count = 0;
 
-            progressData.Total = masconData.GetEstimatedSteps(1.0 / fps) + 120;
+            progressData.Total = masconData.GetEstimatedSteps(1.0 / fps) + fps * 2;
 
             while (loop)
             {
@@ -315,7 +312,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
 
                 control.SetSineTime(0);
                 control.SetSawTime(0);
-                Bitmap image = Get_Control_Original_Image(control, final_show);
+                Bitmap image = GetImage(control, final_show);
                 MemoryStream ms = new();
                 image.Save(ms, ImageFormat.Png);
                 image.Dispose();
@@ -333,7 +330,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 if (first_show)
                 {
                     freeze_count++;
-                    if (freeze_count > 60)
+                    if (freeze_count > fps)
                     {
                         freeze_count = 0;
                         first_show = false;
@@ -347,10 +344,10 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                     final_show = true;
                     freeze_count++;
                 }
-                if (freeze_count > 60) loop = false;
-                if(progressData.Cancel) loop = false;
+                if (freeze_count > fps) loop = false;
+                if (progressData.Cancel) loop = false;
 
-                
+
             }
             vr.Release();
             vr.Dispose();
