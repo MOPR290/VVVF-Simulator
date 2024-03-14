@@ -23,27 +23,27 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
         /// <summary>
         /// Do clone before call this!
         /// </summary>
-        /// <param name="control"></param>
-        /// <param name="values"></param>
-        /// <param name="image_width"></param>
-        /// <param name="image_height"></param>
-        /// <param name="wave_height"></param>
-        /// <param name="calculate_div"></param>
+        /// <param name="Control"></param>
+        /// <param name="PWM_Data"></param>
+        /// <param name="Width"></param>
+        /// <param name="Height"></param>
+        /// <param name="WaveHeight"></param>
+        /// <param name="Delta"></param>
         /// <returns></returns>
         public static Bitmap Get_WaveForm_Image(
-            VVVF_Values control,
-            PWM_Calculate_Values values,
-            int image_width, 
-            int image_height, 
-            int wave_height,
-            int calculate_div,
-            int line_width,
-            int spacing
+            VVVF_Values Control,
+            PWM_Calculate_Values PWM_Data,
+            int Width, 
+            int Height, 
+            int WaveHeight,
+            int WaveWidth,
+            int Delta,
+            int Spacing
         )
         {
-            Bitmap image = new(image_width, image_height);
+            Bitmap image = new(Width, Height);
             Graphics g = Graphics.FromImage(image);
-            g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+            g.FillRectangle(new SolidBrush(Color.White), 0, 0, Width, Height);
 
             List<int> points_x = new();
             List<int> points_y = new();
@@ -52,9 +52,9 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
             points_y.Add(0);
 
             int pre_pwm = 0;
-            for (int i = 0; i < (image_width - spacing * 2) * calculate_div; i++)
+            for (int i = 0; i < (Width - Spacing * 2) * Delta; i++)
             {
-                Wave_Values value = calculate_values(control, values, Math.PI / 6.0);
+                Wave_Values value = calculate_values(Control, PWM_Data, Math.PI / 6.0);
                 int pwm = value.U - value.V;
                 if (pre_pwm != pwm)
                 {
@@ -66,11 +66,11 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
                     pre_pwm = pwm;
                 }
 
-                control.add_Saw_Time(2 / (60.0 * calculate_div * (image_width - spacing * 2)));
-                control.add_Sine_Time(2 / (60.0 * calculate_div * (image_width - spacing * 2)));
+                Control.add_Saw_Time(2 / (60.0 * Delta * (Width - Spacing * 2)));
+                Control.add_Sine_Time(2 / (60.0 * Delta * (Width - Spacing * 2)));
             }
 
-            points_x.Add((image_width - spacing * 2) * calculate_div);
+            points_x.Add((Width - Spacing * 2) * Delta);
             points_y.Add(pre_pwm);
 
             for (int i = 0; i < points_x.Count - 1; i++)
@@ -80,14 +80,15 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
                 int y_1 = points_y[i];
                 int y_2 = points_y[i + 1];
 
-                int curr_val = (int)(-y_1 * wave_height + image_height / 2.0);
-                int next_val = (int)(-y_2 * wave_height + image_height / 2.0);
-                g.DrawLine(new Pen(Color.Black, line_width), (int)(x_1 / (double)calculate_div) + spacing, curr_val, (int)(x_2 / (double)calculate_div) + spacing, next_val);
+                int curr_val = (int)(-y_1 * WaveHeight + Height / 2.0);
+                int next_val = (int)(-y_2 * WaveHeight + Height / 2.0);
+                g.DrawLine(new Pen(Color.Black, WaveWidth), (int)(x_1 / (double)Delta) + Spacing, curr_val, (int)(x_2 / (double)Delta) + Spacing, next_val);
             }
 
             g.Dispose();
             return image;
         }
+
         public static void Generate_UV_1(GenerationBasicParameter generationBasicParameter, String fileName)
         {
             Yaml_VVVF_Sound_Data vvvfData = generationBasicParameter.vvvfData;
@@ -156,7 +157,7 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
                 };
                 PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
 
-                Bitmap image = Get_WaveForm_Image(control, calculated_Values, image_width, image_height, wave_height, calculate_div, 2, 100);
+                Bitmap image = Get_WaveForm_Image(control, calculated_Values, image_width, image_height, wave_height, 2, calculate_div, 100);
 
 
                 MemoryStream ms = new();
@@ -280,7 +281,7 @@ namespace VVVF_Simulator.Generation.Video.WaveForm
                 };
                 PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, vvvfData);
 
-                Bitmap image = Get_WaveForm_Image(control, calculated_Values, image_width, image_height, wave_height, calculate_div, 1, 0);
+                Bitmap image = Get_WaveForm_Image(control, calculated_Values, image_width, image_height, wave_height, 1, calculate_div, 0);
 
                 MemoryStream ms = new();
                 image.Save(ms, ImageFormat.Png);

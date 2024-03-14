@@ -441,10 +441,11 @@ namespace VVVF_Simulator
                     {
                         stat_window = new(
                             parameter,
-                            (RealTime_ControlStat_Style)Properties.Settings.Default.RealTime_VVVF_Control_Style
+                            (RealTime_ControlStat_Style)Properties.Settings.Default.RealTime_VVVF_Control_Style,
+                            Properties.Settings.Default.RealTime_VVVF_Control_Precise
                         );
                         stat_window.Show();
-                        stat_window.Start_Task();
+                        stat_window.StartTask();
                     }
 
                     if (Properties.Settings.Default.RealTime_VVVF_Hexagon_Show)
@@ -545,10 +546,11 @@ namespace VVVF_Simulator
                     {
                         stat_window = new(
                             parameter,
-                            (RealTime_ControlStat_Style)Properties.Settings.Default.RealTime_Train_Control_Style
+                            (RealTime_ControlStat_Style)Properties.Settings.Default.RealTime_Train_Control_Style,
+                            Properties.Settings.Default.RealTime_Train_Control_Precise
                         );
                         stat_window.Show();
-                        stat_window.Start_Task();
+                        stat_window.StartTask();
                     }
 
                     if (Properties.Settings.Default.RealTime_Train_Hexagon_Show)

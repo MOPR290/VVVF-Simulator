@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VVVF_Simulator.GUI.Simulator.RealTime"
         mc:Ignorable="d"
-        Title="Control Status" Height="{Binding height}" Width="{Binding width}">
+        Title="Control Status" Width="100" Height="94.6">
     <Grid>
-        <Image Source="{Binding control_stat}"/>
+        <Image Source="{Binding ControlImage}"/>
 
     </Grid>
 </Window>

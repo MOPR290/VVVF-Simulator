@@ -89,7 +89,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
                 wave_stat = control.get_Control_Frequency()
             };
             PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(control, cv, sound_data);
-            Bitmap image = Generation.Video.WaveForm.Generate_WaveForm_UV.Get_WaveForm_Image(control, calculated_Values, image_width, image_height, wave_height, calculate_div, 2,0);
+            Bitmap image = Generation.Video.WaveForm.Generate_WaveForm_UV.Get_WaveForm_Image(control, calculated_Values, image_width, image_height, wave_height, 2, calculate_div,0);
 
             using (Stream st = new MemoryStream())
             {

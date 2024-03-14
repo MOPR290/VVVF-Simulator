@@ -26,18 +26,11 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
     /// </summary>
     public partial class RealTime_ControlStat_Window : Window
     {
-        private ViewModel view_model = new ViewModel();
+        private ViewModel BindingData = new();
         public class ViewModel : ViewModelBase
         {
-
-            private int _height = 100;
-            public int height { get { return _height; } set { _height = value; RaisePropertyChanged(nameof(height)); } }
-
-            private int _width = 100;
-            public int width { get { return _width; } set { _width = value; RaisePropertyChanged(nameof(width)); } }
-
             private BitmapFrame? _control_stat;
-            public BitmapFrame? control_stat { get { return _control_stat; } set { _control_stat = value; RaisePropertyChanged(nameof(control_stat)); } }
+            public BitmapFrame? ControlImage { get { return _control_stat; } set { _control_stat = value; RaisePropertyChanged(nameof(ControlImage)); } }
         };
         public class ViewModelBase : INotifyPropertyChanged
         {
@@ -48,28 +41,26 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
             }
         }
 
-        RealTime_ControlStat_Style style;
-        RealTime_Parameter realTime_Parameter;
-        int image_width = 960;
-        int image_height = 1620;
-        public RealTime_ControlStat_Window(RealTime_Parameter r,RealTime_ControlStat_Style style)
+        RealTime_ControlStat_Style ControlStyle;
+        RealTime_Parameter RealTimeParam;
+        bool ControlPrecise = false;
+        bool ControlSizeSet = false;
+        public RealTime_ControlStat_Window(RealTime_Parameter r,RealTime_ControlStat_Style style, bool ControlPrecise)
         {
-            realTime_Parameter = r;
+            RealTimeParam = r;
+            this.ControlPrecise = ControlPrecise;
 
-            DataContext = view_model;
+            DataContext = BindingData;
             InitializeComponent();
-            this.style = style;
-
-            view_model.height = image_height;
-            view_model.width = image_width;
+            ControlStyle = style;
         }
 
-        public void Start_Task()
+        public void StartTask()
         {
             Task.Run(() => {
-                while (!realTime_Parameter.quit)
+                while (!RealTimeParam.quit)
                 {
-                    update_control_stat();
+                    UpdateControlImage();
 
                 }
                 Dispatcher.Invoke((Action)(() =>
@@ -80,35 +71,55 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Display
         }
 
 
-        private void update_control_stat()
+        private void UpdateControlImage()
         {
             Bitmap image;
 
-            if(style == RealTime_ControlStat_Style.Original)
+            if(ControlStyle == RealTime_ControlStat_Style.Original)
             {
-                VVVF_Values control = realTime_Parameter.control_values.Clone();
+                VVVF_Values control = RealTimeParam.control_values.Clone();
                 image = Generation.Video.Control_Info.Generate_Control_Original.Get_Control_Original_Image(
                     control,
-                    realTime_Parameter.control_values.get_Sine_Freq() == 0
+                    RealTimeParam.control_values.get_Sine_Freq() == 0
                 );
             }
             else
             {
-                VVVF_Values control = realTime_Parameter.control_values.Clone();
+                VVVF_Values control = RealTimeParam.control_values.Clone();
                 image = Generation.Video.Control_Info.Generate_Control_Original2.Get_Control_Original2_Image(
                     control,
-                    realTime_Parameter.sound_data,
-                    false
+                    RealTimeParam.sound_data,
+                    ControlPrecise
                 );
             }
 
-            using (Stream st = new MemoryStream())
+            if (!ControlSizeSet)
             {
-                image.Save(st, ImageFormat.Bmp);
-                st.Seek(0, SeekOrigin.Begin);
-                var data = BitmapFrame.Create(st, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-                view_model.control_stat = data;
+                ControlSizeSet = true;
+                Dispatcher.Invoke(() =>
+                {
+                    double DisplayRatio = SystemParameters.WorkArea.Width / SystemParameters.WorkArea.Height;
+                    double ControlRatio = image.Width / image.Height;
+
+                    if (ControlRatio > 1)
+                    {
+                        Width = SystemParameters.WorkArea.Width * 2 / 4;
+                        Height = Width / ControlRatio;
+                    }
+                    else
+                    {
+                        Height = SystemParameters.WorkArea.Height * 2 / 4;
+                        Width = Height * ControlRatio;
+                    }
+
+                });
             }
+
+            using Stream st = new MemoryStream();
+            image.Save(st, ImageFormat.Bmp);
+            st.Seek(0, SeekOrigin.Begin);
+            var data = BitmapFrame.Create(st, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+            BindingData.ControlImage = data;
         }
     }
 

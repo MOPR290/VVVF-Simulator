@@ -67,6 +67,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Setting_Window
                 realtime_edit_box.IsChecked = prop.RealTime_VVVF_EditAllow;
 
                 show_control_stat.IsChecked = prop.RealTime_VVVF_Control_Show;
+                control_precise.IsChecked = prop.RealTime_VVVF_Control_Precise;
                 control_design_selector.SelectedItem = (RealTime_ControlStat_Style)prop.RealTime_VVVF_Control_Style;
 
                 show_hexagon.IsChecked = prop.RealTime_VVVF_Hexagon_Show;
@@ -83,6 +84,7 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Setting_Window
                 realtime_edit_box.IsChecked = prop.RealTime_Train_EditAllow;
 
                 show_control_stat.IsChecked = prop.RealTime_Train_Control_Show;
+                control_precise.IsChecked = prop.RealTime_Train_Control_Precise;
                 control_design_selector.SelectedItem = (RealTime_ControlStat_Style)prop.RealTime_Train_Control_Style;
 
                 show_hexagon.IsChecked = prop.RealTime_Train_Hexagon_Show;
@@ -157,6 +159,13 @@ namespace VVVF_Simulator.GUI.Simulator.RealTime.Setting_Window
                     Properties.Settings.Default.RealTime_VVVF_FFT_Show = is_checked;
                 else if (setting_Type.Equals(RealTime_Basic_Setting_Type.Train))
                     Properties.Settings.Default.RealTime_Train_FFT_Show = is_checked;
+            }
+            else if (tag.Equals("ControlPrecise"))
+            {
+                if (setting_Type.Equals(RealTime_Basic_Setting_Type.VVVF))
+                    Properties.Settings.Default.RealTime_VVVF_Control_Precise = is_checked;
+                else if (setting_Type.Equals(RealTime_Basic_Setting_Type.Train))
+                    Properties.Settings.Default.RealTime_Train_Control_Precise = is_checked;
             }
 
         }

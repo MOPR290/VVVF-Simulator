@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using VVVF_Simulator.Yaml.VVVF_Sound;
 using static VVVF_Simulator.VVVF_Structs;
@@ -18,7 +15,6 @@ using Point = System.Drawing.Point;
 using Size = System.Drawing.Size;
 using static VVVF_Simulator.Yaml.Mascon_Control.Yaml_Mascon_Analyze;
 using static VVVF_Simulator.VVVF_Structs.Pulse_Mode;
-using static VVVF_Simulator.MainWindow;
 using static VVVF_Simulator.Generation.Generate_Common.GenerationBasicParameter;
 
 namespace VVVF_Simulator.Generation.Video.Control_Info
@@ -87,7 +83,7 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
 
                 String[] mode_name_type = mode_name.Split("_");
 
-                String final_mode_name = ((contain_wide) ? "W " : "") + mode_name_type[1];
+                String final_mode_name = (contain_wide ? "W " : "") + mode_name_type[1];
 
                 return "CHM " + final_mode_name;
             }
@@ -110,42 +106,40 @@ namespace VVVF_Simulator.Generation.Video.Control_Info
             }
         }
 
-        public static Bitmap Get_Control_Original2_Image(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, bool precise_voltage)
+        public static Bitmap Get_Control_Original2_Image(VVVF_Values Control, Yaml_VVVF_Sound_Data Sound, bool Precise)
         {
             int image_width = 1920;
             int image_height = 500;
-
-            Bitmap image = new(image_width, image_height);
-            Graphics g = Graphics.FromImage(image);
             double voltage = 0;
 
-            Bitmap hexagon = new(400,400), wave_form = new(1520,400);
+            Bitmap image = new(image_width, image_height);
+            Bitmap hexagon = new(400, 400), wave_form = new(1520, 400);
+            Graphics g = Graphics.FromImage(image);          
+
             VVVF_Values CycleControl = Control.Clone();
             Wave_Values[] CycleUVW = Array.Empty<Wave_Values>();
 
+            // CALCULATE ONE CYCLE OF PWM
             Task CycleCalcTask = Task.Run(() =>
             {
-                // CALCULATE ONE CYCLE OF PWM
                 CycleControl.set_Allowed_Random_Freq_Move(false);
                 CycleControl.set_Sine_Time(0);
                 CycleControl.set_Saw_Time(0);
-                CycleUVW = Get_UWV_Cycle(Control, Sound, 20000, precise_voltage);
+                CycleUVW = Get_UWV_Cycle(CycleControl, Sound, 0, Precise ? 20000 : 1000, Precise);
             });
-            
             Task WaveFormTask = Task.Run(() => {
-                VVVF_Values vvvf_control = Control.Clone();
-                vvvf_control.set_Allowed_Random_Freq_Move(false);
-                vvvf_control.set_Sine_Time(0);
-                vvvf_control.set_Saw_Time(0);
-                Control_Values cv = new()
+                VVVF_Values WaveFormControl = Control.Clone();
+                WaveFormControl.set_Allowed_Random_Freq_Move(false);
+                WaveFormControl.set_Sine_Time(0);
+                WaveFormControl.set_Saw_Time(0);
+                PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(WaveFormControl, new Control_Values()
                 {
-                    brake = vvvf_control.is_Braking(),
-                    mascon_on = !vvvf_control.is_Mascon_Off(),
-                    free_run = vvvf_control.is_Free_Running(),
-                    wave_stat = vvvf_control.get_Control_Frequency()
-                };
-                PWM_Calculate_Values calculated_Values = Yaml_VVVF_Wave.calculate_Yaml(vvvf_control, cv, Sound);
-                wave_form = new Bitmap(Get_WaveForm_Image(vvvf_control, calculated_Values, 1520, 400, 80, 60, 2, 50));
+                    brake = WaveFormControl.is_Braking(),
+                    mascon_on = !WaveFormControl.is_Mascon_Off(),
+                    free_run = WaveFormControl.is_Free_Running(),
+                    wave_stat = WaveFormControl.get_Control_Frequency()
+                }, Sound);
+                wave_form = Get_WaveForm_Image(WaveFormControl, calculated_Values, 1520, 400, 80, 2, Precise ? 60 : 1 ,50);
             });
             CycleCalcTask.Wait();
             Task HexagonRenderTask = Task.Run(() =>
