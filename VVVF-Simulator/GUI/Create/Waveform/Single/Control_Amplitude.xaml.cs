@@ -15,8 +15,7 @@ namespace VvvfSimulator.GUI.Create.Waveform
     public partial class Control_Amplitude : UserControl
     {
         private YamlControlDataAmplitude target;
-        private MainWindow mainWindow;
-        private Control_Amplitude_Content content;
+        private ControlAmplitudeContent content;
 
         private bool no_update = true;
         private Visible_Class visible_Class;
@@ -59,18 +58,17 @@ namespace VvvfSimulator.GUI.Create.Waveform
             }
         }
 
-        public Control_Amplitude(YamlControlDataAmplitude ycd, Control_Amplitude_Content cac, MainWindow mainWindow)
+        public Control_Amplitude(YamlControlDataAmplitude ycd, ControlAmplitudeContent cac)
         {
             target = ycd;
-            this.mainWindow = mainWindow;
             content = cac;
 
             InitializeComponent();
 
-            if (cac == Control_Amplitude_Content.Default)
+            if (cac == ControlAmplitudeContent.Default)
                 title.Content = "Default Amplitude Setting";
                 
-            else if (cac == Control_Amplitude_Content.Free_Run_On)
+            else if (cac == ControlAmplitudeContent.Free_Run_On)
                 title.Content = "Mascon On Free Run Amplitude Setting";
 
             else
@@ -155,7 +153,7 @@ namespace VvvfSimulator.GUI.Create.Waveform
             else if (tag.Equals("polynomial"))
                 target.Parameter.Polynomial = parse_d(tb);
 
-            mainWindow.UpdateControlList();
+            MainWindow.GetInstance()?.UpdateControlList();
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
@@ -164,7 +162,7 @@ namespace VvvfSimulator.GUI.Create.Waveform
 
             CheckBox cb = (CheckBox)sender;
             target.Parameter.DisableRangeLimit = cb.IsChecked != false;
-            mainWindow.UpdateControlList();
+            MainWindow.GetInstance()?.UpdateControlList();
         }
 
         private void amplitude_mode_selector_Selected(object sender, RoutedEventArgs e)
@@ -175,7 +173,7 @@ namespace VvvfSimulator.GUI.Create.Waveform
             target.Mode = selected;
             grid_hider(target.Mode, content);
 
-            mainWindow.UpdateControlList();
+            MainWindow.GetInstance()?.UpdateControlList();
 
             
         }
@@ -209,7 +207,7 @@ namespace VvvfSimulator.GUI.Create.Waveform
             else visible_Class.disable_range_visible = b;
         }
 
-        private void grid_hider(AmplitudeMode mode , Control_Amplitude_Content cac)
+        private void grid_hider(AmplitudeMode mode , ControlAmplitudeContent cac)
         {
             Boolean[] condition_1, condition_2;
 
@@ -226,9 +224,9 @@ namespace VvvfSimulator.GUI.Create.Waveform
             else
                 condition_1 = new Boolean[9] { false, false, true, true, true, true, false, false, true };
 
-            if (cac == Control_Amplitude_Content.Default)
+            if (cac == ControlAmplitudeContent.Default)
                 condition_2 = new Boolean[9] { true, true, true, true, true, true, true, true, true };
-            else if(cac == Control_Amplitude_Content.Free_Run_On)
+            else if(cac == ControlAmplitudeContent.Free_Run_On)
                 condition_2 = new Boolean[9] { true, true, true, true, true, true, true, true, true };
             else
                 condition_2 = new Boolean[9] { true, true, true, true, true, true, true, true, true };
@@ -243,7 +241,7 @@ namespace VvvfSimulator.GUI.Create.Waveform
 
 
 
-    public enum Control_Amplitude_Content
+    public enum ControlAmplitudeContent
     {
         Default,Free_Run_On,Free_Run_Off
     }

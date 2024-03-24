@@ -117,7 +117,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="GUI\Simulator\RealTime\Display\RealTime_FS_Window.xaml">
+    <Page Update="GUI\Simulator\RealTime\UniqueWindow\Fs.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
   </ItemGroup>

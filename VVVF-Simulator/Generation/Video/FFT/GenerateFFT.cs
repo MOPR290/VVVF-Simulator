@@ -1,18 +1,13 @@
 ﻿using NAudio.Dsp;
 using OpenCvSharp;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using VvvfSimulator.GUI.Util;
 using VvvfSimulator.Yaml.VVVFSound;
 using static VvvfSimulator.Generation.GenerateCommon;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
-using static VvvfSimulator.MainWindow;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
 
@@ -39,7 +34,7 @@ namespace VvvfSimulator.Generation.Video.FFT
             float θ = (float)Math.Atan2(C.Y, C.X);
             return (R, θ);
         }
-        public static Bitmap Get_FFT_Image(VvvfValues control, YamlVvvfSoundData sound)
+        public static Bitmap GetImage(VvvfValues control, YamlVvvfSoundData sound)
         {
             control.SetRandomFrequencyMoveAllowed(false);
             WaveValues[] PWM_Array = GenerateBasic.GetUVWSec(control, sound, MyMath.M_PI_6, (int)Math.Pow(2,pow) - 1, false);
@@ -65,8 +60,12 @@ namespace VvvfSimulator.Generation.Video.FFT
 
         }
 
-        public static void Generate_FFT_Video(GenerationBasicParameter generationBasicParameter, String fileName)
+        private BitmapViewerManager? Viewer { get; set; }
+        public void ExportVideo(GenerationBasicParameter generationBasicParameter, String fileName)
         {
+            MainWindow.Invoke(() => Viewer = new BitmapViewerManager());
+            Viewer?.Show();
+
             YamlVvvfSoundData vvvfData = generationBasicParameter.vvvfData;
             YamlMasconDataCompiled masconData = generationBasicParameter.masconData;
             ProgressData progressData = generationBasicParameter.progressData;
@@ -107,7 +106,7 @@ namespace VvvfSimulator.Generation.Video.FFT
                 control.SetSineTime(0);
                 control.SetSawTime(0);
 
-                Bitmap image = Get_FFT_Image(control, vvvfData);
+                Bitmap image = GetImage(control, vvvfData);
 
 
                 MemoryStream ms = new();
@@ -118,15 +117,7 @@ namespace VvvfSimulator.Generation.Video.FFT
                 mat.Dispose();
                 ms.Dispose();
 
-                MemoryStream resized_ms = new();
-                Bitmap resized = new(image, image_width / 2, image_height / 2);
-                resized.Save(resized_ms, ImageFormat.Png);
-                byte[] resized_img = resized_ms.GetBuffer();
-                Mat resized_mat = OpenCvSharp.Mat.FromImageData(resized_img);
-                Cv2.ImShow("Wave Form", resized_mat);
-                Cv2.WaitKey(1);
-                resized_mat.Dispose();
-                resized_ms.Dispose();
+                Viewer?.SetImage(image);
 
                 image.Dispose();
 
@@ -146,10 +137,15 @@ namespace VvvfSimulator.Generation.Video.FFT
 
             vr.Release();
             vr.Dispose();
+
+            Viewer?.Close();
         }
 
-        public static void Generate_FFT_Image(String fileName, YamlVvvfSoundData sound_data, double d)
+        public void ExportImage(String fileName, YamlVvvfSoundData sound_data, double d)
         {
+            MainWindow.Invoke(() => Viewer = new BitmapViewerManager());
+            Viewer?.Show();
+
             VvvfValues control = new();
 
             control.ResetControlValues();
@@ -159,7 +155,7 @@ namespace VvvfSimulator.Generation.Video.FFT
             control.SetSineAngleFrequency(d * MyMath.M_2PI);
             control.SetControlFrequency(d);
 
-            Bitmap image = Get_FFT_Image(control, sound_data);
+            Bitmap image = GetImage(control, sound_data);
 
             MemoryStream ms = new();
             image.Save(ms, ImageFormat.Png);
@@ -167,10 +163,7 @@ namespace VvvfSimulator.Generation.Video.FFT
             Mat mat = Mat.FromImageData(img);
 
             image.Save(fileName, ImageFormat.Png);
-
-
-            Cv2.ImShow("FFT", mat);
-            Cv2.WaitKey();
+            Viewer?.SetImage(image);
             image.Dispose();
         }
     }

@@ -30,18 +30,12 @@ namespace VvvfSimulator.GUI.Create.Waveform
     public partial class Control_Async : UserControl
     {
         YamlControlData data;
-        MainWindow MainWindow;
-
         bool no_update = true;
-        public Control_Async(YamlControlData ycd, MainWindow mainWindow)
+        public Control_Async(YamlControlData ycd)
         {
-            MainWindow = mainWindow;
             data = ycd;
-
             InitializeComponent();
-
             apply_data();
-
             no_update = false;
         }
 
@@ -93,11 +87,11 @@ namespace VvvfSimulator.GUI.Create.Waveform
         private void show_selected_carrier_mode(YamlAsyncCarrierMode selected)
         {
             if (selected == YamlAsyncCarrierMode.Const)
-                carrier_setting.Navigate(new Control_Async_Carrier_Const(data, MainWindow));
+                carrier_setting.Navigate(new Control_Async_Carrier_Const(data));
             else if (selected == YamlAsyncCarrierMode.Moving)
                 carrier_setting.Navigate(new Control_Moving_Setting(data.AsyncModulationData.CarrierWaveData.MovingValue));
             else if (selected == YamlAsyncCarrierMode.Vibrato)
-                carrier_setting.Navigate(new Control_Async_Vibrato(data, MainWindow));
+                carrier_setting.Navigate(new Control_Async_Vibrato(data));
             else if(selected == YamlAsyncCarrierMode.Table)
                 carrier_setting.Navigate(new Control_Async_Carrier_Table(data));
         }

@@ -25,19 +25,13 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async.Vibrato
     public partial class Control_Async_Vibrato_Const : UserControl
     {
         YamlAsyncParameterVibratoValue target;
-        MainWindow main;
-
         bool no_update = true;
 
-        public Control_Async_Vibrato_Const(YamlAsyncParameterVibratoValue data, MainWindow mainWindow)
+        public Control_Async_Vibrato_Const(YamlAsyncParameterVibratoValue data)
         {
             target = data;
-            main = mainWindow;
-
             InitializeComponent();
-
             apply_data();
-
             no_update = false;
         }
 

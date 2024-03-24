@@ -17,7 +17,7 @@ using VvvfSimulator.GUI.Mascon;
 using VvvfSimulator.GUI.TrainAudio;
 using VvvfSimulator.GUI.TaskViewer;
 using VvvfSimulator.GUI.Simulator.RealTime;
-using VvvfSimulator.GUI.Simulator.RealTime.Display;
+using VvvfSimulator.GUI.Simulator.RealTime.UniqueWindow;
 using VvvfSimulator.GUI.Simulator.RealTime.Setting_Window;
 using static VvvfSimulator.Generation.GenerateCommon;
 using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
@@ -59,13 +59,22 @@ namespace VvvfSimulator
             }
         }
 
-        public MainWindow()
+        private static MainWindow? Instance;
+        public static MainWindow? GetInstance()
         {
-            DataContext = BindingData;
-            InitializeComponent();
+            return Instance;
+        }
+        public static void Invoke(Action callBack)
+        {
+            Instance?.Dispatcher.Invoke(callBack);
         }
 
-        
+        public MainWindow()
+        {
+            Instance = this;
+            DataContext = BindingData;
+            InitializeComponent();
+        }      
 
         private void SettingButtonClick(object sender, RoutedEventArgs e)
         {
@@ -145,7 +154,7 @@ namespace VvvfSimulator
 
             YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
             var selected_data = ysd.AcceleratePattern[selected];
-            setting_window.Navigate(new Control_Setting_Page_Common(selected_data, this, ysd.Level));
+            setting_window.Navigate(new Control_Setting_Page_Common(selected_data, ysd.Level));
 
         }
         private void BrakeSelectedShow()
@@ -155,7 +164,7 @@ namespace VvvfSimulator
 
             YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
             var selected_data = ysd.BrakingPattern[selected];
-            setting_window.Navigate(new Control_Setting_Page_Common(selected_data, this, ysd.Level));
+            setting_window.Navigate(new Control_Setting_Page_Common(selected_data, ysd.Level));
         }
 
         public void UpdateControlList()
@@ -330,10 +339,6 @@ namespace VvvfSimulator
             }
         }
 
-        public static class Generation_Params
-        {
-            public static List<double> Double_Values = new();
-        }
         private void Generation_Menu_Click(object sender, RoutedEventArgs e)
         {
             MenuItem button = (MenuItem)sender;
@@ -457,16 +462,16 @@ namespace VvvfSimulator
 
                     if (Properties.Settings.Default.RealTime_VVVF_WaveForm_Show)
                     {
-                        RealTime_WaveForm_Window window = new(parameter);
+                        RealtimeWindows.WaveForm window = new(parameter);
                         window.Show();
                         window.RunTask();
                     }
 
                     if (Properties.Settings.Default.RealTime_VVVF_Control_Show)
                     {
-                        RealTime_ControlStat_Window window = new(
+                        RealtimeWindows.ControlStatus window = new(
                             parameter,
-                            (RealTime_ControlStat_Style)Properties.Settings.Default.RealTime_VVVF_Control_Style,
+                            (RealtimeWindows.ControlStatus.RealTimeControlStatStyle)Properties.Settings.Default.RealTime_VVVF_Control_Style,
                             Properties.Settings.Default.RealTime_VVVF_Control_Precise
                         );
                         window.Show();
@@ -475,9 +480,9 @@ namespace VvvfSimulator
 
                     if (Properties.Settings.Default.RealTime_VVVF_Hexagon_Show)
                     {
-                        RealTime_Hexagon_Window window = new(
+                        RealtimeWindows.Hexagon window = new(
                             parameter,
-                            (RealTime_Hexagon_Style)Properties.Settings.Default.RealTime_VVVF_Hexagon_Style,
+                            (RealtimeWindows.Hexagon.RealTimeHexagonStyle)Properties.Settings.Default.RealTime_VVVF_Hexagon_Style,
                             Properties.Settings.Default.RealTime_VVVF_Hexagon_ZeroVector
                         );
                         window.Show();
@@ -486,14 +491,14 @@ namespace VvvfSimulator
 
                     if (Properties.Settings.Default.RealTime_VVVF_FFT_Show)
                     {
-                        RealTime_FFT_Window window = new(parameter);
+                        RealtimeWindows.Fft window = new(parameter);
                         window.Show();
                         window.RunTask();
                     }
 
                     if (Properties.Settings.Default.RealTime_VVVF_FS_Show)
                     {
-                        RealTime_FS_Window window = new(parameter);
+                        Fs window = new(parameter);
                         window.Show();
                         window.RunTask();
                     }
@@ -565,16 +570,16 @@ namespace VvvfSimulator
 
                     if (Properties.Settings.Default.RealTime_Train_WaveForm_Show)
                     {
-                        RealTime_WaveForm_Window window = new(parameter);
+                        RealtimeWindows.WaveForm window = new(parameter);
                         window.Show();
                         window.RunTask();
                     }
 
                     if (Properties.Settings.Default.RealTime_Train_Control_Show)
                     {
-                        RealTime_ControlStat_Window window = new(
+                        RealtimeWindows.ControlStatus window = new(
                             parameter,
-                            (RealTime_ControlStat_Style)Properties.Settings.Default.RealTime_Train_Control_Style,
+                            (RealtimeWindows.ControlStatus.RealTimeControlStatStyle)Properties.Settings.Default.RealTime_Train_Control_Style,
                             Properties.Settings.Default.RealTime_Train_Control_Precise
                         );
                         window.Show();
@@ -583,9 +588,9 @@ namespace VvvfSimulator
 
                     if (Properties.Settings.Default.RealTime_Train_Hexagon_Show)
                     {
-                        RealTime_Hexagon_Window window = new(
+                        RealtimeWindows.Hexagon window = new(
                             parameter,
-                            (RealTime_Hexagon_Style)Properties.Settings.Default.RealTime_Train_Hexagon_Style,
+                            (RealtimeWindows.Hexagon.RealTimeHexagonStyle)Properties.Settings.Default.RealTime_Train_Hexagon_Style,
                             Properties.Settings.Default.RealTime_Train_Hexagon_ZeroVector
                         );
                         window.Show();
@@ -594,14 +599,14 @@ namespace VvvfSimulator
 
                     if (Properties.Settings.Default.RealTime_Train_FFT_Show)
                     {
-                        RealTime_FFT_Window window = new(parameter);
+                        RealtimeWindows.Fft window = new(parameter);
                         window.Show();
                         window.RunTask();
                     }
 
                     if (Properties.Settings.Default.RealTime_Train_FS_Show)
                     {
-                        RealTime_FS_Window window = new(parameter);
+                        Fs window = new(parameter);
                         window.Show();
                         window.RunTask();
                     }
@@ -649,11 +654,11 @@ namespace VvvfSimulator
                 if (command[1].Equals("Original"))
                 {
                     GenerationBasicParameter generationBasicParameter = GetGenerationBasicParameter();
-
                     Task task = Task.Run(() => {
                         try
                         {
-                            Generation.Video.ControlInfo.GenerateControlOriginal.ExportVideo(generationBasicParameter, dialog.FileName, fps);
+                            Generation.Video.ControlInfo.GenerateControlOriginal generate = new();
+                            generate.ExportVideo(generationBasicParameter, dialog.FileName, fps);
                         }
                         catch (Exception e)
                         {
@@ -673,7 +678,8 @@ namespace VvvfSimulator
                     Task task = Task.Run(() => {
                         try
                         {
-                            Generation.Video.ControlInfo.GenerateControlOriginal2.ExportVideo(generationBasicParameter, dialog.FileName, fps);
+                            Generation.Video.ControlInfo.GenerateControlOriginal2 generation = new();
+                            generation.ExportVideo(generationBasicParameter, dialog.FileName, fps);
                         }
                         catch (Exception e)
                         {
@@ -698,11 +704,11 @@ namespace VvvfSimulator
                     try
                     {
                         if (command[1].Equals("Original"))
-                            Generation.Video.WaveForm.GenerateWaveFormUV.Generate_UV_2(generationBasicParameter, dialog.FileName);
+                            new Generation.Video.WaveForm.GenerateWaveFormUV().ExportVideo2(generationBasicParameter, dialog.FileName);
                         else if (command[1].Equals("Spaced"))
-                            Generation.Video.WaveForm.GenerateWaveFormUV.Generate_UV_1(generationBasicParameter, dialog.FileName);
+                            new Generation.Video.WaveForm.GenerateWaveFormUV().ExportVideo1(generationBasicParameter, dialog.FileName);
                         else if (command[1].Equals("UVW"))
-                            Generation.Video.WaveForm.GenerateWaveFormUVW.generate_wave_UVW(generationBasicParameter, dialog.FileName);
+                            new Generation.Video.WaveForm.GenerateWaveFormUVW().ExportVideo(generationBasicParameter, dialog.FileName);
                     }
                     catch (Exception e)
                     {
@@ -728,7 +734,7 @@ namespace VvvfSimulator
                     Task task = Task.Run(() => {
                         try
                         {
-                            Generation.Video.Hexagon.GenerateHexagonOriginal.Generate_Hexagon_Original_Video(generationBasicParameter, dialog.FileName, circle);
+                            new Generation.Video.Hexagon.GenerateHexagonOriginal().ExportVideo(generationBasicParameter, dialog.FileName, circle);
                         }
                         catch (Exception e)
                         {
@@ -745,14 +751,14 @@ namespace VvvfSimulator
                     var dialog = new SaveFileDialog { Filter = "mp4 (*.mp4)|*.mp4" };
                     if (dialog.ShowDialog() == false) return true;
 
-                    Double_Ask_Form double_Ask_Dialog = new("Enter the frequency.");
+                    DoubleNumberInput double_Ask_Dialog = new("Enter the frequency.");
                     double_Ask_Dialog.ShowDialog();
 
                     GenerationBasicParameter generationBasicParameter = GetGenerationBasicParameter();
                     Task task = Task.Run(() => {
                         try
                         {
-                            Generation.Video.Hexagon.GenerateHexagonExplain.generate_wave_hexagon_explain(generationBasicParameter, dialog.FileName, circle, Generation_Params.Double_Values[0]);
+                            new Generation.Video.Hexagon.GenerateHexagonExplain().generate_wave_hexagon_explain(generationBasicParameter, dialog.FileName, circle, double_Ask_Dialog.EnteredValue);
                         }
                         catch (Exception e)
                         {
@@ -769,14 +775,14 @@ namespace VvvfSimulator
                     var dialog = new SaveFileDialog { Filter = "png (*.png)|*.png" };
                     if (dialog.ShowDialog() == false) return true;
 
-                    Double_Ask_Form double_Ask_Dialog = new ("Enter the frequency.");
+                    DoubleNumberInput double_Ask_Dialog = new ("Enter the frequency.");
                     double_Ask_Dialog.ShowDialog();
 
                     Task task = Task.Run(() => {
                         try
                         {
                             YamlVvvfSoundData clone = YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData);
-                            Generation.Video.Hexagon.GenerateHexagonOriginal.Generate_Hexagon_Original_Image(dialog.FileName, clone, circle, Generation_Params.Double_Values[0]);
+                            new Generation.Video.Hexagon.GenerateHexagonOriginal().ExportImage(dialog.FileName, clone, circle, double_Ask_Dialog.EnteredValue);
                         }
                         catch (Exception e)
                         {
@@ -798,7 +804,7 @@ namespace VvvfSimulator
                     Task task = Task.Run(() => {
                         try
                         {
-                            Generation.Video.FFT.GenerateFFT.Generate_FFT_Video(generationBasicParameter, dialog.FileName);
+                            new Generation.Video.FFT.GenerateFFT().ExportVideo(generationBasicParameter, dialog.FileName);
                         }
                         catch (Exception e)
                         {
@@ -815,14 +821,14 @@ namespace VvvfSimulator
                     var dialog = new SaveFileDialog { Filter = "png (*.png)|*.png" };
                     if (dialog.ShowDialog() == false) return true;
 
-                    Double_Ask_Form double_Ask_Dialog = new("Enter the frequency.");
+                    DoubleNumberInput double_Ask_Dialog = new("Enter the frequency.");
                     double_Ask_Dialog.ShowDialog();
 
                     Task task = Task.Run(() => {
                         try
                         {
                             YamlVvvfSoundData clone = YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData);
-                            Generation.Video.FFT.GenerateFFT.Generate_FFT_Image(dialog.FileName, clone, Generation_Params.Double_Values[0]);
+                            new Generation.Video.FFT.GenerateFFT().ExportImage(dialog.FileName, clone, double_Ask_Dialog.EnteredValue);
                         }
                         catch (Exception e)
                         {

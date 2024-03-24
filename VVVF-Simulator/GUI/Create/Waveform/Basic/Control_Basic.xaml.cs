@@ -17,7 +17,6 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
     public partial class Control_Basic : UserControl
     {
         private YamlControlData target;
-        private MainWindow MainWindow;
         private int level;
 
 
@@ -49,12 +48,11 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
         }
 
         private bool no_update = true;
-        public Control_Basic(YamlControlData ycd, MainWindow mainWindow, int level)
+        public Control_Basic(YamlControlData ycd, int level)
         {
             InitializeComponent();
 
             target = ycd;
-            MainWindow = mainWindow;
             this.level = level;
             DataContext = viewModel;
 
@@ -138,19 +136,19 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
             {
                 double parsed = parse(tb);
                 target.ControlFrequencyFrom = parsed;
-                MainWindow.UpdateControlList();
+                MainWindow.GetInstance()?.UpdateControlList();
             }
             else if (tag.Equals("SineFrom"))
             {
                 double parsed = parse(tb);
                 target.RotateFrequencyFrom = parsed;
-                MainWindow.UpdateControlList();
+                MainWindow.GetInstance()?.UpdateControlList();
             }
             else if (tag.Equals("SineBelow"))
             {
                 double parsed = parse(tb);
                 target.RotateFrequencyBelow = parsed;
-                MainWindow.UpdateControlList();
+                MainWindow.GetInstance()?.UpdateControlList();
             }
         }
 
@@ -178,8 +176,8 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
                 target.PulseMode.Square = check;
 
             Set_Control();
-            MainWindow.UpdateControlList();
-            MainWindow.UpdateContentSelected();
+            MainWindow.GetInstance()?.UpdateControlList();
+            MainWindow.GetInstance()?.UpdateContentSelected();
             return;
         }
 
@@ -200,8 +198,8 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
             {
                 PulseModeNames selected = (PulseModeNames)cb.SelectedItem;
                 target.PulseMode.PulseName = selected;
-                MainWindow.UpdateControlList();
-                MainWindow.UpdateContentSelected();
+                MainWindow.GetInstance()?.UpdateControlList();
+                MainWindow.GetInstance()?.UpdateContentSelected();
                 return;
             }
             else if(tag.Equals("BaseWave"))
@@ -215,7 +213,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
                 target.PulseMode.AltMode = selected;
             }
 
-            MainWindow.UpdateControlList();
+            MainWindow.GetInstance()?.UpdateControlList();
             Set_Control();
         }
     }

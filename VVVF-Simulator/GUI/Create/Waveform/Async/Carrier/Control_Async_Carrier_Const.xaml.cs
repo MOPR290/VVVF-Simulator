@@ -23,18 +23,12 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async
     public partial class Control_Async_Carrier_Const : UserControl
     {
         YamlControlData target;
-        MainWindow MainWindow;
-
         bool no_update = true;
-        public Control_Async_Carrier_Const(YamlControlData data, MainWindow mainWindow)
+        public Control_Async_Carrier_Const(YamlControlData data)
         {
-            MainWindow = mainWindow;
             target = data;
-
             InitializeComponent();
-
             apply_data();
-
             no_update = false;
         }
 
@@ -61,10 +55,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async
             if (no_update) return;
             TextBox tb = (TextBox)sender;
             double d = parse_d(tb);
-
             target.AsyncModulationData.CarrierWaveData.Constant = d;
-
-            MainWindow.UpdateControlList();
         }
     }
 }

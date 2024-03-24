@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using VvvfSimulator.GUI.Simulator.RealTime.Display;
 using Brush = System.Windows.Media.Brush;
 using FontFamily = System.Drawing.FontFamily;
 
@@ -43,8 +42,8 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
         private void SetControl()
         {
 
-            SelectorControlDesign.ItemsSource = (RealTime_ControlStat_Style[])Enum.GetValues(typeof(RealTime_ControlStat_Style));
-            SelectorHexagonDesign.ItemsSource = (RealTime_Hexagon_Style[])Enum.GetValues(typeof(RealTime_Hexagon_Style));
+            SelectorControlDesign.ItemsSource = (RealtimeWindows.ControlStatus.RealTimeControlStatStyle[])Enum.GetValues(typeof(RealtimeWindows.ControlStatus.RealTimeControlStatStyle));
+            SelectorHexagonDesign.ItemsSource = (RealtimeWindows.Hexagon.RealTimeHexagonStyle[])Enum.GetValues(typeof(RealtimeWindows.Hexagon.RealTimeHexagonStyle));
 
             var prop = Properties.Settings.Default;
             if (_SettingType.Equals(RealTime_Basic_Setting_Type.VVVF))
@@ -57,10 +56,10 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
 
                 BoxShowControl.IsChecked = prop.RealTime_VVVF_Control_Show;
                 BoxControlPrecise.IsChecked = prop.RealTime_VVVF_Control_Precise;
-                SelectorControlDesign.SelectedItem = (RealTime_ControlStat_Style)prop.RealTime_VVVF_Control_Style;
+                SelectorControlDesign.SelectedItem = (RealtimeWindows.ControlStatus.RealTimeControlStatStyle)prop.RealTime_VVVF_Control_Style;
 
                 BoxShowHexagon.IsChecked = prop.RealTime_VVVF_Hexagon_Show;
-                SelectorHexagonDesign.SelectedItem = (RealTime_Hexagon_Style)prop.RealTime_VVVF_Hexagon_Style;
+                SelectorHexagonDesign.SelectedItem = (RealtimeWindows.Hexagon.RealTimeHexagonStyle)prop.RealTime_VVVF_Hexagon_Style;
                 BoxShowZeroVectorCicle.IsChecked = prop.RealTime_VVVF_Hexagon_ZeroVector;
 
 
@@ -75,10 +74,10 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
 
                 BoxShowControl.IsChecked = prop.RealTime_Train_Control_Show;
                 BoxControlPrecise.IsChecked = prop.RealTime_Train_Control_Precise;
-                SelectorControlDesign.SelectedItem = (RealTime_ControlStat_Style)prop.RealTime_Train_Control_Style;
+                SelectorControlDesign.SelectedItem = (RealtimeWindows.ControlStatus.RealTimeControlStatStyle)prop.RealTime_Train_Control_Style;
 
                 BoxShowHexagon.IsChecked = prop.RealTime_Train_Hexagon_Show;
-                SelectorHexagonDesign.SelectedItem = (RealTime_Hexagon_Style)prop.RealTime_Train_Hexagon_Style;
+                SelectorHexagonDesign.SelectedItem = (RealtimeWindows.Hexagon.RealTimeHexagonStyle)prop.RealTime_Train_Hexagon_Style;
                 BoxShowZeroVectorCicle.IsChecked = prop.RealTime_Train_Hexagon_ZeroVector;
             }
 
@@ -222,7 +221,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
 
             if (!font_check) return;
             var selected_style = Properties.Settings.Default.RealTime_VVVF_Control_Style;
-            if(selected_style == (int)RealTime_ControlStat_Style.Original)
+            if(selected_style == (int)RealtimeWindows.ControlStatus.RealTimeControlStatStyle.Original)
             {
                 try
                 {
@@ -242,7 +241,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
 
                 }
             }
-            else if(selected_style == (int)RealTime_ControlStat_Style.Original_2)
+            else if(selected_style == (int)RealtimeWindows.ControlStatus.RealTimeControlStatStyle.Original_2)
             {
                 try
                 {

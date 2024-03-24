@@ -25,19 +25,13 @@ namespace VvvfSimulator.GUI.Create.Waveform.Dipolar
     public partial class Control_Dipolar : UserControl
     {
         YamlControlData target;
-        MainWindow main;
-
         bool no_update = true;
 
-        public Control_Dipolar(YamlControlData ycd, MainWindow mainWindow)
+        public Control_Dipolar(YamlControlData ycd)
         {
             target = ycd;
-            main = mainWindow;
-
             InitializeComponent();
-
             apply_data();
-
             no_update = false;
         }
 
@@ -64,7 +58,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Dipolar
         private void set_Selected(YamlAsyncParameterDipolarMode selected)
         {
             if (selected == YamlAsyncParameterDipolarMode.Const)
-                dipolar_param.Navigate(new Control_Dipolar_Const(target, main));
+                dipolar_param.Navigate(new Control_Dipolar_Const(target));
             else
                 dipolar_param.Navigate(new Control_Moving_Setting(target.AsyncModulationData.DipolarData.MovingValue));
         }

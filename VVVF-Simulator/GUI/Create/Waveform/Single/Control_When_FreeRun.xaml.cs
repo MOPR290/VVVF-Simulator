@@ -25,16 +25,12 @@ namespace VvvfSimulator.GUI.Create.Waveform
     public partial class Control_When_FreeRun : UserControl
     {
         YamlControlData target;
-        MainWindow MainWindow;
-
         private bool no_update = true;
 
-        public Control_When_FreeRun(YamlControlData ycd, MainWindow mainWindow)
+        public Control_When_FreeRun(YamlControlData ycd)
         {
             InitializeComponent();
             target = ycd;
-            MainWindow = mainWindow;
-
             apply_view();
 
             no_update = false;
@@ -76,7 +72,7 @@ namespace VvvfSimulator.GUI.Create.Waveform
                 condition.Skip = is_cheked;
             }
 
-            MainWindow.UpdateControlList();
+            MainWindow.GetInstance()?.UpdateControlList();
 
         }
     }

@@ -25,18 +25,12 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async.Vibrato
     public partial class Control_Async_Vibrato : UserControl
     {
         YamlControlData target;
-        MainWindow main;
-
         bool no_update = true;
-        public Control_Async_Vibrato(YamlControlData data, MainWindow mainWindow)
+        public Control_Async_Vibrato(YamlControlData data)
         {
             target = data;
-            main = mainWindow;
-
             InitializeComponent();
-
             apply_data();
-
             no_update = false;
         }
 
@@ -99,21 +93,21 @@ namespace VvvfSimulator.GUI.Create.Waveform.Async.Vibrato
             if (cate == 0)
             {
                 if(mode == YamlAsyncParameterVibratoMode.Const)
-                    highest_param_frame.Navigate(new Control_Async_Vibrato_Const(target.AsyncModulationData.CarrierWaveData.VibratoData.Highest, main));
+                    highest_param_frame.Navigate(new Control_Async_Vibrato_Const(target.AsyncModulationData.CarrierWaveData.VibratoData.Highest));
                 else
                     highest_param_frame.Navigate(new Control_Moving_Setting(target.AsyncModulationData.CarrierWaveData.VibratoData.Highest.MovingValue));
             }
             else if(cate == 1)
             {
                 if (mode == YamlAsyncParameterVibratoMode.Const)
-                    lowest_param_frame.Navigate(new Control_Async_Vibrato_Const(target.AsyncModulationData.CarrierWaveData.VibratoData.Lowest, main));
+                    lowest_param_frame.Navigate(new Control_Async_Vibrato_Const(target.AsyncModulationData.CarrierWaveData.VibratoData.Lowest));
                 else
                     lowest_param_frame.Navigate(new Control_Moving_Setting(target.AsyncModulationData.CarrierWaveData.VibratoData.Lowest.MovingValue));
             }
             else if (cate == 2)
             {
                 if (mode == YamlAsyncParameterVibratoMode.Const)
-                    interval_mode_frame.Navigate(new Control_Async_Vibrato_Const(target.AsyncModulationData.CarrierWaveData.VibratoData.Interval, main));
+                    interval_mode_frame.Navigate(new Control_Async_Vibrato_Const(target.AsyncModulationData.CarrierWaveData.VibratoData.Interval));
                 else
                     interval_mode_frame.Navigate(new Control_Moving_Setting(target.AsyncModulationData.CarrierWaveData.VibratoData.Interval.MovingValue));
             }

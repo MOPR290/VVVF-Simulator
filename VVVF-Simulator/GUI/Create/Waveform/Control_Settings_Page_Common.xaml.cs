@@ -81,23 +81,23 @@ namespace VvvfSimulator.GUI.Create.Waveform
                 viewModel.async = Visibility.Collapsed;
         }
 
-        public Control_Setting_Page_Common(YamlControlData ycd, MainWindow mainWindow, int level)
+        public Control_Setting_Page_Common(YamlControlData ycd, int level)
         {
             InitializeComponent();
             DataContext = viewModel;
             Set_Visibility(ycd, level);
 
-            Control_Basic.Navigate(new Control_Basic(ycd, mainWindow, level));
-            Control_When_FreeRun.Navigate(new Control_When_FreeRun(ycd, mainWindow));
+            Control_Basic.Navigate(new Control_Basic(ycd, level));
+            Control_When_FreeRun.Navigate(new Control_When_FreeRun(ycd));
 
-            Control_Amplitude_Default.Navigate(new Control_Amplitude(ycd.Amplitude.DefaultAmplitude, Control_Amplitude_Content.Default, mainWindow));
+            Control_Amplitude_Default.Navigate(new Control_Amplitude(ycd.Amplitude.DefaultAmplitude, ControlAmplitudeContent.Default));
 
-            Control_Amplitude_FreeRun_On.Navigate(new Control_Amplitude(ycd.Amplitude.FreeRunAmplitude.On, Control_Amplitude_Content.Free_Run_On, mainWindow));
-            Control_Amplitude_FreeRun_Off.Navigate(new Control_Amplitude(ycd.Amplitude.FreeRunAmplitude.Off, Control_Amplitude_Content.Free_Run_Off, mainWindow));
+            Control_Amplitude_FreeRun_On.Navigate(new Control_Amplitude(ycd.Amplitude.FreeRunAmplitude.On, ControlAmplitudeContent.Free_Run_On));
+            Control_Amplitude_FreeRun_Off.Navigate(new Control_Amplitude(ycd.Amplitude.FreeRunAmplitude.Off, ControlAmplitudeContent.Free_Run_Off));
 
-            Control_Dipolar.Navigate(new Control_Dipolar(ycd, mainWindow));
+            Control_Dipolar.Navigate(new Control_Dipolar(ycd));
 
-            Control_Async.Navigate(new Control_Async(ycd, mainWindow));            
+            Control_Async.Navigate(new Control_Async(ycd));            
         }
     }
 }

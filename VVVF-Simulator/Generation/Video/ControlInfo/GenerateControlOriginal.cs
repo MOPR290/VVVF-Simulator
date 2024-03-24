@@ -4,22 +4,20 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using static VvvfSimulator.VvvfCalculate;
-
 using static VvvfSimulator.Generation.GenerateCommon;
 using System.Drawing.Drawing2D;
-
 using VvvfSimulator.Yaml.VVVFSound;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
 using static VvvfSimulator.VvvfStructs.PulseMode;
-using static VvvfSimulator.MainWindow;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
+using VvvfSimulator.GUI.Util;
 
 namespace VvvfSimulator.Generation.Video.ControlInfo
 {
     public class GenerateControlOriginal
     {
-        private static String[] GetPulseName(VvvfValues control)
+        private static string[] GetPulseName(VvvfValues control)
         {
             PulseModeNames mode = control.GetVideoPulseMode().PulseName;
             //Not in sync
@@ -88,78 +86,6 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 else return new string[] { mode_name, "Dipolar : " + control.GetVideoDipolar().ToString("F1") };
             }
         }
-        private static void GenerateOpening(int image_width, int image_height, VideoWriter vr)
-        {
-            double change_per_frame = 60 / vr.Fps;
-            for (double i = 0; i < 128; i += change_per_frame)
-            {
-                Bitmap image = new(image_width, image_height);
-                Graphics g = Graphics.FromImage(image);
-
-                LinearGradientBrush gb = new(new System.Drawing.Point(0, 0), new System.Drawing.Point(image_width, image_height), Color.FromArgb(0xFF, 0xFF, 0xFF), Color.FromArgb(0xFD, 0xE0, 0xE0));
-                g.FillRectangle(gb, 0, 0, image_width, image_height);
-
-                FontFamily simulator_title = new("Fugaz One");
-                Font simulator_title_fnt = new(
-                    simulator_title,
-                    40,
-                    FontStyle.Bold,
-                    GraphicsUnit.Pixel);
-                Font simulator_title_fnt_sub = new(
-                    simulator_title,
-                    20,
-                    FontStyle.Bold,
-                    GraphicsUnit.Pixel);
-
-                FontFamily title_fontFamily = new("Fugaz One");
-                Font title_fnt = new(
-                    title_fontFamily,
-                    40,
-                    FontStyle.Regular,
-                    GraphicsUnit.Pixel);
-
-                Brush title_brush = Brushes.Black;
-
-                g.FillRectangle(new SolidBrush(Color.FromArgb(200, 200, 255)), 0, 0, (int)(image_width * ((i > 30) ? 1 : i / 30.0)), 68 - 0);
-                g.DrawString("Pulse Mode", title_fnt, title_brush, (int)((i < 40) ? -1000 : (double)((i > 80) ? 17 : 17 * (i - 40) / 40.0)), 8);
-                g.FillRectangle(Brushes.Blue, 0, 68, (int)(image_width * ((i > 30) ? 1 : i / 30.0)), 8);
-
-                g.FillRectangle(new SolidBrush(Color.FromArgb(200, 200, 255)), 0, 226, (int)(image_width * ((i > 30) ? 1 : i / 30.0)), 291 - 226);
-                g.DrawString("Sine Freq[Hz]", title_fnt, title_brush, (int)((i < 40 + 10) ? -1000 : (double)((i > 80 + 10) ? 17 : 17 * (i - (40 + 10)) / 40.0)), 231);
-                g.FillRectangle(Brushes.Blue, 0, 291, (int)(image_width * ((i > 30) ? 1 : i / 30.0)), 8);
-
-                g.FillRectangle(new SolidBrush(Color.FromArgb(200, 200, 255)), 0, 447, (int)(image_width * (double)(((i > 30) ? 1 : i / 30.0))), 513 - 447);
-                g.DrawString("Sine Amplitude[%]", title_fnt, title_brush, (int)((i < 40 + 20) ? -1000 : (i > 80 + 20) ? 17 : 17 * (i - (40 + 20)) / 40.0), 452);
-                g.FillRectangle(Brushes.Blue, 0, 513, (int)(image_width * ((i > 30) ? 1 : i / 30.0)), 8);
-
-                g.FillRectangle(new SolidBrush(Color.FromArgb(240, 240, 240)), 0, 669, (int)(image_width * (double)(((i > 30) ? 1 : i / 30.0))), 735 - 669);
-                g.DrawString("Freerun", title_fnt, title_brush, (int)((i < 40 + 30) ? -1000 : (i > 80 + 30) ? 17 : 17 * (i - (40 + 30)) / 40.0), 674);
-                g.FillRectangle(Brushes.LightGray, 0, 735, (int)(image_width * ((i > 30) ? 1 : i / 30.0)), 8);
-
-                g.FillRectangle(new SolidBrush(Color.FromArgb(240, 240, 240)), 0, 847, (int)(image_width * (double)(((i > 30) ? 1 : i / 30.0))), 913 - 847);
-                g.DrawString("Brake", title_fnt, title_brush, (int)((i < 40 + 40) ? -1000 : (i > 80 + 40) ? 17 : 17 * (i - (40 + 40)) / 40.0), 852);
-                g.FillRectangle(Brushes.LightGray, 0, 913, (int)(image_width * ((i > 30) ? 1 : i / 30.0)), 8);
-
-                g.FillRectangle(new SolidBrush(Color.FromArgb((int)(0xB0 * ((i > 96) ? (128 - i) / 36.0 : 1)), 0x00, 0x00, 0x00)), 0, 0, image_width, image_height);
-                int transparency = (int)(0xFF * ((i > 96) ? (128 - i) / 36.0 : 1));
-                g.DrawString("C# VVVF Simulator", simulator_title_fnt, new SolidBrush(Color.FromArgb(transparency, 0xFF, 0xFF, 0xFF)), 50, 420);
-                g.DrawLine(new Pen(new SolidBrush(Color.FromArgb(transparency, 0xA0, 0xA0, 0xFF))), 0, 464, (int)((i > 20) ? image_width : image_width * i / 20.0), 464);
-                g.DrawString("presented by JOTAN", simulator_title_fnt_sub, new SolidBrush(Color.FromArgb(transparency, 0xE0, 0xE0, 0xFF)), 135, 460);
-
-                MemoryStream ms = new();
-                image.Save(ms, ImageFormat.Png);
-                byte[] img = ms.GetBuffer();
-                Mat mat = OpenCvSharp.Mat.FromImageData(img);
-
-                Cv2.ImShow("Wave Status View", mat);
-                Cv2.WaitKey(1);
-
-                vr.Write(mat);
-            }
-
-
-        }
-
         public static Bitmap GetImage(VvvfValues control, bool final_show)
         {
             int image_width = 500;
@@ -271,8 +197,80 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             return image;
         }
 
-        public static void ExportVideo(GenerationBasicParameter generationBasicParameter, String output_path, int fps)
+        private BitmapViewerManager? Viewer { get; set; }
+        private void GenerateOpening(int image_width, int image_height, VideoWriter vr)
         {
+            double change_per_frame = 60 / vr.Fps;
+            for (double i = 0; i < 128; i += change_per_frame)
+            {
+                Bitmap image = new(image_width, image_height);
+                Graphics g = Graphics.FromImage(image);
+
+                LinearGradientBrush gb = new(new System.Drawing.Point(0, 0), new System.Drawing.Point(image_width, image_height), Color.FromArgb(0xFF, 0xFF, 0xFF), Color.FromArgb(0xFD, 0xE0, 0xE0));
+                g.FillRectangle(gb, 0, 0, image_width, image_height);
+
+                FontFamily simulator_title = new("Fugaz One");
+                Font simulator_title_fnt = new(
+                    simulator_title,
+                    40,
+                    FontStyle.Bold,
+                    GraphicsUnit.Pixel);
+                Font simulator_title_fnt_sub = new(
+                    simulator_title,
+                    20,
+                    FontStyle.Bold,
+                    GraphicsUnit.Pixel);
+
+                FontFamily title_fontFamily = new("Fugaz One");
+                Font title_fnt = new(
+                    title_fontFamily,
+                    40,
+                    FontStyle.Regular,
+                    GraphicsUnit.Pixel);
+
+                Brush title_brush = Brushes.Black;
+
+                g.FillRectangle(new SolidBrush(Color.FromArgb(200, 200, 255)), 0, 0, (int)(image_width * ((i > 30) ? 1 : i / 30.0)), 68 - 0);
+                g.DrawString("Pulse Mode", title_fnt, title_brush, (int)((i < 40) ? -1000 : (double)((i > 80) ? 17 : 17 * (i - 40) / 40.0)), 8);
+                g.FillRectangle(Brushes.Blue, 0, 68, (int)(image_width * ((i > 30) ? 1 : i / 30.0)), 8);
+
+                g.FillRectangle(new SolidBrush(Color.FromArgb(200, 200, 255)), 0, 226, (int)(image_width * ((i > 30) ? 1 : i / 30.0)), 291 - 226);
+                g.DrawString("Sine Freq[Hz]", title_fnt, title_brush, (int)((i < 40 + 10) ? -1000 : (double)((i > 80 + 10) ? 17 : 17 * (i - (40 + 10)) / 40.0)), 231);
+                g.FillRectangle(Brushes.Blue, 0, 291, (int)(image_width * ((i > 30) ? 1 : i / 30.0)), 8);
+
+                g.FillRectangle(new SolidBrush(Color.FromArgb(200, 200, 255)), 0, 447, (int)(image_width * (double)(((i > 30) ? 1 : i / 30.0))), 513 - 447);
+                g.DrawString("Sine Amplitude[%]", title_fnt, title_brush, (int)((i < 40 + 20) ? -1000 : (i > 80 + 20) ? 17 : 17 * (i - (40 + 20)) / 40.0), 452);
+                g.FillRectangle(Brushes.Blue, 0, 513, (int)(image_width * ((i > 30) ? 1 : i / 30.0)), 8);
+
+                g.FillRectangle(new SolidBrush(Color.FromArgb(240, 240, 240)), 0, 669, (int)(image_width * (double)(((i > 30) ? 1 : i / 30.0))), 735 - 669);
+                g.DrawString("Freerun", title_fnt, title_brush, (int)((i < 40 + 30) ? -1000 : (i > 80 + 30) ? 17 : 17 * (i - (40 + 30)) / 40.0), 674);
+                g.FillRectangle(Brushes.LightGray, 0, 735, (int)(image_width * ((i > 30) ? 1 : i / 30.0)), 8);
+
+                g.FillRectangle(new SolidBrush(Color.FromArgb(240, 240, 240)), 0, 847, (int)(image_width * (double)(((i > 30) ? 1 : i / 30.0))), 913 - 847);
+                g.DrawString("Brake", title_fnt, title_brush, (int)((i < 40 + 40) ? -1000 : (i > 80 + 40) ? 17 : 17 * (i - (40 + 40)) / 40.0), 852);
+                g.FillRectangle(Brushes.LightGray, 0, 913, (int)(image_width * ((i > 30) ? 1 : i / 30.0)), 8);
+
+                g.FillRectangle(new SolidBrush(Color.FromArgb((int)(0xB0 * ((i > 96) ? (128 - i) / 36.0 : 1)), 0x00, 0x00, 0x00)), 0, 0, image_width, image_height);
+                int transparency = (int)(0xFF * ((i > 96) ? (128 - i) / 36.0 : 1));
+                g.DrawString("C# VVVF Simulator", simulator_title_fnt, new SolidBrush(Color.FromArgb(transparency, 0xFF, 0xFF, 0xFF)), 50, 420);
+                g.DrawLine(new Pen(new SolidBrush(Color.FromArgb(transparency, 0xA0, 0xA0, 0xFF))), 0, 464, (int)((i > 20) ? image_width : image_width * i / 20.0), 464);
+                g.DrawString("presented by JOTAN", simulator_title_fnt_sub, new SolidBrush(Color.FromArgb(transparency, 0xE0, 0xE0, 0xFF)), 135, 460);
+
+                MemoryStream ms = new();
+                image.Save(ms, ImageFormat.Png);
+                byte[] img = ms.GetBuffer();
+                Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                vr.Write(mat);
+                Viewer?.SetImage(image);
+                image.Dispose();
+            }
+        }
+        public void ExportVideo(GenerationBasicParameter generationBasicParameter, string output_path, int fps)
+        {
+            MainWindow.Invoke(() => Viewer = new BitmapViewerManager());
+            Viewer?.Show();
+
             YamlVvvfSoundData vvvfData = generationBasicParameter.vvvfData;
             YamlMasconDataCompiled masconData = generationBasicParameter.masconData;
             ProgressData progressData = generationBasicParameter.progressData;
@@ -291,7 +289,6 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             }
 
             GenerateOpening(image_width, image_height, vr);
-
 
             bool loop = true, video_finished, final_show = false, first_show = true;
             int freeze_count = 0;
@@ -315,14 +312,11 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 Bitmap image = GetImage(control, final_show);
                 MemoryStream ms = new();
                 image.Save(ms, ImageFormat.Png);
-                image.Dispose();
+                Viewer?.SetImage(image);
                 byte[] img = ms.GetBuffer();
                 Mat mat = OpenCvSharp.Mat.FromImageData(img);
-
-                Cv2.ImShow("Wave Status View", mat);
-                Cv2.WaitKey(1);
-
                 vr.Write(mat);
+                image.Dispose();              
 
                 //PROGRESS ADD
                 progressData.Progress++;
@@ -351,6 +345,8 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             }
             vr.Release();
             vr.Dispose();
+
+            Viewer?.Close();
         }
     }
 }

@@ -4,13 +4,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using VvvfSimulator.GUI.Util;
 using VvvfSimulator.Yaml.VVVFSound;
 using static VvvfSimulator.Generation.GenerateCommon;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
-using static VvvfSimulator.MainWindow;
 using static VvvfSimulator.VvvfCalculate;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
@@ -30,7 +27,7 @@ namespace VvvfSimulator.Generation.Video.WaveForm
         /// <param name="WaveHeight"></param>
         /// <param name="Delta"></param>
         /// <returns></returns>
-        public static Bitmap Get_WaveForm_Image(
+        public static Bitmap GetImage(
             VvvfValues Control,
             PwmCalculateValues PWM_Data,
             int Width, 
@@ -50,10 +47,10 @@ namespace VvvfSimulator.Generation.Video.WaveForm
                 Control.AddSawTime(2 / (60.0 * Count));
                 Control.AddSineTime(2 / (60.0 * Count));
             }
-            return Get_WaveForm_Image(ref values, Width, Height, WaveHeight, WaveWidth, Spacing);
+            return GetImage(ref values, Width, Height, WaveHeight, WaveWidth, Spacing);
         }
 
-        public static Bitmap Get_WaveForm_Image(
+        public static Bitmap GetImage(
             ref WaveValues[] UVW,
             int Width,
             int Height,
@@ -104,8 +101,12 @@ namespace VvvfSimulator.Generation.Video.WaveForm
             return image;
         }
 
-        public static void Generate_UV_1(GenerationBasicParameter generationBasicParameter, String fileName)
+        private BitmapViewerManager? Viewer { get; set; }
+        public void ExportVideo1(GenerationBasicParameter generationBasicParameter, String fileName)
         {
+            MainWindow.Invoke(() => Viewer = new BitmapViewerManager());
+            Viewer?.Show();
+
             YamlVvvfSoundData vvvfData = generationBasicParameter.vvvfData;
             YamlMasconDataCompiled masconData = generationBasicParameter.masconData;
             ProgressData progressData = generationBasicParameter.progressData;
@@ -172,7 +173,7 @@ namespace VvvfSimulator.Generation.Video.WaveForm
                 };
                 PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, vvvfData);
 
-                Bitmap image = Get_WaveForm_Image(control, calculated_Values, image_width, image_height, wave_height, 2, calculate_div, 100);
+                Bitmap image = GetImage(control, calculated_Values, image_width, image_height, wave_height, 2, calculate_div, 100);
 
 
                 MemoryStream ms = new();
@@ -183,16 +184,7 @@ namespace VvvfSimulator.Generation.Video.WaveForm
                 mat.Dispose();
                 ms.Dispose();
 
-                MemoryStream resized_ms = new();
-                Bitmap resized = new(image, image_width / 2, image_height / 2);
-                resized.Save(resized_ms, ImageFormat.Png);
-                byte[] resized_img = resized_ms.GetBuffer();
-                Mat resized_mat = OpenCvSharp.Mat.FromImageData(resized_img);
-                Cv2.ImShow("Wave Form", resized_mat);
-                Cv2.WaitKey(1);
-                resized_mat.Dispose();
-                resized_ms.Dispose();
-
+                Viewer?.SetImage(image);
                 image.Dispose();
 
                 loop = CheckForFreqChange(control, masconData, vvvfData.MasconData, 1.0 / fps);
@@ -225,10 +217,14 @@ namespace VvvfSimulator.Generation.Video.WaveForm
 
             vr.Release();
             vr.Dispose();
+            Viewer?.Close();
         }
 
-        public static void Generate_UV_2(GenerationBasicParameter generationBasicParameter, String fileName)
+        public void ExportVideo2(GenerationBasicParameter generationBasicParameter, String fileName)
         {
+            MainWindow.Invoke(() => Viewer = new BitmapViewerManager());
+            Viewer?.Show();
+
             YamlVvvfSoundData vvvfData = generationBasicParameter.vvvfData;
             YamlMasconDataCompiled masconData = generationBasicParameter.masconData;
             ProgressData progressData = generationBasicParameter.progressData;
@@ -296,16 +292,14 @@ namespace VvvfSimulator.Generation.Video.WaveForm
                 };
                 PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, vvvfData);
 
-                Bitmap image = Get_WaveForm_Image(control, calculated_Values, image_width, image_height, wave_height, 1, calculate_div, 0);
+                Bitmap image = GetImage(control, calculated_Values, image_width, image_height, wave_height, 1, calculate_div, 0);
 
                 MemoryStream ms = new();
                 image.Save(ms, ImageFormat.Png);
                 byte[] img = ms.GetBuffer();
                 Mat mat = OpenCvSharp.Mat.FromImageData(img);
 
-                Cv2.ImShow("Wave Form View", mat);
-                Cv2.WaitKey(1);
-
+                Viewer?.SetImage(image);
                 vr.Write(mat);
 
                 image.Dispose();
@@ -341,6 +335,7 @@ namespace VvvfSimulator.Generation.Video.WaveForm
 
             vr.Release();
             vr.Dispose();
+            Viewer?.Close();
         }
     }
 }

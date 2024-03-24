@@ -23,14 +23,10 @@ namespace VvvfSimulator.GUI.Create.Waveform.Dipolar
     public partial class Control_Dipolar_Const : UserControl
     {
         YamlControlData target;
-        MainWindow main;
-
         bool no_update = true;
-        public Control_Dipolar_Const(YamlControlData target, MainWindow main)
+        public Control_Dipolar_Const(YamlControlData target)
         {
             this.target = target;
-            this.main = main;
-
             InitializeComponent();
 
             const_box.Text = target.AsyncModulationData.DipolarData.Constant.ToString();

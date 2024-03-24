@@ -4,22 +4,23 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using static VvvfSimulator.VvvfCalculate;
-using static VvvfSimulator.VvvfValues;
 using static VvvfSimulator.Generation.GenerateCommon;
 using static VvvfSimulator.MyMath;
 using VvvfSimulator.Yaml.VVVFSound;
-using System.Collections.Generic;
-using Point = System.Drawing.Point;
 using static VvvfSimulator.VvvfStructs;
-using static VvvfSimulator.MainWindow;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
+using VvvfSimulator.GUI.Util;
 
 namespace VvvfSimulator.Generation.Video.Hexagon
 {
     public class GenerateHexagonExplain
     {
-        public static bool generate_wave_hexagon_explain(GenerationBasicParameter generationBasicParameter, String output_path, bool circle, double d)
+        private BitmapViewerManager? Viewer { get; set; }
+        public bool generate_wave_hexagon_explain(GenerationBasicParameter generationBasicParameter, String output_path, bool circle, double d)
         {
+            MainWindow.Invoke(() => Viewer = new BitmapViewerManager());
+            Viewer?.Show();
+
             YamlVvvfSoundData vvvfData = generationBasicParameter.vvvfData;
             ProgressData progressData = generationBasicParameter.progressData;
 
@@ -176,13 +177,11 @@ namespace VvvfSimulator.Generation.Video.Hexagon
                 byte[] img = ms.GetBuffer();
                 Mat mat = OpenCvSharp.Mat.FromImageData(img);
 
-                Cv2.ImShow("Wave Form View", mat);
-
+                Viewer?.SetImage(whole_image);
 
                 for (int i = 0; i < 60; i++)
                 {
                     vr.Write(mat);
-                    Cv2.WaitKey(5);
                 }
             }
 
@@ -276,13 +275,11 @@ namespace VvvfSimulator.Generation.Video.Hexagon
                     byte[] img = ms.GetBuffer();
                     Mat mat = OpenCvSharp.Mat.FromImageData(img);
 
-                    Cv2.ImShow("Wave Form View", mat);
-
+                    Viewer?.SetImage(whole_image);
 
                     for (int frame = 0; frame < 1; frame++)
                     {
                         vr.Write(mat);
-                        Cv2.WaitKey(1);
                     }
 
                     resized_hexagon_g.Dispose();
@@ -328,6 +325,8 @@ namespace VvvfSimulator.Generation.Video.Hexagon
 
             vr.Release();
             vr.Dispose();
+
+            Viewer?.Close();
 
             return true;
         }

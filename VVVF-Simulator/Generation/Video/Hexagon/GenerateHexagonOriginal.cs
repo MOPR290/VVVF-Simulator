@@ -12,6 +12,7 @@ using Point = System.Drawing.Point;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
+using VvvfSimulator.GUI.Util;
 
 namespace VvvfSimulator.Generation.Video.Hexagon
 {
@@ -19,7 +20,7 @@ namespace VvvfSimulator.Generation.Video.Hexagon
     {
 
 
-        public static Bitmap Get_Hexagon_Original_Image(
+        public static Bitmap GetImage(
             VvvfValues Control,
             YamlVvvfSoundData Sound,
             int Width,
@@ -33,12 +34,11 @@ namespace VvvfSimulator.Generation.Video.Hexagon
             WaveValues[] PWM_Array = GenerateBasic.GetUVWCycle(Control, Sound, 0, Delta, PreciseDelta);
 
             if (Control.GetControlFrequency() == 0)
-                return Get_Hexagon_Original_Image(ref PWM_Array, 0, Width, Height, Thickness, ZeroVectorCircle);
+                return GetImage(ref PWM_Array, 0, Width, Height, Thickness, ZeroVectorCircle);
 
-            Bitmap image = Get_Hexagon_Original_Image(ref PWM_Array, Control.GetControlFrequency(), Width, Height, Thickness, ZeroVectorCircle);
+            Bitmap image = GetImage(ref PWM_Array, Control.GetControlFrequency(), Width, Height, Thickness, ZeroVectorCircle);
             return image;
         }
-
         private class PointD
         {
             public double X { get; set; } = 0;
@@ -83,8 +83,7 @@ namespace VvvfSimulator.Generation.Video.Hexagon
 
 
         }
-
-        public static Bitmap Get_Hexagon_Original_Image(
+        public static Bitmap GetImage(
             ref WaveValues[] UVW,
             double ControlFrequency,
             int Width,
@@ -179,8 +178,12 @@ namespace VvvfSimulator.Generation.Video.Hexagon
             return ImResult;
         }
 
-        public static void Generate_Hexagon_Original_Video(GenerationBasicParameter generationBasicParameter, String fileName, bool circle)
+        private BitmapViewerManager? Viewer { get; set; }
+        public void ExportVideo(GenerationBasicParameter generationBasicParameter, String fileName, bool circle)
         {
+            MainWindow.Invoke(() => Viewer = new BitmapViewerManager());
+            Viewer?.Show();
+
             YamlVvvfSoundData vvvfData = generationBasicParameter.vvvfData;
             YamlMasconDataCompiled masconData = generationBasicParameter.masconData;
             ProgressData progressData = generationBasicParameter.progressData;
@@ -241,18 +244,15 @@ namespace VvvfSimulator.Generation.Video.Hexagon
                 control.SetSineTime(0);
                 control.SetSawTime(0);
 
-                Bitmap final_image = Get_Hexagon_Original_Image(control, vvvfData, image_width, image_height, hex_div, 2, draw_zero_vector_circle, true);
+                Bitmap final_image = GetImage(control, vvvfData, image_width, image_height, hex_div, 2, draw_zero_vector_circle, true);
 
 
                 MemoryStream ms = new();
                 final_image.Save(ms, ImageFormat.Png);
+                Viewer?.SetImage(final_image);
                 final_image.Dispose();
                 byte[] img = ms.GetBuffer();
                 Mat mat = Mat.FromImageData(img);
-
-                Cv2.ImShow("Wave Form View", mat);
-                Cv2.WaitKey(1);
-
                 vr.Write(mat);
 
                 loop = CheckForFreqChange(control, masconData, vvvfData.MasconData, 1.0 / fps);
@@ -286,6 +286,7 @@ namespace VvvfSimulator.Generation.Video.Hexagon
 
             vr.Release();
             vr.Dispose();
+            Viewer?.Close();
         }
 
         /// <summary>
@@ -295,8 +296,11 @@ namespace VvvfSimulator.Generation.Video.Hexagon
         /// <param name="sound_data">SOUND DATA</param>
         /// <param name="circle">Setting whether see zero vector circle or not</param>
         /// <param name="d">Frequency you want to see</param>
-        public static void Generate_Hexagon_Original_Image(String fileName, YamlVvvfSoundData sound_data, Boolean circle, double d)
+        public void ExportImage(String fileName, YamlVvvfSoundData sound_data, Boolean circle, double d)
         {
+            MainWindow.Invoke(() => Viewer = new BitmapViewerManager());
+            Viewer?.Show();
+
             VvvfValues control = new();
 
             control.ResetControlValues();
@@ -312,7 +316,7 @@ namespace VvvfSimulator.Generation.Video.Hexagon
             int image_height = 1000;
 
             int hex_div = 60000;
-            Bitmap final_image = Get_Hexagon_Original_Image(control, sound_data, image_width, image_height, hex_div, 2, draw_zero_vector_circle, true);
+            Bitmap final_image = GetImage(control, sound_data, image_width, image_height, hex_div, 2, draw_zero_vector_circle, true);
 
             MemoryStream ms = new();
             final_image.Save(ms, ImageFormat.Png);
@@ -321,9 +325,7 @@ namespace VvvfSimulator.Generation.Video.Hexagon
 
             final_image.Save(fileName, ImageFormat.Png);
 
-
-            Cv2.ImShow("Hexagon", mat);
-            Cv2.WaitKey();
+            Viewer?.SetImage(final_image);
             final_image.Dispose();
         }
     }

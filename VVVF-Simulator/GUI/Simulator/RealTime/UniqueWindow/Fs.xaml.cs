@@ -1,31 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using VvvfSimulator.Yaml.VVVFSound;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
+using static VvvfSimulator.Generation.Video.FS.GenerateFourierSeries;
+using Brush = System.Windows.Media.Brush;
 
-namespace VvvfSimulator.GUI.Simulator.RealTime.Display
+namespace VvvfSimulator.GUI.Simulator.RealTime.UniqueWindow
 {
     /// <summary>
     /// RealTime_FFT_Window.xaml の相互作用ロジック
     /// </summary>
-    public partial class RealTime_FFT_Window : Window
+    public partial class Fs : Window
     {
-        private ViewModel BindingData = new ViewModel();
+        private ViewModel BindingData = new();
         public class ViewModel : ViewModelBase
         {
 
@@ -37,12 +31,12 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Display
             public event PropertyChangedEventHandler? PropertyChanged;
             protected virtual void RaisePropertyChanged(string propertyName)
             {
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
         RealTimeParameter _Parameter;
-        public RealTime_FFT_Window(RealTimeParameter Parameter)
+        public Fs(RealTimeParameter Parameter)
         {
             _Parameter = Parameter;
 
@@ -64,19 +58,20 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Display
             });
         }
 
-        bool Resized = false;
+        private bool Resized = false;
+        private int N = 100;
+        private string StrCoefficients = "C = [0]";
         private void UpdateControl()
         {
-            
-
             VvvfValues control = _Parameter.Control.Clone();
             YamlVvvfSoundData ysd = _Parameter.VvvfSoundData;
 
             control.SetSineTime(0);
             control.SetSawTime(0);
 
-            Bitmap image = Generation.Video.FFT.GenerateFFT.Get_FFT_Image(control,ysd);
-            //Bitmap image = Generation.Video.FS.Generate_FS.Get_FS_Image(control, ysd);
+            double[] Coefficients = GetFourierCoefficients(control, ysd, 10000, N);
+            StrCoefficients = GetDesmosFourierCoefficientsArray(ref Coefficients);
+            Bitmap image = GetImage(ref Coefficients);
 
             if (!Resized)
             {
@@ -99,6 +94,31 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Display
             image.Dispose();
 
             
+        }
+
+        private void Button_CopyCoefficients_Click(object sender, RoutedEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                try
+                {
+                    Clipboard.SetText(StrCoefficients);
+                }
+                catch { }
+            });
+        }
+
+        private void TextBox_N_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            try
+            {
+                TextBox_N.Background = new BrushConverter().ConvertFrom("#FFFFFFFF") as Brush;
+                N = int.Parse(TextBox_N.Text);
+            }
+            catch
+            {
+                TextBox_N.Background = new BrushConverter().ConvertFrom("#FFfed0d0") as Brush;
+            }
         }
     }
 }

@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using VvvfSimulator.Yaml.VVVFSound;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.Generation.Video.ControlInfo.GenerateControlCommon;
-using static VvvfSimulator.Generation.Video.Hexagon.GenerateHexagonOriginal;
-using static VvvfSimulator.Generation.Video.WaveForm.GenerateWaveFormUV;
 using static VvvfSimulator.VvvfCalculate;
 using OpenCvSharp;
 using System.IO;
@@ -16,6 +14,7 @@ using Size = System.Drawing.Size;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
 using static VvvfSimulator.VvvfStructs.PulseMode;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
+using VvvfSimulator.GUI.Util;
 
 namespace VvvfSimulator.Generation.Video.ControlInfo
 {
@@ -58,7 +57,6 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             float unit_y = value_y + val_size.Height - unit_size.Height + unit.compensation.Y;
             g.DrawString(unit.content, unit.font, new SolidBrush(Color.White), new PointF(unit_x, unit_y));
         }
-
         private static String GetPulseName(VvvfValues control)
         {
             PulseMode mode_p = control.GetVideoPulseMode();
@@ -105,7 +103,6 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 return mode_name_type[1];
             }
         }
-
         public static Bitmap GetImage(VvvfValues Control, YamlVvvfSoundData Sound, bool Precise)
         {
             int image_width = 1920;
@@ -139,12 +136,12 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                     free_run = WaveFormControl.IsFreeRun(),
                     wave_stat = WaveFormControl.GetControlFrequency()
                 }, Sound);
-                wave_form = Get_WaveForm_Image(WaveFormControl, calculated_Values, 1520, 400, 80, 2, Precise ? 60 : 1 ,50);
+                wave_form = WaveForm.GenerateWaveFormUV.GetImage(WaveFormControl, calculated_Values, 1520, 400, 80, 2, Precise ? 60 : 1 ,50);
             });
             CycleCalcTask.Wait();
             Task HexagonRenderTask = Task.Run(() =>
             {
-                hexagon = new(Get_Hexagon_Original_Image(ref CycleUVW, CycleControl.GetControlFrequency(), 1000, 1000, 2, true), 400, 400);
+                hexagon = new(Hexagon.GenerateHexagonOriginal.GetImage(ref CycleUVW, CycleControl.GetControlFrequency(), 1000, 1000, 2, true), 400, 400);
             });
             Task VoltageCalcTask = Task.Run(() =>
             {
@@ -232,12 +229,16 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             return image;
         }
 
-        public static void ExportVideo(
+        private BitmapViewerManager? Viewer { get; set; }
+        public void ExportVideo(
             GenerationBasicParameter generationBasicParameter,
             String output_path,
             int fps
         )
         {
+            MainWindow.Invoke(() => Viewer = new BitmapViewerManager());
+            Viewer?.Show();
+
             YamlVvvfSoundData vvvfData = generationBasicParameter.vvvfData;
             YamlMasconDataCompiled masconData = generationBasicParameter.masconData;
             ProgressData progressData = generationBasicParameter.progressData;
@@ -275,7 +276,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 Bitmap final_image = GetImage(control, vvvfData, true);
 
                 AddImageFrames(final_image, fps, vr);
-
+                Viewer?.SetImage(final_image);
                 final_image.Dispose();
             }
 
@@ -293,17 +294,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 vr.Write(mat);
                 ms.Dispose();
                 mat.Dispose();
-
-                MemoryStream resized_ms = new();
-                Bitmap resized = new(final_image, image_width / 2, image_height / 2);
-                resized.Save(resized_ms, ImageFormat.Png);
-                byte[] resized_img = resized_ms.GetBuffer();
-                Mat resized_mat = OpenCvSharp.Mat.FromImageData(resized_img);
-                Cv2.ImShow("Generation", resized_mat);
-                Cv2.WaitKey(1);
-                resized_mat.Dispose();
-                resized_ms.Dispose();
-
+                Viewer?.SetImage(final_image);
                 final_image.Dispose();
 
                 if (!CheckForFreqChange(control, masconData, vvvfData.MasconData, 1.0 / fps)) break;
@@ -326,7 +317,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 _ = CalculatePhases(control, calculated_Values, 0);
                 Bitmap final_image = GetImage(control, vvvfData, true);
                 AddImageFrames(final_image, fps, vr);
-
+                Viewer?.SetImage(final_image);
                 final_image.Dispose();
             }
 
@@ -335,6 +326,8 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
 
             vr.Release();
             vr.Dispose();
+
+            Viewer?.Close();
         }
     }
 }
