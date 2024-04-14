@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using VvvfSimulator.Generation.Audio.TrainSound;
-using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
+using static VvvfSimulator.Yaml.TrainAudioSetting.YamlTrainSoundAnalyze;
 
 namespace VvvfSimulator.GUI.TrainAudio.Pages.Mixer
 {

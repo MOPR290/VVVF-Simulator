@@ -13,8 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData;
+using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData;
+using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData.YamlControlData;
 
 namespace VvvfSimulator.GUI.Create.Waveform.Common
 {

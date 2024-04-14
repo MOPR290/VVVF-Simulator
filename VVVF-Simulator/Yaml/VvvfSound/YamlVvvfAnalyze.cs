@@ -9,7 +9,7 @@ using YamlDotNet.Serialization;
 using static VvvfSimulator.VvvfCalculate;
 using static VvvfSimulator.VvvfStructs;
 
-namespace VvvfSimulator.Yaml.VVVFSound
+namespace VvvfSimulator.Yaml.VvvfSound
 {
     public class YamlVvvfSoundData
     {

@@ -15,11 +15,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VvvfSimulator.Yaml.VVVFSound;
+using VvvfSimulator.Yaml.VvvfSound;
 using YamlDotNet.Core.Tokens;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlMasconData;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlMasconData.YamlMasconDataPattern;
+using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData;
+using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData.YamlMasconData;
+using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData.YamlMasconData.YamlMasconDataPattern;
 
 namespace VvvfSimulator.GUI.Create.Settings
 {

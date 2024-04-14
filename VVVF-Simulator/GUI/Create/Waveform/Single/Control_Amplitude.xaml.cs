@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using VvvfSimulator;
 using static VvvfSimulator.VvvfCalculate;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData.YamlControlDataAmplitudeControl;
+using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData.YamlControlData.YamlControlDataAmplitudeControl;
 
 namespace VvvfSimulator.GUI.Create.Waveform
 {

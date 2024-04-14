@@ -1,10 +1,8 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System;
-using VvvfSimulator.Yaml.VVVFSound;
-using YamlDotNet.Core.Tokens;
+using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
-using static VvvfSimulator.VvvfStructs;
 
 namespace VvvfSimulator.Generation.Audio.VvvfSound
 {
@@ -24,7 +22,7 @@ namespace VvvfSimulator.Generation.Audio.VvvfSound
 
             while (true)
             {
-                int v = RealTime_CheckForFreq(control, realTime_Parameter, calcCount);
+                int v = RealTime_CheckForFreq(control, realTime_Parameter, calcCount / (double)SamplingFrequency);
                 if (v != -1) return v;
 
                 for (int i = 0; i < calcCount; i++)

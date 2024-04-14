@@ -4,10 +4,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using VvvfSimulator.Yaml.MasconControl;
-using VvvfSimulator.Yaml.VVVFSound;
+using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
-using YamlMasconData = VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlMasconData;
+using YamlMasconData = VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData.YamlMasconData;
 
 namespace VvvfSimulator.Generation
 {

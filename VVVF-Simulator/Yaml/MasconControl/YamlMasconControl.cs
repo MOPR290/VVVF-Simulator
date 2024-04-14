@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze.YamlMasconDataCompiled;
-using YamlMasconData = VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlMasconData;
+using YamlMasconData = VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData.YamlMasconData;
 
 namespace VvvfSimulator.Yaml.MasconControl
 {

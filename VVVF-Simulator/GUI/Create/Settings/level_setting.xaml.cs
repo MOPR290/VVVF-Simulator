@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using VvvfSimulator.Yaml.VVVFSound;
+using VvvfSimulator.Yaml.VvvfSound;
 
 
 namespace VvvfSimulator.GUI.Create.Settings

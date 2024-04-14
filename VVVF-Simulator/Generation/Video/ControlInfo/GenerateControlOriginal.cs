@@ -6,7 +6,7 @@ using System.IO;
 using static VvvfSimulator.VvvfCalculate;
 using static VvvfSimulator.Generation.GenerateCommon;
 using System.Drawing.Drawing2D;
-using VvvfSimulator.Yaml.VVVFSound;
+using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
 using static VvvfSimulator.VvvfStructs.PulseMode;
@@ -62,7 +62,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
 
                 return new string[] { final_mode_name, "Current Harmonic Minimum" };
             }
-            if (mode.ToString().StartsWith("SHE"))
+            else if (mode.ToString().StartsWith("SHE"))
             {
                 String mode_name = mode.ToString();
                 bool contain_wide = mode_name.Contains("Wide");
@@ -73,6 +73,18 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 String final_mode_name = (contain_wide) ? "Wide " : "" + mode_name_type[1] + " Pulse";
 
                 return new string[] { final_mode_name, "Selective Harmonic Elimination" };
+            }
+            else if (mode.ToString().StartsWith("HOP"))
+            {
+                String mode_name = mode.ToString();
+                bool contain_wide = mode_name.Contains("Wide");
+                mode_name = mode_name.Replace("_Wide", "");
+
+                String[] mode_name_type = mode_name.Split("_");
+
+                String final_mode_name = (contain_wide) ? "Wide " : "" + mode_name_type[1] + " Pulse";
+
+                return new string[] { final_mode_name, "High efficiency Over-modulation" };
             }
             else
             {

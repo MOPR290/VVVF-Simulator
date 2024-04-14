@@ -18,7 +18,7 @@ using VvvfSimulator.GUI.Create.Waveform.Basic;
 using VvvfSimulator.GUI.Create.Waveform.Dipolar;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.VvvfStructs.PulseMode;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
+using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData;
 
 namespace VvvfSimulator.GUI.Create.Waveform
 {

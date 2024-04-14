@@ -4,7 +4,7 @@ using NAudio.Wave.SampleProviders;
 using System;
 using System.Diagnostics;
 using System.IO;
-using VvvfSimulator.Yaml.VVVFSound;
+using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.Generation.GenerateCommon;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
 using static VvvfSimulator.VvvfStructs;

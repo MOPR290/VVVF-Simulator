@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Drawing;
-using VvvfSimulator.Yaml.VVVFSound;
+using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.VvvfCalculate;
 using static VvvfSimulator.VvvfStructs;
 

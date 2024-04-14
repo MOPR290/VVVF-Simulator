@@ -6,7 +6,7 @@ using System.IO;
 using static VvvfSimulator.VvvfCalculate;
 using static VvvfSimulator.Generation.GenerateCommon;
 using static VvvfSimulator.MyMath;
-using VvvfSimulator.Yaml.VVVFSound;
+using VvvfSimulator.Yaml.VvvfSound;
 using System.Collections.Generic;
 using Point = System.Drawing.Point;
 using static VvvfSimulator.VvvfStructs;

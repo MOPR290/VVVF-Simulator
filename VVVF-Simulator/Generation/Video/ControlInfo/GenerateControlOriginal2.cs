@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Threading.Tasks;
-using VvvfSimulator.Yaml.VVVFSound;
+using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.Generation.Video.ControlInfo.GenerateControlCommon;
 using static VvvfSimulator.VvvfCalculate;
@@ -85,7 +85,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
 
                 return "CHM " + final_mode_name;
             }
-            if (mode.ToString().StartsWith("SHE"))
+            else if (mode.ToString().StartsWith("SHE"))
             {
                 String mode_name = mode.ToString();
                 bool contain_wide = mode_name.Contains("Wide");
@@ -96,6 +96,18 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 String final_mode_name = (contain_wide) ? "W " : "" + mode_name_type[1];
 
                 return "SHE " + final_mode_name;
+            }
+            else if (mode.ToString().StartsWith("HOP"))
+            {
+                String mode_name = mode.ToString();
+                bool contain_wide = mode_name.Contains("Wide");
+                mode_name = mode_name.Replace("_Wide", "");
+
+                String[] mode_name_type = mode_name.Split("_");
+
+                String final_mode_name = (contain_wide) ? "W " : "" + mode_name_type[1];
+
+                return "HOP " + final_mode_name;
             }
             else
             {

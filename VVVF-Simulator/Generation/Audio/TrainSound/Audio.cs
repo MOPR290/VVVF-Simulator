@@ -3,7 +3,7 @@ using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using VvvfSimulator.Yaml.VVVFSound;
+using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.Generation.Audio.TrainSound.AudioFilter;
 using static VvvfSimulator.Generation.GenerateCommon;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
@@ -11,8 +11,8 @@ using static VvvfSimulator.Generation.Motor.GenerateMotorCore;
 using static VvvfSimulator.MyMath;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
-using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
-using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze.YamlTrainSoundData;
+using static VvvfSimulator.Yaml.TrainAudioSetting.YamlTrainSoundAnalyze;
+using static VvvfSimulator.Yaml.TrainAudioSetting.YamlTrainSoundAnalyze.YamlTrainSoundData;
 
 namespace VvvfSimulator.Generation.Audio.TrainSound
 {

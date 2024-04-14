@@ -9,7 +9,7 @@ using System.Media;
 using System.Windows.Media;
 using System.Threading.Tasks;
 using YamlDotNet.Core;
-using VvvfSimulator.Yaml.VVVFSound;
+using VvvfSimulator.Yaml.VvvfSound;
 using VvvfSimulator.Generation.Pi3Generator;
 using VvvfSimulator.GUI.Create.Waveform;
 using VvvfSimulator.GUI.Util;
@@ -20,10 +20,10 @@ using VvvfSimulator.GUI.Simulator.RealTime;
 using VvvfSimulator.GUI.Simulator.RealTime.UniqueWindow;
 using VvvfSimulator.GUI.Simulator.RealTime.Setting_Window;
 using static VvvfSimulator.Generation.GenerateCommon;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
+using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
-using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
+using static VvvfSimulator.Yaml.TrainAudioSetting.YamlTrainSoundAnalyze;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
 
 namespace VvvfSimulator

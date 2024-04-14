@@ -6,8 +6,8 @@ using System.Linq;
 using System.Media;
 using System.Threading.Tasks;
 using System.Windows;
-using VvvfSimulator.Yaml.VVVFSound;
-using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
+using VvvfSimulator.Yaml.VvvfSound;
+using static VvvfSimulator.Yaml.TrainAudioSetting.YamlTrainSoundAnalyze;
 
 namespace VvvfSimulator
 {

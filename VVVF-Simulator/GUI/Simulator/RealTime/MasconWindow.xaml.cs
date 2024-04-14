@@ -13,7 +13,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using VvvfSimulator.GUI.Simulator.RealTime.Setting_Window;
-using VvvfSimulator.Yaml.VVVFSound;
+using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
 using static VvvfSimulator.VvvfCalculate;
 using static VvvfSimulator.VvvfStructs;
@@ -134,7 +134,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
                     free_run = solve_control.IsFreeRun(),
                     wave_stat = solve_control.GetControlFrequency()
                 };
-                PwmCalculateValues calculated_Values = Yaml.VVVFSound.YamlVVVFWave.CalculateYaml(solve_control, cv, realTime_Parameter.VvvfSoundData);
+                PwmCalculateValues calculated_Values = Yaml.VvvfSound.YamlVVVFWave.CalculateYaml(solve_control, cv, realTime_Parameter.VvvfSoundData);
                 CalculatePhases(solve_control, calculated_Values, 0);
             });
             re_calculate.Wait();
@@ -165,7 +165,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
 
                 return "CHM " + final_mode_name;
             }
-            if (mode.ToString().StartsWith("SHE"))
+            else if (mode.ToString().StartsWith("SHE"))
             {
                 String mode_name = mode.ToString();
                 bool contain_wide = mode_name.Contains("Wide");
@@ -176,6 +176,18 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
                 String final_mode_name = (contain_wide) ? "W " : "" + mode_name_type[1];
 
                 return "SHE " + final_mode_name;
+            }
+            else if (mode.ToString().StartsWith("HOP"))
+            {
+                String mode_name = mode.ToString();
+                bool contain_wide = mode_name.Contains("Wide");
+                mode_name = mode_name.Replace("_Wide", "");
+
+                String[] mode_name_type = mode_name.Split("_");
+
+                String final_mode_name = (contain_wide) ? "W " : "" + mode_name_type[1];
+
+                return "HOP " + final_mode_name;
             }
             else
             {
@@ -208,7 +220,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             int at_abs = (at < 0) ? -at : at;
             bool nega = at < 0;
 
-            realTime_Parameter.change_amount = (nega ? -1 : 1) * ((at_abs - 1 < 0) ? 0 : at_abs - 1) * Math.PI * 0.000015;
+            realTime_Parameter.change_amount = (nega ? -1 : 1) * ((at_abs - 1 < 0) ? 0 : at_abs - 1) * 3 * Math.PI;
 
             bool pre_braking = realTime_Parameter.braking;
             realTime_Parameter.free_run = at == 0;

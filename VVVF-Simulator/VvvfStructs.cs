@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using static VvvfSimulator.MyMath;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.VvvfStructs.PulseMode;
@@ -87,7 +88,7 @@ namespace VvvfSimulator
         public void AddSineTime(double t) { sin_time += t; }
         public void MultiplySineTime(double x) { sin_time *= x; }
 
-        
+
         public void SetSawAngleFrequency(double f) { saw_angle_freq = f; }
         public double GetSawAngleFrequency() { return saw_angle_freq; }
         public void AddSawAngleFrequency(double f) { saw_angle_freq += f; }
@@ -99,7 +100,7 @@ namespace VvvfSimulator
 
         public void SetPreviousSawRandomFrequency(double f) { pre_saw_random_freq = f; }
         public double GetPreviousSawRandomFrequency() { return pre_saw_random_freq; }
-        
+
 
         public void SetRandomFrequencyPreviousTime(double i) { random_freq_pre_time = i; }
         public double GetRandomFrequencyPreviousTime() { return random_freq_pre_time; }
@@ -227,6 +228,7 @@ namespace VvvfSimulator
                     clone_pulse_harmonics.Add(PulseHarmonics[i].Clone());
                 }
                 x.PulseHarmonics = clone_pulse_harmonics;
+                x.DiscreteTime = DiscreteTime.Clone();
                 return x;
 
             }
@@ -236,6 +238,27 @@ namespace VvvfSimulator
             //
             public bool Shift { get; set; } = false;
             public bool Square { get; set; } = false;
+
+            //
+            // Discrete Time Configuration
+            //
+            public DiscreteTimeConfiguration DiscreteTime { get; set; } = new();
+            public class DiscreteTimeConfiguration
+            {
+                public bool Enabled { get; set; } = false;
+                public int Steps { get; set; } = 2;
+                public DiscreteTimeMode Mode { get; set; } = DiscreteTimeMode.Middle;
+
+                public enum DiscreteTimeMode
+                {
+                    Left, Middle, Right
+                }
+
+                public DiscreteTimeConfiguration Clone()
+                {
+                    return (DiscreteTimeConfiguration)MemberwiseClone();
+                }
+            }
 
             //
             // Pulse Mode Name
@@ -259,7 +282,9 @@ namespace VvvfSimulator
                 CHMP_Wide_13, CHMP_15, CHMP_Wide_15,
 
                 // Selective harmonic elimination Pulse width modulation
-                SHEP_3, SHEP_5, SHEP_7, SHEP_9, SHEP_11, SHEP_13, SHEP_15
+                SHEP_3, SHEP_5, SHEP_7, SHEP_9, SHEP_11, SHEP_13, SHEP_15,
+
+                HOP_5, HOP_7, HOP_9, HOP_11, HOP_13, HOP_15, HOP_17,
             };
 
             //
@@ -299,13 +324,54 @@ namespace VvvfSimulator
             public PulseAlternativeMode AltMode { get; set; } = PulseAlternativeMode.Default;
             public enum PulseAlternativeMode
             {
-                Default, Alt1
+                Default, Alt1, Alt2, Alt3, Alt4, Alt5, Alt6, Alt7, Alt8, Alt9, Alt10, Alt11,
             }
         }
 
         // "Pulse Mode" Configuration
         public class PulseModeConfiguration
         {
+            public static PulseModeNames[] ValidPulseModeNames(int level)
+            {
+                if (level == 2) return (PulseModeNames[])Enum.GetValues(typeof(PulseModeNames));
+                if (level == 3) return [
+                    PulseModeNames.Async,
+                    PulseModeNames.P_1, PulseModeNames.P_2, PulseModeNames.P_3, PulseModeNames.P_4, PulseModeNames.P_5, PulseModeNames.P_6, PulseModeNames.P_7, PulseModeNames.P_8, PulseModeNames.P_9, PulseModeNames.P_10,
+                    PulseModeNames.P_11, PulseModeNames.P_12, PulseModeNames.P_13, PulseModeNames.P_14, PulseModeNames.P_15, PulseModeNames.P_16, PulseModeNames.P_17, PulseModeNames.P_18, PulseModeNames.P_19, PulseModeNames.P_20,
+                    PulseModeNames.P_21, PulseModeNames.P_22, PulseModeNames.P_23, PulseModeNames.P_24, PulseModeNames.P_25, PulseModeNames.P_26, PulseModeNames.P_27, PulseModeNames.P_28, PulseModeNames.P_29, PulseModeNames.P_30,
+                    PulseModeNames.P_31, PulseModeNames.P_32, PulseModeNames.P_33, PulseModeNames.P_34, PulseModeNames.P_35, PulseModeNames.P_36, PulseModeNames.P_37, PulseModeNames.P_38, PulseModeNames.P_39, PulseModeNames.P_40,
+                    PulseModeNames.P_41, PulseModeNames.P_42, PulseModeNames.P_43, PulseModeNames.P_44, PulseModeNames.P_45, PulseModeNames.P_46, PulseModeNames.P_47, PulseModeNames.P_48, PulseModeNames.P_49, PulseModeNames.P_50,
+                    PulseModeNames.P_51, PulseModeNames.P_52, PulseModeNames.P_53, PulseModeNames.P_54, PulseModeNames.P_55, PulseModeNames.P_56, PulseModeNames.P_57, PulseModeNames.P_58, PulseModeNames.P_59, PulseModeNames.P_60,
+                    PulseModeNames.P_61,
+                    ];
+                return [PulseModeNames.P_1];
+            }
+            public static bool IsDiscreteTimeValid(PulseMode mode, int level)
+            {
+                PulseModeNames pulseName = mode.PulseName;
+                if (level == 3) return true;
+
+                {
+                    List<PulseModeNames> deny = [
+                        PulseModeNames.P_Wide_3,
+                        PulseModeNames.CHMP_15, PulseModeNames.CHMP_Wide_15,PulseModeNames.CHMP_13,PulseModeNames.CHMP_Wide_13,
+                        PulseModeNames.CHMP_11,PulseModeNames.CHMP_Wide_11,PulseModeNames.CHMP_9,PulseModeNames.CHMP_Wide_9,
+                        PulseModeNames.CHMP_7,PulseModeNames.CHMP_Wide_7,PulseModeNames.CHMP_5,PulseModeNames.CHMP_Wide_5,
+                        PulseModeNames.CHMP_3,PulseModeNames.CHMP_Wide_3,PulseModeNames.SHEP_3,
+                        PulseModeNames.SHEP_5,PulseModeNames.SHEP_7,PulseModeNames.SHEP_11,PulseModeNames.SHEP_13,PulseModeNames.SHEP_15,
+                        PulseModeNames.HOP_5,PulseModeNames.HOP_7,PulseModeNames.HOP_9,
+                        PulseModeNames.HOP_11,PulseModeNames.HOP_13,PulseModeNames.HOP_15,PulseModeNames.HOP_17
+                    ];
+                    if (deny.Contains(pulseName)) return false;
+                }
+                if (mode.Square && IsPulseSquareAvail(mode, 2)) return false;
+                if ((pulseName == PulseModeNames.P_17 ||
+                    pulseName == PulseModeNames.P_13 ||
+                    pulseName == PulseModeNames.P_9 ||
+                    pulseName == PulseModeNames.P_5) && (mode.AltMode == PulseAlternativeMode.Alt1)) return false;
+
+                return true;
+            }
             private static int GetPulseNameNum(PulseModeNames mode)
             {
                 int[] pulse_list = new int[]
@@ -352,9 +418,12 @@ namespace VvvfSimulator
                 // Current harmonic minimum Pulse width modulation
                 false,false,false,false,false,false,
                 false,false,false,false,false,false,
-                false,false,false,false,false,
+                false,false,
 
                 // Selective harmonic elimination Pulse width modulation
+                false,false,false,false,false,false,false,
+
+                // HOP
                 false,false,false,false,false,false,false,
                 };
                 return pulse_list[(int)mode.PulseName];
@@ -411,27 +480,56 @@ namespace VvvfSimulator
                 if (level == 3) // level 3
                 {
                     if (pulse_Mode.PulseName == PulseModeNames.P_1)
-                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                        return [PulseAlternativeMode.Default, PulseAlternativeMode.Alt1];
                 }
                 else // level 2
                 {
                     if (pulse_Mode.PulseName == PulseModeNames.CHMP_11)
-                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                        return [PulseAlternativeMode.Default, PulseAlternativeMode.Alt1];
                     if (pulse_Mode.PulseName == PulseModeNames.CHMP_13)
-                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                        return [PulseAlternativeMode.Default, PulseAlternativeMode.Alt1];
                     if (pulse_Mode.PulseName == PulseModeNames.CHMP_15)
-                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                        return [PulseAlternativeMode.Default, PulseAlternativeMode.Alt1];
                     if (pulse_Mode.PulseName == PulseModeNames.P_17)
-                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                        return [PulseAlternativeMode.Default, PulseAlternativeMode.Alt1];
                     if (pulse_Mode.PulseName == PulseModeNames.P_13)
-                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                        return [PulseAlternativeMode.Default, PulseAlternativeMode.Alt1];
                     if (pulse_Mode.PulseName == PulseModeNames.P_9)
-                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                        return [PulseAlternativeMode.Default, PulseAlternativeMode.Alt1];
                     if (pulse_Mode.PulseName == PulseModeNames.P_5)
-                        return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default, PulseAlternativeMode.Alt1 };
+                        return [PulseAlternativeMode.Default, PulseAlternativeMode.Alt1];
+                    if (pulse_Mode.PulseName == PulseModeNames.HOP_5)
+                        return [
+                            PulseAlternativeMode.Default, PulseAlternativeMode.Alt1, PulseAlternativeMode.Alt2,PulseAlternativeMode.Alt3,
+                            PulseAlternativeMode.Alt4, PulseAlternativeMode.Alt5,PulseAlternativeMode.Alt6, PulseAlternativeMode.Alt7
+                        ];
+                    if (pulse_Mode.PulseName == PulseModeNames.HOP_7)
+                        return [
+                            PulseAlternativeMode.Default, PulseAlternativeMode.Alt1, PulseAlternativeMode.Alt2, PulseAlternativeMode.Alt3,
+                            PulseAlternativeMode.Alt4, PulseAlternativeMode.Alt5, PulseAlternativeMode.Alt6, PulseAlternativeMode.Alt7,
+                            PulseAlternativeMode.Alt8, PulseAlternativeMode.Alt9,
+                        ];
+                    if (pulse_Mode.PulseName == PulseModeNames.HOP_9)
+                        return [
+                            PulseAlternativeMode.Default, PulseAlternativeMode.Alt1, PulseAlternativeMode.Alt2, PulseAlternativeMode.Alt3,
+                            PulseAlternativeMode.Alt4, PulseAlternativeMode.Alt5,PulseAlternativeMode.Alt6
+                        ];
+                    if (pulse_Mode.PulseName == PulseModeNames.HOP_11)
+                        return [
+                            PulseAlternativeMode.Default, PulseAlternativeMode.Alt1, PulseAlternativeMode.Alt2,PulseAlternativeMode.Alt3,
+                            PulseAlternativeMode.Alt4, PulseAlternativeMode.Alt5
+                        ];
+                    if (pulse_Mode.PulseName == PulseModeNames.HOP_13)
+                        return [
+                            PulseAlternativeMode.Default, PulseAlternativeMode.Alt1, PulseAlternativeMode.Alt2,PulseAlternativeMode.Alt3
+                        ];
+                    if (pulse_Mode.PulseName == PulseModeNames.HOP_15)
+                        return [
+                            PulseAlternativeMode.Default, PulseAlternativeMode.Alt1, PulseAlternativeMode.Alt2
+                        ];
                 }
 
-                return new List<PulseAlternativeMode>() { PulseAlternativeMode.Default };
+                return [PulseAlternativeMode.Default];
             }
         }
     }

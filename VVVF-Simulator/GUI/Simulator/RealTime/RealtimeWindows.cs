@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Threading.Tasks;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
 using VvvfSimulator.GUI.Util;
-using VvvfSimulator.Yaml.VVVFSound;
+using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.VvvfStructs;
 
 namespace VvvfSimulator.GUI.Simulator.RealTime

@@ -7,7 +7,7 @@ using System.Windows.Media;
 using VvvfSimulator.GUI.Pages.Control_Settings.Basic;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.VvvfStructs.PulseMode;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData;
+using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData;
 
 namespace VvvfSimulator.GUI.Create.Waveform.Basic
 {
@@ -37,6 +37,10 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
 
             private bool _Square_Visible = true;
             public bool Square_Visible { get { return _Square_Visible; } set { _Square_Visible = value; RaisePropertyChanged(nameof(Square_Visible)); } }
+
+            private bool _Discrete_Visible = true;
+            public bool Discrete_Visible { get { return _Discrete_Visible; } set { _Discrete_Visible = value; RaisePropertyChanged(nameof(Discrete_Visible)); } }
+
         }
         public class ViewModelBase : INotifyPropertyChanged
         {
@@ -47,7 +51,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
             }
         }
 
-        private bool no_update = true;
+        private bool IgnoreUpdate = true;
         public Control_Basic(YamlControlData ycd, int level)
         {
             InitializeComponent();
@@ -56,12 +60,12 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
             this.level = level;
             DataContext = viewModel;
 
-            apply_view();
+            Apply_view();
 
-            no_update = false;
+            IgnoreUpdate = false;
         }
 
-        private double parse(TextBox tb)
+        private double ParseText2Double(TextBox tb)
         {
             try
             {
@@ -75,13 +79,13 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
             }
         }
 
-        private void apply_view()
+        private void Apply_view()
         {
             from_text_box.Text = target.ControlFrequencyFrom.ToString();
             sine_from_text_box.Text = target.RotateFrequencyFrom.ToString();
             sine_below_text_box.Text = target.RotateFrequencyBelow.ToString();
 
-            Pulse_Name_Selector.ItemsSource = (PulseModeNames[])Enum.GetValues(typeof(PulseModeNames));
+            Pulse_Name_Selector.ItemsSource = PulseModeConfiguration.ValidPulseModeNames(level);
             Pulse_Name_Selector.SelectedItem = target.PulseMode.PulseName;
 
             Shifted_Box.IsChecked = target.PulseMode.Shift;
@@ -108,6 +112,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
             viewModel.Shifted_Visible = PulseModeConfiguration.IsPulseShiftedAvailable(mode, level);
             viewModel.Base_Wave_Selector_Visible = PulseModeConfiguration.IsPulseHarmonicBaseWaveChangeAvailable(mode, level);
             viewModel.Square_Visible = PulseModeConfiguration.IsPulseSquareAvail(mode, level);
+            viewModel.Discrete_Visible = PulseModeConfiguration.IsDiscreteTimeValid(mode, level);
 
             List<PulseAlternativeMode> modes = PulseModeConfiguration.GetPulseAltModes(target.PulseMode, level);
             Alt_Mode_Selector.ItemsSource = modes;
@@ -126,7 +131,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (no_update) return;
+            if (IgnoreUpdate) return;
 
             TextBox tb = (TextBox)sender;
             Object? tag = tb.Tag;
@@ -134,19 +139,19 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
 
             if (tag.Equals("From"))
             {
-                double parsed = parse(tb);
+                double parsed = ParseText2Double(tb);
                 target.ControlFrequencyFrom = parsed;
                 MainWindow.GetInstance()?.UpdateControlList();
             }
             else if (tag.Equals("SineFrom"))
             {
-                double parsed = parse(tb);
+                double parsed = ParseText2Double(tb);
                 target.RotateFrequencyFrom = parsed;
                 MainWindow.GetInstance()?.UpdateControlList();
             }
             else if (tag.Equals("SineBelow"))
             {
-                double parsed = parse(tb);
+                double parsed = ParseText2Double(tb);
                 target.RotateFrequencyBelow = parsed;
                 MainWindow.GetInstance()?.UpdateControlList();
             }
@@ -154,7 +159,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
 
         private void enable_checked(object sender, RoutedEventArgs e)
         {
-            if (no_update) return;
+            if (IgnoreUpdate) return;
 
             CheckBox tb = (CheckBox)sender;
             Object? tag = tb.Tag;
@@ -184,12 +189,12 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
         private void Open_Harmonic_Setting_Button_Click(object sender, RoutedEventArgs e)
         {
             Control_Basic_Harmonic cbh = new(target.PulseMode);
-            cbh.Show();
+            cbh.ShowDialog();
         }
 
         private void Selector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (no_update) return;
+            if (IgnoreUpdate) return;
 
             ComboBox cb = (ComboBox)sender;
             Object tag = cb.Tag;
@@ -215,6 +220,12 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
 
             MainWindow.GetInstance()?.UpdateControlList();
             Set_Control();
+        }
+
+        private void Open_Discrete_Setting_Button_Click(object sender, RoutedEventArgs e)
+        {
+            DiscreteSettingWindow discreteSetting = new(target.PulseMode);
+            discreteSetting.ShowDialog();
         }
     }
 }

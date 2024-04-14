@@ -123,6 +123,16 @@
                                 <ComboBox x:Name="Base_Wave_Selector" Grid.Column="1" Visibility="{Binding Base_Wave_Selector_Visible, Converter={StaticResource BooleanToVisibilityConverter}}" SelectionChanged="Selector_SelectionChanged" Margin="10,10,10,10" FontFamily="M PLUS 2" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Grid.Row="1" Tag="BaseWave"/>
                                 <CheckBox x:Name="Square_Box" Content="Square" HorizontalAlignment="Center" VerticalAlignment="Center" Checked="enable_checked" Unchecked="enable_checked" Tag="Square" Visibility="{Binding Square_Visible, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="1"/>
                                 <ComboBox x:Name="Alt_Mode_Selector" Visibility="{Binding Alt_Mode_Selector_Visible, Converter={StaticResource BooleanToVisibilityConverter}}" SelectionChanged="Selector_SelectionChanged" Margin="10,10,10,10" FontFamily="M PLUS 2" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Grid.Row="1" Tag="AltMode"/>
+                                <Button x:Name="Open_Discrete_Setting_Button" Content="Discrete Setting" HorizontalAlignment="Center"  VerticalAlignment="Center" Height="24" Width="133" Click="Open_Discrete_Setting_Button_Click" Grid.Column="2" Background="White" Grid.Row="1">
+                                    <Button.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius" Value="12"/>
+                                        </Style>
+                                    </Button.Resources>
+                                    <Button.Visibility>
+                                        <Binding Converter="{StaticResource BooleanToVisibilityConverter}" Path="Discrete_Visible"/>
+                                    </Button.Visibility>
+                                </Button>
                             </Grid>
                         </Grid>
                     </Grid>

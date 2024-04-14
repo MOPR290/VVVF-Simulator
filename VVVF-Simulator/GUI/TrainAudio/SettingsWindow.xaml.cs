@@ -7,7 +7,7 @@ using VvvfSimulator.GUI.TrainAudio.Pages.Mixer;
 using VvvfSimulator.GUI.TrainAudio.Pages.Gear;
 using VvvfSimulator.GUI.TrainAudio.Pages.Motor;
 using YamlDotNet.Core;
-using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
+using static VvvfSimulator.Yaml.TrainAudioSetting.YamlTrainSoundAnalyze;
 using System.Diagnostics;
 
 namespace VvvfSimulator.GUI.TrainAudio

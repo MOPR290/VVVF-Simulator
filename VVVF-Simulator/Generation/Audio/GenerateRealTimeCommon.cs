@@ -1,10 +1,10 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System;
-using VvvfSimulator.Yaml.VVVFSound;
+using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.Generation.Audio.TrainSound.Audio;
 using static VvvfSimulator.Generation.Motor.GenerateMotorCore;
-using static VvvfSimulator.Yaml.TrainAudio_Setting.YamlTrainSoundAnalyze;
+using static VvvfSimulator.Yaml.TrainAudioSetting.YamlTrainSoundAnalyze;
 
 namespace VvvfSimulator.Generation.Audio
 {
@@ -26,7 +26,7 @@ namespace VvvfSimulator.Generation.Audio
             public YamlTrainSoundData TrainSoundData { get; set; } = YamlTrainSoundDataManage.CurrentData.Clone();
         }
 
-        public static int RealTime_CheckForFreq(VvvfValues control, RealTimeParameter param, int step)
+        public static int RealTime_CheckForFreq(VvvfValues control, RealTimeParameter param, double dt)
         {
             control.SetBraking(param.braking);
             control.SetMasconOff(param.free_run);
@@ -34,7 +34,7 @@ namespace VvvfSimulator.Generation.Audio
             double change_amo = param.change_amount;
 
             double sin_new_angle_freq = control.GetSineAngleFrequency();
-            sin_new_angle_freq += change_amo * step;
+            sin_new_angle_freq += change_amo * dt;
             if (sin_new_angle_freq < 0) sin_new_angle_freq = 0;
 
             if (!control.IsFreeRun())
@@ -64,7 +64,7 @@ namespace VvvfSimulator.Generation.Audio
                     control.SetControlFrequency(control.GetSineFrequency());
                 else
                 {
-                    double freq_change = control.GetFreeFrequencyChange() * 1.0 / 192000 * step;
+                    double freq_change = control.GetFreeFrequencyChange() * dt;
                     double final_freq = control.GetControlFrequency() + freq_change;
 
                     if (control.GetSineFrequency() <= final_freq)
@@ -81,7 +81,7 @@ namespace VvvfSimulator.Generation.Audio
             }
             else
             {
-                double freq_change = control.GetFreeFrequencyChange() * 1.0 / 192000 * step;
+                double freq_change = control.GetFreeFrequencyChange() * dt;
                 double final_freq = control.GetControlFrequency() - freq_change;
                 control.SetControlFrequency(final_freq > 0 ? final_freq : 0);
                 control.SetFreeRun(true);

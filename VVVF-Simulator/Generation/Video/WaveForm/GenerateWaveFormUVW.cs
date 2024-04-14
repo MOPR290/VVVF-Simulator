@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using static VvvfSimulator.VvvfCalculate;
 using static VvvfSimulator.Generation.GenerateCommon;
-using VvvfSimulator.Yaml.VVVFSound;
+using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;

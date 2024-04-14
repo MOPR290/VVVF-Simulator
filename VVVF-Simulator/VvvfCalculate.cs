@@ -2,7 +2,7 @@
 using System;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.VvvfStructs.PulseMode;
-using static VvvfSimulator.Yaml.VVVFSound.YamlVvvfSoundData.YamlControlData;
+using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData.YamlControlData;
 
 namespace VvvfSimulator
 {
@@ -95,8 +95,45 @@ namespace VvvfSimulator
         }
 
         //
+        // Discrete Time
+        //
+        public static double DiscreteTimeLine(double x, int level, DiscreteTimeConfiguration.DiscreteTimeMode mode)
+        {
+            //int level = (discrete.ProportionToPulse ? sawCarrier : 1) * discrete.Steps;
+            double seed = (x % M_2PI) * level / M_2PI;
+            switch (mode)
+            {
+                case DiscreteTimeConfiguration.DiscreteTimeMode.Left:
+                    seed = Math.Ceiling(seed);
+                    break;
+                case DiscreteTimeConfiguration.DiscreteTimeMode.Middle:
+                    seed = Math.Round(seed);
+                    break;
+                case DiscreteTimeConfiguration.DiscreteTimeMode.Right:
+                    seed = Math.Floor(seed);
+                    break;
+            }
+            return seed * M_2PI / level;
+        }
+
+        //
         // Pulse Calculation
         //
+        public static int GetHopPulse(double x, double amplitude, int carrier, int width)
+        {
+            int totalSteps = carrier * 2;
+            double fixed_x = (x % M_PI) / (M_PI / (totalSteps));
+            double saw_value = -GetSaw(carrier * x);
+            double modulated;
+            if (fixed_x > (totalSteps - 1)) modulated = -1;
+            else if (fixed_x > (totalSteps / 2) + width) modulated = 1;
+            else if (fixed_x > (totalSteps / 2) - width) modulated = 2 * amplitude - 1;
+            else if (fixed_x > 1) modulated = 1;
+            else modulated = -1;
+            if ((x % M_2PI) > M_PI) modulated = -modulated;
+
+            return ModulateSin(modulated, saw_value) * 2;
+        }
         public static int GetWideP3(double time, double angle_frequency, double initial_phase, double voltage, bool saw_oppose)
         {
             double sin = GetSine(time * angle_frequency + initial_phase);
@@ -411,6 +448,7 @@ namespace VvvfSimulator
                 control.SetSawTime(saw_time);
 
                 double sine_x = sine_time * sine_angle_freq + initial_phase;
+                if (pulse_mode.DiscreteTime.Enabled) sine_x = DiscreteTimeLine(sine_x, pulse_mode.DiscreteTime.Steps, pulse_mode.DiscreteTime.Mode);
                 double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sine_x, calculate_values.amplitude);
 
                 double saw_value = GetSaw(control.GetSawTime() * control.GetSawAngleFrequency());
@@ -429,6 +467,7 @@ namespace VvvfSimulator
             {
                 int pulses = PulseModeConfiguration.GetPulseNum(pulse_mode, 3);
                 double sine_x = sine_time * sine_angle_freq + initial_phase;
+                if (pulse_mode.DiscreteTime.Enabled) sine_x = DiscreteTimeLine(sine_x, pulse_mode.DiscreteTime.Steps, pulse_mode.DiscreteTime.Mode);
                 double saw_x = pulses * (sine_angle_freq * sine_time + initial_phase);
 
                 if (pulse_mode.PulseName == PulseModeNames.P_1)
@@ -479,6 +518,7 @@ namespace VvvfSimulator
                 return 0;
 
 
+            // Async CHM SHE
             switch (pulse_name)
             {
 
@@ -495,6 +535,7 @@ namespace VvvfSimulator
                         saw_angle_freq = desire_saw_angle_freq;
 
                         double sine_x = sin_time * sin_angle_freq + initial_phase;
+                        if (pulse_mode.DiscreteTime.Enabled) sine_x = DiscreteTimeLine(sine_x, pulse_mode.DiscreteTime.Steps, pulse_mode.DiscreteTime.Mode);
                         double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sine_x, amplitude);
 
 
@@ -773,6 +814,24 @@ namespace VvvfSimulator
                 default: break;
             }
 
+            // HOP
+            if (pulse_name == PulseModeNames.HOP_5 || pulse_name == PulseModeNames.HOP_7 || pulse_name == PulseModeNames.HOP_9 ||
+                pulse_name == PulseModeNames.HOP_11 || pulse_name == PulseModeNames.HOP_13 || pulse_name == PulseModeNames.HOP_15 ||
+                pulse_name == PulseModeNames.HOP_17)
+            {
+                double sine_x = sin_angle_freq * sin_time + initial_phase;
+                int[] keys = [];
+                if(pulse_name == PulseModeNames.HOP_5) keys = [9, 2, 13, 2, 17, 2, 21, 2, 25, 2, 29, 2, 33, 2, 37, 2,];
+                else if(pulse_name == PulseModeNames.HOP_7) keys = [15, 4, 15, 3, 7, 1, 11, 2, 19, 4, 23, 4, 27, 4, 31, 4, 35, 4, 39, 4,];
+                else if (pulse_name == PulseModeNames.HOP_9) keys = [21, 6, 13, 3, 17, 4, 25, 6, 29, 6, 33, 6, 37, 6];
+                else if (pulse_name == PulseModeNames.HOP_11) keys = [27, 8, 19, 5, 23, 6, 31, 8, 35, 8, 39, 8];
+                else if (pulse_name == PulseModeNames.HOP_13) keys = [25, 7, 29, 8, 33, 10, 37, 10];
+                else if (pulse_name == PulseModeNames.HOP_15) keys = [31, 9, 35, 10, 39, 12];
+                else if (pulse_name == PulseModeNames.HOP_17) keys = [37, 11];
+                int alt = ((int)pulse_mode.AltMode + 1) > (keys.Length / 2) ? 0 : (int)pulse_mode.AltMode;
+                return GetHopPulse(sine_x, amplitude, keys[2 * alt], keys[2 * alt + 1]);
+            }
+                
 
             if (
                 pulse_name == PulseModeNames.CHMP_3 ||
@@ -813,10 +872,11 @@ namespace VvvfSimulator
             //sync mode but no the above.
             {
                 int pulse_num = PulseModeConfiguration.GetPulseNum(pulse_mode, 2);
-                double sin_x = sin_angle_freq * sin_time + initial_phase;
+                double sine_x = sin_angle_freq * sin_time + initial_phase;
+                if (pulse_mode.DiscreteTime.Enabled) sine_x = DiscreteTimeLine(sine_x, pulse_mode.DiscreteTime.Steps, pulse_mode.DiscreteTime.Mode);
                 double saw_x = pulse_num * (sin_angle_freq * sin_time + initial_phase);
                 double saw_value = GetSaw(saw_x);
-                double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sin_x, amplitude);
+                double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sine_x, amplitude);
 
                 if (pulse_mode.Shift)
                     saw_value = -saw_value;

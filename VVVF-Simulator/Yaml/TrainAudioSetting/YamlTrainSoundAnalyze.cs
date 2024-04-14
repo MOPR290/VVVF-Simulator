@@ -2,14 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using VvvfSimulator.Generation.Audio.TrainSound;
 using YamlDotNet.Serialization;
 using static VvvfSimulator.Generation.Motor.GenerateMotorCore.MotorData;
 
-namespace VvvfSimulator.Yaml.TrainAudio_Setting
+namespace VvvfSimulator.Yaml.TrainAudioSetting
 {
     public class YamlTrainSoundAnalyze
     {
