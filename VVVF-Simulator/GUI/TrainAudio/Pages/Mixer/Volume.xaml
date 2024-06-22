@@ -20,11 +20,11 @@
             <RowDefinition Height="60"/>
             <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
-        <Label Content="Master Volume" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="20" Height="34" Width="144" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-        <Label Content="Motor Volume" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="20" Height="34" Width="144" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-        <Label Content="Frequency Filter" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="20" Height="34" Grid.Row="2" Width="188" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-        <Label Content="IR Filter" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="20" Height="34" Grid.Row="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-        <Border BorderBrush="#FF86AEFF" BorderThickness="0,0,10,0" Grid.RowSpan="4"/>
+        <Border Grid.RowSpan="4" Background="#FF86AEFF" BorderThickness="0,0,3,0"/>
+        <Label Content="Master Volume" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="20" Height="34" Width="165" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="White" FontWeight="Bold"/>
+        <Label Content="Motor Volume" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="20" Height="34" Width="165" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="White" FontWeight="Bold"/>
+        <Label Content="Frequency Filter" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="20" Height="34" Grid.Row="2" Width="188" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="White" FontWeight="Bold"/>
+        <Label Content="IR Filter" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="20" Height="34" Grid.Row="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="White" FontWeight="Bold"/>
         <Slider x:Name="MasterVolume" Grid.Column="1" VerticalAlignment="Center" Maximum="5" Minimum="-20" TickPlacement="BottomRight" Margin="10,0,10,0" ValueChanged="MasterVolume_ValueChanged"/>
         <Slider x:Name="MotorVolume" Grid.Column="1" VerticalAlignment="Center" Maximum="5" Minimum="-20" TickPlacement="BottomRight" Grid.Row="1" Margin="10,0,10,0" ValueChanged="MotorVolue_ValueChanged"/>
 

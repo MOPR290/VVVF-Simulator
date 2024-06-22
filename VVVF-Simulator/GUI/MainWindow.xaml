@@ -210,11 +210,12 @@
                 </MenuItem>
 
                 <MenuItem Header="RealTime">
-                    <MenuItem Header="VVVF RealTime" Tag="VVVF_RealTime" Click="Generation_Menu_Click"/>
-                    <MenuItem Header="VVVF RealTime Setting" Tag="VVVF_Setting" Click="Generation_Menu_Click"/>
+                    <MenuItem Header="VVVF" Tag="VVVF_RealTime" Click="Generation_Menu_Click"/>
+                    <MenuItem Header="VVVF USB Passthrough" Tag="VVVF_RealTime_Usb" Click="Generation_Menu_Click"/>
+                    <MenuItem Header="VVVF Setting" Tag="VVVF_Setting" Click="Generation_Menu_Click"/>
                     <Separator/>
-                    <MenuItem Header="Train RealTime" Tag="Train_RealTime" Click="Generation_Menu_Click"/>
-                    <MenuItem Header="Train RealTime Setting" Tag="Train_Setting" Click="Generation_Menu_Click"/>
+                    <MenuItem Header="Train Sound" Tag="Train_RealTime" Click="Generation_Menu_Click"/>
+                    <MenuItem Header="Train Sound Setting" Tag="Train_Setting" Click="Generation_Menu_Click"/>
                 </MenuItem>
             </Menu>
         </DockPanel>

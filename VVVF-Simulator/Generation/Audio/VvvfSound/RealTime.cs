@@ -1,18 +1,37 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System;
+using System.IO.Ports;
+using System.Windows;
 using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
+using static VvvfSimulator.VvvfStructs;
 
 namespace VvvfSimulator.Generation.Audio.VvvfSound
 {
     public class RealTime
     {
         // --------- VVVF SOUND ------------
-        private static readonly int calcCount = 20;
-        private static readonly int SamplingFrequency = 192000;
-        private static int RealTime_VVVF_Generation_Calculate(BufferedWaveProvider provider, YamlVvvfSoundData sound_data, VvvfValues control, RealTimeParameter realTime_Parameter)
+        private static readonly int calcCount = 64;
+        private static readonly int SamplingFrequency = 200000;
+        private static int Generate(
+            BufferedWaveProvider provider, 
+            YamlVvvfSoundData sound_data, 
+            VvvfValues control, 
+            RealTimeParameter realTime_Parameter,
+            SerialPort? serial
+        )
         {
+            try
+            {
+                serial?.Open();
+            }
+            catch
+            {
+                MessageBox.Show("USB device was not recognized!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return 0;
+            }
+
             static void AddSample(float value, BufferedWaveProvider provider)
             {
                 byte[] soundSample = BitConverter.GetBytes((float)value);
@@ -20,60 +39,93 @@ namespace VvvfSimulator.Generation.Audio.VvvfSound
                 provider.AddSamples(soundSample, 0, 4);
             }
 
+            int end_result;
             while (true)
             {
-                int v = RealTime_CheckForFreq(control, realTime_Parameter, calcCount / (double)SamplingFrequency);
-                if (v != -1) return v;
+                end_result = RealTime_CheckForFreq(control, realTime_Parameter, calcCount / (double)(SamplingFrequency));
+                if (end_result != -1) break;
 
-                for (int i = 0; i < calcCount; i++)
+                byte[] data = new byte[calcCount];
+
+                for(int i = 0; i < calcCount; i++)
                 {
                     control.AddSineTime(1.0 / SamplingFrequency);
                     control.AddSawTime(1.0 / SamplingFrequency);
                     control.AddGenerationCurrentTime(1.0 / SamplingFrequency);
 
-                    double sound_byte = Audio.CalculateVvvfSound(control, sound_data);
+                    ControlStatus cv = new()
+                    {
+                        brake = control.IsBraking(),
+                        mascon_on = !control.IsMasconOff(),
+                        free_run = control.IsFreeRun(),
+                        wave_stat = control.GetControlFrequency()
+                    };
+                    PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, sound_data);
+                    WaveValues value = VvvfCalculate.CalculatePhases(control, calculated_Values, 0);
+                    char cvalue = (char)(value.U << 4 | value.V << 2 | value.W);
+                    data[i] = (byte)cvalue;
+
+                    double sound_byte = value.U - value.V;
                     sound_byte /= 2.0;
                     sound_byte *= 0.7;
 
                     AddSample((float)sound_byte, provider);
                 }
 
-                while (provider.BufferedBytes > Properties.Settings.Default.RealTime_VVVF_BuffSize) ;
-            }
-        }
-        public static void RealTime_VVVF_Generation(YamlVvvfSoundData ysd, RealTimeParameter realTime_Parameter)
-        {
-            realTime_Parameter.quit = false;
-            realTime_Parameter.VvvfSoundData = ysd;
-
-            VvvfValues control = new();
-            control.ResetMathematicValues();
-            control.ResetControlValues();
-            realTime_Parameter.Control = control;
-
-            while (true)
-            {
-                BufferedWaveProvider bufferedWaveProvider = new(WaveFormat.CreateIeeeFloatWaveFormat(SamplingFrequency, 1));
-                MMDevice mmDevice = new MMDeviceEnumerator().GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-                WasapiOut wavPlayer = new(mmDevice, AudioClientShareMode.Shared, false, 0);
-
-                wavPlayer.Init(bufferedWaveProvider);
-                wavPlayer.Play();
-
-                int stat;
                 try
                 {
-                    stat = RealTime_VVVF_Generation_Calculate(bufferedWaveProvider, ysd, control, realTime_Parameter);
-                }
-                finally
+                    serial?.BaseStream.WriteAsync(data, 0, data.Length);
+                }catch
                 {
-                    wavPlayer.Stop();
-                    wavPlayer.Dispose();
-                    mmDevice.Dispose();
-                    bufferedWaveProvider.ClearBuffer();
+                    break;
                 }
 
-                if (stat == 0) break;
+                while (provider.BufferedBytes + calcCount > Properties.Settings.Default.RealTime_VVVF_BuffSize) ;
+            }
+
+            try
+            {
+                serial?.Write(new byte[] { 0xFF }, 0, 1);
+                serial?.Close();
+            }
+            catch
+            {
+                MessageBox.Show("USB device was removed!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                end_result = 0;
+            }
+
+            return end_result;
+
+        }
+        public static void Calculate(YamlVvvfSoundData Sound, RealTimeParameter Param, SerialPort? Serial)
+        {
+            Param.quit = false;
+            Param.VvvfSoundData = Sound;
+
+            VvvfValues Control = new();
+            Control.ResetMathematicValues();
+            Control.ResetControlValues();
+            Param.Control = Control;
+
+            BufferedWaveProvider bufferedWaveProvider = new(WaveFormat.CreateIeeeFloatWaveFormat(SamplingFrequency, 1));
+            bufferedWaveProvider.DiscardOnBufferOverflow = true;
+            MMDevice mmDevice = new MMDeviceEnumerator().GetDevice(Param.AudioDeviceId);
+            WasapiOut wavPlayer = new(mmDevice, AudioClientShareMode.Shared, false, 0);
+
+            wavPlayer.Init(bufferedWaveProvider);
+            wavPlayer.Play();
+
+            int stat;
+            try
+            {
+                stat = Generate(bufferedWaveProvider, Sound, Control, Param, Serial);
+            }
+            finally
+            {
+                wavPlayer.Stop();
+                wavPlayer.Dispose();
+                mmDevice.Dispose();
+                bufferedWaveProvider.ClearBuffer();
             }
 
 

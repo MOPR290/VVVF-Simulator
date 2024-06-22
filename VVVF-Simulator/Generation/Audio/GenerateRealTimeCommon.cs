@@ -1,8 +1,5 @@
-﻿using NAudio.CoreAudioApi;
-using NAudio.Wave;
-using System;
+﻿using System;
 using VvvfSimulator.Yaml.VvvfSound;
-using static VvvfSimulator.Generation.Audio.TrainSound.Audio;
 using static VvvfSimulator.Generation.Motor.GenerateMotorCore;
 using static VvvfSimulator.Yaml.TrainAudioSetting.YamlTrainSoundAnalyze;
 
@@ -24,6 +21,7 @@ namespace VvvfSimulator.Generation.Audio
             public YamlVvvfSoundData VvvfSoundData { get; set; } = new();
             public MotorData Motor { get; set; } = new();
             public YamlTrainSoundData TrainSoundData { get; set; } = YamlTrainSoundDataManage.CurrentData.Clone();
+            public String AudioDeviceId { get; set; } = new NAudio.CoreAudioApi.MMDeviceEnumerator().GetDefaultAudioEndpoint(NAudio.CoreAudioApi.DataFlow.Render, NAudio.CoreAudioApi.Role.Multimedia).ID;
         }
 
         public static int RealTime_CheckForFreq(VvvfValues control, RealTimeParameter param, double dt)

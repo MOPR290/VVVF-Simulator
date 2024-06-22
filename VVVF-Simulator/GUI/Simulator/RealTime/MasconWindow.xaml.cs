@@ -12,7 +12,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using VvvfSimulator.GUI.Simulator.RealTime.Setting_Window;
+using VvvfSimulator.GUI.Simulator.RealTime.Setting;
 using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
 using static VvvfSimulator.VvvfCalculate;
@@ -276,14 +276,14 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
         }
 
         public int current_stat = 0;
-        public Device_Mode current_mode = Device_Mode.KeyBoard;
+        public DeviceMode current_mode = DeviceMode.KeyBoard;
 
         // Serial Port
         public string current_port = "COM3";
         public SerialPort serialPort = new();
         public void SetConfig()
         {
-            if(current_mode == Device_Mode.PicoMascon)
+            if(current_mode == DeviceMode.PicoMascon)
             {
                 if (serialPort.IsOpen) serialPort.Close();
                 try
@@ -309,14 +309,14 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
                     MessageBox.Show(ex.Message, "Error" , MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            else if(current_mode == Device_Mode.KeyBoard)
+            else if(current_mode == DeviceMode.KeyBoard)
             {
                 if (serialPort.IsOpen) serialPort.Close();
             }
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (current_mode != Device_Mode.KeyBoard) return;
+            if (current_mode != DeviceMode.KeyBoard) return;
             Key key = e.Key;
 
             if (key.Equals(Key.S))
@@ -336,7 +336,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             if (!serialPort.IsOpen) return;
             String read = serialPort.ReadExisting();
             
-            if(current_mode == Device_Mode.PicoMascon)
+            if(current_mode == DeviceMode.PicoMascon)
             {
                 try
                 {
@@ -363,7 +363,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
 
             if (tag.Equals("DeviceSetting"))
             {
-                RealTime_Device_Setting rtds = new(this);
+                Device rtds = new(this);
                 rtds.Show();
             }
         }

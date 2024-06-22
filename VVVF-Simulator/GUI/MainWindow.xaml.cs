@@ -17,8 +17,8 @@ using VvvfSimulator.GUI.Mascon;
 using VvvfSimulator.GUI.TrainAudio;
 using VvvfSimulator.GUI.TaskViewer;
 using VvvfSimulator.GUI.Simulator.RealTime;
+using VvvfSimulator.GUI.Simulator.RealTime.Setting;
 using VvvfSimulator.GUI.Simulator.RealTime.UniqueWindow;
-using VvvfSimulator.GUI.Simulator.RealTime.Setting_Window;
 using static VvvfSimulator.Generation.GenerateCommon;
 using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
@@ -456,9 +456,28 @@ namespace VvvfSimulator
 
                     BindingData.Blocked = true;
 
+                    System.IO.Ports.SerialPort? serial = null;
+                    if (command.Length == 3)
+                    {
+                        try
+                        {
+                            ComPortSelector com = new();
+                            com.ShowDialog();
+                            serial = new()
+                            {
+                                PortName = com.GetComPortName(),
+                            };
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Invalid COM port", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return true;
+                        }
+                    }
+
                     MasconWindow mascon = new(parameter);
                     mascon.Show();
-                    mascon.Start_Task();
+                    mascon.Start_Task();                  
 
                     if (Properties.Settings.Default.RealTime_VVVF_WaveForm_Show)
                     {
@@ -503,16 +522,13 @@ namespace VvvfSimulator
                         window.RunTask();
                     }
 
+                    bool do_clone = !Properties.Settings.Default.RealTime_VVVF_EditAllow;
+                    YamlVvvfSoundData data = do_clone ? YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData) : YamlVvvfManage.CurrentData;
+
                     Task task = Task.Run(() => {
                         try
                         {
-                            bool do_clone = !Properties.Settings.Default.RealTime_VVVF_EditAllow;
-                            YamlVvvfSoundData data;
-                            if (do_clone)
-                                data = YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData);
-                            else
-                                data = YamlVvvfManage.CurrentData;
-                            Generation.Audio.VvvfSound.RealTime.RealTime_VVVF_Generation(data, parameter);
+                            Generation.Audio.VvvfSound.RealTime.Calculate(data, parameter, serial);
                         }
                         catch (Exception e)
                         {
@@ -522,11 +538,12 @@ namespace VvvfSimulator
                         BindingData.Blocked = false;
                         SystemSounds.Beep.Play();
                     });
+
                     return Properties.Settings.Default.RealTime_VVVF_EditAllow;
                 }
                 else if (command[1].Equals("Setting"))
                 {
-                    RealTime_Basic_Settings setting = new( RealTime_Basic_Settings.RealTime_Basic_Setting_Type.VVVF );
+                    Basic setting = new( Basic.RealTime_Basic_Setting_Type.VVVF );
                     setting.ShowDialog();
                 }
             }
@@ -635,7 +652,7 @@ namespace VvvfSimulator
                 }
                 else if (command[1].Equals("Setting"))
                 {
-                    RealTime_Basic_Settings setting = new( RealTime_Basic_Settings.RealTime_Basic_Setting_Type.Train );
+                    Basic setting = new( Basic.RealTime_Basic_Setting_Type.Train );
                     setting.ShowDialog();
                 }
             }

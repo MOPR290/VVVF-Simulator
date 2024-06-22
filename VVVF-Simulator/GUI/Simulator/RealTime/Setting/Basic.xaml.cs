@@ -7,12 +7,12 @@ using System.Windows.Media;
 using Brush = System.Windows.Media.Brush;
 using FontFamily = System.Drawing.FontFamily;
 
-namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
+namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
 {
     /// <summary>
     /// RealTime_Settings.xaml の相互作用ロジック
     /// </summary>
-    public partial class RealTime_Basic_Settings : Window
+    public partial class Basic : Window
     {
         private readonly bool IgnoreUpdate = true;
         private readonly RealTime_Basic_Setting_Type _SettingType;
@@ -22,7 +22,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
             VVVF, Train
         }
 
-        public RealTime_Basic_Settings(RealTime_Basic_Setting_Type SettingType)
+        public Basic(RealTime_Basic_Setting_Type SettingType)
         {
             _SettingType = SettingType;
             InitializeComponent();

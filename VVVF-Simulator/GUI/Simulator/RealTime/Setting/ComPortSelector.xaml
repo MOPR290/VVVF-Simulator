@@ -1,0 +1,23 @@
+﻿<Window x:Class="VvvfSimulator.GUI.Simulator.RealTime.Setting.ComPortSelector"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VvvfSimulator.GUI.Simulator.RealTime.Setting"
+        mc:Ignorable="d"
+        Title="COM Port" Width="800" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Top" SizeToContent="Height" ResizeMode="NoResize">
+    <Grid VerticalAlignment="Center">
+        <Grid Height="75">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="5*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Background="#FFEF8354">
+                <Label Content="COM Port" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="22" Foreground="White"/>
+            </Grid>
+            <ComboBox x:Name="PortSelector" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,20,20,20" Tag="Port" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+        </Grid>
+
+    </Grid>
+</Window>

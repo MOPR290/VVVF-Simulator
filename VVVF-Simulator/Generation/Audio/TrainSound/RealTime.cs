@@ -45,30 +45,30 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             }
         }
 
-        public static void Generate(YamlVvvfSoundData ysd, RealTimeParameter parameter)
+        public static void Generate(YamlVvvfSoundData Sound, RealTimeParameter Param)
         {
-            parameter.quit = false;
-            parameter.VvvfSoundData = ysd;
-            parameter.Motor = new MotorData() { 
+            Param.quit = false;
+            Param.VvvfSoundData = Sound;
+            Param.Motor = new MotorData() { 
                 SIM_SAMPLE_FREQ = SamplingFrequency ,
-                motor_Specification = parameter.TrainSoundData.MotorSpec.Clone(),
+                motor_Specification = Param.TrainSoundData.MotorSpec.Clone(),
             };
 
-            YamlTrainSoundData thd = parameter.TrainSoundData;
+            YamlTrainSoundData SoundConfiguration = Param.TrainSoundData;
 
             VvvfValues control = new();
             control.ResetMathematicValues();
             control.ResetControlValues();
-            parameter.Control = control;
+            Param.Control = control;
 
             while (true)
             {
                 var bufferedWaveProvider = new BufferedWaveProvider(WaveFormat.CreateIeeeFloatWaveFormat(SamplingFrequency,1));
                 ISampleProvider sampleProvider = bufferedWaveProvider.ToSampleProvider();
-                if (thd.UseFilteres) sampleProvider = new MonauralFilter(sampleProvider, thd.GetFilteres(SamplingFrequency));
-                if (thd.UseImpulseResponse) sampleProvider = new CppConvolutionFilter(sampleProvider, 4096, thd.ImpulseResponse);
+                if (SoundConfiguration.UseFilteres) sampleProvider = new MonauralFilter(sampleProvider, SoundConfiguration.GetFilteres(SamplingFrequency));
+                if (SoundConfiguration.UseImpulseResponse) sampleProvider = new CppConvolutionFilter(sampleProvider, 4096, SoundConfiguration.ImpulseResponse);
 
-                var mmDevice = new MMDeviceEnumerator().GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+                var mmDevice = new MMDeviceEnumerator().GetDevice(Param.AudioDeviceId);
                 IWavePlayer wavPlayer = new WasapiOut(mmDevice, AudioClientShareMode.Shared, false, 0);
 
                 wavPlayer.Init(sampleProvider);
@@ -77,7 +77,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
                 int stat;
                 try
                 {
-                    stat = Calculate(bufferedWaveProvider, ysd, control, parameter);
+                    stat = Calculate(bufferedWaveProvider, Sound, control, Param);
                 }
                 catch
                 {

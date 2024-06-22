@@ -1,27 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
-namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
+namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
 {
     /// <summary>
     /// RealTime_Device_Setting.xaml の相互作用ロジック
     /// </summary>
-    public partial class RealTime_Device_Setting : Window
+    public partial class Device : Window
     {
-        private ViewModel view_model = new ViewModel();
+        private readonly ViewModel Model = new();
         public class ViewModel : ViewModelBase
         {
 
@@ -37,19 +27,19 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
             }
         }
 
-        private MasconWindow main;
-        public RealTime_Device_Setting(MasconWindow main)
+        private readonly MasconWindow Main;
+        public Device(MasconWindow Main)
         {
-            this.main = main;
-            DataContext = view_model;
+            this.Main = Main;
+            DataContext = Model;
 
             InitializeComponent();
 
-            Mode_Selector.ItemsSource = (Device_Mode[])Enum.GetValues(typeof(Device_Mode));
-            Mode_Selector.SelectedItem = main.current_mode;
+            Mode_Selector.ItemsSource = (DeviceMode[])Enum.GetValues(typeof(DeviceMode));
+            Mode_Selector.SelectedItem = Main.current_mode;
             SetCOMPorts();
-            Port_Selector.SelectedItem = main.current_port;
-            SetVisibility(main.current_mode);
+            Port_Selector.SelectedItem = Main.current_port;
+            SetVisibility(Main.current_mode);
         }
 
         public void SetCOMPorts()
@@ -58,15 +48,15 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
             Port_Selector.ItemsSource = ports;
         }
 
-        public void SetVisibility(Device_Mode mode)
+        public void SetVisibility(DeviceMode mode)
         {
-            if(mode == Device_Mode.KeyBoard)
+            if(mode == DeviceMode.KeyBoard)
             {
-                view_model.Port_Visibility = Visibility.Hidden;
+                Model.Port_Visibility = Visibility.Hidden;
             }
-            else if(mode == Device_Mode.PicoMascon)
+            else if(mode == DeviceMode.PicoMascon)
             {
-                view_model.Port_Visibility = Visibility.Visible;
+                Model.Port_Visibility = Visibility.Visible;
             }
         }
 
@@ -77,23 +67,23 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting_Window
 
             if (tag.Equals("Mode"))
             {
-                Device_Mode mode = (Device_Mode)cb.SelectedItem;
-                main.current_mode = mode;
+                DeviceMode mode = (DeviceMode)cb.SelectedItem;
+                Main.current_mode = mode;
                 SetVisibility(mode);
             }else if (tag.Equals("Port"))
             {
                 string port = (string)cb.SelectedItem;
-                main.current_port = port;
+                Main.current_port = port;
             }
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            main.SetConfig();
+            Main.SetConfig();
         }
     }
 
-    public enum Device_Mode
+    public enum DeviceMode
     {
         KeyBoard, PicoMascon
     }
