@@ -1,8 +1,7 @@
-﻿using static VvvfSimulator.VvvfCalculate;
-using static VvvfSimulator.MyMath;
-using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using static VvvfSimulator.VvvfCalculate;
+using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData;
 using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData.YamlControlData;
 using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData.YamlControlData.YamlFreeRunCondition;
 using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData.YamlMasconData;
@@ -14,9 +13,14 @@ using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData.YamlControlData.Yaml
 
 namespace VvvfSimulator.Yaml.VvvfSound
 {
-    public class YamlVVVFWave
+    public class YamlVvvfWave
     {
-		private static double YamlAmplitudeCalculate(YamlControlDataAmplitude amp_data, double x)
+        public static double GetChangingValue(double x1, double y1, double x2, double y2, double x)
+        {
+            return y1 + (y2 - y1) / (x2 - x1) * (x - x1);
+        }
+
+        private static double YamlAmplitudeCalculate(YamlControlDataAmplitude amp_data, double x)
 		{
 			var amp_param = amp_data.Parameter;
 			AmplitudeArgument aa = new(amp_param,x);
@@ -30,7 +34,7 @@ namespace VvvfSimulator.Yaml.VvvfSound
 		{
 			double val = 1000;
 			if (moving_val.Type == YamlMovingValue.MovingValueType.Proportional)
-				val = get_Changing_Value(
+				val = GetChangingValue(
 					moving_val.Start,
 					moving_val.StartValue,
 					moving_val.End,
@@ -41,7 +45,7 @@ namespace VvvfSimulator.Yaml.VvvfSound
 				val = (Math.Pow(2, Math.Pow((current - moving_val.Start) / (moving_val.End - moving_val.Start), moving_val.Degree)) - 1) * (moving_val.EndValue - moving_val.StartValue) + moving_val.StartValue;
 			else if(moving_val.Type == YamlMovingValue.MovingValueType.Inv_Proportional)
             {
-				double x = get_Changing_Value(
+				double x = GetChangingValue(
 					moving_val.Start,
 					1 / moving_val.StartValue,
 					moving_val.End,
@@ -59,7 +63,7 @@ namespace VvvfSimulator.Yaml.VvvfSound
 			}
             else if (moving_val.Type == YamlMovingValue.MovingValueType.Sine)
 			{
-				double x = (M_PI_2 - Math.Asin(moving_val.StartValue / moving_val.EndValue)) / (moving_val.End - moving_val.Start) * (current - moving_val.Start) + Math.Asin(moving_val.StartValue / moving_val.EndValue);
+				double x = (MyMath.M_PI_2 - Math.Asin(moving_val.StartValue / moving_val.EndValue)) / (moving_val.End - moving_val.Start) * (current - moving_val.Start) + Math.Asin(moving_val.StartValue / moving_val.EndValue);
 				val = Math.Sin(x) * moving_val.EndValue;
             }
 

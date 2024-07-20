@@ -13,8 +13,9 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
     {
         private readonly PulseMode pulseMode;
         private readonly bool ignoreUpdate = true;
-        public DiscreteSettingWindow(PulseMode pulseMode)
+        public DiscreteSettingWindow(Window? owner, PulseMode pulseMode)
         {
+            Owner = owner;
             InitializeComponent();
             this.pulseMode = pulseMode;
             MyInitializeComponent();
@@ -40,31 +41,50 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
             pulseMode.DiscreteTime.Enabled = EnabledCheckBox.IsChecked ?? false;
         }
 
-        private static int ParseText2Int(TextBox tb)
+        private static int ParseInt(TextBox tb)
         {
             try
             {
-                tb.Background = new BrushConverter().ConvertFrom("#FFFFFFFF") as Brush;
+                VisualStateManager.GoToState(tb, "Success", false);
                 return int.Parse(tb.Text);
             }
             catch
             {
-                tb.Background = new BrushConverter().ConvertFrom("#FFfed0d0") as Brush;
-                return -1;
+                VisualStateManager.GoToState(tb, "Error", false);
+                return 0;
             }
         }
 
         private void StepsInput_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (ignoreUpdate) return;
-            int i = ParseText2Int(StepsInput);
-            pulseMode.DiscreteTime.Steps = i;
+            pulseMode.DiscreteTime.Steps = ParseInt(StepsInput);
         }
 
         private void ModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ignoreUpdate) return;
             pulseMode.DiscreteTime.Mode = (PulseMode.DiscreteTimeConfiguration.DiscreteTimeMode)ModeComboBox.SelectedItem;
+        }
+
+        private void OnWindowControlButtonClick(object sender, RoutedEventArgs e)
+        {
+            Button? btn = sender as Button;
+            if (btn == null) return;
+            string? tag = btn.Tag.ToString();
+            if (tag == null) return;
+
+            if (tag.Equals("Close"))
+                Close();
+            else if (tag.Equals("Maximize"))
+            {
+                if (WindowState.Equals(WindowState.Maximized))
+                    WindowState = WindowState.Normal;
+                else
+                    WindowState = WindowState.Maximized;
+            }
+            else if (tag.Equals("Minimize"))
+                WindowState = WindowState.Minimized;
         }
     }
 }

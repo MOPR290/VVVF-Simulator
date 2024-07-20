@@ -316,7 +316,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                     free_run = control.IsFreeRun(),
                     wave_stat = control.GetControlFrequency()
                 };
-                PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, vvvfData);
+                PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(control, cv, vvvfData);
                 _ = CalculatePhases(control, calculated_Values, 0);
 
                 control.SetSineTime(0);

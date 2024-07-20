@@ -5,27 +5,62 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VvvfSimulator.GUI.TrainAudio"
         mc:Ignorable="d"
+        Style="{DynamicResource MinimumWindowStyle}"
         Title="Train Sound Environment Settings" Height="500" Width="800">
-    <DockPanel LastChildFill="True">
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File">
-                <MenuItem Header="Save" Tag="Save" Click="MenuFileClick"/>
-                <MenuItem Header="Load" Tag="Open" Click="MenuFileClick"/>
-            </MenuItem>
-            <MenuItem Header="Parameter">
-                <MenuItem Header="Motor" Tag="Motor" Click="MenuParameterClick"/>
-                <MenuItem Header="Gear" Tag="Gear" Click="MenuParameterClick"/>
-            </MenuItem>
-            <MenuItem Header="Mixer">
-                <MenuItem Header="Volume" Tag="Volume" Click="MenuMixerClick"/>
-                <MenuItem Header="FrequencyFilter" Tag="Frequency" Click="MenuMixerClick"/>
-                <MenuItem Header="ImpulseResponse" Tag="Ir" Click="MenuMixerClick"/>
-            </MenuItem>
-            
-        </Menu>
-        <ScrollViewer DockPanel.Dock="Bottom">
-            <Frame x:Name="PageFrame" Content="" NavigationUIVisibility="Hidden" />
-        </ScrollViewer>
-    </DockPanel>
-    
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Common.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/MenuBar.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/MenuItem.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/TabControl.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/ScrollBar.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Window.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="{DynamicResource VoidBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="46"/>
+                <ColumnDefinition Width="46"/>
+                <ColumnDefinition Width="46"/>
+            </Grid.ColumnDefinitions>
+            <Image Style="{StaticResource WindowIconStyle}"/>
+            <Menu Grid.Column="1" Style="{DynamicResource MenuStyle}">
+                <MenuItem Header="File">
+                    <MenuItem Header="Save" Tag="Save" Click="MenuFileClick"/>
+                    <MenuItem Header="Load" Tag="Open" Click="MenuFileClick"/>
+                </MenuItem>
+                <MenuItem Header="Parameter">
+                    <MenuItem Header="Motor" Tag="Motor" Click="MenuParameterClick"/>
+                    <MenuItem Header="Gear" Tag="Gear" Click="MenuParameterClick"/>
+                </MenuItem>
+                <MenuItem Header="Mixer">
+                    <MenuItem Header="Volume" Tag="Volume" Click="MenuMixerClick"/>
+                    <MenuItem Header="FrequencyFilter" Tag="Frequency" Click="MenuMixerClick"/>
+                    <MenuItem Header="ImpulseResponse" Tag="Ir" Click="MenuMixerClick"/>
+                </MenuItem>
+
+            </Menu>
+            <Button Grid.Column="2" Tag="Minimize" Style="{DynamicResource WindowMimizeButton}" Click="OnWindowControlButtonClick"/>
+            <Button Grid.Column="3" Tag="Maximize" Style="{DynamicResource WindowMaximizeButton}" Click="OnWindowControlButtonClick"/>
+            <Button Grid.Column="4" Tag="Close" Style="{DynamicResource WindowCloseButton}" Click="OnWindowControlButtonClick"/>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <ScrollViewer Style="{DynamicResource SlimScrollViewer}">
+                <Frame x:Name="PageFrame" Content="" NavigationUIVisibility="Hidden" />
+            </ScrollViewer>
+        </Grid>
+    </Grid>
 </Window>

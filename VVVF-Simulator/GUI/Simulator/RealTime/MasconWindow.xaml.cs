@@ -134,7 +134,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
                     free_run = solve_control.IsFreeRun(),
                     wave_stat = solve_control.GetControlFrequency()
                 };
-                PwmCalculateValues calculated_Values = Yaml.VvvfSound.YamlVVVFWave.CalculateYaml(solve_control, cv, realTime_Parameter.VvvfSoundData);
+                PwmCalculateValues calculated_Values = Yaml.VvvfSound.YamlVvvfWave.CalculateYaml(solve_control, cv, realTime_Parameter.VvvfSoundData);
                 CalculatePhases(solve_control, calculated_Values, 0);
             });
             re_calculate.Wait();
@@ -364,7 +364,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             if (tag.Equals("DeviceSetting"))
             {
                 Device rtds = new(this);
-                rtds.Show();
+                rtds.ShowDialog();
             }
         }
 
@@ -379,6 +379,25 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             realTime_Parameter.quit = true;
         }
 
-        
+        private void OnWindowControlButtonClick(object sender, RoutedEventArgs e)
+        {
+            Button? btn = sender as Button;
+            if (btn == null) return;
+            string? tag = btn.Tag.ToString();
+            if (tag == null) return;
+
+            if (tag.Equals("Close"))
+                Close();
+            else if (tag.Equals("Maximize"))
+            {
+                if (WindowState.Equals(WindowState.Maximized))
+                    WindowState = WindowState.Normal;
+                else
+                    WindowState = WindowState.Maximized;
+            }
+            else if (tag.Equals("Minimize"))
+                WindowState = WindowState.Minimized;
+        }
+
     }
 }

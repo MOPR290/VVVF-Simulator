@@ -35,7 +35,7 @@ namespace VvvfSimulator.Generation.Video.WaveForm
 
                 for (int j = 0; j < 2; j++)
                 {
-                    PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, vvvfData);
+                    PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(control, cv, vvvfData);
                     WaveValues value = CalculatePhases(control, calculated_Values, 0);
 
                     points_U[j] = value.U;

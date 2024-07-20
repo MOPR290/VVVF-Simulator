@@ -10,8 +10,9 @@ namespace VvvfSimulator.GUI.Util
     /// </summary>
     public partial class DoubleNumberInput : Window
     {
-        public DoubleNumberInput(string title)
+        public DoubleNumberInput(Window Owner,string title)
         {
+            this.Owner = Owner;
             InitializeComponent();
             DescriptionBox.Content = title;
             NumberEnterBox.Text = "10.0";
@@ -22,16 +23,15 @@ namespace VvvfSimulator.GUI.Util
         {
             try
             {
-                tb.Background = new BrushConverter().ConvertFrom("#FFFFFFFF") as Brush;
-                return Double.Parse(tb.Text);
+                VisualStateManager.GoToState(tb, "Success", false);
+                return double.Parse(tb.Text);
             }
             catch
             {
-                tb.Background = new BrushConverter().ConvertFrom("#FFfed0d0") as Brush;
-                return -1;
+                VisualStateManager.GoToState(tb, "Error", false);
+                return 0;
             }
         }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             TextBox tb = NumberEnterBox;
@@ -44,6 +44,17 @@ namespace VvvfSimulator.GUI.Util
         {
             TextBox tb = NumberEnterBox;
             ParseDouble(tb);
+        }
+
+        private void OnWindowControlButtonClick(object sender, RoutedEventArgs e)
+        {
+            Button? btn = sender as Button;
+            if (btn == null) return;
+            string? tag = btn.Tag.ToString();
+            if (tag == null) return;
+
+            if (tag.Equals("Close"))
+                Close();
         }
     }
 }

@@ -8,27 +8,27 @@ namespace VvvfSimulator.Generation.Video.FS
     public class GenerateFourierSeries
     {
 
-        public static double GetFourier(ref WaveValues[] UVW, int N, double InitialPhase)
+        public static double GetFourier(ref WaveValues[] UVW, int N)
         {
             double integral = 0;
             double dt = 1.0 / (UVW.Length - 1);
 
             for (int i = 0; i < UVW.Length; i++)
             {
-                double iTime = MyMath.M_2PI * i / (UVW.Length - 1) - InitialPhase;
-                double sum = (UVW[i].U - UVW[i].V) * MyMath.sin(N * iTime) * dt;
+                double iTime = MyMath.M_2PI * i / (UVW.Length - 1);
+                double sum = (UVW[i].U - UVW[i].V) * Math.Sin(N * iTime) * dt;
                 integral += sum;
             }
-            double bn = integral / 1.1026577908425;
-            return Math.Round(bn, 4);
+            double bn = integral;
+            return bn;
         }
 
-        public static double GetFourierFast(ref WaveValues[] UVW, int N, double InitialPhase)
+        public static double GetFourierFast(ref WaveValues[] UVW, int N)
         {
             double integral = 0;
 
             int Ft = 0;
-            double Time = -InitialPhase;
+            double Time = 0;
 
             for (int i = 0; i < UVW.Length; i++)
             {
@@ -41,23 +41,23 @@ namespace VvvfSimulator.Generation.Video.FS
                 }
 
                 if (Ft == iFt) continue;
-                double iTime = MyMath.M_2PI * i / (UVW.Length - 1) - InitialPhase;
-                double sum = (-MyMath.cos(N * iTime) + MyMath.cos(N * Time)) * Ft / N;
+                double iTime = MyMath.M_2PI * i / (UVW.Length - 1);
+                double sum = (-Math.Cos(N * iTime) + Math.Cos(N * Time)) * Ft / N;
                 integral += sum;
 
                 Time = iTime;
                 Ft = iFt;
             }
-            double bn = integral / MyMath.M_2PI / 1.1026577908425;
-            return Math.Round(bn, 4);
+            double bn = integral / MyMath.M_2PI;
+            return bn;
         }
 
-        public static double[] GetFourierCoefficients(ref WaveValues[] UVW, int N, double InitialPhase)
+        public static double[] GetFourierCoefficients(ref WaveValues[] UVW, int N)
         {
             double[] coefficients = new double[N];
             for (int n = 1; n <= N; n++)
             {
-                double result = GetFourierFast(ref UVW, n, InitialPhase);
+                double result = GetFourierFast(ref UVW, n);
                 coefficients[n-1] = result;
             }
             return coefficients;
@@ -67,7 +67,7 @@ namespace VvvfSimulator.Generation.Video.FS
         {
             Control.SetRandomFrequencyMoveAllowed(false);
             WaveValues[] PWM_Array = GenerateBasic.GetUVWCycle(Control, Sound, MyMath.M_PI_6, Delta, false);
-            return GetFourierCoefficients(ref PWM_Array, N, 0);
+            return GetFourierCoefficients(ref PWM_Array, N);
         }
 
         public static string GetDesmosFourierCoefficientsArray(ref double[] coefficients)
@@ -123,13 +123,15 @@ namespace VvvfSimulator.Generation.Video.FS
             g.FillRectangle(new SolidBrush(Color.White), 0, 0, 1000, 1000);
 
             int count = Coefficients.Length;
+            if (count == 0) return image;
             int width = 1000 / count;
 
             for (int i = 0; i < count; i++)
             {
                 double result = Coefficients[i];
-                int height = (int)( Math.Log10(result * 1000) * 1000 / 3.0 / 2.0 );
-                SolidBrush solidBrush = new(MagnitudeColor.GetColor(Math.Abs(height*2.0/1000)));
+                double ratio = result / ControlInfo.GenerateControlCommon.VoltageConvertFactor;
+                int height = (int)(ratio * 500);
+                SolidBrush solidBrush = new(MagnitudeColor.GetColor(ratio));
                 if(height < 0) g.FillRectangle(solidBrush, width * i, 500, width, -height);
                 else g.FillRectangle(solidBrush, width * i, 500 - height, width, height);
 

@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
 using static VvvfSimulator.Generation.Video.FS.GenerateFourierSeries;
-using Brush = System.Windows.Media.Brush;
 
 namespace VvvfSimulator.GUI.Simulator.RealTime.UniqueWindow
 {
@@ -108,16 +106,22 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.UniqueWindow
             });
         }
 
-        private void TextBox_N_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void TextBox_N_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            N = ParseInt(TextBox_N);
+        }
+
+        private static int ParseInt(TextBox tb)
         {
             try
             {
-                TextBox_N.Background = new BrushConverter().ConvertFrom("#FFFFFFFF") as Brush;
-                N = int.Parse(TextBox_N.Text);
+                VisualStateManager.GoToState(tb, "Success", false);
+                return int.Parse(tb.Text);
             }
             catch
             {
-                TextBox_N.Background = new BrushConverter().ConvertFrom("#FFfed0d0") as Brush;
+                VisualStateManager.GoToState(tb, "Error", false);
+                return 0;
             }
         }
     }

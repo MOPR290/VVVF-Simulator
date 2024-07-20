@@ -5,11 +5,51 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VvvfSimulator.GUI.Util"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        Style="{DynamicResource DialogWindowStyle}"
         FocusManager.FocusedElement="{Binding ElementName=NumberEnterBox}"
         Title="Enther the value" Height="180" Width="300" ResizeMode="NoResize">
-    <Grid>
-        <Label x:Name="DescriptionBox" Content="enter the value" HorizontalAlignment="Left" Margin="10,16,0,0" VerticalAlignment="Top" Height="26"/>
-        <TextBox x:Name="NumberEnterBox" Margin="34,0,34,0" TextWrapping="Wrap" Text="20.00" VerticalAlignment="Center" Height="45" FontFamily="M PLUS 2" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="NumberEnterBox_TextChanged"/>
-        <Button Content="OK" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="200" Click="Button_Click" Height="28" Margin="0,0,0,10"/>
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Common.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Window.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="{DynamicResource VoidBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="46"/>
+            </Grid.ColumnDefinitions>
+            <Image Style="{StaticResource WindowIconStyle}"/>
+            <Button Grid.Column="2" Tag="Close" Click="OnWindowControlButtonClick" Style="{DynamicResource WindowCloseButton}"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Label x:Name="DescriptionBox" Content="Enter the value" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2"/>
+            <TextBox Style="{DynamicResource SlimTextBox}" x:Name="NumberEnterBox" Text="20.00" FontSize="22" TextChanged="NumberEnterBox_TextChanged" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"/>
+            <Button Style="{DynamicResource SlimButton}" Content="OK" Click="Button_Click" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="1"/>
+        </Grid>
     </Grid>
 </Window>

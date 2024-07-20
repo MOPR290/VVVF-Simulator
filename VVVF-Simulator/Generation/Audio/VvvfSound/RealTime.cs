@@ -60,7 +60,7 @@ namespace VvvfSimulator.Generation.Audio.VvvfSound
                         free_run = control.IsFreeRun(),
                         wave_stat = control.GetControlFrequency()
                     };
-                    PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, sound_data);
+                    PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(control, cv, sound_data);
                     WaveValues value = VvvfCalculate.CalculatePhases(control, calculated_Values, 0);
                     char cvalue = (char)(value.U << 4 | value.V << 2 | value.W);
                     data[i] = (byte)cvalue;

@@ -49,17 +49,17 @@ namespace VvvfSimulator.GUI.TrainAudio.Pages.Motor
 
             IgnoreUpdate = false;
         }
-        private static double ParseTextBox2Double(TextBox tb)
+        private static double ParseDouble(TextBox tb)
         {
             try
             {
-                tb.Background = new BrushConverter().ConvertFrom("#FFFFFFFF") as Brush;
-                return Double.Parse(tb.Text);
+                VisualStateManager.GoToState(tb, "Success", false);
+                return double.Parse(tb.Text);
             }
             catch
             {
-                tb.Background = new BrushConverter().ConvertFrom("#FFfed0d0") as Brush;
-                return -1;
+                VisualStateManager.GoToState(tb, "Error", false);
+                return 0;
             }
         }
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -68,7 +68,7 @@ namespace VvvfSimulator.GUI.TrainAudio.Pages.Motor
 
             TextBox tb = (TextBox)sender;
             Object tag = tb.Tag;
-            double d = ParseTextBox2Double(tb);
+            double d = ParseDouble(tb);
             var motor = TrainSoundData.MotorSpec;
             if (tag.Equals("SR")) motor.R_s = d;
             else if (tag.Equals("RR")) motor.R_r = d;

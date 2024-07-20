@@ -4,88 +4,77 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
+        Style="{DynamicResource MinimumWindowStyle}"
         Title="VVVF Simulator" Height="500" Width="960" Closing="Window_Closing" WindowStartupLocation="CenterScreen">
+
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Common.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/MenuBar.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/ContextMenu.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/TabControl.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/ListView.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Window.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/MenuItem.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        </ResourceDictionary>
     </Window.Resources>
 
-    <Grid>
+    <Grid Background="{DynamicResource VoidBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
-            <RowDefinition Height="115*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="7*"/>
             </Grid.ColumnDefinitions>
-            <Grid Background="#FFFFFF">
-                <TabControl x:Name="setting_tabs" Margin="10,10,10,10" Background="#FFFFFF" >
+            <Grid Margin="5,10,4,5">
+                <TabControl x:Name="setting_tabs">
                     <TabItem Header="Settings">
-                        <Grid Background="#FFFFFF">
-                            <Button x:Name="settings_level" Content="PWM Level" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="SettingButtonClick" Foreground="#FF616161" Background="White">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="14"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
-                            <Button x:Name="settings_minimum" Content="Minimum Frequency" HorizontalAlignment="Stretch" Margin="10,43,10,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="SettingButtonClick" Foreground="#FF616161" Background="White">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="14"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
-                            <Button x:Name="settings_mascon" Content="Jerk Control" HorizontalAlignment="Stretch" Margin="10,76,10,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="SettingButtonClick" Foreground="#FF616161" Background="White">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="14"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Button Style="{StaticResource SlimButton}" x:Name="settings_level" Content="PWM Level" Click="SettingButtonClick"/>
+                            <Button Style="{StaticResource SlimButton}" x:Name="settings_minimum" Content="Minimum Frequency" Click="SettingButtonClick" Grid.Row="1"/>
+                            <Button Style="{StaticResource SlimButton}" x:Name="settings_mascon" Content="Jerk Control" Click="SettingButtonClick" Grid.Row="2"/>
                         </Grid>
                     </TabItem>
                     <TabItem Header="Accelerate">
-                        <Grid Background="#FFFFFF">
+                        <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="50"/>
                             </Grid.RowDefinitions>
-                            <Grid Background="#FFEDEDED" Grid.Row="1">
-                                <Button x:Name="accelerate_add" Tag="accelerate_add" Content="+" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF616161" Click="SettingEditClick" Margin="17,0,0,0" Background="#FFFFFF" Foreground="#FF616161">
-                                    <Button.Resources>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="CornerRadius" Value="14"/>
-                                        </Style>
-                                    </Button.Resources>
-                                </Button>
-                                <Button x:Name="accelerate_remove" Tag="accelerate_remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF616161" Click="SettingEditClick" Background="#FFFFFF" Foreground="#FF616161" Margin="67,0,0,0">
-                                    <Button.Resources>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="CornerRadius" Value="14"/>
-                                        </Style>
-                                    </Button.Resources>
-                                </Button>
-                                <Button x:Name="accelerate_reset" Tag="accelerate_reset" Content="RESET" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="SettingEditClick" Background="#FFFFFF" Foreground="#FF616161" Margin="111,0,0,0">
-                                    <Button.Resources>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="CornerRadius" Value="14"/>
-                                        </Style>
-                                    </Button.Resources>
-                                </Button>
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Background="{DynamicResource SubBackgroundBrush}" Grid.ColumnSpan="3" CornerRadius="25"/>
+                                <Button Style="{DynamicResource SlimButton}" x:Name="accelerate_add" Tag="accelerate_add" Content="+" Click="SettingEditClick" Grid.Column="0"/>
+                                <Button Style="{DynamicResource SlimButton}" x:Name="accelerate_remove" Tag="accelerate_remove" Content="-" Click="SettingEditClick" Grid.Column="1"/>
+                                <Button Style="{DynamicResource SlimButton}" x:Name="accelerate_reset" Tag="accelerate_reset" Content="RESET" Click="SettingEditClick" Grid.Column="2"/>
                             </Grid>
-                            <ListView x:Name="accelerate_settings" SelectionMode="Single" Loaded="SettingsLoad" Tag="accelerate" SelectionChanged="SettingsSelectionChanged" BorderBrush="#FFFFFF" Background="#FFFFFF" >
+                            <ListView x:Name="accelerate_settings"  Loaded="SettingsLoad" Tag="accelerate" SelectionChanged="SettingsSelectionChanged" Style="{DynamicResource SlimListView}" ItemContainerStyle="{DynamicResource SlimListItem}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding ControlFrequencyFrom}"/>
-                                            <TextBlock Text="{Binding PulseMode.PulseName}" FontSize="20"/>
+                                            <TextBlock Text="{Binding PulseMode.PulseName}" Style="{DynamicResource ListItemTitleTextBlockStyle}"/>
+                                            <TextBlock Text="{Binding ControlFrequencyFrom}" HorizontalAlignment="Center" Foreground="{DynamicResource BackgroundTextBrush}"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                                 <ListView.ContextMenu>
-                                    <ContextMenu>
+                                    <ContextMenu Style="{DynamicResource SlimContextMenu}">
                                         <MenuItem Header="Sort" Click="MenuItem_Click" Tag="accelerate.sort"/>
                                         <MenuItem Header="Copy" Click="MenuItem_Click" Tag="accelerate.copy"/>
                                     </ContextMenu>
@@ -96,46 +85,36 @@
                         </Grid>
                     </TabItem>
                     <TabItem Header="Brake">
-                        <Grid Background="#FFFFFF">
+                        <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="50"/>
                             </Grid.RowDefinitions>
 
-                            <Grid Grid.Row="1" Background="#FFEDEDED">
-                                <Button x:Name="brake_add" Tag="brake_add" Content="+" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF616161" Click="SettingEditClick" Background="White" Foreground="#FF616161" Margin="17,0,0,0">
-                                    <Button.Resources>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="CornerRadius" Value="14"/>
-                                        </Style>
-                                    </Button.Resources>
-                                </Button>
-                                <Button x:Name="brake_remove" Tag="brake_remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF616161" Click="SettingEditClick" Background="White" Foreground="#FF616161" Margin="67,0,0,0">
-                                    <Button.Resources>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="CornerRadius" Value="14"/>
-                                        </Style>
-                                    </Button.Resources>
-                                </Button>
-                                <Button x:Name="brake_reset" Tag="brake_reset" Content="RESET" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF616161" Click="SettingEditClick" Background="White" Foreground="#FF616161" Margin="111,0,0,0">
-                                    <Button.Resources>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="CornerRadius" Value="14"/>
-                                        </Style>
-                                    </Button.Resources>
-                                </Button>
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Background="{DynamicResource SubBackgroundBrush}" Grid.ColumnSpan="3" CornerRadius="25"/>
+                                <Button Style="{DynamicResource SlimButton}" x:Name="brake_add" Tag="brake_add" Content="+" Click="SettingEditClick" Grid.Column="0"/>
+                                <Button Style="{DynamicResource SlimButton}" x:Name="brake_remove" Tag="brake_remove" Content="-" Click="SettingEditClick" Grid.Column="1"/>
+                                <Button Style="{DynamicResource SlimButton}" x:Name="brake_reset" Tag="brake_reset" Content="RESET" Click="SettingEditClick" Grid.Column="2"/>
                             </Grid>
-                            <ListView x:Name="brake_settings" SelectionMode="Single" Loaded="SettingsLoad" Tag="brake" SelectionChanged="SettingsSelectionChanged" BorderBrush="White">
+
+                            <ListView x:Name="brake_settings" Loaded="SettingsLoad" Tag="brake" SelectionChanged="SettingsSelectionChanged" Style="{DynamicResource SlimListView}" ItemContainerStyle="{DynamicResource SlimListItem}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding ControlFrequencyFrom}"/>
-                                            <TextBlock Text="{Binding PulseMode.PulseName}" FontSize="20"/>
+                                            <TextBlock Text="{Binding PulseMode.PulseName}" Style="{DynamicResource ListItemTitleTextBlockStyle}"/>
+                                            <TextBlock Text="{Binding ControlFrequencyFrom}" HorizontalAlignment="Center" Foreground="{DynamicResource BackgroundTextBrush}"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                                 <ListView.ContextMenu>
-                                    <ContextMenu>
+                                    <ContextMenu Style="{DynamicResource SlimContextMenu}">
                                         <MenuItem Header="Sort" Click="MenuItem_Click" Tag="brake.sort"/>
                                         <MenuItem Header="Copy" Click="MenuItem_Click" Tag="brake.copy"/>
                                     </ContextMenu>
@@ -156,10 +135,18 @@
                 <Frame x:Name="setting_window" NavigationUIVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
             </Grid>
         </Grid>
-        <DockPanel LastChildFill="True">
-            <Menu DockPanel.Dock="Top" Foreground="#30292F">
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="46"/>
+                <ColumnDefinition Width="46"/>
+                <ColumnDefinition Width="46"/>
+            </Grid.ColumnDefinitions>
+            <Image Style="{StaticResource WindowIconStyle}"/>
+            <Menu Style="{DynamicResource MenuStyle}" Grid.Column="1">
                 <MenuItem Header="File">
-                    <MenuItem Header="Save" Tag="Save" Click="File_Menu_Click" />
+                    <MenuItem Header="Save" Tag="Save" Click="File_Menu_Click"/>
                     <MenuItem Header="Save As" Tag="Save_As" Click="File_Menu_Click"/>
                     <MenuItem Header="Export">
                         <MenuItem Header="SourceCode">
@@ -218,7 +205,10 @@
                     <MenuItem Header="Train Sound Setting" Tag="Train_Setting" Click="Generation_Menu_Click"/>
                 </MenuItem>
             </Menu>
-        </DockPanel>
+            <Button Grid.Column="2" Tag="Minimize" Style="{DynamicResource WindowMimizeButton}" Click="OnWindowControlButtonClick"/>
+            <Button Grid.Column="3" Tag="Maximize" Style="{DynamicResource WindowMaximizeButton}" Click="OnWindowControlButtonClick"/>
+            <Button Grid.Column="4" Tag="Close" Style="{DynamicResource WindowCloseButton}" Click="OnWindowControlButtonClick"/>
+        </Grid>
         <Grid x:Name="Hider" Background="#7F000000" Visibility="{Binding Blocked, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.RowSpan="2" d:IsHidden="True"/>
     </Grid>
 </Window>

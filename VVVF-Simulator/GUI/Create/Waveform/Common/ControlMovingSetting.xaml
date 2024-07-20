@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="VvvfSimulator.GUI.Create.Waveform.Common.ControlMovingSetting"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VvvfSimulator.GUI.Create.Waveform.Common"
+             mc:Ignorable="d" 
+             d:DesignHeight="350" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Common.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <Border Background="{DynamicResource InnerSubTitleBarBrush}" CornerRadius="25,0,0,25"/>
+        <Border Background="{DynamicResource BackgroundBrush}" CornerRadius="0,25,25,0" Grid.Column="1"/>
+        <StackPanel Grid.ColumnSpan="2">
+            <Grid Height="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Move Type" Style="{DynamicResource InnerSubTitleBarText}" />
+                <ComboBox x:Name="Move_Mode_Selector" SelectionChanged="Move_Mode_SelectionChanged" SelectedItem="{Binding MovingValue.Type}" Style="{DynamicResource SlimComboBoxStyle}" Grid.Column="1"/>
+            </Grid>
+
+            <Grid Height="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Start[Hz]" Style="{DynamicResource InnerSubTitleBarText}"/>
+                <TextBox x:Name="start" Grid.Column="1" Text="{Binding MovingValue.Start}" TextChanged="text_changed" Tag="start" Style="{DynamicResource SlimTextBox}"/>
+            </Grid>
+            <Grid Height="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Start Value" Style="{DynamicResource InnerSubTitleBarText}"/>
+                <TextBox Style="{DynamicResource SlimTextBox}" x:Name="start_val" Grid.Column="1" Text="{Binding MovingValue.StartValue}" TextChanged="text_changed" Tag="start_val"/>
+            </Grid>
+            <Grid Height="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="End[Hz]" Style="{DynamicResource InnerSubTitleBarText}"/>
+                <TextBox Style="{DynamicResource SlimTextBox}" x:Name="end" Grid.Column="1" Text="{Binding MovingValue.End}" TextChanged="text_changed" Tag="end"/>
+            </Grid>
+            <Grid Height="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="End Value" Style="{DynamicResource InnerSubTitleBarText}"/>
+                <TextBox Style="{DynamicResource SlimTextBox}" x:Name="end_val" Grid.Column="1" Text="{Binding MovingValue.EndValue}" TextChanged="text_changed" Tag="end_val"/>
+            </Grid>
+            <Grid Visibility="{Binding Exponential_Visibility}" Height="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Exponential" Style="{DynamicResource InnerSubTitleBarText}"/>
+                <TextBox Style="{DynamicResource SlimTextBox}" x:Name="exponential_box" Grid.Column="1" Text="{Binding MovingValue.Degree}" TextChanged="text_changed" Tag="degree"/>
+            </Grid>
+            <Grid Visibility="{Binding CurveRate_Visibility}" Height="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Curve Rate" Style="{DynamicResource InnerSubTitleBarText}"/>
+                <TextBox Style="{DynamicResource SlimTextBox}" x:Name="curve_rate_box" Grid.Column="1" Text="{Binding MovingValue.CurveRate}" TextChanged="text_changed" Tag="curve_rate"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+
+</UserControl>

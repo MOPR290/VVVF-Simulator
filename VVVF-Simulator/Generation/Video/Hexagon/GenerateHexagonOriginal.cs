@@ -3,9 +3,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using static VvvfSimulator.VvvfCalculate;
 using static VvvfSimulator.Generation.GenerateCommon;
-using static VvvfSimulator.MyMath;
 using VvvfSimulator.Yaml.VvvfSound;
 using System.Collections.Generic;
 using Point = System.Drawing.Point;
@@ -309,7 +307,7 @@ namespace VvvfSimulator.Generation.Video.Hexagon
 
             Boolean draw_zero_vector_circle = circle;
 
-            control.SetSineAngleFrequency(d * M_2PI);
+            control.SetSineAngleFrequency(d * MyMath.M_2PI);
             control.SetControlFrequency(d);
 
             int image_width = 1000;

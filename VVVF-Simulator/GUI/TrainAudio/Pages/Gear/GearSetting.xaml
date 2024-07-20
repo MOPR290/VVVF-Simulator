@@ -5,39 +5,52 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:VvvfSimulator.GUI.TrainAudio.Pages.Gear"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignWidth="800"
       Title="TrainAudio_Gear_Setting_Page">
 
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/ScrollBar.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/ListView.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/ContextMenu.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/MenuItem.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
-        <ListView x:Name="Gear_Sound_List" d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Row="1" SelectionChanged="Gear_Sound_List_SelectionChanged">
-            <ListView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Add" Click="MenuItem_Click"/>
-                    <MenuItem Header="Remove" Click="MenuItem_Click"/>
-                    <MenuItem Header="Copy" Click="MenuItem_Click"/>
-                    <Separator/>
-                    <MenuItem Header="Calculate" Click="MenuItem_Click"/>
-                </ContextMenu>
-            </ListView.ContextMenu>
-
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel>
-                        <TextBlock Text="{Binding Harmonic}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        <ScrollViewer Grid.Column="1" Grid.Row="1">
-            <Frame x:Name="Gear_Edit_Frame" NavigationUIVisibility="Hidden"/>
-        </ScrollViewer>
-
+        <Border Background="{DynamicResource SubTitleBarBrush}">
+            <ListView 
+                x:Name="Gear_Sound_List" 
+                d:ItemsSource="{d:SampleData ItemCount=5}" 
+                Grid.Row="1" SelectionChanged="Gear_Sound_List_SelectionChanged" 
+                MaxHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Page}}" 
+                Style="{DynamicResource SlimListView}"
+                ItemContainerStyle="{DynamicResource SlimListItem}"
+                >
+                <ListView.ContextMenu>
+                    <ContextMenu Style="{DynamicResource SlimContextMenu}">
+                        <MenuItem Header="Add" Click="MenuItem_Click"/>
+                        <MenuItem Header="Remove" Click="MenuItem_Click"/>
+                        <MenuItem Header="Copy" Click="MenuItem_Click"/>
+                        <Separator/>
+                        <MenuItem Header="Calculate" Click="MenuItem_Click"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Harmonic, StringFormat=\{0:N3\}}" Style="{DynamicResource ListItemTitleTextBlockStyle}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Border>
+        <Frame x:Name="Gear_Edit_Frame" NavigationUIVisibility="Hidden" Grid.Column="1" Height="660" VerticalAlignment="Top"/>
     </Grid>
 </Page>

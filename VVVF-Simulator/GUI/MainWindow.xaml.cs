@@ -9,14 +9,15 @@ using System.Media;
 using System.Windows.Media;
 using System.Threading.Tasks;
 using YamlDotNet.Core;
-using VvvfSimulator.Yaml.VvvfSound;
-using VvvfSimulator.Generation.Pi3Generator;
-using VvvfSimulator.GUI.Create.Waveform;
 using VvvfSimulator.GUI.Util;
 using VvvfSimulator.GUI.Mascon;
 using VvvfSimulator.GUI.TrainAudio;
 using VvvfSimulator.GUI.TaskViewer;
+using VvvfSimulator.Yaml.VvvfSound;
+using VvvfSimulator.GUI.Resource.Theme;
+using VvvfSimulator.GUI.Create.Waveform;
 using VvvfSimulator.GUI.Simulator.RealTime;
+using VvvfSimulator.Generation.Pi3Generator;
 using VvvfSimulator.GUI.Simulator.RealTime.Setting;
 using VvvfSimulator.GUI.Simulator.RealTime.UniqueWindow;
 using static VvvfSimulator.Generation.GenerateCommon;
@@ -68,24 +69,29 @@ namespace VvvfSimulator
         {
             Instance?.Dispatcher.Invoke(callBack);
         }
+        public static void SetInteractive(bool val)
+        {
+            if (Instance == null) return;
+            Instance.BindingData.Blocked = !val;
+        }
 
         public MainWindow()
         {
             Instance = this;
             DataContext = BindingData;
             InitializeComponent();
-        }      
+        }
 
         private void SettingButtonClick(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
             string name = button.Name;
             if (name.Equals("settings_level"))
-                setting_window.Navigate(new Uri("GUI/Create/Settings/level_setting.xaml", UriKind.Relative));
-            else if(name.Equals("settings_minimum"))
-                setting_window.Navigate(new Uri("GUI/Create/Settings/minimum_freq_setting.xaml", UriKind.Relative));
-            else if(name.Equals("settings_mascon"))
-                setting_window.Navigate(new Uri("GUI/Create/Settings/jerk_setting.xaml", UriKind.Relative));
+                setting_window.Navigate(new Uri("GUI/Create/Settings/Level.xaml", UriKind.Relative));
+            else if (name.Equals("settings_minimum"))
+                setting_window.Navigate(new Uri("GUI/Create/Settings/MinimumFrequency.xaml", UriKind.Relative));
+            else if (name.Equals("settings_mascon"))
+                setting_window.Navigate(new Uri("GUI/Create/Settings/Jerk.xaml", UriKind.Relative));
         }
 
         private void SettingEditClick(object sender, RoutedEventArgs e)
@@ -102,10 +108,10 @@ namespace VvvfSimulator
 
             if (command[1].Equals("remove"))
             {
-                if(list_view.SelectedIndex >= 0)
+                if (list_view.SelectedIndex >= 0)
                     settings.RemoveAt(list_view.SelectedIndex);
             }
-                
+
             else if (command[1].Equals("add"))
                 settings.Add(new YamlControlData());
             else if (command[1].Equals("reset"))
@@ -141,12 +147,13 @@ namespace VvvfSimulator
             if (tag_str == null) return;
 
 
-            if(tag.Equals("accelerate"))
+            if (tag.Equals("accelerate"))
                 AccelerateSelectedShow();
             else
                 BrakeSelectedShow();
+
         }
-       
+
         private void AccelerateSelectedShow()
         {
             int selected = accelerate_settings.SelectedIndex;
@@ -154,7 +161,7 @@ namespace VvvfSimulator
 
             YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
             var selected_data = ysd.AcceleratePattern[selected];
-            setting_window.Navigate(new Control_Setting_Page_Common(selected_data, ysd.Level));
+            setting_window.Navigate(new Top(selected_data, ysd.Level));
 
         }
         private void BrakeSelectedShow()
@@ -164,7 +171,7 @@ namespace VvvfSimulator
 
             YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
             var selected_data = ysd.BrakingPattern[selected];
-            setting_window.Navigate(new Control_Setting_Page_Common(selected_data, ysd.Level));
+            setting_window.Navigate(new Top(selected_data, ysd.Level));
         }
 
         public void UpdateControlList()
@@ -261,7 +268,7 @@ namespace VvvfSimulator
                     YamlVvvfManage.Load(dialog.FileName);
                     MessageBox.Show("Load OK.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                catch(YamlException ex)
+                catch (YamlException ex)
                 {
                     String error_message = "";
                     error_message += "Invalid yaml\r\n";
@@ -295,7 +302,7 @@ namespace VvvfSimulator
             else if (tag.Equals("Save"))
             {
                 String save_path = load_path;
-                if(save_path.Length == 0)
+                if (save_path.Length == 0)
                 {
                     var dialog = new SaveFileDialog
                     {
@@ -331,7 +338,8 @@ namespace VvvfSimulator
                         outputFile.Write(Pi3Generate.GenerateC(YamlVvvfManage.CurrentData, Path.GetFileNameWithoutExtension(dialog.FileName)));
                     }
                     MessageBox.Show("Export as C complete.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
-                }catch
+                }
+                catch
                 {
                     MessageBox.Show("Error occurred.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
@@ -349,12 +357,10 @@ namespace VvvfSimulator
             String[] command = tag_str.Split("_");
 
 
-            BindingData.Blocked = true;
-
+            MainWindow.SetInteractive(false);
             bool unblock = SolveCommand(command);
-
             if (!unblock) return;
-            BindingData.Blocked = false;
+            MainWindow.SetInteractive(true);
             SystemSounds.Beep.Play();
 
         }
@@ -386,7 +392,7 @@ namespace VvvfSimulator
             {
                 get
                 {
-                    if (Data.Cancel) return new SolidColorBrush(Color.FromRgb(0xFF,0xCB,0x47));
+                    if (Data.Cancel) return new SolidColorBrush(Color.FromRgb(0xFF, 0xCB, 0x47));
                     if (Data.RelativeProgress > 99.9) return new SolidColorBrush(Color.FromRgb(0x95, 0xE0, 0x6C));
                     return new SolidColorBrush(Color.FromRgb(0x4F, 0x86, 0xC6));
                 }
@@ -427,11 +433,12 @@ namespace VvvfSimulator
                     if (dialog.ShowDialog() == false) return true;
 
                     int sample_freq = new int[] { 192000, 5000000, 192000, 5000000 }[dialog.FilterIndex - 1];
-                    bool raw = new bool[] {false, false, true, true}[dialog.FilterIndex - 1];
+                    bool raw = new bool[] { false, false, true, true }[dialog.FilterIndex - 1];
 
                     GenerationBasicParameter generationBasicParameter = GetGenerationBasicParameter();
 
-                    Task task = Task.Run(() => {
+                    Task task = Task.Run(() =>
+                    {
                         try
                         {
                             Generation.Audio.VvvfSound.Audio.ExportWavFile(generationBasicParameter, sample_freq, raw, dialog.FileName);
@@ -446,22 +453,22 @@ namespace VvvfSimulator
                     TaskProgressData taskProgressData = new(task, generationBasicParameter.progressData, "VVVF sound generation of " + GetLoadedYamlName());
                     taskProgresses.Add(taskProgressData);
                 }
-               
-                else if(command[1].Equals("RealTime"))
+
+                else if (command[1].Equals("RealTime"))
                 {
                     RealTimeParameter parameter = new()
                     {
                         quit = false
                     };
 
-                    BindingData.Blocked = true;
+                    MainWindow.SetInteractive(false);
 
                     System.IO.Ports.SerialPort? serial = null;
                     if (command.Length == 3)
                     {
                         try
                         {
-                            ComPortSelector com = new();
+                            ComPortSelector com = new(this);
                             com.ShowDialog();
                             serial = new()
                             {
@@ -477,7 +484,7 @@ namespace VvvfSimulator
 
                     MasconWindow mascon = new(parameter);
                     mascon.Show();
-                    mascon.Start_Task();                  
+                    mascon.Start_Task();
 
                     if (Properties.Settings.Default.RealTime_VVVF_WaveForm_Show)
                     {
@@ -525,7 +532,8 @@ namespace VvvfSimulator
                     bool do_clone = !Properties.Settings.Default.RealTime_VVVF_EditAllow;
                     YamlVvvfSoundData data = do_clone ? YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData) : YamlVvvfManage.CurrentData;
 
-                    Task task = Task.Run(() => {
+                    Task task = Task.Run(() =>
+                    {
                         try
                         {
                             Generation.Audio.VvvfSound.RealTime.Calculate(data, parameter, serial);
@@ -535,7 +543,7 @@ namespace VvvfSimulator
                             MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
 
-                        BindingData.Blocked = false;
+                        MainWindow.SetInteractive(true);
                         SystemSounds.Beep.Play();
                     });
 
@@ -543,7 +551,7 @@ namespace VvvfSimulator
                 }
                 else if (command[1].Equals("Setting"))
                 {
-                    Basic setting = new( Basic.RealTime_Basic_Setting_Type.VVVF );
+                    Basic setting = new(this, Basic.RealTime_Basic_Setting_Type.VVVF);
                     setting.ShowDialog();
                 }
             }
@@ -557,7 +565,8 @@ namespace VvvfSimulator
 
                     GenerationBasicParameter generationBasicParameter = GetGenerationBasicParameter();
 
-                    Task task = Task.Run(() => {
+                    Task task = Task.Run(() =>
+                    {
                         try
                         {
                             bool raw = dialog.FilterIndex == 2;
@@ -629,8 +638,9 @@ namespace VvvfSimulator
                     }
 
 
-                    BindingData.Blocked = true;
-                    Task task = Task.Run(() => {
+                    MainWindow.SetInteractive(false);
+                    Task task = Task.Run(() =>
+                    {
                         try
                         {
                             bool do_clone = !Properties.Settings.Default.RealTime_Train_EditAllow;
@@ -639,20 +649,20 @@ namespace VvvfSimulator
                                 data = YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData);
                             else
                                 data = YamlVvvfManage.CurrentData;
-                            Generation.Audio.TrainSound.RealTime.Generate(data , parameter);
+                            Generation.Audio.TrainSound.RealTime.Generate(data, parameter);
                         }
                         catch (Exception e)
                         {
                             MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
-                        BindingData.Blocked = false;
+                        MainWindow.SetInteractive(true);
                         SystemSounds.Beep.Play();
                     });
                     return Properties.Settings.Default.RealTime_Train_EditAllow;
                 }
                 else if (command[1].Equals("Setting"))
                 {
-                    Basic setting = new( Basic.RealTime_Basic_Setting_Type.Train );
+                    Basic setting = new(this, Basic.RealTime_Basic_Setting_Type.Train);
                     setting.ShowDialog();
                 }
             }
@@ -660,7 +670,7 @@ namespace VvvfSimulator
             {
                 int[] valid_fps = [120, 60, 30, 10, 5];
                 string filter = "";
-                for(int i = 0; i < valid_fps.Length; i++)
+                for (int i = 0; i < valid_fps.Length; i++)
                 {
                     filter += valid_fps[i] + "fps|*.mp4" + (i + 1 == valid_fps.Length ? "" : "|");
                 }
@@ -671,7 +681,8 @@ namespace VvvfSimulator
                 if (command[1].Equals("Original"))
                 {
                     GenerationBasicParameter generationBasicParameter = GetGenerationBasicParameter();
-                    Task task = Task.Run(() => {
+                    Task task = Task.Run(() =>
+                    {
                         try
                         {
                             Generation.Video.ControlInfo.GenerateControlOriginal generate = new();
@@ -692,7 +703,8 @@ namespace VvvfSimulator
                 {
                     GenerationBasicParameter generationBasicParameter = GetGenerationBasicParameter();
 
-                    Task task = Task.Run(() => {
+                    Task task = Task.Run(() =>
+                    {
                         try
                         {
                             Generation.Video.ControlInfo.GenerateControlOriginal2 generation = new();
@@ -709,7 +721,7 @@ namespace VvvfSimulator
                     taskProgresses.Add(taskProgressData);
                 }
 
-                    
+
             }
             else if (command[0].Equals("WaveForm"))
             {
@@ -717,7 +729,8 @@ namespace VvvfSimulator
                 if (dialog.ShowDialog() == false) return true;
 
                 GenerationBasicParameter generationBasicParameter = GetGenerationBasicParameter();
-                Task task = Task.Run(() => {
+                Task task = Task.Run(() =>
+                {
                     try
                     {
                         if (command[1].Equals("Original"))
@@ -748,7 +761,8 @@ namespace VvvfSimulator
                     if (dialog.ShowDialog() == false) return true;
 
                     GenerationBasicParameter generationBasicParameter = GetGenerationBasicParameter();
-                    Task task = Task.Run(() => {
+                    Task task = Task.Run(() =>
+                    {
                         try
                         {
                             new Generation.Video.Hexagon.GenerateHexagonOriginal().ExportVideo(generationBasicParameter, dialog.FileName, circle);
@@ -768,11 +782,12 @@ namespace VvvfSimulator
                     var dialog = new SaveFileDialog { Filter = "mp4 (*.mp4)|*.mp4" };
                     if (dialog.ShowDialog() == false) return true;
 
-                    DoubleNumberInput double_Ask_Dialog = new("Enter the frequency.");
+                    DoubleNumberInput double_Ask_Dialog = new(this, "Enter the frequency.");
                     double_Ask_Dialog.ShowDialog();
 
                     GenerationBasicParameter generationBasicParameter = GetGenerationBasicParameter();
-                    Task task = Task.Run(() => {
+                    Task task = Task.Run(() =>
+                    {
                         try
                         {
                             new Generation.Video.Hexagon.GenerateHexagonExplain().generate_wave_hexagon_explain(generationBasicParameter, dialog.FileName, circle, double_Ask_Dialog.EnteredValue);
@@ -792,10 +807,11 @@ namespace VvvfSimulator
                     var dialog = new SaveFileDialog { Filter = "png (*.png)|*.png" };
                     if (dialog.ShowDialog() == false) return true;
 
-                    DoubleNumberInput double_Ask_Dialog = new ("Enter the frequency.");
+                    DoubleNumberInput double_Ask_Dialog = new(this, "Enter the frequency.");
                     double_Ask_Dialog.ShowDialog();
 
-                    Task task = Task.Run(() => {
+                    Task task = Task.Run(() =>
+                    {
                         try
                         {
                             YamlVvvfSoundData clone = YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData);
@@ -808,7 +824,7 @@ namespace VvvfSimulator
                         SystemSounds.Beep.Play();
                     });
                 }
-                
+
             }
             else if (command[0].Equals("FFT"))
             {
@@ -818,7 +834,8 @@ namespace VvvfSimulator
                     if (dialog.ShowDialog() == false) return true;
 
                     GenerationBasicParameter generationBasicParameter = GetGenerationBasicParameter();
-                    Task task = Task.Run(() => {
+                    Task task = Task.Run(() =>
+                    {
                         try
                         {
                             new Generation.Video.FFT.GenerateFFT().ExportVideo(generationBasicParameter, dialog.FileName);
@@ -838,10 +855,11 @@ namespace VvvfSimulator
                     var dialog = new SaveFileDialog { Filter = "png (*.png)|*.png" };
                     if (dialog.ShowDialog() == false) return true;
 
-                    DoubleNumberInput double_Ask_Dialog = new("Enter the frequency.");
+                    DoubleNumberInput double_Ask_Dialog = new(this, "Enter the frequency.");
                     double_Ask_Dialog.ShowDialog();
 
-                    Task task = Task.Run(() => {
+                    Task task = Task.Run(() =>
+                    {
                         try
                         {
                             YamlVvvfSoundData clone = YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData);
@@ -869,7 +887,7 @@ namespace VvvfSimulator
 
             if (tag_str.Equals("LCalc"))
             {
-                Linear_Calculator lc = new();
+                LinearCalculator lc = new();
                 lc.Show();
             }
             else if (tag_str.Equals("TaskProgressView"))
@@ -889,20 +907,20 @@ namespace VvvfSimulator
 
             if (tag_str.Equals("AccelPattern"))
             {
-                BindingData.Blocked = true;
-                Mascon_Control_Main gmcw = new();
+                MainWindow.SetInteractive(false);
+                MasconControlMain gmcw = new();
                 gmcw.ShowDialog();
-                BindingData.Blocked = false;
+                MainWindow.SetInteractive(true);
             }
             else if (tag_str.Equals("TrainSoundSetting"))
             {
-                BindingData.Blocked = true;
+                MainWindow.SetInteractive(false);
                 YamlTrainSoundData _TrainSound_Data = YamlTrainSoundDataManage.CurrentData;
                 SettingsWindow tahw = new(_TrainSound_Data);
                 tahw.ShowDialog();
-                BindingData.Blocked = false;
+                MainWindow.SetInteractive(true);
             }
-            
+
         }
 
         private void Process_Menu_Click(object sender, RoutedEventArgs e)
@@ -915,33 +933,34 @@ namespace VvvfSimulator
 
             if (tag_str.Equals("AutoVoltage"))
             {
-                BindingData.Blocked = true;
+                MainWindow.SetInteractive(false);
                 Task.Run(() =>
                 {
                     MessageBox.Show("The settings which is not using `Linear` will be skipped.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    bool result = YamlVvvfUtil.Auto_Voltage(YamlVvvfManage.CurrentData);
-                    if(!result)
+                    bool result = YamlVvvfUtil.AutoModulationIndex(YamlVvvfManage.CurrentData);
+                    if (!result)
                         MessageBox.Show("Please check next things.\r\nAll of the amplitude mode are linear.\r\nAccel and Braking has more than 2 settings.\r\nFrom is grater or equal to 0", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    BindingData.Blocked = false;
+                    MainWindow.SetInteractive(true);
                     SystemSounds.Beep.Play();
                 });
-                
-            }else if (tag_str.Equals("FreeRunAmpZero"))
+
+            }
+            else if (tag_str.Equals("FreeRunAmpZero"))
             {
-                BindingData.Blocked = true;
+                MainWindow.SetInteractive(false);
                 Task.Run(() =>
                 {
-                    bool result = YamlVvvfUtil.Set_All_FreeRunAmp_Zero(YamlVvvfManage.CurrentData);
+                    bool result = YamlVvvfUtil.SetFreeRunModulationIndexToZero(YamlVvvfManage.CurrentData);
                     if (!result)
                         MessageBox.Show("Something went wrong.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    BindingData.Blocked = false;
+                    MainWindow.SetInteractive(true);
                     SystemSounds.Beep.Play();
                 });
             }
 
-            
+
         }
 
         private void Util_Menu_Click(object sender, RoutedEventArgs e)
@@ -952,9 +971,9 @@ namespace VvvfSimulator
             String? tag_str = tag.ToString();
             if (tag_str == null) return;
 
-            if(tag_str.Equals("MIDI"))
+            if (tag_str.Equals("MIDI"))
             {
-                GUI.MIDIConvert.MIDIConvert_Main mIDIConvert_Main = new();
+                GUI.MIDIConvert.Main mIDIConvert_Main = new();
                 mIDIConvert_Main.Show();
             }
 
@@ -963,6 +982,26 @@ namespace VvvfSimulator
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void OnWindowControlButtonClick(object sender, RoutedEventArgs e)
+        {
+            Button? btn = sender as Button;
+            if (btn == null) return;
+            string? tag = btn.Tag.ToString();
+            if(tag == null) return;
+
+            if (tag.Equals("Close"))
+                Close();
+            else if (tag.Equals("Maximize"))
+            {
+                if(WindowState.Equals(WindowState.Maximized))
+                    WindowState = WindowState.Normal;
+                else
+                    WindowState = WindowState.Maximized;
+            }
+            else if (tag.Equals("Minimize"))
+                WindowState = WindowState.Minimized;
         }
     }
 }

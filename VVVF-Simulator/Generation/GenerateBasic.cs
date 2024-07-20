@@ -62,7 +62,7 @@ namespace VvvfSimulator.Generation
                 free_run = Control.IsFreeRun(),
                 wave_stat = Control.GetControlFrequency()
             };
-            PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(Control, cv, Sound);
+            PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(Control, cv, Sound);
             WaveValues[] PWM_Array = new WaveValues[Count + 1];
             for (int i = 0; i <= Count; i++)
             {

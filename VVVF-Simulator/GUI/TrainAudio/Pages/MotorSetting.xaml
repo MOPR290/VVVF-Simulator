@@ -5,84 +5,106 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:VvvfSimulator.GUI.TrainAudio.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="800" d:DesignWidth="800"
+      d:DesignWidth="800"
       Title="TrainAudio_MotorSound_Setting_Page">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="*"/>
 
-        </Grid.RowDefinitions>
-        <Grid Background="#FF002775">
-            <Label Content="Motor Specification" FontFamily="M PLUS 2" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0" FontWeight="Bold" Foreground="White"/>
-        </Grid>
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*" MinHeight="39"/>
-                <RowDefinition Height="1*" MinHeight="39"/>
-                <RowDefinition Height="1*" MinHeight="39"/>
-                <RowDefinition Height="1*" MinHeight="39"/>
-                <RowDefinition Height="1*" MinHeight="39"/>
-                <RowDefinition Height="1*" MinHeight="39"/>
-                <RowDefinition Height="1*" MinHeight="39"/>
-                <RowDefinition Height="1*" MinHeight="39"/>
-                <RowDefinition Height="1*" MinHeight="39"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="3*"/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.RowSpan="9" Background="#FF373737"/>
-            <TextBox Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Text="TextBox" FontWeight="Bold" FontFamily="M PLUS 2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="SR" Name="SR"/>
-            <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="TextBox" FontWeight="Bold" FontFamily="M PLUS 2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="RR" Name="RR"/>
-            <TextBox Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="TextBox" FontWeight="Bold" FontFamily="M PLUS 2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="SI" Name="SI"/>
-            <TextBox Grid.Column="1" Grid.Row="3" TextWrapping="Wrap" Text="TextBox" FontWeight="Bold" FontFamily="M PLUS 2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="RI" Name="RI"/>
-            <TextBox Grid.Column="1" Grid.Row="4" TextWrapping="Wrap" Text="TextBox" FontWeight="Bold" FontFamily="M PLUS 2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="MI" Name="MI"/>
-            <TextBox Grid.Column="1" Grid.Row="5" TextWrapping="Wrap" Text="TextBox" FontWeight="Bold" FontFamily="M PLUS 2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="PL" Name="PL"/>
-            <TextBox Grid.Column="1" Grid.Row="6" TextWrapping="Wrap" Text="TextBox" FontWeight="Bold" FontFamily="M PLUS 2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="D" Name="D"/>
-            <TextBox Grid.Column="1" Grid.Row="7" TextWrapping="Wrap" Text="TextBox" FontWeight="Bold" FontFamily="M PLUS 2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="RIM" Name="RIM"/>
-            <TextBox Grid.Column="1" Grid.Row="8" TextWrapping="Wrap" Text="TextBox" FontWeight="Bold" FontFamily="M PLUS 2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="SF" Name="SF"/>
-            <Label Content="Stator Resistance" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" Foreground="White" FontSize="16"/>
-            <Label Content="Rotor Resistance" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" Foreground="White" FontSize="16" Grid.Row="1"/>
-            <Label Content="Stator Inductance" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" Foreground="White" FontSize="16" Grid.Row="2"/>
-            <Label Content="Rotor Inductance" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" Foreground="White" FontSize="16" Grid.Row="3"/>
-            <Label Content="Matual Inductance" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" Foreground="White" FontSize="16" Grid.Row="4"/>
-            <Label Content="Polar Logarithm" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" Foreground="White" FontSize="16" Grid.Row="5"/>
-            <Label Content="Damping" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" Foreground="White" FontSize="16" Grid.Row="6"/>
-            <Label Content="Rotational Inertia Mass" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" Foreground="White" FontSize="16" Grid.Row="7"/>
-            <Label Content="Static Friction" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" Foreground="White" FontSize="16" Grid.Row="8"/>
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Common.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/ScrollBar.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/ListView.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/ContextMenu.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/MenuItem.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
 
-        </Grid>
-        <Grid Background="#FF002775" Grid.Row="2">
-            <Label Content="Motor Sounds" FontFamily="M PLUS 2" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0" FontWeight="Bold" Foreground="White"/>
-        </Grid>
-        <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="3*"/>
-            </Grid.ColumnDefinitions>
-            <ListView x:Name="Motor_Harmonics_List" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="ListView_SelectionChanged">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <TextBlock Text="{Binding Harmonic}" FontSize="20"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-                <ListView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Add" Tag="Add" Click="MenuItem_Click"/>
-                        <MenuItem Header="Remove" Tag="Remove" Click="MenuItem_Click"/>
-                        <MenuItem Header="Clone" Tag="Clone" Click="MenuItem_Click"/>
-                    </ContextMenu>
-                </ListView.ContextMenu>
-            </ListView>
-            <ScrollViewer Grid.Column="1">
-                <Frame x:Name="Motor_Harmonic_Edit_Frame" NavigationUIVisibility="Hidden" />
-            </ScrollViewer>
-        </Grid>
+    <StackPanel>
+        <Border Style="{DynamicResource ControlBorder}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Border Background="{DynamicResource TitleBarBrush}" Grid.Row="0" Grid.ColumnSpan="2" CornerRadius="25,25,0,0"/>
+                <Border Background="{DynamicResource SubTitleBarBrush}" Grid.Column="0" Grid.Row="1" Grid.RowSpan="9" CornerRadius="0,0,0,25"/>
+                <Border Background="{DynamicResource BackgroundBrush}" Grid.Column="1" Grid.Row="1" Grid.RowSpan="9" CornerRadius="0,0,25,0"/>
+                <Label Content="Motor Specification" Style="{DynamicResource TitleBarText}" Grid.ColumnSpan="2"/>
 
-    </Grid>
+                <TextBox Grid.Column="1" Grid.Row="1" TextChanged="TextBox_TextChanged" Tag="SR" Name="SR" Style="{DynamicResource SlimTextBox}"/>
+                <TextBox Grid.Column="1" Grid.Row="2" TextChanged="TextBox_TextChanged" Tag="RR" Name="RR" Style="{DynamicResource SlimTextBox}"/>
+                <TextBox Grid.Column="1" Grid.Row="3" TextChanged="TextBox_TextChanged" Tag="SI" Name="SI" Style="{DynamicResource SlimTextBox}"/>
+                <TextBox Grid.Column="1" Grid.Row="4" TextChanged="TextBox_TextChanged" Tag="RI" Name="RI" Style="{DynamicResource SlimTextBox}"/>
+                <TextBox Grid.Column="1" Grid.Row="5" TextChanged="TextBox_TextChanged" Tag="MI" Name="MI" Style="{DynamicResource SlimTextBox}"/>
+                <TextBox Grid.Column="1" Grid.Row="6" TextChanged="TextBox_TextChanged" Tag="PL" Name="PL" Style="{DynamicResource SlimTextBox}"/>
+                <TextBox Grid.Column="1" Grid.Row="7" TextChanged="TextBox_TextChanged" Tag="D" Name="D" Style="{DynamicResource SlimTextBox}"/>
+                <TextBox Grid.Column="1" Grid.Row="8" TextChanged="TextBox_TextChanged" Tag="RIM" Name="RIM" Style="{DynamicResource SlimTextBox}"/>
+                <TextBox Grid.Column="1" Grid.Row="9" TextChanged="TextBox_TextChanged" Tag="SF" Name="SF" Style="{DynamicResource SlimTextBox}"/>
+                <Label Content="Stator Resistance" Grid.Row="1" Style="{DynamicResource SubTitleBarText}"/>
+                <Label Content="Rotor Resistance" Grid.Row="2" Style="{DynamicResource SubTitleBarText}"/>
+                <Label Content="Stator Inductance" Grid.Row="3" Style="{DynamicResource SubTitleBarText}"/>
+                <Label Content="Rotor Inductance" Grid.Row="4" Style="{DynamicResource SubTitleBarText}"/>
+                <Label Content="Matual Inductance" Grid.Row="5" Style="{DynamicResource SubTitleBarText}"/>
+                <Label Content="Polar Logarithm" Grid.Row="6" Style="{DynamicResource SubTitleBarText}"/>
+                <Label Content="Damping" Grid.Row="7" Style="{DynamicResource SubTitleBarText}"/>
+                <Label Content="Rotational Inertia Mass" Grid.Row="8" Style="{DynamicResource SubTitleBarText}"/>
+                <Label Content="Static Friction" Grid.Row="9" Style="{DynamicResource SubTitleBarText}"/>
+            </Grid>
+        </Border>
+        <Grid Height="2"/>
+        <Border Style="{DynamicResource ControlBorder}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="660"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Border Background="{DynamicResource TitleBarBrush}" Grid.Row="0" Grid.ColumnSpan="2" CornerRadius="25,25,0,0"/>
+                <Border Background="{DynamicResource SubTitleBarBrush}" Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" CornerRadius="0,0,0,25"/>
+                <Border Background="{DynamicResource VoidBackgroundBrush}" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" CornerRadius="0,0,25,0"/>
+                <Label Content="Motor Sounds" Style="{DynamicResource TitleBarText}" Grid.ColumnSpan="2"/>
+
+                <ListView 
+                    x:Name="Motor_Harmonics_List" 
+                    Grid.Row="1" 
+                    d:ItemsSource="{d:SampleData ItemCount=5}" 
+                    SelectionChanged="ListView_SelectionChanged" 
+                    Style="{DynamicResource SlimListView}"
+                    ItemContainerStyle="{DynamicResource SlimListItem}"
+                    >
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Harmonic, StringFormat=\{0:N3\}}" Style="{DynamicResource ListItemTitleTextBlockStyle}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ContextMenu>
+                        <ContextMenu Style="{DynamicResource SlimContextMenu}">
+                            <MenuItem Header="Add" Tag="Add" Click="MenuItem_Click"/>
+                            <MenuItem Header="Remove" Tag="Remove" Click="MenuItem_Click"/>
+                            <MenuItem Header="Clone" Tag="Clone" Click="MenuItem_Click"/>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                </ListView>
+                <Frame x:Name="Motor_Harmonic_Edit_Frame" NavigationUIVisibility="Hidden" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
+            </Grid>
+        </Border>
+    </StackPanel>
 </Page>

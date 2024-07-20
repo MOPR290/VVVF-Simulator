@@ -6,33 +6,28 @@
     <RootNamespace>VvvfSimulator</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>vvvf-simulator.ico</ApplicationIcon>
+    <ApplicationIcon>GUI/Resource/Images/vvvf-simulator.ico</ApplicationIcon>
     <Authors>JOTAN</Authors>
     <Description>A simple application to simulate VVVF sound</Description>
     <PackageIcon>vvvf-simulator.png</PackageIcon>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <AssemblyVersion>1.7.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Generation\Audio\TrainSound\IrSample\sample6.wav" />
-    <None Remove="GUI\Images\Enable_Button\B_Disabled.png" />
-    <None Remove="GUI\Images\Enable_Button\B_Enabled.png" />
-    <None Remove="GUI\Images\MIDIConvert\B_Folder_Opend.png" />
-    <None Remove="GUI\Images\MIDIConvert\B_MIDI_Document.png" />
-    <None Remove="GUI\Images\MIDIConvert\B_MultiTask.png" />
-    <None Remove="GUI\Images\MIDIConvert\B_Spanner.png" />
-    <None Remove="GUI\Images\MIDIConvert\B_Start.png" />
+    <None Remove="GUI\Resource\Images\MIDIConvert\B_Folder_Opend.png" />
+    <None Remove="GUI\Resource\Images\MIDIConvert\B_MIDI_Document.png" />
+    <None Remove="GUI\Resource\Images\MIDIConvert\B_MultiTask.png" />
+    <None Remove="GUI\Resource\Images\MIDIConvert\B_Spanner.png" />
+    <None Remove="GUI\Resource\Images\MIDIConvert\B_Start.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="GUI\Images\Enable_Button\B_Disabled.png" />
-    <Resource Include="GUI\Images\Enable_Button\B_Enabled.png" />
-    <Resource Include="GUI\Images\MIDIConvert\B_MultiTask.png" />
-    <Resource Include="GUI\Images\MIDIConvert\B_Spanner.png" />
-    <Resource Include="GUI\Images\MIDIConvert\B_Start.png" />
-    <Resource Include="GUI\Images\VVVF_Settings\2-level.png" />
-    <Resource Include="GUI\Images\VVVF_Settings\3-level.png" />
-    <Content Include="vvvf-simulator.ico" />
+    <Resource Include="GUI\Resource\Images\MIDIConvert\B_MultiTask.png" />
+    <Resource Include="GUI\Resource\Images\MIDIConvert\B_Spanner.png" />
+    <Resource Include="GUI\Resource\Images\MIDIConvert\B_Start.png" />
+    <Resource Include="GUI\Resource\Images\vvvf-simulator.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,8 +35,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="GUI\Images\MIDIConvert\B_Folder_Opend.png" />
-    <Resource Include="GUI\Images\MIDIConvert\B_MIDI_Document.png" />
+    <Resource Include="GUI\Resource\Images\MIDIConvert\B_Folder_Opend.png" />
+    <Resource Include="GUI\Resource\Images\MIDIConvert\B_MIDI_Document.png" />
   </ItemGroup>
 
   <ItemGroup>

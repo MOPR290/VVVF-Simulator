@@ -4,21 +4,31 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:VvvfSimulator.GUI.TrainAudio.Pages.Mixer"
-      xmlns:MyUserControl="clr-namespace:VvvfSimulator.GUI.MyUserControl" x:Class="VvvfSimulator.GUI.TrainAudio.Pages.Mixer.ImpulseResponse"
+      xmlns:MyUserControl="clr-namespace:VvvfSimulator.GUI.Resource.MyUserControl" x:Class="VvvfSimulator.GUI.TrainAudio.Pages.Mixer.ImpulseResponse"
       mc:Ignorable="d" d:DesignWidth="800"
       Title="ImpulseResponse" Height="114">
 
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Common.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/DataGrid.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="LoadButton" Content="Load" HorizontalAlignment="Center" VerticalAlignment="Center" Height="44" Width="150" Background="White" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="22" Foreground="Black" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="OnLoadButtonClick">
-            <Button.Resources>
-                <Style TargetType="{x:Type Border}">
-                    <Setter Property="CornerRadius" Value="20"/>
-                </Style>
-            </Button.Resources>
-        </Button>
-        <Label Content="Impulse Response Audio" FontFamily="M PLUS 2" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Foreground="#FF7D7D7D" Height="24" Width="148"/>
+        <Button x:Name="LoadButton" Content="Load" Click="OnLoadButtonClick" Style="{StaticResource SlimButton}" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
+        <Label Content="Impulse Response Audio" FontFamily="M PLUS 2" FontWeight="Bold" Foreground="{StaticResource BackgroundTextBrush}" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
     </Grid>
 </Page>

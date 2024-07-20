@@ -5,9 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VvvfSimulator.GUI.Util"
         mc:Ignorable="d"
+        Style="{DynamicResource MinimumWindowStyle}"
         Title="BitmapViewer" Height="450" Width="800">
-    <Grid>
-        <Image Source="{Binding Image}"/>
 
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Window.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+
+    <Grid Background="{StaticResource VoidBackgroundBrush}">
+        <Image Source="{Binding Image}"/>
     </Grid>
 </Window>

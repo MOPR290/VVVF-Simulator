@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:VvvfSimulator"
              StartupUri="GUI/MainWindow.xaml" Startup="Application_Startup">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GUI/Resource/Theme/BlackThemeColor.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -141,7 +141,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                 WaveFormControl.SetRandomFrequencyMoveAllowed(false);
                 WaveFormControl.SetSineTime(0);
                 WaveFormControl.SetSawTime(0);
-                PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(WaveFormControl, new ControlStatus()
+                PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(WaveFormControl, new ControlStatus()
                 {
                     brake = WaveFormControl.IsBraking(),
                     mascon_on = !WaveFormControl.IsMasconOff(),
@@ -157,7 +157,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             });
             Task VoltageCalcTask = Task.Run(() =>
             {
-                voltage = Math.Abs(FS.GenerateFourierSeries.GetFourierFast(ref CycleUVW, 1, 0)) * 100;
+                voltage = GetVoltageRate(ref CycleUVW) * 100;
             });
             HexagonRenderTask.Wait();
             VoltageCalcTask.Wait();
@@ -226,7 +226,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
             DrawTopicAndValue(
                 g, new Point(920, 10), new Size(480, 80),
                 new StringContent(topic_Font, "Voltage", new Point(0, 5)),
-                new StringContent(value_Font, stopping ? "---.-" : String.Format("{0:F1}", voltage), new Point(0, 5)),
+                new StringContent(value_Font, stopping ? "---.-" : String.Format("{0:F1}", Math.Round(voltage, 2)), new Point(0, 5)),
                 new StringContent(unit_font, "%", new Point(0, 9)),
                 200);
 
@@ -283,7 +283,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                     free_run = false,
                     wave_stat = 0
                 };
-                PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, vvvfData);
+                PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(control, cv, vvvfData);
                 _ = CalculatePhases(control, calculated_Values, 0);
                 Bitmap final_image = GetImage(control, vvvfData, true);
 
@@ -325,7 +325,7 @@ namespace VvvfSimulator.Generation.Video.ControlInfo
                     free_run = false,
                     wave_stat = 0
                 };
-                PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, vvvfData);
+                PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(control, cv, vvvfData);
                 _ = CalculatePhases(control, calculated_Values, 0);
                 Bitmap final_image = GetImage(control, vvvfData, true);
                 AddImageFrames(final_image, fps, vr);

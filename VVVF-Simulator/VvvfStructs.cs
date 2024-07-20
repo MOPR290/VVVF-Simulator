@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using static VvvfSimulator.MyMath;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.VvvfStructs.PulseMode;
 
@@ -81,7 +80,7 @@ namespace VvvfSimulator
         public void AddSineAngleFrequency(double b) { sin_angle_freq += b; }
 
         // Util for sine angle freq
-        public double GetSineFrequency() { return sin_angle_freq * M_1_2PI; }
+        public double GetSineFrequency() { return sin_angle_freq * MyMath.M_1_2PI; }
 
         public void SetSineTime(double t) { sin_time = t; }
         public double GetSineTime() { return sin_time; }
@@ -468,7 +467,7 @@ namespace VvvfSimulator
 
                 if (mode.Square)
                 {
-                    if (GetPulseNameNum(mode.PulseName) % 2 == 0) return M_PI_2;
+                    if (GetPulseNameNum(mode.PulseName) % 2 == 0) return MyMath.M_PI_2;
                     else return 0;
                 }
 

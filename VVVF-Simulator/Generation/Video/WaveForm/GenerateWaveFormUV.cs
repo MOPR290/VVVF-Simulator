@@ -171,7 +171,7 @@ namespace VvvfSimulator.Generation.Video.WaveForm
                     free_run = control.IsFreeRun(),
                     wave_stat = control.GetControlFrequency()
                 };
-                PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, vvvfData);
+                PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(control, cv, vvvfData);
 
                 Bitmap image = GetImage(control, calculated_Values, image_width, image_height, wave_height, 2, calculate_div, 100);
 
@@ -290,7 +290,7 @@ namespace VvvfSimulator.Generation.Video.WaveForm
                     free_run = control.IsFreeRun(),
                     wave_stat = control.GetControlFrequency()
                 };
-                PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, vvvfData);
+                PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(control, cv, vvvfData);
 
                 Bitmap image = GetImage(control, calculated_Values, image_width, image_height, wave_height, 1, calculate_div, 0);
 

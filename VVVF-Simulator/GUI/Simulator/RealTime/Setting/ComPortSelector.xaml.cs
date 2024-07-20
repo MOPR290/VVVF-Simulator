@@ -1,5 +1,6 @@
 ﻿using System.IO.Ports;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
 {
@@ -8,8 +9,9 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
     /// </summary>
     public partial class ComPortSelector : Window
     {
-        public ComPortSelector()
+        public ComPortSelector(Window Owner)
         {
+            this.Owner = Owner;
             InitializeComponent();
             SetComPorts();
         }
@@ -24,6 +26,17 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
         public string GetComPortName()
         {
             return (string)PortSelector.SelectedValue;
+        }
+
+        private void OnWindowControlButtonClick(object sender, RoutedEventArgs e)
+        {
+            Button? btn = sender as Button;
+            if (btn == null) return;
+            string? tag = btn.Tag.ToString();
+            if (tag == null) return;
+
+            if (tag.Equals("Close"))
+                Close();
         }
     }
 }

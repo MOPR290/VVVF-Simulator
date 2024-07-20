@@ -1,5 +1,5 @@
-﻿using static VvvfSimulator.MyMath;
-using System;
+﻿using System;
+using static VvvfSimulator.MyMath;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.VvvfStructs.PulseMode;
 using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData.YamlControlData;
@@ -27,7 +27,7 @@ namespace VvvfSimulator
 
         public static double GetSine(double x)
         {
-            return MyMath.sin(x);
+            return Math.Sin(x);
         }
 
         public static double GetSquare(double x)
@@ -306,7 +306,7 @@ namespace VvvfSimulator
 
                 double x = (Math.PI * arg.current) / (2.0 * arg.max_freq);
 
-                val = MyMath.sin(x) * arg.max_amp;
+                val = Math.Sin(x) * arg.max_amp;
             }
 
 
@@ -325,10 +325,9 @@ namespace VvvfSimulator
                 double random_freq;
                 if (control.GetRandomFrequencyPreviousTime() == 0 || control.GetPreviousSawRandomFrequency() == 0)
                 {
-                    int random_v = MyMath.my_random();
-                    double diff_freq = MyMath.mod_d(random_v, data.range);
-                    if ((random_v & 0x01) == 1)
-                        diff_freq = -diff_freq;
+                    Random rnd = new();
+                    double diff_freq = rnd.NextDouble() * data.range;
+                    if (rnd.NextDouble() < 0.5) diff_freq = -diff_freq;
                     double silent_random_freq = data.base_freq + diff_freq;
                     random_freq = silent_random_freq;
                     control.SetPreviousSawRandomFrequency(silent_random_freq);

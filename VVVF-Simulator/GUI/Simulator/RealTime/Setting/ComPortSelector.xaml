@@ -5,19 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VvvfSimulator.GUI.Simulator.RealTime.Setting"
         mc:Ignorable="d"
-        Title="COM Port" Width="800" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Top" SizeToContent="Height" ResizeMode="NoResize">
-    <Grid VerticalAlignment="Center">
-        <Grid Height="75">
+        WindowStartupLocation="CenterOwner"
+        Style="{DynamicResource DialogWindowStyle}"
+        Title="COM Port" Width="400" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Top" SizeToContent="Height" ResizeMode="NoResize">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Common.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Window.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="{DynamicResource VoidBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="46"/>
+            </Grid.ColumnDefinitions>
+            <Image Style="{StaticResource WindowIconStyle}"/>
+            <Label Grid.Column="1" x:Name="WindowTitle" Content="Port Select" Style="{StaticResource WindowTitleStyle}"/>
+            <Button Grid.Column="2" Tag="Close" Click="OnWindowControlButtonClick" Style="{DynamicResource WindowCloseButton}"/>
+        </Grid>
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="5*"/>
             </Grid.ColumnDefinitions>
-            <Grid Background="#FFEF8354">
-                <Label Content="COM Port" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="22" Foreground="White"/>
-            </Grid>
-            <ComboBox x:Name="PortSelector" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,20,20,20" Tag="Port" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-
+            <Border Background="{DynamicResource SubTitleBarBrush}" CornerRadius="0,25,0,0">
+                <Label Content="COM Port" Style="{DynamicResource SubTitleBarText}"/>
+            </Border>
+            <ComboBox x:Name="PortSelector" Grid.Column="1" Tag="Port" Style="{DynamicResource SlimComboBoxStyle}"/>
         </Grid>
-
     </Grid>
 </Window>

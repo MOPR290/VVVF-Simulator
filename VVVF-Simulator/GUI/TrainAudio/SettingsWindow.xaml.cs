@@ -99,5 +99,25 @@ namespace VvvfSimulator.GUI.TrainAudio
             else if (tag.Equals("Volume"))
                 PageFrame.Navigate(new Volume(soundData));
         }
+
+        private void OnWindowControlButtonClick(object sender, RoutedEventArgs e)
+        {
+            Button? btn = sender as Button;
+            if (btn == null) return;
+            string? tag = btn.Tag.ToString();
+            if (tag == null) return;
+
+            if (tag.Equals("Close"))
+                Close();
+            else if (tag.Equals("Maximize"))
+            {
+                if (WindowState.Equals(WindowState.Maximized))
+                    WindowState = WindowState.Normal;
+                else
+                    WindowState = WindowState.Maximized;
+            }
+            else if (tag.Equals("Minimize"))
+                WindowState = WindowState.Minimized;
+        }
     }
 }

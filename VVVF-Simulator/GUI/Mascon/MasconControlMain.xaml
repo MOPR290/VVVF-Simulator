@@ -1,0 +1,105 @@
+﻿<Window x:Class="VvvfSimulator.GUI.Mascon.MasconControlMain"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VvvfSimulator.GUI.Mascon"
+        mc:Ignorable="d"
+        Style="{DynamicResource MinimumWindowStyle}"
+        Title="Mascon Control on Generation" Height="500" Width="960">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Common.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/MenuBar.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/TabControl.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/ListView.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Window.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/MenuItem.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/ContextMenu.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <local:SmallTitleConverter x:Key="SmallTitle"/>
+            <local:BigTitleConverter x:Key="BigTitle"/>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="{DynamicResource VoidBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="46"/>
+                <ColumnDefinition Width="46"/>
+                <ColumnDefinition Width="46"/>
+            </Grid.ColumnDefinitions>
+            <Image Style="{StaticResource WindowIconStyle}"/>
+            <Menu Grid.Column="1" Style="{DynamicResource MenuStyle}">
+                <MenuItem Header="File">
+                    <MenuItem Header="Save Yaml" Tag="Save" Click="File_Menu_Click"/>
+                    <MenuItem Header="Load Yaml" Tag="Load" Click="File_Menu_Click"/>
+                    <MenuItem Header="Load Midi" Tag="Midi" Click="File_Menu_Click"/>
+                </MenuItem>
+            </Menu>
+            <Button Grid.Column="2" Tag="Minimize" Style="{DynamicResource WindowMimizeButton}" Click="OnWindowControlButtonClick"/>
+            <Button Grid.Column="3" Tag="Maximize" Style="{DynamicResource WindowMaximizeButton}" Click="OnWindowControlButtonClick"/>
+            <Button Grid.Column="4" Tag="Close" Style="{DynamicResource WindowCloseButton}" Click="OnWindowControlButtonClick"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="7*"/>
+            </Grid.ColumnDefinitions>
+            <Border CornerRadius="0,0,25,25" Margin="5" Background="{DynamicResource BackgroundBrush}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="50"/>
+                    </Grid.RowDefinitions>
+                    <Border>
+                        <ListView 
+                            x:Name="mascon_control_list" 
+                            SelectionChanged="mascon_control_list_SelectionChanged" 
+                            Style="{DynamicResource SlimListView}"
+                            ItemContainerStyle="{DynamicResource SlimListItem}"
+                            >
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Path=. , Converter={StaticResource BigTitle}}" Style="{DynamicResource ListItemTitleTextBlockStyle}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.ContextMenu>
+                                <ContextMenu Style="{DynamicResource SlimContextMenu}">
+                                    <MenuItem Header="Sort" Click="MenuItem_Click" Tag="sort"/>
+                                    <MenuItem Header="Copy" Click="MenuItem_Click" Tag="copy"/>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                        </ListView>
+                    </Border>
+                    <Border Grid.Row="1" Background="{DynamicResource SubBackgroundBrush}" CornerRadius="25">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Content="+" Tag="Add" Click="Button_Click" Style="{DynamicResource SlimButton}"/>
+                            <Button Content="-" Grid.Column="1" Tag="Remove" Click="Button_Click" Style="{DynamicResource SlimButton}"/>
+                            <Button Content="Reset" Grid.Column="2" Tag="Reset" Click="Button_Click" Style="{DynamicResource SlimButton}"/>
+                        </Grid>
+                    </Border>
+                </Grid>             
+            </Border>
+            <ScrollViewer Grid.Column="1" Style="{DynamicResource SlimScrollViewer}">
+                <Frame Padding="5" x:Name="edit_view_frame" NavigationUIVisibility="Hidden"/>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>

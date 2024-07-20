@@ -38,27 +38,27 @@ namespace VvvfSimulator.GUI.TrainAudio.Pages.Gear
         private void Gear1_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (no_update) return;
-            Gear1 = parse_i(Gear1_Box);
+            Gear1 = ParseInt(Gear1_Box);
         }
 
         private void Gear2_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (no_update) return;
-            Gear2 = parse_i(Gear2_Box);
+            Gear2 = ParseInt(Gear2_Box);
         }
 
 
-        private int parse_i(TextBox tb)
+        private static int ParseInt(TextBox tb)
         {
             try
             {
-                tb.Background = new BrushConverter().ConvertFrom("#FFFFFFFF") as Brush;
-                return Int32.Parse(tb.Text);
+                VisualStateManager.GoToState(tb, "Success", false);
+                return int.Parse(tb.Text);
             }
             catch
             {
-                tb.Background = new BrushConverter().ConvertFrom("#FFfed0d0") as Brush;
-                return -1;
+                VisualStateManager.GoToState(tb, "Error", false);
+                return 0;
             }
         }
     }

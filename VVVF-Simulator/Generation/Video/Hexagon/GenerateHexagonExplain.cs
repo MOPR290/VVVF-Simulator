@@ -5,7 +5,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using static VvvfSimulator.VvvfCalculate;
 using static VvvfSimulator.Generation.GenerateCommon;
-using static VvvfSimulator.MyMath;
 using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
@@ -75,7 +74,7 @@ namespace VvvfSimulator.Generation.Video.Hexagon
             control.SetSawTime(0);
 
             control.SetControlFrequency(d);
-            control.SetSineAngleFrequency(d * M_2PI);
+            control.SetSineAngleFrequency(d * MyMath.M_2PI);
 
             Bitmap PWM_wave_image = new(pwm_image_width, pwm_image_height);
             Graphics PWM_wave_g = Graphics.FromImage(PWM_wave_image);
@@ -107,7 +106,7 @@ namespace VvvfSimulator.Generation.Video.Hexagon
                 free_run = control.IsFreeRun(),
                 wave_stat = control.GetControlFrequency()
             };
-            PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, vvvfData);
+            PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(control, cv, vvvfData);
 
             for (int i = 0; i < hex_div; i++)
             {

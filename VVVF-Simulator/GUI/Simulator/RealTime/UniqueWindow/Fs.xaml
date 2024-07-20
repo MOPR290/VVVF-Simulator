@@ -4,24 +4,38 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
+        Style="{DynamicResource MinimumWindowStyle}"
         Title="Fourier Series" Height="500" Width="500">
-    <Grid x:Name="FS_Image">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Window.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Common.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid x:Name="FS_Image" Background="{DynamicResource VoidBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="10*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
         <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="{Binding Image}"/>
-        <Grid Grid.Row="1" Background="#FFE8E8E8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
+        <Border Grid.Row="1" Background="{DynamicResource SubBackgroundBrush}" CornerRadius="25,25,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition Width="4*"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBox x:Name="TextBox_N" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="200" VerticalAlignment="Stretch" RenderTransformOrigin="0.262,0.472" Margin="30,10,10,10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="M PLUS 2" FontSize="20" TextChanged="TextBox_N_TextChanged"/>
-            <Label Content="N=" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <Button x:Name="Button_CopyCoefficients" Grid.Column="1" Content="Copy Coefficients" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,10,10,10" Click="Button_CopyCoefficients_Click"/>
-        </Grid>
+                <TextBox x:Name="TextBox_N" Text="200" TextChanged="TextBox_N_TextChanged" Grid.Column="1" Style="{DynamicResource SlimTextBox}"/>
+                <Label Content="N=" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{DynamicResource BackgroundTextBrush}"/>
+                <Button x:Name="Button_CopyCoefficients" Grid.Column="2" Content="Copy Coefficients" Click="Button_CopyCoefficients_Click" Style="{DynamicResource SlimButton}"/>
+            </Grid>
+        </Border>
 
 
 

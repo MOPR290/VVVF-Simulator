@@ -5,16 +5,56 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VvvfSimulator.GUI.Util"
         mc:Ignorable="d"
+        Style="{DynamicResource MinimumWindowStyle}"
         Title="Mascon" Height="450" Width="800" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" Closing="Window_Closing">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Common.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/Window.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/MenuItem.xaml"/>
+                <ResourceDictionary Source="/GUI/Resource/Dictionary/ContextMenu.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="Label" x:Key="Notch">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="FontFamily" Value="M PLUS 2"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="FontSize" Value="20"/>
+            </Style>
+
+            <Style TargetType="Label" x:Key="ValueTitle">
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="FontFamily" Value="M PLUS 2"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="Foreground" Value="{DynamicResource BackgroundTextBrush}"/>
+            </Style>
+
+            <Style TargetType="Label" x:Key="ValueUnit">
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="FontFamily" Value="M PLUS 2"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="Foreground" Value="{DynamicResource BackgroundTextBrush}"/>
+            </Style>
+
+        </ResourceDictionary>
+    </Window.Resources>
     
     <Window.ContextMenu>
-        <ContextMenu>
+        <ContextMenu Style="{DynamicResource SlimContextMenu}">
             <MenuItem Header="Device Setting" Click="MenuItem_Click" Tag="DeviceSetting"/>
         </ContextMenu>
     </Window.ContextMenu>
     
-    <Grid>
+    <Grid Background="{DynamicResource VoidBackgroundBrush}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
             <RowDefinition Height="25"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="25"/>
@@ -22,13 +62,26 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="50"/>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="25"/>
         </Grid.ColumnDefinitions>
 
-        
-        
-        <Grid Grid.Column="1" Grid.Row="1">
+        <Grid Grid.Row="0" Grid.ColumnSpan="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="46"/>
+                <ColumnDefinition Width="46"/>
+                <ColumnDefinition Width="46"/>
+            </Grid.ColumnDefinitions>
+            <Image Style="{StaticResource WindowIconStyle}"/>
+            <Label Grid.Column="1" x:Name="WindowTitle" Content="Control" Style="{StaticResource WindowTitleStyle}"/>
+            <Button Grid.Column="2" Tag="Minimize" Style="{DynamicResource WindowMimizeButton}" Click="OnWindowControlButtonClick"/>
+            <Button Grid.Column="3" Tag="Maximize" Style="{DynamicResource WindowMaximizeButton}" Click="OnWindowControlButtonClick"/>
+            <Button Grid.Column="4" Tag="Close" Style="{DynamicResource WindowCloseButton}" Click="OnWindowControlButtonClick"/>
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
@@ -43,83 +96,85 @@
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
 
-            <Grid Background="{Binding B4}">
-                <Label Content="B4" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
-            </Grid>
+            <Border Background="{Binding B4}" CornerRadius="10,10,0,0">
+                <Label Content="B4" Style="{DynamicResource Notch}"/>
+            </Border>
 
             <Grid Background="{Binding B3}" Grid.Row="1">
-                <Label Content="B3" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
+                <Label Content="B3" Style="{DynamicResource Notch}"/>
             </Grid>
             <Grid Background="{Binding B2}" Grid.Row="2">
-                <Label Content="B2" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
+                <Label Content="B2" Style="{DynamicResource Notch}"/>
             </Grid>
 
             <Grid Background="{Binding B1}" Grid.Row="3">
-                <Label Content="B1" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
+                <Label Content="B1" Style="{DynamicResource Notch}"/>
             </Grid>
 
             <Grid Background="{Binding B0}" Grid.Row="4">
-                <Label Content="B0" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
+                <Label Content="B0" Style="{DynamicResource Notch}"/>
             </Grid>
 
             <Grid Background="{Binding N}" Grid.Row="5">
-                <Label Content="N" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
-
+                <Label Content="N" Style="{DynamicResource Notch}"/>
             </Grid>
 
             <Grid Background="{Binding P0}" Grid.Row="6">
-                <Label Content="P0" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
+                <Label Content="P0" Style="{DynamicResource Notch}"/>
             </Grid>
 
             <Grid Background="{Binding P1}" Grid.Row="7">
-                <Label Content="P1" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
+                <Label Content="P1" Style="{DynamicResource Notch}"/>
             </Grid>
             <Grid Background="{Binding P2}" Grid.Row="8">
-                <Label Content="P2" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
+                <Label Content="P2" Style="{DynamicResource Notch}"/>
             </Grid>
             <Grid Background="{Binding P3}" Grid.Row="9">
-                <Label Content="P3" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
+                <Label Content="P3" Style="{DynamicResource Notch}"/>
             </Grid>
-            <Grid Background="{Binding P4}" Grid.Row="10">
-                <Label Content="P4" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
-            </Grid>
+            <Border Background="{Binding P4}" Grid.Row="10" CornerRadius="0,0,10,10">
+                <Label Content="P4" Style="{DynamicResource Notch}"/>
+            </Border>
         </Grid>
-        <Grid Grid.Column="2" Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Margin="0,0,0,92" Grid.RowSpan="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="208*"/>
-                    <ColumnDefinition Width="298*"/>
-                    <ColumnDefinition Width="57*"/>
-                </Grid.ColumnDefinitions>
-                <Label Content="Sine Frequency : " HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="20" Height="34" Width="169" HorizontalContentAlignment="Right"/>
-                <Label Grid.Column="2" Content="Hz" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="20" Height="34" Width="34" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                <TextBlock Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding sine_freq, StringFormat=\{0:N1\}}" VerticalAlignment="Center" Width="278" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="48" TextAlignment="Center"/>
+        <Border Grid.Column="3" Grid.Row="2" Background="{DynamicResource BackgroundBrush}" CornerRadius="25">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="1" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Sine Frequency : " Style="{DynamicResource ValueTitle}"/>
+                    <Label Grid.Column="2" Content="Hz" Style="{DynamicResource ValueUnit}"/>
+                    <TextBlock Foreground="{DynamicResource BackgroundTextBrush}" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding sine_freq, StringFormat=\{0:N1\}}" VerticalAlignment="Center" Width="278" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="48" TextAlignment="Center"/>
+                </Grid>
+                <Grid Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Voltage : " Style="{DynamicResource ValueTitle}"/>
+                    <Label Grid.Column="2" Content="%" Style="{DynamicResource ValueUnit}"/>
+                    <TextBlock Foreground="{DynamicResource BackgroundTextBrush}" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding voltage, StringFormat=\{0:N1\}}" VerticalAlignment="Center" Width="278" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="48" TextAlignment="Center"/>
+                </Grid>
+                <Grid Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Pulse State : " Style="{DynamicResource ValueTitle}" />
+                    <TextBlock Foreground="{DynamicResource BackgroundTextBrush}" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding pulse_state}" VerticalAlignment="Center" Width="278" FontFamily="M PLUS 2" FontWeight="Bold" TextAlignment="Center" Height="57.6" FontSize="48"/>
+                </Grid>
             </Grid>
-            <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="208*"/>
-                    <ColumnDefinition Width="298*"/>
-                    <ColumnDefinition Width="57*"/>
-                </Grid.ColumnDefinitions>
-                <Label Content="Voltage : " HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="20" Height="34" Width="169" HorizontalContentAlignment="Right"/>
-                <Label Grid.Column="2" Content="%" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="20" Height="34" Width="34" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                <TextBlock Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding voltage, StringFormat=\{0:N1\}}" VerticalAlignment="Center" Width="278" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="48" TextAlignment="Center"/>
-            </Grid>
-            <Grid Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="208*"/>
-                    <ColumnDefinition Width="298*"/>
-                    <ColumnDefinition Width="57*"/>
-                </Grid.ColumnDefinitions>
-                <Label Content="Pulse State : " HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="20" Height="34" Width="169" HorizontalContentAlignment="Right"/>
-                <TextBlock Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding pulse_state}" VerticalAlignment="Center" Width="278" FontFamily="M PLUS 2" FontWeight="Bold" TextAlignment="Center" Height="57.6" FontSize="48"/>
-            </Grid>
-        </Grid>
+        </Border>
     </Grid>
 </Window>

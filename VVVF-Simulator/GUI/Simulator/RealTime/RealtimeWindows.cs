@@ -201,7 +201,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
                     free_run = Control.IsFreeRun(),
                     wave_stat = Control.GetControlFrequency()
                 };
-                PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(Control, cv, Sound);
+                PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(Control, cv, Sound);
                 Bitmap image = Generation.Video.WaveForm.GenerateWaveFormUV.GetImage(Control, calculated_Values, image_width, image_height, wave_height, 2, calculate_div, 0);
 
                 SetImage(image, "WaveForm");

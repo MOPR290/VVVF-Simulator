@@ -22,9 +22,10 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
             VVVF, Train
         }
 
-        public Basic(RealTime_Basic_Setting_Type SettingType)
+        public Basic(Window owner,RealTime_Basic_Setting_Type SettingType)
         {
             _SettingType = SettingType;
+            Owner = owner;
             InitializeComponent();
             SetControl();
             IgnoreUpdate = false;
@@ -62,7 +63,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
                 SelectorHexagonDesign.SelectedItem = (RealtimeWindows.Hexagon.RealTimeHexagonStyle)prop.RealTime_VVVF_Hexagon_Style;
                 BoxShowZeroVectorCicle.IsChecked = prop.RealTime_VVVF_Hexagon_ZeroVector;
 
-
+                WindowTitle.Content = "Realtime Vvvf Simulate Configuration";
             }
             else
             {
@@ -79,20 +80,22 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
                 BoxShowHexagon.IsChecked = prop.RealTime_Train_Hexagon_Show;
                 SelectorHexagonDesign.SelectedItem = (RealtimeWindows.Hexagon.RealTimeHexagonStyle)prop.RealTime_Train_Hexagon_Style;
                 BoxShowZeroVectorCicle.IsChecked = prop.RealTime_Train_Hexagon_ZeroVector;
+
+                WindowTitle.Content = "Realtime Train Simulate Configuration";
             }
 
         }
-        private static int ParseInteger(TextBox tb)
+        private static int ParseInt(TextBox tb)
         {
             try
             {
-                tb.Background = new BrushConverter().ConvertFrom("#FFFFFFFF") as Brush;
+                VisualStateManager.GoToState(tb, "Success", false);
                 return int.Parse(tb.Text);
             }
             catch
             {
-                tb.Background = new BrushConverter().ConvertFrom("#FFfed0d0") as Brush;
-                return -1;
+                VisualStateManager.GoToState(tb, "Error", false);
+                return 0;
             }
         }
 
@@ -171,13 +174,11 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
             if (IgnoreUpdate) return;
 
 
-            int i = ParseInteger(TextBuffSize);
+            int i = ParseInt(TextBuffSize);
             if (_SettingType.Equals(RealTime_Basic_Setting_Type.VVVF))
                 Properties.Settings.Default.RealTime_VVVF_BuffSize = i;
             else if (_SettingType.Equals(RealTime_Basic_Setting_Type.Train))
-                Properties.Settings.Default.RealTime_Train_BuffSize = i;
-
-            
+                Properties.Settings.Default.RealTime_Train_BuffSize = i;            
         }
 
         private void SelectorChanged(object sender, SelectionChangedEventArgs e)
@@ -205,9 +206,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
                 if (_SettingType.Equals(RealTime_Basic_Setting_Type.VVVF))
                     Properties.Settings.Default.RealTime_VVVF_Hexagon_Style = (int)cb.SelectedItem;
                 else if (_SettingType.Equals(RealTime_Basic_Setting_Type.Train))
-                    Properties.Settings.Default.RealTime_Train_Hexagon_Style = (int)cb.SelectedItem;
-
-               
+                    Properties.Settings.Default.RealTime_Train_Hexagon_Style = (int)cb.SelectedItem;               
             }
         }
 
@@ -262,6 +261,25 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
             }
         }
 
-        
+        private void OnWindowControlButtonClick(object sender, RoutedEventArgs e)
+        {
+            Button? btn = sender as Button;
+            if (btn == null) return;
+            string? tag = btn.Tag.ToString();
+            if (tag == null) return;
+
+            if (tag.Equals("Close"))
+                Close();
+            else if (tag.Equals("Maximize"))
+            {
+                if (WindowState.Equals(WindowState.Maximized))
+                    WindowState = WindowState.Normal;
+                else
+                    WindowState = WindowState.Maximized;
+            }
+            else if (tag.Equals("Minimize"))
+                WindowState = WindowState.Minimized;
+        }
+
     }
 }

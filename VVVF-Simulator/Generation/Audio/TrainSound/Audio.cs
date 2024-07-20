@@ -8,7 +8,6 @@ using static VvvfSimulator.Generation.Audio.TrainSound.AudioFilter;
 using static VvvfSimulator.Generation.GenerateCommon;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
 using static VvvfSimulator.Generation.Motor.GenerateMotorCore;
-using static VvvfSimulator.MyMath;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
 using static VvvfSimulator.Yaml.TrainAudioSetting.YamlTrainSoundAnalyze;
@@ -28,7 +27,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
                 free_run = control.IsFreeRun(),
                 wave_stat = control.GetControlFrequency()
             };
-            PwmCalculateValues calculated_Values = YamlVVVFWave.CalculateYaml(control, cv, sound_data);
+            PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(control, cv, sound_data);
             WaveValues value = VvvfCalculate.CalculatePhases(control, calculated_Values, 0);
 
             motor.motor_Param.sitamr = control.GetVideoSineFrequency() * Math.PI * 2 * control.GetSineTime();
@@ -54,7 +53,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
                 double harmonic_freq = harmonic_data.Harmonic * control.GetSineFrequency();
 
                 if (harmonic_data.Disappear != -1 && harmonic_freq > harmonic_data.Disappear) continue;
-                double sine_val = sin(control.GetSineTime() * control.GetSineAngleFrequency() * harmonic_data.Harmonic);
+                double sine_val = Math.Sin(control.GetSineTime() * control.GetSineAngleFrequency() * harmonic_data.Harmonic);
 
                 double amplitude = amplitude_data.StartValue + (amplitude_data.EndValue - amplitude_data.StartValue) / (amplitude_data.End - harmonic_data.Amplitude.Start) * (control.GetSineFrequency() - harmonic_data.Amplitude.Start);
                 if (amplitude > amplitude_data.MaximumValue) amplitude = amplitude_data.MaximumValue;
