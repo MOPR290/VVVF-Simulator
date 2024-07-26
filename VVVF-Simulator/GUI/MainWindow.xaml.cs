@@ -411,7 +411,7 @@ namespace VvvfSimulator
         private static GenerationBasicParameter GetGenerationBasicParameter()
         {
             GenerationBasicParameter generationBasicParameter = new(
-                Yaml_Mascon_Manage.CurrentData.GetCompiled(),
+                YamlMasconManage.CurrentData.GetCompiled(),
                 YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData),
                 new ProgressData()
             );

@@ -97,7 +97,8 @@ namespace VvvfSimulator.Yaml.MasconControl
                         EndTime = currentTime + deltaTime,
                         StartFrequency = currentFrequency,
                         EndFrequency = currentFrequency + deltaFrequency,
-                        IsMasconOn = yaml_Mascon_Data_Point.mascon_on
+                        IsMasconOn = yaml_Mascon_Data_Point.mascon_on,
+                        IsAccel = !yaml_Mascon_Data_Point.brake
                     };
                     Points.Add(yaml_Mascon_Data_Compiled_Point);
 
@@ -118,12 +119,8 @@ namespace VvvfSimulator.Yaml.MasconControl
                 public double EndTime { get; set; } = 0;
                 public double StartFrequency { get; set; } = 0;
                 public double EndFrequency { get; set; } = 0;
-                public Boolean IsMasconOn { get; set; } = true;
-
-                public Boolean IsAccel()
-                {
-                    return EndFrequency - StartFrequency > 0;
-                }
+                public bool IsMasconOn { get; set; } = true;
+                public bool IsAccel { get; set; } = true;
 
                 public YamlMasconDataCompiledPoint Clone()
                 {
@@ -132,7 +129,7 @@ namespace VvvfSimulator.Yaml.MasconControl
             }
         }
 
-        public class Yaml_Mascon_Manage
+        public class YamlMasconManage
         {
 
             public static YamlMasconData DefaultData = new()

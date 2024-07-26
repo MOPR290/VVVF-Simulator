@@ -67,19 +67,19 @@ namespace VvvfSimulator.Yaml.MasconControl
             YamlMasconDataCompiledPoint? PreviousTarget = DataAt - 1 >= 0 ? SelectSource[DataAt - 1] : null;
 
 
-            Braking = !Target.IsAccel();
+            Braking = !Target.IsAccel;
             IsMasconOn = Target.IsMasconOn;
             ForceOnFrequency = -1;
 
             if (!IsMasconOn && PreviousTarget != null)
-                Braking = !PreviousTarget.IsAccel();
+                Braking = !PreviousTarget.IsAccel;
 
             if (NextTarget != null && Control.IsFreeRun() && NextTarget.IsMasconOn)
             {
 
                 double MasconOnFrequency = GetFreqAt(Target.EndTime, 0, MasconDataCompiled);
                 double FreqPerSec, FreqGoto;
-                if (!NextTarget.IsAccel())
+                if (!NextTarget.IsAccel)
                 {
                     FreqPerSec = MasconChangeData.Braking.On.FrequencyChangeRate;
                     FreqGoto = MasconChangeData.Braking.On.MaxControlFrequency;
@@ -95,7 +95,7 @@ namespace VvvfSimulator.Yaml.MasconControl
                 if (Target.EndTime - RequireTime < Control.GetGenerationCurrentTime())
                 {
                     IsMasconOn = true;
-                    Braking = !NextTarget.IsAccel();
+                    Braking = !NextTarget.IsAccel;
                     ForceOnFrequency = MasconOnFrequency;
                 }
             }

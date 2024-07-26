@@ -58,7 +58,7 @@ namespace VvvfSimulator.GUI.Mascon
         {
             InitializeComponent();
 
-            mascon_control_list.ItemsSource = Yaml_Mascon_Manage.CurrentData.points;
+            mascon_control_list.ItemsSource = YamlMasconManage.CurrentData.points;
 
 
         }
@@ -78,7 +78,7 @@ namespace VvvfSimulator.GUI.Mascon
                 };
                 if (dialog.ShowDialog() == false) return;
 
-                if (Yaml_Mascon_Manage.LoadYaml(dialog.FileName))
+                if (YamlMasconManage.LoadYaml(dialog.FileName))
                     MessageBox.Show("Load OK.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
                 else
                     MessageBox.Show("Invalid yaml or path.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -99,7 +99,7 @@ namespace VvvfSimulator.GUI.Mascon
                 // ダイアログを表示する
                 if (dialog.ShowDialog() == false) return;
 
-                if (Yaml_Mascon_Manage.SaveYaml(dialog.FileName))
+                if (YamlMasconManage.SaveYaml(dialog.FileName))
                     MessageBox.Show("Save OK.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
                 else
                     MessageBox.Show("Error occurred on saving.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -114,7 +114,7 @@ namespace VvvfSimulator.GUI.Mascon
                     load_midi_path = load_data.path;
                     YamlMasconData? data = YamlMasconMidi.Convert(load_data);
                     if (data == null) return;
-                    Yaml_Mascon_Manage.CurrentData = data;
+                    YamlMasconManage.CurrentData = data;
                     Refresh_ItemList();
                 }
                 catch(Exception ex)
@@ -126,7 +126,7 @@ namespace VvvfSimulator.GUI.Mascon
 
         public void Refresh_ItemList()
         {
-            mascon_control_list.ItemsSource = Yaml_Mascon_Manage.CurrentData.points;
+            mascon_control_list.ItemsSource = YamlMasconManage.CurrentData.points;
             mascon_control_list.Items.Refresh();
         }
 
@@ -137,7 +137,7 @@ namespace VvvfSimulator.GUI.Mascon
 
             if (tag.Equals("sort"))
             {
-                Yaml_Mascon_Manage.CurrentData.points.Sort((a, b) => Math.Sign(a.order - b.order));
+                YamlMasconManage.CurrentData.points.Sort((a, b) => Math.Sign(a.order - b.order));
                 Refresh_ItemList();
 
 
@@ -148,7 +148,7 @@ namespace VvvfSimulator.GUI.Mascon
                 if (selected_item == null) return;
 
                 YamlMasconDataPoint data = (YamlMasconDataPoint)selected_item;
-                Yaml_Mascon_Manage.CurrentData.points.Add(data.Clone());
+                YamlMasconManage.CurrentData.points.Add(data.Clone());
 
                 Refresh_ItemList();
             }
@@ -169,17 +169,17 @@ namespace VvvfSimulator.GUI.Mascon
 
             if (tag.Equals("Add"))
             {
-                Yaml_Mascon_Manage.CurrentData.points.Add(new());
+                YamlMasconManage.CurrentData.points.Add(new());
                 Refresh_ItemList();
             }else if (tag.Equals("Remove"))
             {
                 int selected = mascon_control_list.SelectedIndex;
                 if (selected < 0) return;
-                Yaml_Mascon_Manage.CurrentData.points.RemoveAt(selected);
+                YamlMasconManage.CurrentData.points.RemoveAt(selected);
                 Refresh_ItemList();
             }else if (tag.Equals("Reset"))
             {
-                Yaml_Mascon_Manage.CurrentData = Yaml_Mascon_Manage.DefaultData.Clone();
+                YamlMasconManage.CurrentData = YamlMasconManage.DefaultData.Clone();
                 Refresh_ItemList();
             }
         }
