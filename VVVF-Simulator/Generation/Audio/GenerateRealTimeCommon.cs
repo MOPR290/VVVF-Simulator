@@ -11,11 +11,10 @@ namespace VvvfSimulator.Generation.Audio
         // ---------- COMMON ---------------
         public class RealTimeParameter
         {
-            public double change_amount { get; set; } = 0;
-            public Boolean braking { get; set; } = false;
-            public Boolean quit { get; set; } = false;
-            public Boolean reselect { get; set; } = false;
-            public Boolean free_run { get; set; } = false;
+            public double FrequencyChangeRate { get; set; } = 0;
+            public Boolean IsBraking { get; set; } = false;
+            public Boolean Quit { get; set; } = false;
+            public Boolean IsFreeRunning { get; set; } = false;
 
             public VvvfValues Control { get; set; } = new();
             public YamlVvvfSoundData VvvfSoundData { get; set; } = new();
@@ -24,12 +23,12 @@ namespace VvvfSimulator.Generation.Audio
             public String AudioDeviceId { get; set; } = new NAudio.CoreAudioApi.MMDeviceEnumerator().GetDefaultAudioEndpoint(NAudio.CoreAudioApi.DataFlow.Render, NAudio.CoreAudioApi.Role.Multimedia).ID;
         }
 
-        public static int RealTime_CheckForFreq(VvvfValues control, RealTimeParameter param, double dt)
+        public static int RealTimeFrequencyControl(VvvfValues control, RealTimeParameter param, double dt)
         {
-            control.SetBraking(param.braking);
-            control.SetMasconOff(param.free_run);
+            control.SetBraking(param.IsBraking);
+            control.SetMasconOff(param.IsFreeRunning);
 
-            double change_amo = param.change_amount;
+            double change_amo = param.FrequencyChangeRate;
 
             double sin_new_angle_freq = control.GetSineAngleFrequency();
             sin_new_angle_freq += change_amo * dt;
@@ -53,8 +52,7 @@ namespace VvvfSimulator.Generation.Audio
             }
 
 
-            if (param.quit) return 0;
-            else if (param.reselect) return 1;
+            if (param.Quit) return 0;
 
             if (!control.IsMasconOff()) // mascon on
             {

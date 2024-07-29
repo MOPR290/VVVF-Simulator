@@ -26,39 +26,39 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
     /// </summary>
     public partial class MasconWindow : Window
     {
-        RealTimeParameter realTime_Parameter;
+        private readonly RealTimeParameter Param;
         public MasconWindow(RealTimeParameter parameter)
         {
-            realTime_Parameter = parameter;
+            Param = parameter;
 
             InitializeComponent();
             SetState(0);
-            DataContext = view_model;
+            DataContext = Model;
         }
 
-        public void Start_Task()
+        public void StartTask()
         {
 
             Task.Run(() => {
-                while (!realTime_Parameter.quit)
+                while (!Param.Quit)
                 {
                     System.Threading.Thread.Sleep(20);
-                    view_model.sine_freq = realTime_Parameter.Control.GetVideoSineFrequency();
-                    view_model.pulse_state = GetPulseName();
+                    Model.sine_freq = Param.Control.GetVideoSineFrequency();
+                    Model.pulse_state = GetPulseName();
                 }
             });
             Task.Run(() => {
-                while (!realTime_Parameter.quit)
+                while (!Param.Quit)
                 {
-                    VvvfValues solve_control = realTime_Parameter.Control.Clone();
+                    VvvfValues solve_control = Param.Control.Clone();
                     solve_control.SetRandomFrequencyMoveAllowed(false);
-                    double voltage = Generation.Video.ControlInfo.GenerateControlCommon.GetVoltageRate(solve_control, realTime_Parameter.VvvfSoundData, false) * 100;
-                    view_model.voltage = voltage;
+                    double voltage = Generation.Video.ControlInfo.GenerateControlCommon.GetVoltageRate(solve_control, Param.VvvfSoundData, false) * 100;
+                    Model.voltage = voltage;
                 }
             });
         }
 
-        private readonly ViewModel view_model = new ();
+        private readonly ViewModel Model = new ();
         public class ViewModel : ViewModelBase
         {
 
@@ -101,7 +101,6 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             public Brush P4 { get { return _P4; } set { _P4 = value; RaisePropertyChanged(nameof(P4)); } }
 
 
-
             private double _sine_freq = 0;
             public double sine_freq { get { return _sine_freq; } set { _sine_freq = value; RaisePropertyChanged(nameof(sine_freq)); } }
 
@@ -123,7 +122,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
         private String GetPulseName()
         {
             // Recalculate
-            VvvfValues solve_control = realTime_Parameter.Control.Clone();
+            VvvfValues solve_control = Param.Control.Clone();
             Task re_calculate = Task.Run(() =>
             {
                 solve_control.SetRandomFrequencyMoveAllowed(false);
@@ -134,7 +133,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
                     free_run = solve_control.IsFreeRun(),
                     wave_stat = solve_control.GetControlFrequency()
                 };
-                PwmCalculateValues calculated_Values = Yaml.VvvfSound.YamlVvvfWave.CalculateYaml(solve_control, cv, realTime_Parameter.VvvfSoundData);
+                PwmCalculateValues calculated_Values = Yaml.VvvfSound.YamlVvvfWave.CalculateYaml(solve_control, cv, Param.VvvfSoundData);
                 CalculatePhases(solve_control, calculated_Values, 0);
             });
             re_calculate.Wait();
@@ -196,22 +195,21 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             }
         }
 
-        private void set_Color(int c,Color col)
+        private void SetColor(int c, SolidColorBrush brush)
         {
-            SolidColorBrush brush = new SolidColorBrush(col);
-            if (c == 0) view_model.N = brush;
+            if (c == 0) Model.N = brush;
 
-            if (c == -1) view_model.B0 = brush;
-            if (c == -2) view_model.B1 = brush;
-            if (c == -3) view_model.B2 = brush;
-            if (c == -4) view_model.B3 = brush;
-            if (c == -5) view_model.B4 = brush;
+            if (c == -1) Model.B0 = brush;
+            if (c == -2) Model.B1 = brush;
+            if (c == -3) Model.B2 = brush;
+            if (c == -4) Model.B3 = brush;
+            if (c == -5) Model.B4 = brush;
 
-            if (c == 1) view_model.P0 = brush;
-            if (c == 2) view_model.P1 = brush;
-            if (c == 3) view_model.P2 = brush;
-            if (c == 4) view_model.P3 = brush;
-            if (c == 5) view_model.P4 = brush;
+            if (c == 1) Model.P0 = brush;
+            if (c == 2) Model.P1 = brush;
+            if (c == 3) Model.P2 = brush;
+            if (c == 4) Model.P3 = brush;
+            if (c == 5) Model.P4 = brush;
         }
 
         private void SetState(int at)
@@ -220,75 +218,54 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             int at_abs = (at < 0) ? -at : at;
             bool nega = at < 0;
 
-            realTime_Parameter.change_amount = (nega ? -1 : 1) * ((at_abs - 1 < 0) ? 0 : at_abs - 1) * 3 * Math.PI;
+            Param.FrequencyChangeRate = (nega ? -1 : 1) * ((at_abs - 1 < 0) ? 0 : at_abs - 1) * Math.PI * 2 * Properties.Settings.Default.RealTimeMasconFrequencyChangeRate;
 
-            bool pre_braking = realTime_Parameter.braking;
-            realTime_Parameter.free_run = at == 0;
-            realTime_Parameter.braking = (at == 0) ? pre_braking : at < 0;
+            bool pre_braking = Param.IsBraking;
+            Param.IsFreeRunning = at == 0;
+            Param.IsBraking = (at == 0) ? pre_braking : at < 0;
 
-            Color gray = Color.FromRgb(0xA0, 0xA0, 0xA0);
+            SolidColorBrush inactive = (SolidColorBrush)Application.Current.FindResource("MasconDefaultBackgroundBrush");
 
             if (at == 0)
             {
-                Color neutral = Color.FromRgb(0x4c, 0xeb, 0x34);
                 for (int i = -5; i < 6; i++)
                 {
-                    set_Color(i, i == 0 ? neutral : gray);
+                    SetColor(i, inactive);
                 }
+                SetColor(0, (SolidColorBrush)Application.Current.FindResource("MasconNeutralBrush"));
                 return;
             } else
-                set_Color(0, gray);
+                SetColor(0, inactive);
 
-            for(int i = 1; i <= 5; i++)
+            for (int i = 1; i <= 5; i++)
             {
-                Color target;
-
-                if (nega)
-                {
-                    // 255,193,0
-                    // 255,77,0
-
-                    double r = (255 - 255) / 4.0 * (i - 1) + 255;
-                    double g = (77 - 193) / 4.0 * (i - 1) + 193;
-                    double b = (0 - 0) / 4.0 * (i - 1) + 0;
-                    target = Color.FromRgb((byte)r, (byte)g, (byte)b);
-                }
+                SolidColorBrush target = (SolidColorBrush)Application.Current.FindResource($"Mascon{(nega ? "B" : "P")+(i - 1)}Brush");
+                if (at_abs >= i)
+                    SetColor(nega ? -i : i, target);
                 else
-                {
-                    // 120,193,255
-                    // 40,113,204
-                    double r = (40 - 120) / 4.0 * (i - 1) + 120;
-                    double g = (113 - 193) / 4.0 * (i - 1) + 193;
-                    double b = (204 - 255) / 4.0 * (i - 1) + 255;
-                    target = Color.FromRgb((byte)r, (byte)g, (byte)b);
-                }
-                
-                if(at_abs >= i)
-                    set_Color(nega ? -i : i, target);
-                else
-                    set_Color(nega ? -i : i, gray);
+                    SetColor(nega ? -i : i, inactive);
 
-                set_Color(nega ? i : -i, gray);
+                SetColor(nega ? i : -i, inactive);
             }
             
 
             
         }
 
-        public int current_stat = 0;
-        public DeviceMode current_mode = DeviceMode.KeyBoard;
+        public int MasconPosition = 0;
+        public DeviceMode CurrentMode = DeviceMode.KeyBoard;
 
         // Serial Port
-        public string current_port = "COM3";
+        public string MasconComPort = "COM3";
         public SerialPort serialPort = new();
         public void SetConfig()
         {
-            if(current_mode == DeviceMode.PicoMascon)
+            if(CurrentMode == DeviceMode.PicoMascon)
             {
                 if (serialPort.IsOpen) serialPort.Close();
                 try
                 {
-                    serialPort = new SerialPort(current_port);
+                    serialPort = new SerialPort(MasconComPort);
 
                     serialPort.BaudRate = 9600;
                     serialPort.Parity = Parity.None;
@@ -309,25 +286,27 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
                     MessageBox.Show(ex.Message, "Error" , MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            else if(current_mode == DeviceMode.KeyBoard)
+            else if(CurrentMode == DeviceMode.KeyBoard)
             {
                 if (serialPort.IsOpen) serialPort.Close();
             }
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (current_mode != DeviceMode.KeyBoard) return;
+            if (CurrentMode != DeviceMode.KeyBoard) return;
             Key key = e.Key;
 
-            if (key.Equals(Key.S))
-                current_stat++;
-            else if (key.Equals(Key.W))
-                current_stat--;
+            if (key.Equals((Key)Properties.Settings.Default.RealTimeMasconAccelerateKey))
+                MasconPosition++;
+            else if (key.Equals((Key)Properties.Settings.Default.RealTimeMasconBrakeKey))
+                MasconPosition--;
+            else if (key.Equals((Key)Properties.Settings.Default.RealTimeMasconNeutralKey))
+                MasconPosition = 0;
 
-            if (current_stat > 5) current_stat = 5;
-            if (current_stat < -5) current_stat = -5;
+            if (MasconPosition > 5) MasconPosition = 5;
+            if (MasconPosition < -5) MasconPosition = -5;
 
-            SetState(current_stat);
+            SetState(MasconPosition);
 
         }
         
@@ -336,15 +315,15 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             if (!serialPort.IsOpen) return;
             String read = serialPort.ReadExisting();
             
-            if(current_mode == DeviceMode.PicoMascon)
+            if(CurrentMode == DeviceMode.PicoMascon)
             {
                 try
                 {
                     this.Dispatcher.Invoke(() =>
                     {
                         int current = Int32.Parse(read);
-                        current_stat = current - 5;
-                        SetState(current_stat);
+                        MasconPosition = current - 5;
+                        SetState(MasconPosition);
                     });
                 }
                 catch (Exception)
@@ -376,7 +355,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             if (serialPort.IsOpen) serialPort.Close();
-            realTime_Parameter.quit = true;
+            Param.Quit = true;
         }
 
         private void OnWindowControlButtonClick(object sender, RoutedEventArgs e)

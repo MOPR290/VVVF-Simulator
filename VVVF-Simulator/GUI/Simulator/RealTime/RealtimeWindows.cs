@@ -25,7 +25,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             public void RunTask()
             {
                 Task.Run(() => {
-                    while (!_Paremter.quit)
+                    while (!_Paremter.Quit)
                     {
                         UpdateControl();
 
@@ -76,7 +76,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             public void RunTask()
             {
                 Task.Run(() => {
-                    while (!_Parameter.quit)
+                    while (!_Parameter.Quit)
                     {
                         UpdateControl();
                     }
@@ -113,7 +113,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             public void RunTask()
             {
                 Task.Run(() => {
-                    while (!_Parameter.quit)
+                    while (!_Parameter.Quit)
                     {
                         UpdateControl();
                     }
@@ -170,7 +170,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime
             public void RunTask()
             {
                 Task.Run(() => {
-                    while (!_Parameter.quit)
+                    while (!_Parameter.Quit)
                     {
                         UpdateControl();
                         System.Threading.Thread.Sleep(16);

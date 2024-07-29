@@ -42,7 +42,7 @@ namespace VvvfSimulator.Generation.Audio.VvvfSound
             int end_result;
             while (true)
             {
-                end_result = RealTime_CheckForFreq(control, realTime_Parameter, calcCount / (double)(SamplingFrequency));
+                end_result = RealTimeFrequencyControl(control, realTime_Parameter, calcCount / (double)(SamplingFrequency));
                 if (end_result != -1) break;
 
                 byte[] data = new byte[calcCount];
@@ -99,7 +99,7 @@ namespace VvvfSimulator.Generation.Audio.VvvfSound
         }
         public static void Calculate(YamlVvvfSoundData Sound, RealTimeParameter Param, SerialPort? Serial)
         {
-            Param.quit = false;
+            Param.Quit = false;
             Param.VvvfSoundData = Sound;
 
             VvvfValues Control = new();

@@ -45,7 +45,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.UniqueWindow
         public void RunTask()
         {
             Task.Run(() => {
-                while (!_Parameter.quit)
+                while (!_Parameter.Quit)
                 {
                     UpdateControl();
                 }

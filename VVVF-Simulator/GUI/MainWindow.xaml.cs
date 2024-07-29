@@ -458,7 +458,7 @@ namespace VvvfSimulator
                 {
                     RealTimeParameter parameter = new()
                     {
-                        quit = false
+                        Quit = false
                     };
 
                     MainWindow.SetInteractive(false);
@@ -484,7 +484,7 @@ namespace VvvfSimulator
 
                     MasconWindow mascon = new(parameter);
                     mascon.Show();
-                    mascon.Start_Task();
+                    mascon.StartTask();
 
                     if (Properties.Settings.Default.RealTime_VVVF_WaveForm_Show)
                     {
@@ -587,12 +587,12 @@ namespace VvvfSimulator
                 {
                     RealTimeParameter parameter = new()
                     {
-                        quit = false
+                        Quit = false
                     };
 
                     MasconWindow mascon = new(parameter);
                     mascon.Show();
-                    mascon.Start_Task();
+                    mascon.StartTask();
 
                     if (Properties.Settings.Default.RealTime_Train_WaveForm_Show)
                     {

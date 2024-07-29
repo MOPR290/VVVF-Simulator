@@ -23,6 +23,7 @@
                 <Setter Property="FontFamily" Value="M PLUS 2"/>
                 <Setter Property="FontWeight" Value="Bold"/>
                 <Setter Property="FontSize" Value="20"/>
+                <Setter Property="Foreground" Value="{DynamicResource BackgroundTextBrush}"/>
             </Style>
 
             <Style TargetType="Label" x:Key="ValueTitle">
@@ -49,6 +50,7 @@
     <Window.ContextMenu>
         <ContextMenu Style="{DynamicResource SlimContextMenu}">
             <MenuItem Header="Device Setting" Click="MenuItem_Click" Tag="DeviceSetting"/>
+            <MenuItem Header="Frequency Rate Setting" Click="MenuItem_Click" Tag="FrequencyRateSetting"/>
         </ContextMenu>
     </Window.ContextMenu>
     
@@ -96,43 +98,43 @@
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
 
-            <Border Background="{Binding B4}" CornerRadius="10,10,0,0">
+            <Border Background="{Binding B4}" d:Background="{DynamicResource MasconB4Brush}" CornerRadius="10,10,0,0">
                 <Label Content="B4" Style="{DynamicResource Notch}"/>
             </Border>
 
-            <Grid Background="{Binding B3}" Grid.Row="1">
+            <Border Background="{Binding B3}" d:Background="{DynamicResource MasconB3Brush}" Grid.Row="1">
                 <Label Content="B3" Style="{DynamicResource Notch}"/>
-            </Grid>
-            <Grid Background="{Binding B2}" Grid.Row="2">
+            </Border>
+            <Border Background="{Binding B2}" d:Background="{DynamicResource MasconB2Brush}" Grid.Row="2">
                 <Label Content="B2" Style="{DynamicResource Notch}"/>
-            </Grid>
+            </Border>
 
-            <Grid Background="{Binding B1}" Grid.Row="3">
+            <Border Background="{Binding B1}" d:Background="{DynamicResource MasconB1Brush}" Grid.Row="3">
                 <Label Content="B1" Style="{DynamicResource Notch}"/>
-            </Grid>
+            </Border>
 
-            <Grid Background="{Binding B0}" Grid.Row="4">
+            <Border Background="{Binding B0}" d:Background="{DynamicResource MasconB0Brush}" Grid.Row="4">
                 <Label Content="B0" Style="{DynamicResource Notch}"/>
-            </Grid>
+            </Border>
 
-            <Grid Background="{Binding N}" Grid.Row="5">
+            <Border Background="{Binding N}" d:Background="{DynamicResource MasconNeutralBrush}" Grid.Row="5">
                 <Label Content="N" Style="{DynamicResource Notch}"/>
-            </Grid>
+            </Border>
 
-            <Grid Background="{Binding P0}" Grid.Row="6">
+            <Border Background="{Binding P0}" d:Background="{DynamicResource MasconP0Brush}" Grid.Row="6">
                 <Label Content="P0" Style="{DynamicResource Notch}"/>
-            </Grid>
+            </Border>
 
-            <Grid Background="{Binding P1}" Grid.Row="7">
+            <Border Background="{Binding P1}" d:Background="{DynamicResource MasconP1Brush}" Grid.Row="7">
                 <Label Content="P1" Style="{DynamicResource Notch}"/>
-            </Grid>
-            <Grid Background="{Binding P2}" Grid.Row="8">
+            </Border>
+            <Border Background="{Binding P2}" d:Background="{DynamicResource MasconP2Brush}" Grid.Row="8">
                 <Label Content="P2" Style="{DynamicResource Notch}"/>
-            </Grid>
-            <Grid Background="{Binding P3}" Grid.Row="9">
+            </Border>
+            <Border Background="{Binding P3}" d:Background="{DynamicResource MasconP3Brush}" Grid.Row="9">
                 <Label Content="P3" Style="{DynamicResource Notch}"/>
-            </Grid>
-            <Border Background="{Binding P4}" Grid.Row="10" CornerRadius="0,0,10,10">
+            </Border>
+            <Border Background="{Binding P4}" d:Background="{DynamicResource MasconP4Brush}" Grid.Row="10" CornerRadius="0,0,10,10">
                 <Label Content="P4" Style="{DynamicResource Notch}"/>
             </Border>
         </Grid>

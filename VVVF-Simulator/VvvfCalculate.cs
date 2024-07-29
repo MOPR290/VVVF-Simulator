@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using static VvvfSimulator.MyMath;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.VvvfStructs.PulseMode;
@@ -401,8 +402,15 @@ namespace VvvfSimulator
 
                 int val;
                 double initial = M_2PI / 3.0 * i + add_initial;
-                if (value.level == 2) val = CalculateTwoLevel(control, value, initial);
-                else val = CalculateThreeLevel(control, value, initial);
+                try
+                {
+                    if (value.level == 2) val = CalculateTwoLevel(control, value, initial);
+                    else val = CalculateThreeLevel(control, value, initial);
+                }
+                catch
+                {
+                    val = 0;
+                }
                 if (i == 0) U = val;
                 else if (i == 1) V = val;
                 else W = val;

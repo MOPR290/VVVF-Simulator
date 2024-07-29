@@ -12,7 +12,7 @@ namespace VvvfSimulator.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.9.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.10.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -332,6 +332,54 @@ namespace VvvfSimulator.Properties {
             }
             set {
                 this["RealTime_VVVF_SoundVolume"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.5")]
+        public double RealTimeMasconFrequencyChangeRate {
+            get {
+                return ((double)(this["RealTimeMasconFrequencyChangeRate"]));
+            }
+            set {
+                this["RealTimeMasconFrequencyChangeRate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("62")]
+        public int RealTimeMasconAccelerateKey {
+            get {
+                return ((int)(this["RealTimeMasconAccelerateKey"]));
+            }
+            set {
+                this["RealTimeMasconAccelerateKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("66")]
+        public int RealTimeMasconBrakeKey {
+            get {
+                return ((int)(this["RealTimeMasconBrakeKey"]));
+            }
+            set {
+                this["RealTimeMasconBrakeKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("65")]
+        public int RealTimeMasconNeutralKey {
+            get {
+                return ((int)(this["RealTimeMasconNeutralKey"]));
+            }
+            set {
+                this["RealTimeMasconNeutralKey"] = value;
             }
         }
     }

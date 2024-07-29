@@ -227,7 +227,21 @@
             </GradientStopCollection>
         </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
-    
+
+    <SolidColorBrush x:Key="MasconDefaultBackgroundBrush" Color="{DynamicResource BackgroundColor}"/>
+    <SolidColorBrush x:Key="MasconB4Brush" Color="#DD290E"/>
+    <SolidColorBrush x:Key="MasconB3Brush" Color="#E04010"/>
+    <SolidColorBrush x:Key="MasconB2Brush" Color="#E35611"/>
+    <SolidColorBrush x:Key="MasconB1Brush" Color="#E66C12"/>
+    <SolidColorBrush x:Key="MasconB0Brush" Color="#E98213"/>
+    <SolidColorBrush x:Key="MasconNeutralBrush" Color="#C3F73A"/>
+    <SolidColorBrush x:Key="MasconP0Brush" Color="#90C6F0"/>
+    <SolidColorBrush x:Key="MasconP1Brush" Color="#74B6F1"/>
+    <SolidColorBrush x:Key="MasconP2Brush" Color="#58A6F1"/>
+    <SolidColorBrush x:Key="MasconP3Brush" Color="#3C96F2"/>
+    <SolidColorBrush x:Key="MasconP4Brush" Color="#1F85F2"/>
+
+
     <SolidColorBrush x:Key="IconBrush" Color="#212121"/>
     
 </ResourceDictionary>

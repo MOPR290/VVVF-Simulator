@@ -28,7 +28,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
 
             while (true)
             {
-                int v = RealTime_CheckForFreq(control, realTime_Parameter, calcCount / (double)SamplingFrequency);
+                int v = RealTimeFrequencyControl(control, realTime_Parameter, calcCount / (double)SamplingFrequency);
                 if (v != -1) return v;
 
                 for (int i = 0; i < calcCount; i++)
@@ -47,7 +47,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
 
         public static void Generate(YamlVvvfSoundData Sound, RealTimeParameter Param)
         {
-            Param.quit = false;
+            Param.Quit = false;
             Param.VvvfSoundData = Sound;
             Param.Motor = new MotorData() { 
                 SIM_SAMPLE_FREQ = SamplingFrequency ,

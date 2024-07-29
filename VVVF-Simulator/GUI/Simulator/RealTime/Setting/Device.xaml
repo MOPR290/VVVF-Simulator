@@ -24,6 +24,7 @@
             <RowDefinition Height="25"/>
             <RowDefinition Height="50"/>
             <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -32,19 +33,19 @@
                 <ColumnDefinition Width="46"/>
             </Grid.ColumnDefinitions>
             <Image Style="{StaticResource WindowIconStyle}"/>
-            <Label Grid.Column="1" x:Name="WindowTitle" Content="USB Configuration" Style="{StaticResource WindowTitleStyle}"/>
+            <Label Grid.Column="1" x:Name="WindowTitle" Content="Device Configuration" Style="{StaticResource WindowTitleStyle}"/>
             <Button Grid.Column="2" Tag="Close" Click="OnWindowControlButtonClick" Style="{DynamicResource WindowCloseButton}"/>
         </Grid>
-        <Grid Grid.Row="1">
+
+        <Grid Grid.Row="1" Height="50" Visibility="{Binding FrequencyRateVisibility}" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="5*"/>
             </Grid.ColumnDefinitions>
             <Border Background="{DynamicResource SubTitleBarBrush}" CornerRadius="0,25,0,0">
-                <Label Content="Device Mode" Style="{DynamicResource SubTitleBarText}"/>
+                <Label Content="Frequency Rate" Style="{DynamicResource SubTitleBarText}"/>
             </Border>
-            <ComboBox x:Name="Mode_Selector" Grid.Column="1" SelectionChanged="Selector_SelectionChanged" Tag="Mode" Style="{DynamicResource SlimComboBoxStyle}"/>
-
+            <TextBox x:Name="FrequencyRateInput" Grid.Column="1" Tag="FrequencyRate" Style="{DynamicResource SlimTextBox}" TextChanged="DoubleInputTextBoxChanged"/>
         </Grid>
         
         <Grid Grid.Row="2">
@@ -52,12 +53,56 @@
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="5*"/>
             </Grid.ColumnDefinitions>
-            <Grid Background="{DynamicResource SubTitleBarBrush}">
-                <Label Content="Port" Style="{DynamicResource SubTitleBarText}"/>
-            </Grid>
-            <ComboBox x:Name="Port_Selector" Grid.Column="1" SelectionChanged="Selector_SelectionChanged" Tag="Port" Visibility="{Binding Port_Visibility}" Style="{DynamicResource SlimComboBoxStyle}"/>
+            <Border Background="{DynamicResource SubTitleBarBrush}">
+                <Label Content="Device Mode" Style="{DynamicResource SubTitleBarText}"/>
+            </Border>
+            <ComboBox x:Name="ModeSelector" Grid.Column="1" SelectionChanged="Selector_SelectionChanged" Tag="Mode" Style="{DynamicResource SlimComboBoxStyle}"/>
 
         </Grid>
+
+        <StackPanel Grid.Row="3">
+            
+            <Grid Height="50" Visibility="{Binding PortVisibility}" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Border Background="{DynamicResource SubTitleBarBrush}">
+                    <Label Content="Port" Style="{DynamicResource SubTitleBarText}"/>
+                </Border>
+                <ComboBox x:Name="PortSelector" Grid.Column="1" SelectionChanged="Selector_SelectionChanged" Tag="Port" Style="{DynamicResource SlimComboBoxStyle}"/>
+            </Grid>
+            <Grid Height="50" Visibility="{Binding AccelerateKeySettingVisibility}" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Border Background="{DynamicResource SubTitleBarBrush}">
+                    <Label Content="Accelerate Key" Style="{DynamicResource SubTitleBarText}"/>
+                </Border>
+                <TextBox x:Name="AccelerateKey" Grid.Column="1" Tag="Accelerate"  Style="{DynamicResource SlimTextBox}" PreviewKeyDown="TextBoxKeyDown"/>
+            </Grid>
+            <Grid Height="50" Visibility="{Binding NeutralKeySettingVisibility}" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Border Background="{DynamicResource SubTitleBarBrush}">
+                    <Label Content="Neutral Key" Style="{DynamicResource SubTitleBarText}"/>
+                </Border>
+                <TextBox x:Name="NeutralKey" Grid.Column="1" Tag="Neutral" Style="{DynamicResource SlimTextBox}" PreviewKeyDown="TextBoxKeyDown"/>
+            </Grid>
+            <Grid Height="50" Visibility="{Binding BrakeKeySettingVisibility}" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Border Background="{DynamicResource SubTitleBarBrush}">
+                    <Label Content="Brake Key" Style="{DynamicResource SubTitleBarText}"/>
+                </Border>
+                <TextBox x:Name="BrakeKey" Grid.Column="1" Tag="Brake" Style="{DynamicResource SlimTextBox}" PreviewKeyDown="TextBoxKeyDown"/>
+            </Grid>
+        </StackPanel>
 
     </Grid>
 </Window>

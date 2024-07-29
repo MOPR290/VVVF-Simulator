@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="VVVF_Simulator.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="VvvfSimulator.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="RealTime_VVVF_BuffSize" Type="System.Int32" Scope="User">
@@ -79,6 +79,18 @@
     </Setting>
     <Setting Name="RealTime_VVVF_SoundVolume" Type="System.Double" Scope="User">
       <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="RealTimeMasconFrequencyChangeRate" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1.5</Value>
+    </Setting>
+    <Setting Name="RealTimeMasconAccelerateKey" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">62</Value>
+    </Setting>
+    <Setting Name="RealTimeMasconBrakeKey" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">66</Value>
+    </Setting>
+    <Setting Name="RealTimeMasconNeutralKey" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">65</Value>
     </Setting>
   </Settings>
 </SettingsFile>
