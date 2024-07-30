@@ -14,7 +14,6 @@ using VvvfSimulator.GUI.Mascon;
 using VvvfSimulator.GUI.TrainAudio;
 using VvvfSimulator.GUI.TaskViewer;
 using VvvfSimulator.Yaml.VvvfSound;
-using VvvfSimulator.GUI.Resource.Theme;
 using VvvfSimulator.GUI.Create.Waveform;
 using VvvfSimulator.GUI.Simulator.RealTime;
 using VvvfSimulator.Generation.Pi3Generator;
@@ -26,6 +25,7 @@ using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
 using static VvvfSimulator.Yaml.TrainAudioSetting.YamlTrainSoundAnalyze;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
+using YamlDotNet.Core.Tokens;
 
 namespace VvvfSimulator
 {
@@ -87,11 +87,11 @@ namespace VvvfSimulator
             Button button = (Button)sender;
             string name = button.Name;
             if (name.Equals("settings_level"))
-                setting_window.Navigate(new Uri("GUI/Create/Settings/Level.xaml", UriKind.Relative));
+                SettingContentViewer.Navigate(new Uri("GUI/Create/Settings/Level.xaml", UriKind.Relative));
             else if (name.Equals("settings_minimum"))
-                setting_window.Navigate(new Uri("GUI/Create/Settings/MinimumFrequency.xaml", UriKind.Relative));
+                SettingContentViewer.Navigate(new Uri("GUI/Create/Settings/MinimumFrequency.xaml", UriKind.Relative));
             else if (name.Equals("settings_mascon"))
-                setting_window.Navigate(new Uri("GUI/Create/Settings/Jerk.xaml", UriKind.Relative));
+                SettingContentViewer.Navigate(new Uri("GUI/Create/Settings/Jerk.xaml", UriKind.Relative));
         }
 
         private void SettingEditClick(object sender, RoutedEventArgs e)
@@ -106,16 +106,8 @@ namespace VvvfSimulator
             var list_view = command[0].Equals("accelerate") ? accelerate_settings : brake_settings;
             var settings = command[0].Equals("accelerate") ? YamlVvvfManage.CurrentData.AcceleratePattern : YamlVvvfManage.CurrentData.BrakingPattern;
 
-            if (command[1].Equals("remove"))
-            {
-                if (list_view.SelectedIndex >= 0)
-                    settings.RemoveAt(list_view.SelectedIndex);
-            }
-
-            else if (command[1].Equals("add"))
+            if (command[1].Equals("add"))
                 settings.Add(new YamlControlData());
-            else if (command[1].Equals("reset"))
-                settings.Clear();
 
             list_view.Items.Refresh();
         }
@@ -157,21 +149,30 @@ namespace VvvfSimulator
         private void AccelerateSelectedShow()
         {
             int selected = accelerate_settings.SelectedIndex;
-            if (selected < 0) return;
-
-            YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
-            var selected_data = ysd.AcceleratePattern[selected];
-            setting_window.Navigate(new Top(selected_data, ysd.Level));
-
+            if (selected < 0)
+            {
+                SettingContentViewer.Navigate(null);
+            }
+            else
+            {
+                YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
+                var selected_data = ysd.AcceleratePattern[selected];
+                SettingContentViewer.Navigate(new Top(selected_data, ysd.Level));
+            }
         }
         private void BrakeSelectedShow()
         {
             int selected = brake_settings.SelectedIndex;
-            if (selected < 0) return;
-
-            YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
-            var selected_data = ysd.BrakingPattern[selected];
-            setting_window.Navigate(new Top(selected_data, ysd.Level));
+            if (selected < 0)
+            {
+                SettingContentViewer.Navigate(null);
+            }
+            else
+            {
+                YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
+                var selected_data = ysd.BrakingPattern[selected];
+                SettingContentViewer.Navigate(new Top(selected_data, ysd.Level));
+            }
         }
 
         public void UpdateControlList()
@@ -193,7 +194,7 @@ namespace VvvfSimulator
             }
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void ContextMenuClick(object sender, RoutedEventArgs e)
         {
             MenuItem mi = (MenuItem)sender;
             Object? tag = mi.Tag;
@@ -206,7 +207,6 @@ namespace VvvfSimulator
                 if (command[1].Equals("sort"))
                 {
                     YamlVvvfManage.CurrentData.BrakingPattern.Sort((a, b) => Math.Sign(b.ControlFrequencyFrom - a.ControlFrequencyFrom));
-                    UpdateControlList();
                     BrakeSelectedShow();
                 }
                 else if (command[1].Equals("copy"))
@@ -217,16 +217,19 @@ namespace VvvfSimulator
                     YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
                     var selected_data = ysd.BrakingPattern[selected];
                     YamlVvvfManage.CurrentData.BrakingPattern.Add(selected_data.Clone());
-                    UpdateControlList();
                     BrakeSelectedShow();
                 }
+                else if (command[1].Equals("delete"))
+                {
+                    YamlVvvfManage.CurrentData.BrakingPattern.RemoveAt(brake_settings.SelectedIndex);
+                }
+                UpdateControlList();
             }
             else if (command[0].Equals("accelerate"))
             {
                 if (command[1].Equals("sort"))
                 {
                     YamlVvvfManage.CurrentData.AcceleratePattern.Sort((a, b) => Math.Sign(b.ControlFrequencyFrom - a.ControlFrequencyFrom));
-                    UpdateControlList();
                     AccelerateSelectedShow();
                 }
                 else if (command[1].Equals("copy"))
@@ -237,13 +240,15 @@ namespace VvvfSimulator
                     YamlVvvfSoundData ysd = YamlVvvfManage.CurrentData;
                     YamlControlData selected_data = ysd.AcceleratePattern[selected];
                     YamlVvvfManage.CurrentData.AcceleratePattern.Add(selected_data.Clone());
-                    UpdateControlList();
                     BrakeSelectedShow();
                 }
+                else if (command[1].Equals("delete"))
+                {
+                    YamlVvvfManage.CurrentData.AcceleratePattern.RemoveAt(accelerate_settings.SelectedIndex);
+                }
+                UpdateControlList();
             }
         }
-
-
 
         private String load_path = "";
         public String GetLoadedYamlName()
@@ -280,7 +285,7 @@ namespace VvvfSimulator
                 load_path = dialog.FileName;
                 UpdateControlList();
                 //update_Control_Showing();
-                setting_window.Navigate(null);
+                SettingContentViewer.Navigate(null);
 
             }
             else if (tag.Equals("Save_As"))
@@ -320,51 +325,7 @@ namespace VvvfSimulator
                 else
                     MessageBox.Show("Error occurred on saving.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            else if (tag.Equals("Export_As_C"))
-            {
-                var dialog = new SaveFileDialog
-                {
-                    Filter = "C (*.c)|*.c",
-                    FileName = GetLoadedYamlName()
-                };
-
-                // ダイアログを表示する
-                if (dialog.ShowDialog() == false) return;
-
-                try
-                {
-                    using (StreamWriter outputFile = new(dialog.FileName))
-                    {
-                        outputFile.Write(Pi3Generate.GenerateC(YamlVvvfManage.CurrentData, Path.GetFileNameWithoutExtension(dialog.FileName)));
-                    }
-                    MessageBox.Show("Export as C complete.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                catch
-                {
-                    MessageBox.Show("Error occurred.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-
-            }
         }
-
-        private void Generation_Menu_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem button = (MenuItem)sender;
-            Object? tag = button.Tag;
-            if (tag == null) return;
-            String? tag_str = tag.ToString();
-            if (tag_str == null) return;
-            String[] command = tag_str.Split("_");
-
-
-            MainWindow.SetInteractive(false);
-            bool unblock = SolveCommand(command);
-            if (!unblock) return;
-            MainWindow.SetInteractive(true);
-            SystemSounds.Beep.Play();
-
-        }
-
         public class TaskProgressData
         {
             public ProgressData Data { get; set; }
@@ -405,9 +366,7 @@ namespace VvvfSimulator
                 this.Description = Description;
             }
         }
-
         public static List<TaskProgressData> taskProgresses = new();
-
         private static GenerationBasicParameter GetGenerationBasicParameter()
         {
             GenerationBasicParameter generationBasicParameter = new(
@@ -874,9 +833,54 @@ namespace VvvfSimulator
                 }
 
             }
+            else if (command[0].Equals("SourceCode"))
+            {
+                if (command[1].Equals("RPi3"))
+                {
+                    var dialog = new SaveFileDialog
+                    {
+                        Filter = "C (*.c)|*.c",
+                        FileName = GetLoadedYamlName()
+                    };
+
+                    // ダイアログを表示する
+                    if (dialog.ShowDialog() == false) return false;
+
+                    try
+                    {
+                        using (StreamWriter outputFile = new(dialog.FileName))
+                        {
+                            outputFile.Write(Pi3Generate.GenerateC(YamlVvvfManage.CurrentData, Path.GetFileNameWithoutExtension(dialog.FileName)));
+                        }
+                        MessageBox.Show("Export as C complete.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Error occurred.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                
+
+            }
             return true;
         }
+        private void Generation_Menu_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem button = (MenuItem)sender;
+            Object? tag = button.Tag;
+            if (tag == null) return;
+            String? tag_str = tag.ToString();
+            if (tag_str == null) return;
+            String[] command = tag_str.Split("_");
 
+
+            MainWindow.SetInteractive(false);
+            bool unblock = SolveCommand(command);
+            if (!unblock) return;
+            MainWindow.SetInteractive(true);
+            SystemSounds.Beep.Play();
+
+        }
         private void Window_Menu_Click(object sender, RoutedEventArgs e)
         {
             MenuItem button = (MenuItem)sender;
@@ -894,18 +898,8 @@ namespace VvvfSimulator
             {
                 TaskViewer_Main tvm = new();
                 tvm.Show();
-            }
-        }
-
-        private void Setting_Menu_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem button = (MenuItem)sender;
-            Object? tag = button.Tag;
-            if (tag == null) return;
-            String? tag_str = tag.ToString();
-            if (tag_str == null) return;
-
-            if (tag_str.Equals("AccelPattern"))
+            } 
+            else if (tag_str.Equals("AccelPattern"))
             {
                 MainWindow.SetInteractive(false);
                 MasconControlMain gmcw = new();
@@ -920,10 +914,8 @@ namespace VvvfSimulator
                 tahw.ShowDialog();
                 MainWindow.SetInteractive(true);
             }
-
         }
-
-        private void Process_Menu_Click(object sender, RoutedEventArgs e)
+        private void Tools_Menu_Click(object sender, RoutedEventArgs e)
         {
             MenuItem button = (MenuItem)sender;
             Object? tag = button.Tag;
@@ -931,7 +923,12 @@ namespace VvvfSimulator
             String? tag_str = tag.ToString();
             if (tag_str == null) return;
 
-            if (tag_str.Equals("AutoVoltage"))
+            if (tag_str.Equals("MIDI"))
+            {
+                GUI.MIDIConvert.Main mIDIConvert_Main = new();
+                mIDIConvert_Main.Show();
+            }
+            else if (tag_str.Equals("AutoVoltage"))
             {
                 MainWindow.SetInteractive(false);
                 Task.Run(() =>
@@ -960,10 +957,8 @@ namespace VvvfSimulator
                 });
             }
 
-
         }
-
-        private void Util_Menu_Click(object sender, RoutedEventArgs e)
+        private void Edit_Menu_Click(object sender, RoutedEventArgs e)
         {
             MenuItem button = (MenuItem)sender;
             Object? tag = button.Tag;
@@ -971,19 +966,18 @@ namespace VvvfSimulator
             String? tag_str = tag.ToString();
             if (tag_str == null) return;
 
-            if (tag_str.Equals("MIDI"))
+            if (tag_str.Equals("Reset"))
             {
-                GUI.MIDIConvert.Main mIDIConvert_Main = new();
-                mIDIConvert_Main.Show();
+                YamlVvvfManage.CurrentData = new();
+                SettingContentViewer.Navigate(null);
+                UpdateControlList();
             }
-
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             Application.Current.Shutdown();
         }
-
         private void OnWindowControlButtonClick(object sender, RoutedEventArgs e)
         {
             Button? btn = sender as Button;

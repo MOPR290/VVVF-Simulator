@@ -58,6 +58,12 @@ namespace VvvfSimulator.Yaml.MasconControl
                 public bool mascon_on { get; set; } = true;
 
 
+                public YamlMasconDataPoint() { }
+                public YamlMasconDataPoint(int Order)
+                {
+                    order = Order;
+                }
+
                 public YamlMasconDataPoint Clone()
                 {
                     return (YamlMasconDataPoint)MemberwiseClone();

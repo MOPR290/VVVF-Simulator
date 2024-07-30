@@ -52,20 +52,17 @@ namespace VvvfSimulator.GUI.Mascon
     /// <summary>
     /// Generation_Mascon_Control_Window.xaml の相互作用ロジック
     /// </summary>
-    public partial class MasconControlMain : Window
+    public partial class MasconControlMain
     {
         public MasconControlMain()
         {
             InitializeComponent();
-
             mascon_control_list.ItemsSource = YamlMasconManage.CurrentData.points;
-
-
         }
 
         private String load_path = "";
         private String load_midi_path = "";
-        private void File_Menu_Click(object sender, RoutedEventArgs e)
+        private void FileMenuClick(object sender, RoutedEventArgs e)
         {
             MenuItem button = (MenuItem)sender;
             Object? tag = button.Tag;
@@ -85,7 +82,7 @@ namespace VvvfSimulator.GUI.Mascon
 
                 load_path = dialog.FileName;
 
-                Refresh_ItemList();
+                UpdateItemList();
 
             }
             else if (tag.Equals("Save"))
@@ -104,7 +101,14 @@ namespace VvvfSimulator.GUI.Mascon
                 else
                     MessageBox.Show("Error occurred on saving.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            else if (tag.Equals("Midi"))
+        }
+
+        private void EditMenuClick(object sender, RoutedEventArgs e)
+        {
+            MenuItem button = (MenuItem)sender;
+            Object? tag = button.Tag;
+            if (tag == null) return;
+            if (tag.Equals("Midi"))
             {
                 MasconControlMidi gmcm = new(Path.GetDirectoryName(load_midi_path));
                 gmcm.ShowDialog();
@@ -115,34 +119,32 @@ namespace VvvfSimulator.GUI.Mascon
                     YamlMasconData? data = YamlMasconMidi.Convert(load_data);
                     if (data == null) return;
                     YamlMasconManage.CurrentData = data;
-                    Refresh_ItemList();
+                    UpdateItemList();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+            else if (tag.Equals("Reset"))
+            {
+                YamlMasconManage.CurrentData = YamlMasconManage.DefaultData.Clone();
+                UpdateItemList();
+            }
         }
 
-        public void Refresh_ItemList()
-        {
-            mascon_control_list.ItemsSource = YamlMasconManage.CurrentData.points;
-            mascon_control_list.Items.Refresh();
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void ControlItemContextMenuClick(object sender, RoutedEventArgs e)
         {
             MenuItem mi = (MenuItem)sender;
             Object? tag = mi.Tag;
 
-            if (tag.Equals("sort"))
+            if (tag.Equals("Delete"))
             {
-                YamlMasconManage.CurrentData.points.Sort((a, b) => Math.Sign(a.order - b.order));
-                Refresh_ItemList();
-
-
-            }
-            else if (tag.Equals("copy"))
+                int selected = mascon_control_list.SelectedIndex;
+                if (selected < 0) return;
+                YamlMasconManage.CurrentData.points.RemoveAt(selected);
+                UpdateItemList();
+            } else if (tag.Equals("Copy"))
             {
                 var selected_item = mascon_control_list.SelectedItem;
                 if (selected_item == null) return;
@@ -150,11 +152,29 @@ namespace VvvfSimulator.GUI.Mascon
                 YamlMasconDataPoint data = (YamlMasconDataPoint)selected_item;
                 YamlMasconManage.CurrentData.points.Add(data.Clone());
 
-                Refresh_ItemList();
+                UpdateItemList();
+            }           
+        }
+
+        private void ItemListContextMenuClick(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = (MenuItem)sender;
+            Object? tag = mi.Tag;
+
+            if (tag.Equals("Sort"))
+            {
+                YamlMasconManage.CurrentData.points.Sort((a, b) => Math.Sign(a.order - b.order));
+                UpdateItemList();
             }
         }
 
-        private void mascon_control_list_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        public void UpdateItemList()
+        {
+            mascon_control_list.ItemsSource = YamlMasconManage.CurrentData.points;
+            mascon_control_list.Items.Refresh();
+        }
+
+        private void ControlItemSelected(object sender, SelectionChangedEventArgs e)
         {
             var selected_item = mascon_control_list.SelectedItem;
             if (selected_item == null) return;
@@ -162,25 +182,15 @@ namespace VvvfSimulator.GUI.Mascon
             edit_view_frame.Navigate(new MasconControlEdit(this, (YamlMasconDataPoint)selected_item));
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void ButtonClick(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
             Object tag = btn.Tag;
 
             if (tag.Equals("Add"))
             {
-                YamlMasconManage.CurrentData.points.Add(new());
-                Refresh_ItemList();
-            }else if (tag.Equals("Remove"))
-            {
-                int selected = mascon_control_list.SelectedIndex;
-                if (selected < 0) return;
-                YamlMasconManage.CurrentData.points.RemoveAt(selected);
-                Refresh_ItemList();
-            }else if (tag.Equals("Reset"))
-            {
-                YamlMasconManage.CurrentData = YamlMasconManage.DefaultData.Clone();
-                Refresh_ItemList();
+                YamlMasconManage.CurrentData.points.Add(new(YamlMasconManage.CurrentData.points.Count));
+                UpdateItemList();
             }
         }
 
@@ -190,7 +200,7 @@ namespace VvvfSimulator.GUI.Mascon
             if (btn == null) return;
             string? tag = btn.Tag.ToString();
             if (tag == null) return;
-
+        
             if (tag.Equals("Close"))
                 Close();
             else if (tag.Equals("Maximize"))
@@ -203,5 +213,6 @@ namespace VvvfSimulator.GUI.Mascon
             else if (tag.Equals("Minimize"))
                 WindowState = WindowState.Minimized;
         }
+
     }
 }

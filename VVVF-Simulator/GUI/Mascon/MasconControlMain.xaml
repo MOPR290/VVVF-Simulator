@@ -41,9 +41,12 @@
             <Image Style="{StaticResource WindowIconStyle}"/>
             <Menu Grid.Column="1" Style="{DynamicResource MenuStyle}">
                 <MenuItem Header="File">
-                    <MenuItem Header="Save Yaml" Tag="Save" Click="File_Menu_Click"/>
-                    <MenuItem Header="Load Yaml" Tag="Load" Click="File_Menu_Click"/>
-                    <MenuItem Header="Load Midi" Tag="Midi" Click="File_Menu_Click"/>
+                    <MenuItem Header="Save Yaml" Tag="Save" Click="FileMenuClick"/>
+                    <MenuItem Header="Load Yaml" Tag="Load" Click="FileMenuClick"/>
+                </MenuItem>
+                <MenuItem Header="Edit">
+                    <MenuItem Header="Reset" Tag="Reset" Click="EditMenuClick"/>
+                    <MenuItem Header="Load Midi" Tag="Midi" Click="EditMenuClick"/>
                 </MenuItem>
             </Menu>
             <Button Grid.Column="2" Tag="Minimize" Style="{DynamicResource WindowMimizeButton}" Click="OnWindowControlButtonClick"/>
@@ -64,21 +67,28 @@
                     <Border>
                         <ListView 
                             x:Name="mascon_control_list" 
-                            SelectionChanged="mascon_control_list_SelectionChanged" 
+                            SelectionChanged="ControlItemSelected" 
                             Style="{DynamicResource SlimListView}"
                             ItemContainerStyle="{DynamicResource SlimListItem}"
                             >
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding Path=. , Converter={StaticResource BigTitle}}" Style="{DynamicResource ListItemTitleTextBlockStyle}"/>
-                                    </StackPanel>
+                                    <Grid Width="auto">
+                                        <TextBlock Text="{Binding Path=. , Converter={StaticResource BigTitle}}" Style="{DynamicResource ListItemTitleTextBlockStyle}"
+                                                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                        <Grid.ContextMenu>
+                                            <ContextMenu Style="{DynamicResource SlimContextMenu}">
+                                                <MenuItem Header="Copy" Click="ControlItemContextMenuClick" Tag="Copy"/>
+                                                <Separator/>
+                                                <MenuItem Header="Delete" Click="ControlItemContextMenuClick" Tag="Delete"/>
+                                            </ContextMenu>
+                                        </Grid.ContextMenu>
+                                    </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                             <ListView.ContextMenu>
                                 <ContextMenu Style="{DynamicResource SlimContextMenu}">
-                                    <MenuItem Header="Sort" Click="MenuItem_Click" Tag="sort"/>
-                                    <MenuItem Header="Copy" Click="MenuItem_Click" Tag="copy"/>
+                                    <MenuItem Header="Sort" Click="ItemListContextMenuClick" Tag="Sort"/>
                                 </ContextMenu>
                             </ListView.ContextMenu>
                         </ListView>
@@ -86,13 +96,9 @@
                     <Border Grid.Row="1" Background="{DynamicResource SubBackgroundBrush}" CornerRadius="25">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="50"/>
-                                <ColumnDefinition Width="50"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Button Content="+" Tag="Add" Click="Button_Click" Style="{DynamicResource SlimButton}"/>
-                            <Button Content="-" Grid.Column="1" Tag="Remove" Click="Button_Click" Style="{DynamicResource SlimButton}"/>
-                            <Button Content="Reset" Grid.Column="2" Tag="Reset" Click="Button_Click" Style="{DynamicResource SlimButton}"/>
+                            <Button Content="+" Tag="Add" Click="ButtonClick" Style="{DynamicResource SlimButton}"/>
                         </Grid>
                     </Border>
                 </Grid>             

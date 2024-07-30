@@ -86,19 +86,19 @@ namespace VvvfSimulator.GUI.Mascon
             {
                 double d = ParseDouble(tb);
                 data.duration = d;
-                main_viewer.Refresh_ItemList();
+                main_viewer.UpdateItemList();
             }
             else if (tag.Equals("Rate"))
             {
                 double d = ParseDouble(tb);
                 data.rate = d;
-                main_viewer.Refresh_ItemList();
+                main_viewer.UpdateItemList();
             }
             else if (tag.Equals("Order"))
             {
                 int d = ParseInt(tb,0);
                 data.order = d;
-                main_viewer.Refresh_ItemList();
+                main_viewer.UpdateItemList();
             }
         }
 
@@ -114,7 +114,7 @@ namespace VvvfSimulator.GUI.Mascon
                 data.mascon_on = is_checked;
             else if (tag.Equals("Brake"))
                 data.brake = is_checked;
-            main_viewer.Refresh_ItemList();
+            main_viewer.UpdateItemList();
         }
     }
 }

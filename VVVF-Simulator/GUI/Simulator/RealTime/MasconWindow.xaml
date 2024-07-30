@@ -50,7 +50,6 @@
     <Window.ContextMenu>
         <ContextMenu Style="{DynamicResource SlimContextMenu}">
             <MenuItem Header="Device Setting" Click="MenuItem_Click" Tag="DeviceSetting"/>
-            <MenuItem Header="Frequency Rate Setting" Click="MenuItem_Click" Tag="FrequencyRateSetting"/>
         </ContextMenu>
     </Window.ContextMenu>
     
