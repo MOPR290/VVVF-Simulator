@@ -24,23 +24,10 @@ namespace VvvfSimulator.GUI.Util
         {
             return EnteredValue;
         }
-        private static double ParseDouble(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return double.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
-        }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             TextBox tb = NumberEnterBox;
-            double d = ParseDouble(tb);
+            double d = ParseTextBox.ParseDouble(tb);
             EnteredValue = d;
             Close();
         }
@@ -48,7 +35,7 @@ namespace VvvfSimulator.GUI.Util
         private void NumberEnterBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox tb = NumberEnterBox;
-            ParseDouble(tb);
+            ParseTextBox.ParseDouble(tb);
         }
 
         private void OnWindowControlButtonClick(object sender, RoutedEventArgs e)

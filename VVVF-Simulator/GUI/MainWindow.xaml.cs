@@ -20,13 +20,13 @@ using VvvfSimulator.Generation.Pi3Generator;
 using VvvfSimulator.GUI.Simulator.RealTime.Setting;
 using VvvfSimulator.GUI.Simulator.RealTime.UniqueWindow;
 using static VvvfSimulator.Generation.GenerateCommon;
+using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfUtil;
 using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
 using static VvvfSimulator.Yaml.TrainAudioSetting.YamlTrainSoundAnalyze;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
-using System.Diagnostics;
-using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfUtil;
+
 
 namespace VvvfSimulator
 {
@@ -207,7 +207,7 @@ namespace VvvfSimulator
             {
                 if (command[1].Equals("sort"))
                 {
-                    YamlVvvfManage.CurrentData.BrakingPattern.Sort((a, b) => Math.Sign(b.ControlFrequencyFrom - a.ControlFrequencyFrom));
+                    YamlVvvfManage.CurrentData.SortBrakingPattern(false);
                     BrakeSelectedShow();
                 }
                 else if (command[1].Equals("copy"))
@@ -230,7 +230,7 @@ namespace VvvfSimulator
             {
                 if (command[1].Equals("sort"))
                 {
-                    YamlVvvfManage.CurrentData.AcceleratePattern.Sort((a, b) => Math.Sign(b.ControlFrequencyFrom - a.ControlFrequencyFrom));
+                    YamlVvvfManage.CurrentData.SortAcceleratePattern(false);
                     AccelerateSelectedShow();
                 }
                 else if (command[1].Equals("copy"))
@@ -929,11 +929,10 @@ namespace VvvfSimulator
             else if (tag_str.Equals("AutoVoltage"))
             {
                 SetInteractive(false);
-                YamlVvvfManage.CurrentData.AcceleratePattern.Sort((a, b) => Math.Sign(a.ControlFrequencyFrom - b.ControlFrequencyFrom));
-                YamlVvvfManage.CurrentData.BrakingPattern.Sort((a, b) => Math.Sign(a.ControlFrequencyFrom - b.ControlFrequencyFrom));
-
-                double DefaultAccelerateMaxFrequency = YamlVvvfManage.CurrentData.AcceleratePattern.Count > 0 ? YamlVvvfManage.CurrentData.AcceleratePattern[^1].ControlFrequencyFrom : 60.0;
-                double DefaultBrakeMaxFrequency = YamlVvvfManage.CurrentData.BrakingPattern.Count > 0 ? YamlVvvfManage.CurrentData.BrakingPattern[^1].ControlFrequencyFrom : 60.0;
+                YamlVvvfManage.CurrentData.SortAcceleratePattern(false);
+                YamlVvvfManage.CurrentData.SortBrakingPattern(false);
+                double DefaultAccelerateMaxFrequency = YamlVvvfManage.CurrentData.AcceleratePattern.Count > 0 ? YamlVvvfManage.CurrentData.AcceleratePattern[0].ControlFrequencyFrom : 60.0;
+                double DefaultBrakeMaxFrequency = YamlVvvfManage.CurrentData.BrakingPattern.Count > 0 ? YamlVvvfManage.CurrentData.BrakingPattern[0].ControlFrequencyFrom : 60.0;
 
                 static void Quit()
                 {
@@ -944,9 +943,9 @@ namespace VvvfSimulator
                 List<TextBoxListWindow.InputContext> inputs =
                 [
                     new ("Accelerate Pattern Max frequency", DefaultAccelerateMaxFrequency, typeof(double)),
-                    new ("Accelerate Pattern Max voltage", 100, typeof(double)),
+                    new ("Accelerate Pattern Max voltage", 100.0, typeof(double)),
                     new ("Brake Pattern Max frequency", DefaultBrakeMaxFrequency, typeof(double)),
-                    new ("Brake Pattern Max voltage", 100, typeof(double)),
+                    new ("Brake Pattern Max voltage", 100.0, typeof(double)),
                     new ("Max Effort", 50, typeof(int)),
                     new ("Precision", 0.5, typeof(double)),
                 ];

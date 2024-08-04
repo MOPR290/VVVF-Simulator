@@ -53,8 +53,8 @@ namespace VvvfSimulator.GUI.Util
             box.FontSize = 22;
             box.SetResourceReference(Control.StyleProperty, "SlimTextBox");
             box.TextChanged += (object sender, TextChangedEventArgs e) => {
-                if (Context.Type == typeof(int)) Context.Value = ParseInteger(box);
-                else if (Context.Type == typeof(double)) Context.Value = ParseDouble(box);
+                if (Context.Type == typeof(int)) Context.Value = ParseTextBox.ParseInt(box);
+                else if (Context.Type == typeof(double)) Context.Value = ParseTextBox.ParseDouble(box);
                 else if (Context.Type == typeof(string)) Context.Value = box.Text ?? "";
             };
             Grid.SetRow(box, 1);
@@ -71,34 +71,6 @@ namespace VvvfSimulator.GUI.Util
                 InputContext context = Contexts[i];
                 FrameworkElement InputElement = GetTitleAndInput(context);
                 Inputs.Children.Add(InputElement);
-            }
-        }
-
-        private static double ParseDouble(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return double.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
-        }
-
-        private static int ParseInteger(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return int.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
             }
         }
         private void Button_Click(object sender, RoutedEventArgs e)

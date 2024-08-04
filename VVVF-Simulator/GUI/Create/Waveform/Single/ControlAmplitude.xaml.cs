@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using VvvfSimulator;
+using VvvfSimulator.GUI.Util;
 using static VvvfSimulator.VvvfCalculate;
 using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData.YamlControlData.YamlControlDataAmplitudeControl;
 
@@ -100,20 +101,6 @@ namespace VvvfSimulator.GUI.Create.Waveform
             SetGridVisibility(Context.Mode, ContextType);
         }
 
-        private static double ParseDouble(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return double.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
-        }
-
         private void TextboxUpdate(object sender, TextChangedEventArgs e)
         {
             if (IgnoreUpdate) return;
@@ -123,21 +110,21 @@ namespace VvvfSimulator.GUI.Create.Waveform
             if (tag == null) return;
 
             if (tag.Equals("start_freq"))
-                Context.Parameter.StartFrequency = ParseDouble(tb);
+                Context.Parameter.StartFrequency = ParseTextBox.ParseDouble(tb);
             else if (tag.Equals("start_amp"))
-                Context.Parameter.StartAmplitude = ParseDouble(tb);
+                Context.Parameter.StartAmplitude = ParseTextBox.ParseDouble(tb);
             else if (tag.Equals("end_freq"))
-                Context.Parameter.EndFrequency = ParseDouble(tb);
+                Context.Parameter.EndFrequency = ParseTextBox.ParseDouble(tb);
             else if (tag.Equals("end_amp"))
-                Context.Parameter.EndAmplitude = ParseDouble(tb);
+                Context.Parameter.EndAmplitude = ParseTextBox.ParseDouble(tb);
             else if (tag.Equals("cutoff_amp"))
-                Context.Parameter.CutOffAmplitude = ParseDouble(tb);
+                Context.Parameter.CutOffAmplitude = ParseTextBox.ParseDouble(tb);
             else if (tag.Equals("max_amp"))
-                Context.Parameter.MaxAmplitude = ParseDouble(tb);
+                Context.Parameter.MaxAmplitude = ParseTextBox.ParseDouble(tb);
             else if(tag.Equals("curve_rate"))
-                Context.Parameter.CurveChangeRate = ParseDouble(tb);
+                Context.Parameter.CurveChangeRate = ParseTextBox.ParseDouble(tb);
             else if (tag.Equals("polynomial"))
-                Context.Parameter.Polynomial = ParseDouble(tb);
+                Context.Parameter.Polynomial = ParseTextBox.ParseDouble(tb);
 
             MainWindow.GetInstance()?.UpdateControlList();
         }

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VvvfSimulator.GUI.Util;
 using static VvvfSimulator.Yaml.TrainAudioSetting.YamlTrainSoundAnalyze;
 
 namespace VvvfSimulator.GUI.TrainAudio.Pages
@@ -44,27 +45,13 @@ namespace VvvfSimulator.GUI.TrainAudio.Pages
             no_update = false;
         }
 
-        private static double ParseDouble(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return double.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
-        }
-
         public void TextBox_TextChanged(object sender,RoutedEventArgs e)
         {
             if (no_update) return;
 
             TextBox tb = (TextBox)sender;
             String name = tb.Name;
-            double d = ParseDouble(tb);
+            double d = ParseTextBox.ParseDouble(tb);
 
             if (ListView != null)
                 ListView.Items.Refresh();

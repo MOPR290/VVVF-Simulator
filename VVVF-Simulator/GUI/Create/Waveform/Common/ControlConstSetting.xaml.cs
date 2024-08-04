@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
+using VvvfSimulator.GUI.Util;
 
 namespace VvvfSimulator.GUI.Create.Waveform.Common
 {
@@ -26,24 +25,10 @@ namespace VvvfSimulator.GUI.Create.Waveform.Common
             IgnoreUpdate = false;
         }
 
-        private static double ParseDouble(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return double.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
-        }
-
         private void TextChanged(object sender, TextChangedEventArgs e)
         {
             if (IgnoreUpdate) return;
-            double v = ParseDouble((TextBox)sender);
+            double v = ParseTextBox.ParseDouble((TextBox)sender);
             _type.GetProperty("Constant")?.SetValue(_object, v);
         }
     }

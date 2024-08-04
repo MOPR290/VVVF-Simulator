@@ -1,8 +1,7 @@
-﻿using System;
+﻿using System.Windows;
 using System.ComponentModel;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
+using VvvfSimulator.GUI.Util;
 using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData;
 using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData.YamlMasconData;
@@ -46,28 +45,14 @@ namespace VvvfSimulator.GUI.Create.Settings
 
         public void UpdateValue()
         {
-            static double ParseDouble(TextBox tb)
-            {
-                try
-                {
-                    VisualStateManager.GoToState(tb, "Success", false);
-                    return double.Parse(tb.Text);
-                }
-                catch
-                {
-                    VisualStateManager.GoToState(tb, "Error", false);
-                    return 0;
-                }                
-            }
-
             Controller dc = (Controller)this.DataContext;
             if(dc == null) return;
 
             YamlMasconData mascon = YamlVvvfManage.CurrentData.MasconData;
             YamlMasconDataPattern pattern = dc.IsAccelerateActive ? mascon.Accelerating : mascon.Braking;
             YamlMasconDataPatternMode mode = dc.IsTurnOnActive ? pattern.On : pattern.Off;
-            mode.MaxControlFrequency = ParseDouble(MaxVoltageFreqInput);
-            mode.FrequencyChangeRate = ParseDouble(FreqChangeRateInput);
+            mode.MaxControlFrequency = ParseTextBox.ParseDouble(MaxVoltageFreqInput);
+            mode.FrequencyChangeRate = ParseTextBox.ParseDouble(FreqChangeRateInput);
         }
 
         public Jerk()

@@ -31,11 +31,20 @@ namespace VvvfSimulator.Yaml.VvvfSound
             if(value == null) return "null";
             return value;
         }
+
         public int Level { get; set; } = 2;
         public YamlMasconData MasconData { get; set; } = new();
         public YamlMinSineFrequency MinimumFrequency { get; set; } = new();
         public List<YamlControlData> AcceleratePattern { get; set; } = new();
+        public void SortAcceleratePattern(bool Inverse)
+        {
+            AcceleratePattern.Sort((a, b) => Math.Sign(Inverse ? (a.ControlFrequencyFrom - b.ControlFrequencyFrom) : (b.ControlFrequencyFrom - a.ControlFrequencyFrom)));
+        }
         public List<YamlControlData> BrakingPattern { get; set; } = new();
+        public void SortBrakingPattern(bool Inverse)
+        {
+            BrakingPattern.Sort((a, b) => Math.Sign(Inverse ? (a.ControlFrequencyFrom - b.ControlFrequencyFrom) : (b.ControlFrequencyFrom - a.ControlFrequencyFrom)));
+        }
         public override string ToString()
         {
             Type t = typeof(YamlVvvfSoundData);

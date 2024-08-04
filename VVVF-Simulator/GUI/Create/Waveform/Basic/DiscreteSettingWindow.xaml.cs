@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
+using VvvfSimulator.GUI.Util;
 using static VvvfSimulator.VvvfStructs;
 
 namespace VvvfSimulator.GUI.Create.Waveform.Basic
@@ -41,24 +41,10 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
             pulseMode.DiscreteTime.Enabled = EnabledCheckBox.IsChecked ?? false;
         }
 
-        private static int ParseInt(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return int.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
-        }
-
         private void StepsInput_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (ignoreUpdate) return;
-            pulseMode.DiscreteTime.Steps = ParseInt(StepsInput);
+            pulseMode.DiscreteTime.Steps = ParseTextBox.ParseInt(StepsInput);
         }
 
         private void ModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using VvvfSimulator.GUI.Util;
 using Brush = System.Windows.Media.Brush;
 using FontFamily = System.Drawing.FontFamily;
 
@@ -85,20 +86,6 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
             }
 
         }
-        private static int ParseInt(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return int.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
-        }
-
         private void BoxChecked(object sender, RoutedEventArgs e)
         {
             if (IgnoreUpdate) return;
@@ -174,7 +161,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
             if (IgnoreUpdate) return;
 
 
-            int i = ParseInt(TextBuffSize);
+            int i = ParseTextBox.ParseInt(TextBuffSize);
             if (_SettingType.Equals(RealTime_Basic_Setting_Type.VVVF))
                 Properties.Settings.Default.RealTime_VVVF_BuffSize = i;
             else if (_SettingType.Equals(RealTime_Basic_Setting_Type.Train))

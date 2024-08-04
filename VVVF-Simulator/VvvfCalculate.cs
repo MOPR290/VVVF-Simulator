@@ -135,16 +135,6 @@ namespace VvvfSimulator
             int gate = ModulateSin(pwm, nega_saw) * 2;
             return gate;
         }
-        public static int Get3LevelP1(double x, double voltage)
-        {
-            double sine = GetSine(x);
-            int D = sine > 0 ? 1 : -1;
-            double voltage_fix = D * (1 - voltage);
-
-            int gate = (D * (sine - voltage_fix) > 0) ? D : 0;
-            gate += 1;
-            return gate;
-        }
         public static int GetPulseWithSaw(double x, double carrier_initial_phase, double voltage, double carrier_mul, bool saw_oppose)
         {
             double carrier_saw = -GetSaw(carrier_mul * x + carrier_initial_phase);
@@ -459,7 +449,15 @@ namespace VvvfSimulator
                 if (pulse_mode.PulseName == PulseModeNames.P_1)
                 {
                     if (pulse_mode.AltMode == PulseAlternativeMode.Alt1)
-                        return Get3LevelP1(sine_x, calculate_values.amplitude);
+                    {
+                        double sine = GetSine(sine_x);
+                        int D = sine > 0 ? 1 : -1;
+                        double voltage_fix = D * (1 - calculate_values.amplitude);
+
+                        int gate = (D * (sine - voltage_fix) > 0) ? D : 0;
+                        gate += 1;
+                        return gate;
+                    }
                 }
 
                 double saw_value = GetSaw(saw_x);

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VvvfSimulator.GUI.Util;
 using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze.YamlMasconData;
 
 namespace VvvfSimulator.GUI.Mascon
@@ -36,36 +37,6 @@ namespace VvvfSimulator.GUI.Mascon
             no_update = false;
         }
 
-        private static double ParseDouble(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return double.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
-        }
-
-        private static int ParseInt(TextBox tb, int minimum)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                int i = int.Parse(tb.Text);
-                if (i < minimum) throw new Exception();
-                return i;
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
-        }
-
         private void apply_view()
         {
             order_box.Text = data.order.ToString();
@@ -84,19 +55,19 @@ namespace VvvfSimulator.GUI.Mascon
 
             if (tag.Equals("Duration"))
             {
-                double d = ParseDouble(tb);
+                double d = ParseTextBox.ParseDouble(tb);
                 data.duration = d;
                 main_viewer.UpdateItemList();
             }
             else if (tag.Equals("Rate"))
             {
-                double d = ParseDouble(tb);
+                double d = ParseTextBox.ParseDouble(tb);
                 data.rate = d;
                 main_viewer.UpdateItemList();
             }
             else if (tag.Equals("Order"))
             {
-                int d = ParseInt(tb,0);
+                int d = ParseTextBox.ParseInt(tb,0);
                 data.order = d;
                 main_viewer.UpdateItemList();
             }

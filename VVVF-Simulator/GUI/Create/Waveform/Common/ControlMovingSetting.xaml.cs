@@ -1,19 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData;
+using VvvfSimulator.GUI.Util;
 using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData.YamlControlData;
 
 namespace VvvfSimulator.GUI.Create.Waveform.Common
@@ -60,20 +49,6 @@ namespace VvvfSimulator.GUI.Create.Waveform.Common
             no_update = false;
         }
 
-        private static double ParseDouble(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return double.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
-        }
-
         private void text_changed(object sender, TextChangedEventArgs e)
         {
             if (no_update) return;
@@ -82,17 +57,17 @@ namespace VvvfSimulator.GUI.Create.Waveform.Common
             if (tag == null) return;
 
             if (tag.Equals("start"))
-                view_model.MovingValue.Start = ParseDouble(tb);
+                view_model.MovingValue.Start = ParseTextBox.ParseDouble(tb);
             else if (tag.Equals("start_val"))
-                view_model.MovingValue.StartValue = ParseDouble(tb);
+                view_model.MovingValue.StartValue = ParseTextBox.ParseDouble(tb);
             else if (tag.Equals("end"))
-                view_model.MovingValue.End = ParseDouble(tb);
+                view_model.MovingValue.End = ParseTextBox.ParseDouble(tb);
             else if (tag.Equals("end_val"))
-                view_model.MovingValue.EndValue = ParseDouble(tb);
+                view_model.MovingValue.EndValue = ParseTextBox.ParseDouble(tb);
             else if (tag.Equals("degree"))
-                view_model.MovingValue.Degree = ParseDouble(tb);
+                view_model.MovingValue.Degree = ParseTextBox.ParseDouble(tb);
             else if (tag.Equals("curve_rate"))
-                view_model.MovingValue.CurveRate = ParseDouble(tb);
+                view_model.MovingValue.CurveRate = ParseTextBox.ParseDouble(tb);
 
         }
 

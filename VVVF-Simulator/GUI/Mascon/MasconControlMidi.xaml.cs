@@ -2,6 +2,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using VvvfSimulator.GUI.Util;
 
 namespace VvvfSimulator.GUI.Mascon
 {
@@ -19,39 +20,6 @@ namespace VvvfSimulator.GUI.Mascon
             IgnoreUpdate = false;
             this.InitialPath = initial_path == null ? "" : initial_path;
         }
-
-        private static double ParseDouble(TextBox tb, double minimum)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                double d = double.Parse(tb.Text);
-                if (d < minimum) throw new Exception();
-                return d;
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
-        }
-
-        private static int ParseInt(TextBox tb, int minimum)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                int i = int.Parse(tb.Text);
-                if(i < minimum) throw new Exception();
-                return i;
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
-        }
-
         public class LoadData
         {
             public int track = 1;
@@ -69,16 +37,16 @@ namespace VvvfSimulator.GUI.Mascon
 
             if (tag.Equals("Track"))
             {
-                int track = ParseInt(tb, 1);
+                int track = ParseTextBox.ParseInt(tb, 1);
                 loadData.track = track;
             }
             else if (tag.Equals("Priority"))
             {
-                int priority = ParseInt(tb, 1);
+                int priority = ParseTextBox.ParseInt(tb, 1);
                 loadData.priority = priority;
             }else if (tag.Equals("Division"))
             {
-                double d = ParseDouble(tb, 1);
+                double d = ParseTextBox.ParseDouble(tb, 1);
                 loadData.division = d;
             }
         }

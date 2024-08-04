@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using VvvfSimulator.GUI.Create.Waveform.Basic;
+using VvvfSimulator.GUI.Util;
 using static VvvfSimulator.VvvfStructs;
 using static VvvfSimulator.VvvfStructs.PulseMode;
 using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfSoundData;
@@ -63,20 +62,6 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
             Apply_view();
 
             IgnoreUpdate = false;
-        }
-
-        private static double ParseDouble(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return double.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
         }
 
         private void Apply_view()
@@ -139,19 +124,19 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
 
             if (tag.Equals("From"))
             {
-                double parsed = ParseDouble(tb);
+                double parsed = ParseTextBox.ParseDouble(tb);
                 target.ControlFrequencyFrom = parsed;
                 MainWindow.GetInstance()?.UpdateControlList();
             }
             else if (tag.Equals("SineFrom"))
             {
-                double parsed = ParseDouble(tb);
+                double parsed = ParseTextBox.ParseDouble(tb);
                 target.RotateFrequencyFrom = parsed;
                 MainWindow.GetInstance()?.UpdateControlList();
             }
             else if (tag.Equals("SineBelow"))
             {
-                double parsed = ParseDouble(tb);
+                double parsed = ParseTextBox.ParseDouble(tb);
                 target.RotateFrequencyBelow = parsed;
                 MainWindow.GetInstance()?.UpdateControlList();
             }

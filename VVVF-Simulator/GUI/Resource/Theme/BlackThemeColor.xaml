@@ -239,8 +239,52 @@
     <SolidColorBrush x:Key="MasconP1Brush" Color="#74B6F1"/>
     <SolidColorBrush x:Key="MasconP2Brush" Color="#58A6F1"/>
     <SolidColorBrush x:Key="MasconP3Brush" Color="#3C96F2"/>
-    <SolidColorBrush x:Key="MasconP4Brush" Color="#1F85F2"/> 
+    <SolidColorBrush x:Key="MasconP4Brush" Color="#1F85F2"/>
 
+    <SolidColorBrush x:Key="SliderThumbStrokeBrush" Color="{DynamicResource KeyColor}"/>
+    <SolidColorBrush x:Key="SliderThumbBrush" Color="{DynamicResource KeyColor}"/>
+    <SolidColorBrush x:Key="SliderThumbMouseOverBrush" Color="{DynamicResource KeyUltraLightColor}"/>
+    <SolidColorBrush x:Key="SliderThumbMouseClickBrush" Color="{DynamicResource KeyDarkColor}"/>
+    <SolidColorBrush x:Key="SliderThumbDisabledBrush" Color="#B3B3B3"/>
+    <SolidColorBrush x:Key="SliderTrackBackgroundBrush" Color="{DynamicResource BackgroundColor}"/>
+    <SolidColorBrush x:Key="SliderTrackBorderBrush" Color="{DynamicResource KeyDarkColor}"/>
+    <SolidColorBrush x:Key="SliderTickFillBrush" Color="{DynamicResource SubBackgroundColor}"/>
+
+    <LinearGradientBrush x:Key="EnableSwitchBackgroundEnabledBrush" StartPoint="0,0" EndPoint="0,1">
+        <LinearGradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Offset="0" Color="#61D039"/>
+                <GradientStop Offset="1" Color="#57C62F"/>
+            </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="EnableSwitchBackgroundEnabledPressedBrush" StartPoint="0,0" EndPoint="0,1">
+        <LinearGradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Offset="0" Color="#57C62F"/>
+                <GradientStop Offset="1" Color="#50B62B"/>
+            </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="EnableSwitchTextColorEnabledBrush" Color="#FCFCFC"/>
+    <LinearGradientBrush x:Key="EnableSwitchBackgroundDisabledBrush" StartPoint="0,0" EndPoint="0,1">
+        <LinearGradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Offset="0" Color="#3D3C3E"/>
+                <GradientStop Offset="1" Color="#333234"/>
+            </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="EnableSwitchBackgroundDisabledPressedBrush" StartPoint="0,0" EndPoint="0,1">
+        <LinearGradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Offset="0" Color="#333234"/>
+                <GradientStop Offset="1" Color="#29282A"/>
+            </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="EnableSwitchTextColorDisabledBrush" Color="#FCFCFC"/>
+    
     <SolidColorBrush x:Key="IconBrush" Color="#FFFFFF"/>
     
 </ResourceDictionary>

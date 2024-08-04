@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using VvvfSimulator.GUI.Util;
 
 namespace VvvfSimulator.GUI.TrainAudio.Pages.Gear
 {
@@ -38,28 +28,13 @@ namespace VvvfSimulator.GUI.TrainAudio.Pages.Gear
         private void Gear1_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (no_update) return;
-            Gear1 = ParseInt(Gear1_Box);
+            Gear1 = ParseTextBox.ParseInt(Gear1_Box);
         }
 
         private void Gear2_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (no_update) return;
-            Gear2 = ParseInt(Gear2_Box);
-        }
-
-
-        private static int ParseInt(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return int.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
+            Gear2 = ParseTextBox.ParseInt(Gear2_Box);
         }
     }
 }

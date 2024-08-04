@@ -22,21 +22,6 @@ namespace VvvfSimulator.GUI.Util
 
         private double A = 0, X = 0, B = 0;
         private bool IgnoreUpdate = true;
-
-        private static double ParseDouble(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return double.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
-        }
-
         private void copy_button_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -56,7 +41,7 @@ namespace VvvfSimulator.GUI.Util
         private void SetResult(TextBox tb)
         {
             Object tag = tb.Tag;
-            double d = ParseDouble(tb);
+            double d = ParseTextBox.ParseDouble(tb);
             if (tag.Equals("A")) A = d;
             else if (tag.Equals("X")) X = d;
             else B = d;

@@ -23,7 +23,7 @@ namespace VvvfSimulator.GUI.Resource.Theme
 
         public static object? GetThemeResource(string name)
         {
-            return ColorThemeDictionary?.FindName(name);
+            return Application.Current.Resources[name];
         }
 
         public static void SetColorTheme(this ColorTheme theme)

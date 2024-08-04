@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using VvvfSimulator.GUI.Resource.Theme;
 
 namespace VvvfSimulator.GUI.Resource.MyUserControl
 {
@@ -45,18 +46,24 @@ namespace VvvfSimulator.GUI.Resource.MyUserControl
 
         public void SetBorderStatus()
         {
-            LinearGradientBrush? EnabledBrush = this.FindResource("EnabledBrush") as LinearGradientBrush;
-            LinearGradientBrush? EnabledPressedBrush = this.FindResource("EnabledPressedBrush") as LinearGradientBrush;
-            LinearGradientBrush? DisabledBrush = this.FindResource("DisabledBrush") as LinearGradientBrush;
-            LinearGradientBrush? DisabledPressedBrush = this.FindResource("DisabledPressedBrush") as LinearGradientBrush;
+            Brush? EnabledBrush = ThemeManager.GetThemeResource("EnableSwitchBackgroundEnabledBrush") as Brush;
+            Brush? EnabledPressedBrush = ThemeManager.GetThemeResource("EnableSwitchBackgroundEnabledPressedBrush") as Brush;
+            Brush? DisabledBrush = ThemeManager.GetThemeResource("EnableSwitchBackgroundDisabledBrush") as Brush;
+            Brush? DisabledPressedBrush = ThemeManager.GetThemeResource("EnableSwitchBackgroundDisabledPressedBrush") as Brush;
+            Brush? EnabledTextBrush = ThemeManager.GetThemeResource("EnableSwitchTextColorEnabledBrush") as Brush;
+            Brush? DisabledTextBrush = ThemeManager.GetThemeResource("EnableSwitchTextColorDisabledBrush") as Brush;
 
-            if(EnabledBrush == null || EnabledPressedBrush == null || DisabledBrush == null || DisabledPressedBrush == null)
+            if (EnabledBrush == null || EnabledPressedBrush == null || DisabledBrush == null || DisabledPressedBrush == null || EnabledTextBrush == null || DisabledTextBrush == null)
                 return;
 
             if (Activated)
                 Button.Background = Enabled ? EnabledPressedBrush : DisabledPressedBrush;
             else
+            {
                 Button.Background = Enabled ? EnabledBrush : DisabledBrush;
+                Status.Foreground = Enabled ? EnabledTextBrush : DisabledTextBrush;
+            }
+                
 
         }
 

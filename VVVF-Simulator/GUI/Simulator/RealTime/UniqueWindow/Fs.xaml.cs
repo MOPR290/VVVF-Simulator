@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using VvvfSimulator.GUI.Util;
 using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
 using static VvvfSimulator.Generation.Video.FS.GenerateFourierSeries;
@@ -108,21 +109,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.UniqueWindow
 
         private void TextBox_N_TextChanged(object sender, TextChangedEventArgs e)
         {
-            N = ParseInt(TextBox_N);
-        }
-
-        private static int ParseInt(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return int.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
+            N = ParseTextBox.ParseInt(TextBox_N);
         }
     }
 }

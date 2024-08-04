@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 
 namespace VvvfSimulator.Yaml.VvvfSound
 {
@@ -134,7 +132,7 @@ namespace VvvfSimulator.Yaml.VvvfSound
             if(Configuration.Data == null) return false;
             if(Configuration.Data.AcceleratePattern.Count == 0) return false;
             if(Configuration.Data.BrakingPattern.Count == 0) return false;
-
+            
             List<YamlVvvfSoundData.YamlControlData> accel = Configuration.Data.AcceleratePattern;
             List<YamlVvvfSoundData.YamlControlData> brake = Configuration.Data.BrakingPattern;
 
@@ -147,8 +145,8 @@ namespace VvvfSimulator.Yaml.VvvfSound
                 if (Configuration.Data.BrakingPattern[i].ControlFrequencyFrom < 0) return false;
             }
 
-            accel.Sort((a, b) => Math.Sign(a.ControlFrequencyFrom - b.ControlFrequencyFrom));
-            brake.Sort((a, b) => Math.Sign(a.ControlFrequencyFrom - b.ControlFrequencyFrom));
+            Configuration.Data.SortAcceleratePattern(true);
+            Configuration.Data.SortBrakingPattern(true);
 
             List <Task> tasks = [];
             for (int i = 0; i < accel.Count; i++)
@@ -169,8 +167,8 @@ namespace VvvfSimulator.Yaml.VvvfSound
             }
             Task.WaitAll([.. tasks]);
 
-            accel.Sort((a, b) => Math.Sign(b.ControlFrequencyFrom - a.ControlFrequencyFrom));
-            brake.Sort((a, b) => Math.Sign(b.ControlFrequencyFrom - a.ControlFrequencyFrom));
+            Configuration.Data.SortAcceleratePattern(false);
+            Configuration.Data.SortBrakingPattern(false);
 
             return true;
         }

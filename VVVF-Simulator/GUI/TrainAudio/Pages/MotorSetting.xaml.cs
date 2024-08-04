@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VvvfSimulator.GUI.Util;
 using static VvvfSimulator.Yaml.TrainAudioSetting.YamlTrainSoundAnalyze;
 
 namespace VvvfSimulator.GUI.TrainAudio.Pages.Motor
@@ -49,26 +50,13 @@ namespace VvvfSimulator.GUI.TrainAudio.Pages.Motor
 
             IgnoreUpdate = false;
         }
-        private static double ParseDouble(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return double.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
-        }
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (IgnoreUpdate) return;
 
             TextBox tb = (TextBox)sender;
             Object tag = tb.Tag;
-            double d = ParseDouble(tb);
+            double d = ParseTextBox.ParseDouble(tb);
             var motor = TrainSoundData.MotorSpec;
             if (tag.Equals("SR")) motor.R_s = d;
             else if (tag.Equals("RR")) motor.R_r = d;

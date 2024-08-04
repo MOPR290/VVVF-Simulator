@@ -4,6 +4,7 @@ using System.IO.Ports;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using VvvfSimulator.GUI.Util;
 
 namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
 {
@@ -139,21 +140,6 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
             else if (tag.Equals("Neutral")) Properties.Settings.Default.RealTimeMasconNeutralKey = (int)key;
             else if (tag.Equals("Brake")) Properties.Settings.Default.RealTimeMasconBrakeKey = (int)key;
         }
-
-        private static double ParseDouble(TextBox tb)
-        {
-            try
-            {
-                VisualStateManager.GoToState(tb, "Success", false);
-                return double.Parse(tb.Text);
-            }
-            catch
-            {
-                VisualStateManager.GoToState(tb, "Error", false);
-                return 0;
-            }
-        }
-
         private void SetDoubleInputTextBox()
         {
             FrequencyRateInput.Text = Properties.Settings.Default.RealTimeMasconFrequencyChangeRate.ToString();
@@ -164,7 +150,7 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
             if (textBox == null) return;
             string? tag = textBox.Tag.ToString();
             if (tag == null) return;
-            double value = ParseDouble(textBox);
+            double value = ParseTextBox.ParseDouble(textBox);
 
             if (tag.Equals("FrequencyRate")) Properties.Settings.Default.RealTimeMasconFrequencyChangeRate = value;
         }
