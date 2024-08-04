@@ -10,15 +10,20 @@ namespace VvvfSimulator.GUI.Util
     /// </summary>
     public partial class DoubleNumberInput : Window
     {
-        public DoubleNumberInput(Window Owner,string title)
+        public DoubleNumberInput(Window Owner,string Title,double DefaultValue=10.0)
         {
             this.Owner = Owner;
             InitializeComponent();
-            DescriptionBox.Content = title;
-            NumberEnterBox.Text = "10.0";
+            DescriptionBox.Content = Title;
+            NumberEnterBox.Text = DefaultValue.ToString();
+            ShowDialog();
         }
 
-        public double EnteredValue = 0.0;
+        private double EnteredValue = 0.0;
+        public double GetEnteredValue()
+        {
+            return EnteredValue;
+        }
         private static double ParseDouble(TextBox tb)
         {
             try
@@ -54,7 +59,11 @@ namespace VvvfSimulator.GUI.Util
             if (tag == null) return;
 
             if (tag.Equals("Close"))
+            {
+                EnteredValue = double.NaN;
                 Close();
+            }
+                
         }
     }
 }

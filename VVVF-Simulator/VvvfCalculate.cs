@@ -56,38 +56,32 @@ namespace VvvfSimulator
 
         public static double GetSineValueWithHarmonic(PulseMode mode, double x, double amplitude)
         {
-            double sin_value = 0;
-
-            if (mode.BaseWave.Equals(BaseWaveType.Saw))
-                sin_value = -GetSaw(x);
-            else if (mode.BaseWave.Equals(BaseWaveType.Sine))
-                sin_value = GetSine(x);
-            else if (mode.BaseWave.Equals(BaseWaveType.Modified_Sine_1))
-                sin_value = GetModifiedSine(x, 1);
-            else if (mode.BaseWave.Equals(BaseWaveType.Modified_Sine_2))
-                sin_value = GetModifiedSine(x, 2);
-            else if (mode.BaseWave.Equals(BaseWaveType.Modified_Saw_1))
-                sin_value = GetModifiedSaw(x);
-
-
+            double BaseValue = mode.BaseWave switch
+            {
+                BaseWaveType.Sine => GetSine(x),
+                BaseWaveType.Saw => -GetSaw(x),
+                BaseWaveType.Modified_Sine_1 => GetModifiedSine(x, 1),
+                BaseWaveType.Modified_Sine_2 => GetModifiedSine(x, 2),
+                BaseWaveType.Modified_Saw_1 => GetModifiedSaw(x),
+                _ => throw new NotImplementedException(),
+            };
             for (int i = 0; i < mode.PulseHarmonics.Count; i++)
             {
                 PulseHarmonic harmonic = mode.PulseHarmonics[i];
-                double harmonic_value = 0, harmonic_x = harmonic.Harmonic * (x + harmonic.InitialPhase);
-                if (harmonic.Type == PulseHarmonic.PulseHarmonicType.Sine)
-                    harmonic_value = GetSine(harmonic_x);
-                else if (harmonic.Type == PulseHarmonic.PulseHarmonicType.Saw)
-                    harmonic_value = -GetSaw(harmonic_x);
-                else if (harmonic.Type == PulseHarmonic.PulseHarmonicType.Square)
-                    harmonic_value = GetSquare(harmonic_x);
-
-                sin_value += harmonic_value * harmonic.Amplitude;
+                double harmonic_x = harmonic.Harmonic * (x + harmonic.InitialPhase);
+                double harmonic_value = harmonic.Type switch
+                {
+                    PulseHarmonic.PulseHarmonicType.Sine => GetSine(harmonic_x),
+                    PulseHarmonic.PulseHarmonicType.Saw => -GetSaw(harmonic_x),
+                    PulseHarmonic.PulseHarmonicType.Square => GetSquare(harmonic_x),
+                    _ => throw new NotImplementedException(),
+                };
+                BaseValue += harmonic_value * harmonic.Amplitude;
             }
 
-            sin_value = sin_value > 1 ? 1 : sin_value < -1 ? -1 : sin_value;
-
-            sin_value *= amplitude;
-            return sin_value;
+            BaseValue = BaseValue > 1 ? 1 : BaseValue < -1 ? -1 : BaseValue;
+            BaseValue *= amplitude;
+            return BaseValue;
         }
 
         public static int ModulateSin(double sin_value, double saw_value)
@@ -102,19 +96,14 @@ namespace VvvfSimulator
         {
             //int level = (discrete.ProportionToPulse ? sawCarrier : 1) * discrete.Steps;
             double seed = (x % M_2PI) * level / M_2PI;
-            switch (mode)
+            double time = mode switch
             {
-                case DiscreteTimeConfiguration.DiscreteTimeMode.Left:
-                    seed = Math.Ceiling(seed);
-                    break;
-                case DiscreteTimeConfiguration.DiscreteTimeMode.Middle:
-                    seed = Math.Round(seed);
-                    break;
-                case DiscreteTimeConfiguration.DiscreteTimeMode.Right:
-                    seed = Math.Floor(seed);
-                    break;
-            }
-            return seed * M_2PI / level;
+                DiscreteTimeConfiguration.DiscreteTimeMode.Left => Math.Ceiling(seed),
+                DiscreteTimeConfiguration.DiscreteTimeMode.Middle => Math.Round(seed),
+                DiscreteTimeConfiguration.DiscreteTimeMode.Right => Math.Floor(seed),
+                _ => throw new NotImplementedException(),
+            };
+            return time * M_2PI / level;
         }
 
         //
@@ -224,94 +213,84 @@ namespace VvvfSimulator
 
         public static double GetAmplitude(AmplitudeMode mode, AmplitudeArgument arg)
         {
-            double val = 0;
+            if (arg.max_amp == arg.min_amp) return arg.min_amp;
 
-
-            if (arg.max_amp == arg.min_amp) val = arg.min_amp;
-            else if (mode == AmplitudeMode.Linear)
+            switch (mode)
             {
-                if (!arg.disable_range_limit)
-                {
-                    if (arg.current < arg.min_freq) arg.current = arg.min_freq;
-                    if (arg.current > arg.max_freq) arg.current = arg.max_freq;
-                }
-                val = (arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq) * (arg.current - arg.min_freq) + arg.min_amp;
+                case AmplitudeMode.Linear:
+                    if (!arg.disable_range_limit)
+                    {
+                        if (arg.current < arg.min_freq) arg.current = arg.min_freq;
+                        if (arg.current > arg.max_freq) arg.current = arg.max_freq;
+                    }
+                    return (arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq) * (arg.current - arg.min_freq) + arg.min_amp;
+                case AmplitudeMode.Wide_3_Pulse:
+                    if (!arg.disable_range_limit)
+                    {
+                        if (arg.current < arg.min_freq) arg.current = arg.min_freq;
+                        if (arg.current > arg.max_freq) arg.current = arg.max_freq;
+                    }
+                    return 0.2 * ((arg.current - arg.min_freq) * ((arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq)) + arg.min_amp) + 0.8;
+                case AmplitudeMode.Inv_Proportional:
+                    {
+                        if (!arg.disable_range_limit)
+                        {
+                            if (arg.current < arg.min_freq) arg.current = arg.min_freq;
+                            if (arg.current > arg.max_freq) arg.current = arg.max_freq;
+                        }
+
+                        double x = GetAmplitude(AmplitudeMode.Linear, new AmplitudeArgument()
+                        {
+                            min_freq = arg.min_freq,
+                            min_amp = 1 / arg.min_amp,
+                            max_freq = arg.max_freq,
+                            max_amp = 1 / arg.max_amp,
+                            current = arg.current,
+                            disable_range_limit = arg.disable_range_limit
+                        });
+
+                        double c = -arg.change_const;
+                        double k = arg.max_amp;
+                        double l = arg.min_amp;
+                        double a = 1 / (1 / l - 1 / k) * (1 / (l - c) - 1 / (k - c));
+                        double b = 1 / (1 - 1 / l * k) * (1 / (l - c) - 1 / l * k / (k - c));
+
+                        return 1 / (a * x + b) + c;
+                    }
+
+                case AmplitudeMode.Exponential:
+                    {
+
+                        if (!arg.disable_range_limit)
+                        {
+                            if (arg.current > arg.max_freq) arg.current = arg.max_freq;
+                        }
+
+                        double t = 1 / arg.max_freq * Math.Log(arg.max_amp + 1);
+
+                        return Math.Pow(Math.E, t * arg.current) - 1;
+                    }
+
+                case AmplitudeMode.Linear_Polynomial:
+                    if (!arg.disable_range_limit)
+                    {
+                        if (arg.current > arg.max_freq) arg.current = arg.max_freq;
+                    }
+                    return Math.Pow(arg.current, arg.polynomial) / Math.Pow(arg.max_freq, arg.polynomial) * arg.max_amp;
+                case AmplitudeMode.Sine:
+                    {
+                        if (!arg.disable_range_limit)
+                        {
+                            if (arg.current > arg.max_freq) arg.current = arg.max_freq;
+                        }
+
+                        double x = Math.PI * arg.current / (2.0 * arg.max_freq);
+
+                        return Math.Sin(x) * arg.max_amp;
+                    }
+                default:
+                    return 0;
             }
-
-            else if (mode == AmplitudeMode.Wide_3_Pulse)
-            {
-                if (!arg.disable_range_limit)
-                {
-                    if (arg.current < arg.min_freq) arg.current = arg.min_freq;
-                    if (arg.current > arg.max_freq) arg.current = arg.max_freq;
-                }
-                val = (0.2 * ((arg.current - arg.min_freq) * ((arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq)) + arg.min_amp)) + 0.8;
-            }
-
-
-            else if (mode == AmplitudeMode.Inv_Proportional)
-            {
-                if (!arg.disable_range_limit)
-                {
-                    if (arg.current < arg.min_freq) arg.current = arg.min_freq;
-                    if (arg.current > arg.max_freq) arg.current = arg.max_freq;
-                }
-
-                double x = GetAmplitude(AmplitudeMode.Linear, new AmplitudeArgument()
-                {
-                    min_freq = arg.min_freq,
-                    min_amp = 1 / arg.min_amp,
-                    max_freq = arg.max_freq,
-                    max_amp = 1 / arg.max_amp,
-                    current = arg.current,
-                    disable_range_limit = arg.disable_range_limit
-                });
-
-                double c = -arg.change_const;
-                double k = arg.max_amp;
-                double l = arg.min_amp;
-                double a = 1 / ((1 / l) - (1 / k)) * (1 / (l - c) - 1 / (k - c));
-                double b = 1 / (1 - (1 / l) * k) * (1 / (l - c) - (1 / l) * k / (k - c));
-
-                //val = 1 / (6.25*x - 2.5) + 0.4;
-                val = 1 / (a * x + b) + c;
-            }
-            else if (mode == AmplitudeMode.Exponential)
-            {
-
-                if (!arg.disable_range_limit)
-                {
-                    if (arg.current > arg.max_freq) arg.current = arg.max_freq;
-                }
-
-                double t = 1 / arg.max_freq * Math.Log(arg.max_amp + 1);
-
-                val = Math.Pow(Math.E, t * arg.current) - 1;
-            }
-            else if (mode == AmplitudeMode.Linear_Polynomial)
-            {
-                if (!arg.disable_range_limit)
-                {
-                    if (arg.current > arg.max_freq) arg.current = arg.max_freq;
-                }
-
-                val = Math.Pow(arg.current, arg.polynomial) / Math.Pow(arg.max_freq, arg.polynomial) * arg.max_amp;
-
-            }
-            else if (mode == AmplitudeMode.Sine)
-            {
-                if (!arg.disable_range_limit)
-                {
-                    if (arg.current > arg.max_freq) arg.current = arg.max_freq;
-                }
-
-                double x = (Math.PI * arg.current) / (2.0 * arg.max_freq);
-
-                val = Math.Sin(x) * arg.max_amp;
-            }
-
-
-            return val;
         }
 
         //

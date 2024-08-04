@@ -1,14 +1,14 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Windows;
-using System.Windows.Controls;
-using System.ComponentModel;
 using System.Media;
-using System.Windows.Media;
-using System.Threading.Tasks;
+using System.Windows;
+using Microsoft.Win32;
 using YamlDotNet.Core;
+using System.Windows.Media;
+using System.ComponentModel;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Collections.Generic;
 using VvvfSimulator.GUI.Util;
 using VvvfSimulator.GUI.Mascon;
 using VvvfSimulator.GUI.TrainAudio;
@@ -25,7 +25,8 @@ using static VvvfSimulator.Yaml.MasconControl.YamlMasconAnalyze;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
 using static VvvfSimulator.Yaml.TrainAudioSetting.YamlTrainSoundAnalyze;
 using static VvvfSimulator.Generation.GenerateCommon.GenerationBasicParameter;
-using YamlDotNet.Core.Tokens;
+using System.Diagnostics;
+using static VvvfSimulator.Yaml.VvvfSound.YamlVvvfUtil;
 
 namespace VvvfSimulator
 {
@@ -740,16 +741,15 @@ namespace VvvfSimulator
                 {
                     var dialog = new SaveFileDialog { Filter = "mp4 (*.mp4)|*.mp4" };
                     if (dialog.ShowDialog() == false) return true;
-
-                    DoubleNumberInput double_Ask_Dialog = new(this, "Enter the frequency.");
-                    double_Ask_Dialog.ShowDialog();
+                    double frequency = new DoubleNumberInput(this, "Enter the frequency.").GetEnteredValue();
+                    if(double.IsNaN(frequency)) return true;
 
                     GenerationBasicParameter generationBasicParameter = GetGenerationBasicParameter();
                     Task task = Task.Run(() =>
                     {
                         try
                         {
-                            new Generation.Video.Hexagon.GenerateHexagonExplain().generate_wave_hexagon_explain(generationBasicParameter, dialog.FileName, circle, double_Ask_Dialog.EnteredValue);
+                            new Generation.Video.Hexagon.GenerateHexagonExplain().generate_wave_hexagon_explain(generationBasicParameter, dialog.FileName, circle, frequency);
                         }
                         catch (Exception e)
                         {
@@ -765,16 +765,15 @@ namespace VvvfSimulator
                 {
                     var dialog = new SaveFileDialog { Filter = "png (*.png)|*.png" };
                     if (dialog.ShowDialog() == false) return true;
-
-                    DoubleNumberInput double_Ask_Dialog = new(this, "Enter the frequency.");
-                    double_Ask_Dialog.ShowDialog();
+                    double frequency = new DoubleNumberInput(this, "Enter the frequency.").GetEnteredValue();
+                    if (double.IsNaN(frequency)) return true;
 
                     Task task = Task.Run(() =>
                     {
                         try
                         {
                             YamlVvvfSoundData clone = YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData);
-                            new Generation.Video.Hexagon.GenerateHexagonOriginal().ExportImage(dialog.FileName, clone, circle, double_Ask_Dialog.EnteredValue);
+                            new Generation.Video.Hexagon.GenerateHexagonOriginal().ExportImage(dialog.FileName, clone, circle, frequency);
                         }
                         catch (Exception e)
                         {
@@ -813,16 +812,15 @@ namespace VvvfSimulator
                 {
                     var dialog = new SaveFileDialog { Filter = "png (*.png)|*.png" };
                     if (dialog.ShowDialog() == false) return true;
-
-                    DoubleNumberInput double_Ask_Dialog = new(this, "Enter the frequency.");
-                    double_Ask_Dialog.ShowDialog();
+                    double frequency = new DoubleNumberInput(this, "Enter the frequency.").GetEnteredValue();
+                    if (double.IsNaN(frequency)) return true;
 
                     Task task = Task.Run(() =>
                     {
                         try
                         {
                             YamlVvvfSoundData clone = YamlVvvfManage.DeepClone(YamlVvvfManage.CurrentData);
-                            new Generation.Video.FFT.GenerateFFT().ExportImage(dialog.FileName, clone, double_Ask_Dialog.EnteredValue);
+                            new Generation.Video.FFT.GenerateFFT().ExportImage(dialog.FileName, clone, frequency);
                         }
                         catch (Exception e)
                         {
@@ -925,34 +923,87 @@ namespace VvvfSimulator
 
             if (tag_str.Equals("MIDI"))
             {
-                GUI.MIDIConvert.Main mIDIConvert_Main = new();
-                mIDIConvert_Main.Show();
+                GUI.MIDIConvert.Main converter = new();
+                converter.Show();
             }
             else if (tag_str.Equals("AutoVoltage"))
             {
-                MainWindow.SetInteractive(false);
+                SetInteractive(false);
+                YamlVvvfManage.CurrentData.AcceleratePattern.Sort((a, b) => Math.Sign(a.ControlFrequencyFrom - b.ControlFrequencyFrom));
+                YamlVvvfManage.CurrentData.BrakingPattern.Sort((a, b) => Math.Sign(a.ControlFrequencyFrom - b.ControlFrequencyFrom));
+
+                double DefaultAccelerateMaxFrequency = YamlVvvfManage.CurrentData.AcceleratePattern.Count > 0 ? YamlVvvfManage.CurrentData.AcceleratePattern[^1].ControlFrequencyFrom : 60.0;
+                double DefaultBrakeMaxFrequency = YamlVvvfManage.CurrentData.BrakingPattern.Count > 0 ? YamlVvvfManage.CurrentData.BrakingPattern[^1].ControlFrequencyFrom : 60.0;
+
+                static void Quit()
+                {
+                    SetInteractive(true);
+                    SystemSounds.Beep.Play();
+                }
+
+                List<TextBoxListWindow.InputContext> inputs =
+                [
+                    new ("Accelerate Pattern Max frequency", DefaultAccelerateMaxFrequency, typeof(double)),
+                    new ("Accelerate Pattern Max voltage", 100, typeof(double)),
+                    new ("Brake Pattern Max frequency", DefaultBrakeMaxFrequency, typeof(double)),
+                    new ("Brake Pattern Max voltage", 100, typeof(double)),
+                    new ("Max Effort", 50, typeof(int)),
+                    new ("Precision", 0.5, typeof(double)),
+                ];
+
+                TextBoxListWindow InputWindow = new(this, "Auto Voltage Configuration", inputs);
+                if (InputWindow.Contexts == null)
+                {
+                    Quit();
+                    return;
+                }
+
+                AutoModulationIndexConfiguration Configuration = new()
+                {
+                    Data = YamlVvvfManage.CurrentData,
+                    AccelEndFrequency = (double)InputWindow.Contexts[0].Value,
+                    AccelMaxVoltage = (double)InputWindow.Contexts[1].Value,
+                    BrakeEndFrequency = (double)InputWindow.Contexts[2].Value,
+                    BrakeMaxVoltage = (double)InputWindow.Contexts[3].Value,
+                    MaxEffort = (int)InputWindow.Contexts[4].Value,
+                    Precision = (double)InputWindow.Contexts[5].Value,
+                };
+
                 Task.Run(() =>
                 {
-                    MessageBox.Show("The settings which is not using `Linear` will be skipped.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    bool result = YamlVvvfUtil.AutoModulationIndex(YamlVvvfManage.CurrentData);
+                    
+                    bool result = YamlVvvfUtil.AutoModulationIndex(Configuration);
                     if (!result)
-                        MessageBox.Show("Please check next things.\r\nAll of the amplitude mode are linear.\r\nAccel and Braking has more than 2 settings.\r\nFrom is grater or equal to 0", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Please check next things.\r\nAccel and Braking has more than 2 settings.\r\nFrom is grater or equal to 0", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    MainWindow.SetInteractive(true);
+                    SetInteractive(true);
                     SystemSounds.Beep.Play();
                 });
 
             }
             else if (tag_str.Equals("FreeRunAmpZero"))
             {
-                MainWindow.SetInteractive(false);
+                SetInteractive(false);
                 Task.Run(() =>
                 {
                     bool result = YamlVvvfUtil.SetFreeRunModulationIndexToZero(YamlVvvfManage.CurrentData);
                     if (!result)
                         MessageBox.Show("Something went wrong.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    MainWindow.SetInteractive(true);
+                    SetInteractive(true);
+                    SystemSounds.Beep.Play();
+                });
+            }
+            else if (tag_str.Equals("EndAmplitudeContinuous"))
+            {
+                SetInteractive(false);
+                Task.Run(() =>
+                {
+                    bool result = YamlVvvfUtil.SetFreeRunEndAmplitudeContinuous(YamlVvvfManage.CurrentData);
+                    if (!result)
+                        MessageBox.Show("Something went wrong.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    SetInteractive(true);
                     SystemSounds.Beep.Play();
                 });
             }

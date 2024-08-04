@@ -192,6 +192,7 @@
                 <MenuItem Header="Tools">
                     <MenuItem Header="Auto Voltage Set" Tag="AutoVoltage" Click="Tools_Menu_Click"/>
                     <MenuItem Header="FreeRun Amplitude Zero" Tag="FreeRunAmpZero" Click="Tools_Menu_Click"/>
+                    <MenuItem Header="FreeRun End Amplitude Reset" Tag="EndAmplitudeContinuous" Click="Tools_Menu_Click"/>
                     <MenuItem Header="MIDI Conversion" Tag="MIDI" Click="Tools_Menu_Click"/>
                 </MenuItem>
 
