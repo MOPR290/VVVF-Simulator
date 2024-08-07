@@ -15,8 +15,6 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
     public class RealTime
     {
         //---------- TRAIN SOUND --------------
-        private static readonly int calcCount = 512;
-        private static readonly int SamplingFrequency = 192000;
         private static int Calculate(BufferedWaveProvider provider, YamlVvvfSoundData sound_data, VvvfValues control, RealTimeParameter realTime_Parameter)
         {
             static void AddSample(float value, BufferedWaveProvider provider)
@@ -28,20 +26,23 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
 
             while (true)
             {
-                int v = RealTimeFrequencyControl(control, realTime_Parameter, calcCount / (double)SamplingFrequency);
+                int CalcCount = Settings.Default.RealtimeTrainCalculateDivision;
+                double Dt = 1.0 / Settings.Default.RealtimeTrainSamplingFrequency;
+
+                int v = RealTimeFrequencyControl(control, realTime_Parameter, CalcCount * Dt);
                 if (v != -1) return v;
 
-                for (int i = 0; i < calcCount; i++)
+                for (int i = 0; i < CalcCount; i++)
                 {
-                    control.AddSineTime(1.0 / SamplingFrequency);
-                    control.AddSawTime(1.0 / SamplingFrequency);
-                    control.AddGenerationCurrentTime(1.0 / SamplingFrequency);
+                    control.AddSineTime(Dt);
+                    control.AddSawTime(Dt);
+                    control.AddGenerationCurrentTime(Dt);
 
                     double value = CalculateTrainSound(control, sound_data , realTime_Parameter.Motor, realTime_Parameter.TrainSoundData);
                     AddSample((float)value, provider);
                 }
 
-                while (provider.BufferedBytes - calcCount > Settings.Default.RealTime_Train_BuffSize) ;
+                while (provider.BufferedBytes - CalcCount > Settings.Default.RealTime_Train_BuffSize) ;
             }
         }
 
@@ -50,7 +51,7 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
             Param.Quit = false;
             Param.VvvfSoundData = Sound;
             Param.Motor = new MotorData() { 
-                SIM_SAMPLE_FREQ = SamplingFrequency ,
+                SIM_SAMPLE_FREQ = Settings.Default.RealtimeTrainSamplingFrequency,
                 motor_Specification = Param.TrainSoundData.MotorSpec.Clone(),
             };
 
@@ -63,9 +64,9 @@ namespace VvvfSimulator.Generation.Audio.TrainSound
 
             while (true)
             {
-                var bufferedWaveProvider = new BufferedWaveProvider(WaveFormat.CreateIeeeFloatWaveFormat(SamplingFrequency,1));
+                var bufferedWaveProvider = new BufferedWaveProvider(WaveFormat.CreateIeeeFloatWaveFormat(Settings.Default.RealtimeTrainSamplingFrequency, 1));
                 ISampleProvider sampleProvider = bufferedWaveProvider.ToSampleProvider();
-                if (SoundConfiguration.UseFilteres) sampleProvider = new MonauralFilter(sampleProvider, SoundConfiguration.GetFilteres(SamplingFrequency));
+                if (SoundConfiguration.UseFilteres) sampleProvider = new MonauralFilter(sampleProvider, SoundConfiguration.GetFilteres(Settings.Default.RealtimeTrainSamplingFrequency));
                 if (SoundConfiguration.UseImpulseResponse) sampleProvider = new CppConvolutionFilter(sampleProvider, 4096, SoundConfiguration.ImpulseResponse);
 
                 var mmDevice = new MMDeviceEnumerator().GetDevice(Param.AudioDeviceId);

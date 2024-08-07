@@ -382,5 +382,53 @@ namespace VvvfSimulator.Properties {
                 this["RealTimeMasconNeutralKey"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("200000")]
+        public int RealtimeVvvfSamplingFrequency {
+            get {
+                return ((int)(this["RealtimeVvvfSamplingFrequency"]));
+            }
+            set {
+                this["RealtimeVvvfSamplingFrequency"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("192000")]
+        public int RealtimeTrainSamplingFrequency {
+            get {
+                return ((int)(this["RealtimeTrainSamplingFrequency"]));
+            }
+            set {
+                this["RealtimeTrainSamplingFrequency"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("64")]
+        public int RealtimeVvvfCalculateDivision {
+            get {
+                return ((int)(this["RealtimeVvvfCalculateDivision"]));
+            }
+            set {
+                this["RealtimeVvvfCalculateDivision"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("512")]
+        public int RealtimeTrainCalculateDivision {
+            get {
+                return ((int)(this["RealtimeTrainCalculateDivision"]));
+            }
+            set {
+                this["RealtimeTrainCalculateDivision"] = value;
+            }
+        }
     }
 }

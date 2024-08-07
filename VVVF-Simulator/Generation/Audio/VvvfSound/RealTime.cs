@@ -3,6 +3,7 @@ using NAudio.Wave;
 using System;
 using System.IO.Ports;
 using System.Windows;
+using VvvfSimulator.Properties;
 using VvvfSimulator.Yaml.VvvfSound;
 using static VvvfSimulator.Generation.Audio.GenerateRealTimeCommon;
 using static VvvfSimulator.VvvfStructs;
@@ -12,8 +13,6 @@ namespace VvvfSimulator.Generation.Audio.VvvfSound
     public class RealTime
     {
         // --------- VVVF SOUND ------------
-        private static readonly int calcCount = 64;
-        private static readonly int SamplingFrequency = 200000;
         private static int Generate(
             BufferedWaveProvider provider, 
             YamlVvvfSoundData sound_data, 
@@ -42,16 +41,19 @@ namespace VvvfSimulator.Generation.Audio.VvvfSound
             int end_result;
             while (true)
             {
-                end_result = RealTimeFrequencyControl(control, realTime_Parameter, calcCount / (double)(SamplingFrequency));
+                int CalcCount = Settings.Default.RealtimeVvvfCalculateDivision;
+                double Dt = 1.0 / Settings.Default.RealtimeVvvfSamplingFrequency;
+
+                end_result = RealTimeFrequencyControl(control, realTime_Parameter, CalcCount * Dt);
                 if (end_result != -1) break;
 
-                byte[] data = new byte[calcCount];
+                byte[] data = new byte[CalcCount];
 
-                for(int i = 0; i < calcCount; i++)
+                for(int i = 0; i < CalcCount; i++)
                 {
-                    control.AddSineTime(1.0 / SamplingFrequency);
-                    control.AddSawTime(1.0 / SamplingFrequency);
-                    control.AddGenerationCurrentTime(1.0 / SamplingFrequency);
+                    control.AddSineTime(Dt);
+                    control.AddSawTime(Dt);
+                    control.AddGenerationCurrentTime(Dt);
 
                     ControlStatus cv = new()
                     {
@@ -80,7 +82,7 @@ namespace VvvfSimulator.Generation.Audio.VvvfSound
                     break;
                 }
 
-                while (provider.BufferedBytes + calcCount > Properties.Settings.Default.RealTime_VVVF_BuffSize) ;
+                while (provider.BufferedBytes + CalcCount > Properties.Settings.Default.RealTime_VVVF_BuffSize) ;
             }
 
             try
@@ -107,7 +109,7 @@ namespace VvvfSimulator.Generation.Audio.VvvfSound
             Control.ResetControlValues();
             Param.Control = Control;
 
-            BufferedWaveProvider bufferedWaveProvider = new(WaveFormat.CreateIeeeFloatWaveFormat(SamplingFrequency, 1));
+            BufferedWaveProvider bufferedWaveProvider = new(WaveFormat.CreateIeeeFloatWaveFormat(Settings.Default.RealtimeVvvfSamplingFrequency, 1));
             bufferedWaveProvider.DiscardOnBufferOverflow = true;
             MMDevice mmDevice = new MMDeviceEnumerator().GetDevice(Param.AudioDeviceId);
             WasapiOut wavPlayer = new(mmDevice, AudioClientShareMode.Shared, false, 0);

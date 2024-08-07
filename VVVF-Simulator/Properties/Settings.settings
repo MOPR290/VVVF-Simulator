@@ -92,5 +92,17 @@
     <Setting Name="RealTimeMasconNeutralKey" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">65</Value>
     </Setting>
+    <Setting Name="RealtimeVvvfSamplingFrequency" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">200000</Value>
+    </Setting>
+    <Setting Name="RealtimeTrainSamplingFrequency" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">192000</Value>
+    </Setting>
+    <Setting Name="RealtimeVvvfCalculateDivision" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">64</Value>
+    </Setting>
+    <Setting Name="RealtimeTrainCalculateDivision" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">512</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -47,40 +47,46 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
             SelectorControlDesign.ItemsSource = (RealtimeWindows.ControlStatus.RealTimeControlStatStyle[])Enum.GetValues(typeof(RealtimeWindows.ControlStatus.RealTimeControlStatStyle));
             SelectorHexagonDesign.ItemsSource = (RealtimeWindows.Hexagon.RealTimeHexagonStyle[])Enum.GetValues(typeof(RealtimeWindows.Hexagon.RealTimeHexagonStyle));
 
-            var prop = Properties.Settings.Default;
+            var Prop = Properties.Settings.Default;
             if (_SettingType.Equals(RealTime_Basic_Setting_Type.VVVF))
             {
-                TextBuffSize.Text = prop.RealTime_VVVF_BuffSize.ToString();
-                BoxWaveForm.IsChecked = prop.RealTime_VVVF_WaveForm_Show;
-                BoxFFT.IsChecked = prop.RealTime_VVVF_FFT_Show;
-                BoxFS.IsChecked = prop.RealTime_VVVF_FS_Show;
-                BoxRealTimeEdit.IsChecked = prop.RealTime_VVVF_EditAllow;
+                TextBuffSize.Text = Prop.RealTime_VVVF_BuffSize.ToString();
+                BoxWaveForm.IsChecked = Prop.RealTime_VVVF_WaveForm_Show;
+                BoxFFT.IsChecked = Prop.RealTime_VVVF_FFT_Show;
+                BoxFS.IsChecked = Prop.RealTime_VVVF_FS_Show;
+                BoxRealTimeEdit.IsChecked = Prop.RealTime_VVVF_EditAllow;
 
-                BoxShowControl.IsChecked = prop.RealTime_VVVF_Control_Show;
-                BoxControlPrecise.IsChecked = prop.RealTime_VVVF_Control_Precise;
-                SelectorControlDesign.SelectedItem = (RealtimeWindows.ControlStatus.RealTimeControlStatStyle)prop.RealTime_VVVF_Control_Style;
+                BoxShowControl.IsChecked = Prop.RealTime_VVVF_Control_Show;
+                BoxControlPrecise.IsChecked = Prop.RealTime_VVVF_Control_Precise;
+                SelectorControlDesign.SelectedItem = (RealtimeWindows.ControlStatus.RealTimeControlStatStyle)Prop.RealTime_VVVF_Control_Style;
 
-                BoxShowHexagon.IsChecked = prop.RealTime_VVVF_Hexagon_Show;
-                SelectorHexagonDesign.SelectedItem = (RealtimeWindows.Hexagon.RealTimeHexagonStyle)prop.RealTime_VVVF_Hexagon_Style;
-                BoxShowZeroVectorCicle.IsChecked = prop.RealTime_VVVF_Hexagon_ZeroVector;
+                BoxShowHexagon.IsChecked = Prop.RealTime_VVVF_Hexagon_Show;
+                SelectorHexagonDesign.SelectedItem = (RealtimeWindows.Hexagon.RealTimeHexagonStyle)Prop.RealTime_VVVF_Hexagon_Style;
+                BoxShowZeroVectorCicle.IsChecked = Prop.RealTime_VVVF_Hexagon_ZeroVector;
+
+                SamplingFrequencyInput.Text = Prop.RealtimeVvvfSamplingFrequency.ToString();
+                CalculateDivisionInput.Text = Prop.RealtimeVvvfCalculateDivision.ToString();
 
                 WindowTitle.Content = "Realtime Vvvf Simulate Configuration";
             }
             else
             {
-                TextBuffSize.Text = prop.RealTime_Train_BuffSize.ToString();
-                BoxWaveForm.IsChecked = prop.RealTime_Train_WaveForm_Show;
-                BoxFFT.IsChecked = prop.RealTime_Train_FFT_Show;
-                BoxFS.IsChecked = prop.RealTime_Train_FS_Show;
-                BoxRealTimeEdit.IsChecked = prop.RealTime_Train_EditAllow;
+                TextBuffSize.Text = Prop.RealTime_Train_BuffSize.ToString();
+                BoxWaveForm.IsChecked = Prop.RealTime_Train_WaveForm_Show;
+                BoxFFT.IsChecked = Prop.RealTime_Train_FFT_Show;
+                BoxFS.IsChecked = Prop.RealTime_Train_FS_Show;
+                BoxRealTimeEdit.IsChecked = Prop.RealTime_Train_EditAllow;
 
-                BoxShowControl.IsChecked = prop.RealTime_Train_Control_Show;
-                BoxControlPrecise.IsChecked = prop.RealTime_Train_Control_Precise;
-                SelectorControlDesign.SelectedItem = (RealtimeWindows.ControlStatus.RealTimeControlStatStyle)prop.RealTime_Train_Control_Style;
+                BoxShowControl.IsChecked = Prop.RealTime_Train_Control_Show;
+                BoxControlPrecise.IsChecked = Prop.RealTime_Train_Control_Precise;
+                SelectorControlDesign.SelectedItem = (RealtimeWindows.ControlStatus.RealTimeControlStatStyle)Prop.RealTime_Train_Control_Style;
 
-                BoxShowHexagon.IsChecked = prop.RealTime_Train_Hexagon_Show;
-                SelectorHexagonDesign.SelectedItem = (RealtimeWindows.Hexagon.RealTimeHexagonStyle)prop.RealTime_Train_Hexagon_Style;
-                BoxShowZeroVectorCicle.IsChecked = prop.RealTime_Train_Hexagon_ZeroVector;
+                BoxShowHexagon.IsChecked = Prop.RealTime_Train_Hexagon_Show;
+                SelectorHexagonDesign.SelectedItem = (RealtimeWindows.Hexagon.RealTimeHexagonStyle)Prop.RealTime_Train_Hexagon_Style;
+                BoxShowZeroVectorCicle.IsChecked = Prop.RealTime_Train_Hexagon_ZeroVector;
+
+                SamplingFrequencyInput.Text = Prop.RealtimeTrainSamplingFrequency.ToString();
+                CalculateDivisionInput.Text = Prop.RealtimeTrainCalculateDivision.ToString();
 
                 WindowTitle.Content = "Realtime Train Simulate Configuration";
             }
@@ -156,16 +162,44 @@ namespace VvvfSimulator.GUI.Simulator.RealTime.Setting
 
         }
 
-        private void AudioBuffSizeChanged(object sender, TextChangedEventArgs e)
+        private void TextBoxChanged(object sender, TextChangedEventArgs e)
         {
             if (IgnoreUpdate) return;
+            TextBox? textBox = sender as TextBox;
+            if (textBox == null) return;
+            string? tag = textBox.Tag.ToString();
+            if (tag == null) return;
 
-
-            int i = ParseTextBox.ParseInt(TextBuffSize);
-            if (_SettingType.Equals(RealTime_Basic_Setting_Type.VVVF))
-                Properties.Settings.Default.RealTime_VVVF_BuffSize = i;
-            else if (_SettingType.Equals(RealTime_Basic_Setting_Type.Train))
-                Properties.Settings.Default.RealTime_Train_BuffSize = i;            
+            switch (tag)
+            {
+                case "AudioBuffSize":
+                    {
+                        int i = ParseTextBox.ParseInt(TextBuffSize);
+                        if (_SettingType.Equals(RealTime_Basic_Setting_Type.VVVF))
+                            Properties.Settings.Default.RealTime_VVVF_BuffSize = i;
+                        else if (_SettingType.Equals(RealTime_Basic_Setting_Type.Train))
+                            Properties.Settings.Default.RealTime_Train_BuffSize = i;
+                        break;
+                    }
+                case "SamplingFrequency":
+                    {
+                        int i = ParseTextBox.ParseInt(SamplingFrequencyInput);
+                        if (_SettingType.Equals(RealTime_Basic_Setting_Type.VVVF))
+                            Properties.Settings.Default.RealtimeVvvfSamplingFrequency = i;
+                        else if (_SettingType.Equals(RealTime_Basic_Setting_Type.Train))
+                            Properties.Settings.Default.RealtimeTrainSamplingFrequency = i;
+                        break;
+                    }
+                case "CalculateDivision":
+                    {
+                        int i = ParseTextBox.ParseInt(CalculateDivisionInput);
+                        if (_SettingType.Equals(RealTime_Basic_Setting_Type.VVVF))
+                            Properties.Settings.Default.RealtimeVvvfCalculateDivision = i;
+                        else if (_SettingType.Equals(RealTime_Basic_Setting_Type.Train))
+                            Properties.Settings.Default.RealtimeTrainCalculateDivision = i;
+                        break;
+                    }
+            }            
         }
 
         private void SelectorChanged(object sender, SelectionChangedEventArgs e)

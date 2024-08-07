@@ -17,8 +17,15 @@ namespace VvvfSimulator.GUI.TrainAudio.Pages.Mixer
 
             InitializeComponent();
 
-            filterType_Selector.ItemsSource = (FilterType[])Enum.GetValues(typeof(FilterType));
-            Filter_DataGrid.ItemsSource = data.Filteres;
+            try
+            {
+                filterType_Selector.ItemsSource = (FilterType[])Enum.GetValues(typeof(FilterType));
+                Filter_DataGrid.ItemsSource = data.Filteres;
+            }
+            catch
+            {
+
+            }
         }
     }
 }

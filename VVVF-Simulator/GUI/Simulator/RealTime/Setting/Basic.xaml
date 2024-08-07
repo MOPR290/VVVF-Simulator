@@ -22,9 +22,12 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
             <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="100"/>
             <RowDefinition Height="100"/>
             <RowDefinition Height="100"/>
+            
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -44,9 +47,29 @@
             <Border Background="{DynamicResource SubTitleBarBrush}" CornerRadius="0,25,0,0">
                 <Label Content="Audio Buff Size" Style="{DynamicResource SubTitleBarText}"/>
             </Border>
-            <TextBox x:Name="TextBuffSize" Grid.Column="1" Text="40000" TextChanged="AudioBuffSizeChanged" Style="{DynamicResource SlimTextBox}"/>
+            <TextBox x:Name="TextBuffSize" Grid.Column="1" Text="40000" TextChanged="TextBoxChanged" Tag="AudioBuffSize" Style="{DynamicResource SlimTextBox}"/>
         </Grid>
-        <Grid Grid.Row="2" Height="100">
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="6*"/>
+            </Grid.ColumnDefinitions>
+            <Border Background="{DynamicResource SubTitleBarBrush}" CornerRadius="0,0,0,0">
+                <Label Content="Sampling Frequency" Style="{DynamicResource SubTitleBarText}"/>
+            </Border>
+            <TextBox x:Name="SamplingFrequencyInput" Grid.Column="1" Text="200000" TextChanged="TextBoxChanged" Tag="SamplingFrequency" Style="{DynamicResource SlimTextBox}"/>
+        </Grid>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="6*"/>
+            </Grid.ColumnDefinitions>
+            <Border Background="{DynamicResource SubTitleBarBrush}" CornerRadius="0,0,0,0">
+                <Label Content="Calculate Division" Style="{DynamicResource SubTitleBarText}"/>
+            </Border>
+            <TextBox x:Name="CalculateDivisionInput" Grid.Column="1" Text="64" TextChanged="TextBoxChanged" Tag="CalculateDivision" Style="{DynamicResource SlimTextBox}"/>
+        </Grid>
+        <Grid Grid.Row="4" Height="100">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="6*"/>
@@ -75,7 +98,7 @@
                 </Grid>
             </Grid>
         </Grid>
-        <Grid Grid.Row="3" Height="100">
+        <Grid Grid.Row="5" Height="100">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="6*"/>
@@ -104,7 +127,7 @@
                 </Grid>
             </Grid>
         </Grid>
-        <Grid Grid.Row="4" Height="100">
+        <Grid Grid.Row="6" Height="100">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="6*"/>
