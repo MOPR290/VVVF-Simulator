@@ -302,7 +302,9 @@ namespace VvvfSimulator
             public class PulseHarmonic
             {
                 public double Harmonic { get; set; } = 3;
+                public bool IsHarmonicProportional { get; set; } = true;
                 public double Amplitude { get; set; } = 0.2;
+                public bool IsAmplitudeProportional { get; set; } = true;
                 public double InitialPhase { get; set; } = 0;
                 public PulseHarmonicType Type { get; set; } = PulseHarmonicType.Sine;
 

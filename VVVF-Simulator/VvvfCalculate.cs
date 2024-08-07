@@ -54,7 +54,7 @@ namespace VvvfSimulator
             return sine;
         }
 
-        public static double GetSineValueWithHarmonic(PulseMode mode, double x, double amplitude)
+        public static double GetSineValueWithHarmonic(PulseMode mode, double x, double amplitude, double T, double InitialPhase)
         {
             double BaseValue = mode.BaseWave switch
             {
@@ -65,10 +65,16 @@ namespace VvvfSimulator
                 BaseWaveType.Modified_Saw_1 => GetModifiedSaw(x),
                 _ => throw new NotImplementedException(),
             };
+            BaseValue *= amplitude;
+
             for (int i = 0; i < mode.PulseHarmonics.Count; i++)
             {
                 PulseHarmonic harmonic = mode.PulseHarmonics[i];
-                double harmonic_x = harmonic.Harmonic * (x + harmonic.InitialPhase);
+                double harmonic_x = harmonic.IsHarmonicProportional switch
+                {
+                    true => harmonic.Harmonic * (x + harmonic.InitialPhase),
+                    false => M_2PI * harmonic.Harmonic * (T + InitialPhase)
+                };
                 double harmonic_value = harmonic.Type switch
                 {
                     PulseHarmonic.PulseHarmonicType.Sine => GetSine(harmonic_x),
@@ -76,11 +82,11 @@ namespace VvvfSimulator
                     PulseHarmonic.PulseHarmonicType.Square => GetSquare(harmonic_x),
                     _ => throw new NotImplementedException(),
                 };
-                BaseValue += harmonic_value * harmonic.Amplitude;
+                BaseValue += harmonic_value * harmonic.Amplitude * (harmonic.IsAmplitudeProportional ? amplitude : 1);
             }
 
             BaseValue = BaseValue > 1 ? 1 : BaseValue < -1 ? -1 : BaseValue;
-            BaseValue *= amplitude;
+            
             return BaseValue;
         }
 
@@ -425,7 +431,7 @@ namespace VvvfSimulator
 
                 double sine_x = sine_time * sine_angle_freq + initial_phase;
                 if (pulse_mode.DiscreteTime.Enabled) sine_x = DiscreteTimeLine(sine_x, pulse_mode.DiscreteTime.Steps, pulse_mode.DiscreteTime.Mode);
-                double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sine_x, calculate_values.amplitude);
+                double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sine_x, calculate_values.amplitude, control.GetGenerationCurrentTime(), initial_phase);
 
                 double saw_value = GetSaw(control.GetSawTime() * control.GetSawAngleFrequency());
                 if (pulse_mode.Shift)
@@ -464,7 +470,7 @@ namespace VvvfSimulator
                 if (pulse_mode.Shift)
                     saw_value = -saw_value;
 
-                double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sine_x, calculate_values.amplitude);
+                double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sine_x, calculate_values.amplitude, control.GetGenerationCurrentTime(), initial_phase);
 
                 double changed_saw = ((dipolar != -1) ? dipolar : 0.5) * saw_value;
                 int pwm_value = ModulateSin(sin_value, changed_saw + 0.5) + ModulateSin(sin_value, changed_saw - 0.5);
@@ -520,8 +526,7 @@ namespace VvvfSimulator
 
                         double sine_x = sin_time * sin_angle_freq + initial_phase;
                         if (pulse_mode.DiscreteTime.Enabled) sine_x = DiscreteTimeLine(sine_x, pulse_mode.DiscreteTime.Steps, pulse_mode.DiscreteTime.Mode);
-                        double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sine_x, amplitude);
-
+                        double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sine_x, amplitude, control.GetGenerationCurrentTime(), initial_phase);
 
                         double saw_value = GetSaw(saw_time * saw_angle_freq);
                         int pwm_value = ModulateSin(sin_value, saw_value) * 2;
@@ -835,7 +840,7 @@ namespace VvvfSimulator
                     int pulse_num = 27;
                     double x = sin_angle_freq * sin_time + initial_phase;
                     double saw_value = GetSaw(pulse_num * x);
-                    double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), x, amplitude);
+                    double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), x, amplitude, control.GetGenerationCurrentTime(), initial_phase);
                     int pwm_value;
                     double fixed_x = (int)(x / M_PI_2) % 2 == 1 ? M_PI_2 - x % M_PI_2 : x % M_PI_2;
                     control.SetSawAngleFrequency(sin_angle_freq * pulse_num);
@@ -860,7 +865,7 @@ namespace VvvfSimulator
                 if (pulse_mode.DiscreteTime.Enabled) sine_x = DiscreteTimeLine(sine_x, pulse_mode.DiscreteTime.Steps, pulse_mode.DiscreteTime.Mode);
                 double saw_x = pulse_num * (sin_angle_freq * sin_time + initial_phase);
                 double saw_value = GetSaw(saw_x);
-                double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sine_x, amplitude);
+                double sin_value = GetSineValueWithHarmonic(pulse_mode.Clone(), sine_x, amplitude, control.GetGenerationCurrentTime(), initial_phase);
 
                 if (pulse_mode.Shift)
                     saw_value = -saw_value;

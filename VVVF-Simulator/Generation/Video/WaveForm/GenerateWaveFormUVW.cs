@@ -20,58 +20,53 @@ namespace VvvfSimulator.Generation.Video.WaveForm
         private static int calculate_div = 10;
         public static Bitmap GetImage(VvvfValues control, ControlStatus cv, YamlVvvfSoundData vvvfData)
         {
-            control.SetSawTime(0);
-            control.SetSineTime(0);
-
             Bitmap image = new(image_width, image_height);
             Graphics g = Graphics.FromImage(image);
             g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
 
+            WaveValues? LastValue = null;
+
             for (int i = 0; i < image_width * calculate_div; i++)
             {
-                int[] points_U = new int[2];
-                int[] points_V = new int[2];
-                int[] points_W = new int[2];
+                double dt = Math.PI / (120000.0 * calculate_div);
+                control.SetGenerationCurrentTime(dt * i);
+                control.SetSawTime(dt * i);
+                control.SetSineTime(dt * i);
 
-                for (int j = 0; j < 2; j++)
+                PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(control, cv, vvvfData);
+                WaveValues Value = CalculatePhases(control, calculated_Values, 0);
+
+                if(LastValue == null)
                 {
-                    PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(control, cv, vvvfData);
-                    WaveValues value = CalculatePhases(control, calculated_Values, 0);
-
-                    points_U[j] = value.U;
-                    points_V[j] = value.V;
-                    points_W[j] = value.W;
-
-                    if (j == 0)
-                    {
-                        control.AddSawTime(Math.PI / (120000.0 * calculate_div));
-                        control.AddSineTime(Math.PI / (120000.0 * calculate_div));
-                    }
+                    LastValue = Value;
+                    continue;
                 }
 
                 //U
                 g.DrawLine(new Pen(Color.Black),
                     (int)Math.Round(i / (double)calculate_div),
-                    points_U[0] * -100 + 300,
-                    (int)Math.Round(((points_U[0] != points_U[1]) ? i : i + 1) / (double)calculate_div),
-                    points_U[1] * -100 + 300
+                    LastValue.U * -100 + 300,
+                    (int)Math.Round(((LastValue.U != Value.U) ? i : i + 1) / (double)calculate_div),
+                    Value.U * -100 + 300
                 );
 
                 //V
                 g.DrawLine(new Pen(Color.Black),
                     (int)Math.Round(i / (double)calculate_div),
-                    points_V[0] * -100 + 600,
-                    (int)Math.Round(((points_V[0] != points_V[1]) ? i : i + 1) / (double)calculate_div),
-                    points_V[1] * -100 + 600
+                    LastValue.V * -100 + 600,
+                    (int)Math.Round(((LastValue.V != Value.V) ? i : i + 1) / (double)calculate_div),
+                    Value.V * -100 + 600
                 );
 
                 //W
                 g.DrawLine(new Pen(Color.Black),
                     (int)Math.Round(i / (double)calculate_div),
-                    points_W[0] * -100 + 900,
-                    (int)Math.Round(((points_W[0] != points_W[1]) ? i : i + 1) / (double)calculate_div),
-                    points_W[1] * -100 + 900
+                    LastValue.W * -100 + 900,
+                    (int)Math.Round(((LastValue.W != Value.W) ? i : i + 1) / (double)calculate_div),
+                    Value.W * -100 + 900
                 );
+
+                LastValue = Value;
             }
 
             g.Dispose();
@@ -129,7 +124,7 @@ namespace VvvfSimulator.Generation.Video.WaveForm
                     free_run = control.IsFreeRun(),
                     wave_stat = control.GetControlFrequency()
                 };
-                Bitmap final_image = GetImage(control, cv, vvvfData);
+                Bitmap final_image = GetImage(control.Clone(), cv, vvvfData);
 
                 MemoryStream ms = new();
                 final_image.Save(ms, ImageFormat.Png);

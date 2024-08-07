@@ -18,6 +18,18 @@ namespace VvvfSimulator.Generation.Video.Hexagon
     {
 
 
+        /// <summary>
+        /// Gets image of Voltage Vector Hexagon
+        /// </summary>
+        /// <param name="Control">Make sure you do clone.</param>
+        /// <param name="Sound"></param>
+        /// <param name="Width"></param>
+        /// <param name="Height"></param>
+        /// <param name="Delta"></param>
+        /// <param name="Thickness"></param>
+        /// <param name="ZeroVectorCircle"></param>
+        /// <param name="PreciseDelta"></param>
+        /// <returns></returns>
         public static Bitmap GetImage(
             VvvfValues Control,
             YamlVvvfSoundData Sound,
@@ -242,7 +254,7 @@ namespace VvvfSimulator.Generation.Video.Hexagon
                 control.SetSineTime(0);
                 control.SetSawTime(0);
 
-                Bitmap final_image = GetImage(control, vvvfData, image_width, image_height, hex_div, 2, draw_zero_vector_circle, true);
+                Bitmap final_image = GetImage(control.Clone(), vvvfData, image_width, image_height, hex_div, 2, draw_zero_vector_circle, true);
 
 
                 MemoryStream ms = new();
@@ -314,7 +326,7 @@ namespace VvvfSimulator.Generation.Video.Hexagon
             int image_height = 1000;
 
             int hex_div = 60000;
-            Bitmap final_image = GetImage(control, sound_data, image_width, image_height, hex_div, 2, draw_zero_vector_circle, true);
+            Bitmap final_image = GetImage(control.Clone(), sound_data, image_width, image_height, hex_div, 2, draw_zero_vector_circle, true);
 
             MemoryStream ms = new();
             final_image.Save(ms, ImageFormat.Png);

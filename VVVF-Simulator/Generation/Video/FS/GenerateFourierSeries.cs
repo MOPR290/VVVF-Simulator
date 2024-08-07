@@ -63,6 +63,14 @@ namespace VvvfSimulator.Generation.Video.FS
             return coefficients;
         }
 
+        /// <summary>
+        /// Gets Fourier series coefficients
+        /// </summary>
+        /// <param name="Control">Make sure you put cloned data.</param>
+        /// <param name="Sound"></param>
+        /// <param name="Delta"></param>
+        /// <param name="N"></param>
+        /// <returns></returns>
         public static double[] GetFourierCoefficients(VvvfValues Control, YamlVvvfSoundData Sound, int Delta, int N)
         {
             Control.SetRandomFrequencyMoveAllowed(false);

@@ -34,7 +34,7 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
         //Harmonic Presets
         public enum PresetHarmonics
         {
-            THI, SVM, DPM1, DPM2, DPM3, DPM4, Square_Fourier
+            THI, SVM, HFI, DPM1, DPM2, DPM3, DPM4, Square_Fourier
         }
 
         public List<PulseHarmonic> Get_Preset_Harmonics(PresetHarmonics harmonic)
@@ -48,6 +48,10 @@ namespace VvvfSimulator.GUI.Create.Waveform.Basic
                 case PresetHarmonics.SVM:
                     return new List<PulseHarmonic>() { 
                         new PulseHarmonic() { Amplitude = 0.25, Harmonic = 3 , Type = PulseHarmonic.PulseHarmonicType.Saw} 
+                    };
+                case PresetHarmonics.HFI:
+                    return new List<PulseHarmonic>() {
+                        new PulseHarmonic() { Amplitude = 0.5, Harmonic = 250 , Type = PulseHarmonic.PulseHarmonicType.Sine, InitialPhase=0, IsAmplitudeProportional=false, IsHarmonicProportional = false}
                     };
                 case PresetHarmonics.DPM1:
                     return new List<PulseHarmonic>() {

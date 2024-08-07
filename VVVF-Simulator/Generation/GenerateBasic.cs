@@ -25,6 +25,7 @@ namespace VvvfSimulator.Generation
             int Count = Precise ? (int)Math.Round(Division * _K) : Division;
             double InvDeltaT = Count * _F;
 
+            Control.SetGenerationCurrentTime(0);
             Control.SetSineTime(0);
             Control.SetSawTime(0);
 
@@ -47,6 +48,7 @@ namespace VvvfSimulator.Generation
             int Count = Precise ? (int)Math.Round(Division * _K) : Division;
             double InvDeltaT = Count;
 
+            Control.SetGenerationCurrentTime(0);
             Control.SetSineTime(0);
             Control.SetSawTime(0);
 
@@ -66,6 +68,7 @@ namespace VvvfSimulator.Generation
             WaveValues[] PWM_Array = new WaveValues[Count + 1];
             for (int i = 0; i <= Count; i++)
             {
+                Control.SetGenerationCurrentTime(i / InvDeltaT);
                 Control.SetSineTime(i / InvDeltaT);
                 Control.SetSawTime(i / InvDeltaT);
                 WaveValues value = VvvfCalculate.CalculatePhases(Control, calculated_Values, InitialPhase);

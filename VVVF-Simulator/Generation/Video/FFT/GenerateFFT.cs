@@ -34,6 +34,13 @@ namespace VvvfSimulator.Generation.Video.FFT
             float θ = (float)Math.Atan2(C.Y, C.X);
             return (R, θ);
         }
+
+        /// <summary>
+        /// Gets image of FFT.
+        /// </summary>
+        /// <param name="control">Make sure cloned data is passed</param>
+        /// <param name="sound"></param>
+        /// <returns></returns>
         public static Bitmap GetImage(VvvfValues control, YamlVvvfSoundData sound)
         {
             control.SetRandomFrequencyMoveAllowed(false);
@@ -106,7 +113,7 @@ namespace VvvfSimulator.Generation.Video.FFT
                 control.SetSineTime(0);
                 control.SetSawTime(0);
 
-                Bitmap image = GetImage(control, vvvfData);
+                Bitmap image = GetImage(control.Clone(), vvvfData);
 
 
                 MemoryStream ms = new();
@@ -155,7 +162,7 @@ namespace VvvfSimulator.Generation.Video.FFT
             control.SetSineAngleFrequency(d * MyMath.M_2PI);
             control.SetControlFrequency(d);
 
-            Bitmap image = GetImage(control, sound_data);
+            Bitmap image = GetImage(control.Clone(), sound_data);
 
             MemoryStream ms = new();
             image.Save(ms, ImageFormat.Png);

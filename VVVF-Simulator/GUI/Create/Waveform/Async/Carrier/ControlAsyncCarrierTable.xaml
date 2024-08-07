@@ -21,7 +21,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Carrier[Hz]" Width="1*" Binding="{Binding CarrierFrequency}" EditingElementStyle="{StaticResource SlimTextBox}"/>
                 <DataGridTextColumn Header="From[Hz]" Width="1*" Binding="{Binding ControlFrequencyFrom}" EditingElementStyle="{StaticResource SlimTextBox}"/>
-                <DataGridCheckBoxColumn Header="Stuck At Here" Width="1*" Binding="{Binding FreeRunStuckAtHere}" ElementStyle="{StaticResource SlimCheckBox}"/>
+                <DataGridCheckBoxColumn Header="Stuck At Here" Width="1*" Binding="{Binding FreeRunStuckAtHere, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource SlimCheckBox}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

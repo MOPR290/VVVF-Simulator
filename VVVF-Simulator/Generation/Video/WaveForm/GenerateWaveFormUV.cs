@@ -44,8 +44,9 @@ namespace VvvfSimulator.Generation.Video.WaveForm
             {
                 WaveValues value = CalculatePhases(Control, PWM_Data, Math.PI / 6.0);
                 values[i] = value;
-                Control.AddSawTime(2 / (60.0 * Count));
-                Control.AddSineTime(2 / (60.0 * Count));
+                Control.SetGenerationCurrentTime(2 / (60.0 * Count) * i);
+                Control.SetSawTime(2 / (60.0 * Count) * i);
+                Control.SetSineTime(2 / (60.0 * Count) * i);
             }
             return GetImage(ref values, Width, Height, WaveHeight, WaveWidth, Spacing);
         }
@@ -173,7 +174,7 @@ namespace VvvfSimulator.Generation.Video.WaveForm
                 };
                 PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(control, cv, vvvfData);
 
-                Bitmap image = GetImage(control, calculated_Values, image_width, image_height, wave_height, 2, calculate_div, 100);
+                Bitmap image = GetImage(control.Clone(), calculated_Values, image_width, image_height, wave_height, 2, calculate_div, 100);
 
 
                 MemoryStream ms = new();
@@ -291,8 +292,7 @@ namespace VvvfSimulator.Generation.Video.WaveForm
                     wave_stat = control.GetControlFrequency()
                 };
                 PwmCalculateValues calculated_Values = YamlVvvfWave.CalculateYaml(control, cv, vvvfData);
-
-                Bitmap image = GetImage(control, calculated_Values, image_width, image_height, wave_height, 1, calculate_div, 0);
+                Bitmap image = GetImage(control.Clone(), calculated_Values, image_width, image_height, wave_height, 1, calculate_div, 0);
 
                 MemoryStream ms = new();
                 image.Save(ms, ImageFormat.Png);

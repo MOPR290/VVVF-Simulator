@@ -110,8 +110,9 @@ namespace VvvfSimulator.Generation.Video.Hexagon
 
             for (int i = 0; i < hex_div; i++)
             {
-                control.AddSineTime(1.0 / (hex_div) * ((control.GetSineFrequency() == 0) ? 0 : 1 / control.GetSineFrequency()));
-                control.AddSawTime(1.0 / (hex_div) * ((control.GetSineFrequency() == 0) ? 0 : 1 / control.GetSineFrequency()));
+                control.SetSineTime((double)i / (hex_div) * ((control.GetSineFrequency() == 0) ? 0 : 1 / control.GetSineFrequency()));
+                control.SetSawTime((double)i / (hex_div) * ((control.GetSineFrequency() == 0) ? 0 : 1 / control.GetSineFrequency()));
+                control.SetGenerationCurrentTime((double)i / (hex_div) * ((control.GetSineFrequency() == 0) ? 0 : 1 / control.GetSineFrequency()));
 
                 WaveValues value = CalculatePhases(control, calculated_Values, 0);
 
