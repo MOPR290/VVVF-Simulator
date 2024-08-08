@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Eventing.Reader;
 using System.Windows;
 using static VvvfSimulator.MyMath;
 using static VvvfSimulator.VvvfStructs;
@@ -776,6 +777,7 @@ namespace VvvfSimulator
                            'A', sin_time, sin_angle_freq, initial_phase);
                     }
                 case PulseModeNames.SHEP_7:
+                    if (pulse_mode.AltMode == PulseAlternativeMode.Default)
                     {
                         return GetPulseWithSwitchAngle(
                               SwitchAngles._3Alpha_SHE[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
@@ -786,19 +788,77 @@ namespace VvvfSimulator
                               M_PI_2,
                               M_PI_2,
                               'B', sin_time, sin_angle_freq, initial_phase);
-
                     }
+                    else if (pulse_mode.AltMode == PulseAlternativeMode.Alt1)
+                    { 
+                        return GetPulseWithSwitchAngle(
+                               SwitchAngles._3Alpha_SHEN[(int)(1000 * amplitude) + 1, 0] ,
+                               SwitchAngles._3Alpha_SHEN[(int)(1000 * amplitude) + 1, 1] ,
+                               SwitchAngles._3Alpha_SHEN[(int)(1000 * amplitude) + 1, 2] ,
+                               M_PI_2,
+                               M_PI_2,
+                               M_PI_2,
+                               M_PI_2,
+                               'B', sin_time, sin_angle_freq, initial_phase);
+                        
+                    }
+                    break;
                 case PulseModeNames.SHEP_11:
                     {
-                        return GetPulseWithSwitchAngle(
-                              SwitchAngles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
-                              SwitchAngles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
-                              SwitchAngles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
-                              SwitchAngles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
-                              SwitchAngles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
-                              M_PI_2,
-                              M_PI_2,
-                              'A', sin_time, sin_angle_freq, initial_phase);
+                        if (PulseAlternativeMode.Default == pulse_mode.AltMode)
+                        { 
+                            return GetPulseWithSwitchAngle(
+                                  SwitchAngles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+                                  SwitchAngles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+                                  SwitchAngles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
+                                  SwitchAngles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
+                                  SwitchAngles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
+                                  M_PI_2,
+                                  M_PI_2,
+                                  'A', sin_time, sin_angle_freq, initial_phase);
+                         }
+                        else if (PulseAlternativeMode.Alt1 == pulse_mode.AltMode)
+                        {
+                            return GetPulseWithSwitchAngle(
+                                 SwitchAngles._5Alpha_SHEN[(int)(1000 * amplitude) + 1, 0] ,
+                                 SwitchAngles._5Alpha_SHEN[(int)(1000 * amplitude) + 1, 1] ,
+                                 SwitchAngles._5Alpha_SHEN[(int)(1000 * amplitude) + 1, 2] ,
+                                 SwitchAngles._5Alpha_SHEN[(int)(1000 * amplitude) + 1, 3] ,
+                                 SwitchAngles._5Alpha_SHEN[(int)(1000 * amplitude) + 1, 4] ,
+                                 M_PI_2,
+                                 M_PI_2,
+                                 'A', sin_time, sin_angle_freq, initial_phase);
+                        }
+
+                       }
+                    break;
+                case PulseModeNames.SHEP_15:
+                    {
+                        if (pulse_mode.AltMode == PulseAlternativeMode.Default)
+                        {
+                            return GetPulseWithSwitchAngle(
+                            Switch15Angles._7Alpha_SHE[(int)(1000 * amplitude) + 1, 0],
+                            Switch15Angles._7Alpha_SHE[(int)(1000 * amplitude) + 1, 1],
+                            Switch15Angles._7Alpha_SHE[(int)(1000 * amplitude) + 1, 2],
+                            Switch15Angles._7Alpha_SHE[(int)(1000 * amplitude) + 1, 3],
+                            Switch15Angles._7Alpha_SHE[(int)(1000 * amplitude) + 1, 4],
+                            Switch15Angles._7Alpha_SHE[(int)(1000 * amplitude) + 1, 5],
+                            Switch15Angles._7Alpha_SHE[(int)(1000 * amplitude) + 1, 6],
+                            'B', sin_time, sin_angle_freq, initial_phase);
+                        }
+                        else if (pulse_mode.AltMode == PulseAlternativeMode.Alt1)
+                        {
+                            return GetPulseWithSwitchAngle(
+                            Switch15Angles._7Alpha_SHE_New[(int)(1000 * amplitude) + 1, 0],
+                            Switch15Angles._7Alpha_SHE_New[(int)(1000 * amplitude) + 1, 1],
+                            Switch15Angles._7Alpha_SHE_New[(int)(1000 * amplitude) + 1, 2],
+                            Switch15Angles._7Alpha_SHE_New[(int)(1000 * amplitude) + 1, 3],
+                            Switch15Angles._7Alpha_SHE_New[(int)(1000 * amplitude) + 1, 4],
+                            Switch15Angles._7Alpha_SHE_New[(int)(1000 * amplitude) + 1, 5],
+                            Switch15Angles._7Alpha_SHE_New[(int)(1000 * amplitude) + 1, 6],
+                            'B', sin_time, sin_angle_freq, initial_phase);
+                        }
+                        break;
                     }
                 default: break;
             }

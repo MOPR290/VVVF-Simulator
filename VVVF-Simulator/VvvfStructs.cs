@@ -491,6 +491,8 @@ namespace VvvfSimulator
                         return [PulseAlternativeMode.Default, PulseAlternativeMode.Alt1];
                     if (pulse_Mode.PulseName == PulseModeNames.CHMP_15)
                         return [PulseAlternativeMode.Default, PulseAlternativeMode.Alt1];
+                    if (pulse_Mode.PulseName == PulseModeNames.SHEP_15 || pulse_Mode.PulseName == PulseModeNames.SHEP_7 || pulse_Mode.PulseName == PulseModeNames.SHEP_11)
+                        return [PulseAlternativeMode.Default, PulseAlternativeMode.Alt1];
                     if (pulse_Mode.PulseName == PulseModeNames.P_17)
                         return [PulseAlternativeMode.Default, PulseAlternativeMode.Alt1];
                     if (pulse_Mode.PulseName == PulseModeNames.P_13)
