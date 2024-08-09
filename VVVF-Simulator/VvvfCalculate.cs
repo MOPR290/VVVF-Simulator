@@ -827,7 +827,7 @@ namespace VvvfSimulator
                                  SwitchAngles._5Alpha_SHEN[(int)(1000 * amplitude) + 1, 4] ,
                                  M_PI_2,
                                  M_PI_2,
-                                 'A', sin_time, sin_angle_freq, initial_phase);
+                                 'B', sin_time, sin_angle_freq, initial_phase);
                         }
 
                        }
